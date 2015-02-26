@@ -1,0 +1,3 @@
+[submodule "manuscript/code"]
+	path = manuscript/code
+	url = git@github.com:Swizec/h1b-software-salaries.git
