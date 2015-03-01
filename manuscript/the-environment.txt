@@ -85,6 +85,7 @@ We’re going to use [Grunt](http://gruntjs.com) for all of this. Grunt is a too
 
 To install Grunt and the plugins we need, run:
 
+{linenos=off}
     npm install --saveDev grunt
     npm install --saveDev grunt-browserify
     npm install --saveDev grunt-contrib-less
@@ -123,19 +124,19 @@ The basic file with no configs should look like this:
 We add the three tasks inside `initConfig`:
 
 {linenos=off,lang=js,crop-start-line=6,crop-end-line=17}
-<<[Less task config](code/src/Gruntfile.js)
+<<[Less task config](code/Gruntfile.js)
 
 This sets a couple of options for the less compiler and tells it which file we’re interested in.
 
 {linenos=off,lang=js,crop-start-line=19,crop-end-line=37}
-<<[Browserify task config](code/src/Gruntfile.js)
+<<[Browserify task config](code/Gruntfile.js)
 
 We’re using the `reactify` transform to transform JSX files into plain JavaScript. The rest just tells `browserify` what our main file is going to be and where to put the compiled result.
 
 I’m going to explain `debowerify` in the next section about client-side package management.
 
 {linenos=off,lang=js,crop-start-line=39,crop-end-line=52}
-<<[Watch task config](code/src/Gruntfile.js)
+<<[Watch task config](code/Gruntfile.js)
 
 This tells `watch`, which files it needs to watch for changes, and what to do with them.
 
