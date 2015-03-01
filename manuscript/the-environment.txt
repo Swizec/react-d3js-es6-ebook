@@ -60,7 +60,7 @@ Compiling JSX is far more important.
 
 JSX is React’s new file format that lets us embed HTML snippets straight in our JavaScript code. You’ll often see render methods doing something like this:
 
-{crop-start-line=418,crop-end-line=421,linenos=off}
+{crop-start-line=418,crop-end-line=422,linenos=off,lang=jsx}
 <<[A basic Render](code/src/main.jsx)
 
 See, we’re treating HTML - in this case an H1BGraph component - just like a normal part of our code. I haven’t decided yet if this is cleaner than something like Mustache yet, but it’s definitely much better than manually `+`-ing strings together.
@@ -81,6 +81,63 @@ Finally, we concatenate all our code into a single file because that makes it qu
 
 ### Install Grunt
 
+We’re going to use [Grunt](http://gruntjs.com) for all of this. Grunt is a tool that lets us write glorified bash scripts in JavaScript. Its main benefits are a large community that creates plugins for every imaginable thing, and simple JavaScript based configuration.
 
+To install Grunt and the plugins we need, run:
 
+    npm install --saveDev grunt
+    npm install --saveDev grunt-browserify
+    npm install --saveDev grunt-contrib-less
+    npm install --saveDev grunt-contrib-watch
+    npm install --saveDev jit-grunt
+    npm install --saveDev reactify
+
+[Browserify](http://browserify.org) will allow us to write our code in modules that we can use with `require(‘foo.js’)`. Just like we would in node.js. It’s also going to concatenate the resulting module hierarchy into a single file.
+
+[Reactify](https://github.com/andreypopp/reactify) will take care of making our JSX files work with Browserify.
+
+[Less](https://github.com/gruntjs/grunt-contrib-less) will compile Less files to CSS, `watch` will automatically run our tasks when files change, and `jit-grunt` loads all these plugins for us, so we don’t have to specify them manually.
+
+### Grunt Config
+
+Now that’s installed, we need a `Gruntfile.js` for our config.
+
+We’ll define three tasks:
+
+* `less`, for compiling stylesheets
+* `browserify`, to compile JSX files
+* `watch`, to make sure Grunt keeps compiling in the background
+
+The basic file with no configs should look like this:
+
+{linenos=off,lang=js}
+    module.exports = function (grunt) {
+        require(‘jit-grunt’)(grunt);
+        
+        grunt.initConfig({ /* ... */ });
+  
+        grunt.registerTask(‘default’, 
+                           [‘less’, ‘browserify:dev’, ‘watch’]);
+    );
+
+We add the three tasks inside `initConfig`:
+
+{linenos=off,lang=js,crop-start-line=6,crop-end-line=17}
+<<[Less task config](code/src/Gruntfile.js)
+
+This sets a couple of options for the less compiler and tells it which file we’re interested in.
+
+{linenos=off,lang=js,crop-start-line=19,crop-end-line=37}
+<<[Browserify task config](code/src/Gruntfile.js)
+
+We’re using the `reactify` transform to transform JSX files into plain JavaScript. The rest just tells `browserify` what our main file is going to be and where to put the compiled result.
+
+I’m going to explain `debowerify` in the next section about client-side package management.
+
+{linenos=off,lang=js,crop-start-line=39,crop-end-line=52}
+<<[Watch task config](code/src/Gruntfile.js)
+
+This tells `watch`, which files it needs to watch for changes, and what to do with them.
+
+You should now be able to start compiling your code by running `grunt` in the command line. 
 
