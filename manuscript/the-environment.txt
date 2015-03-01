@@ -129,8 +129,7 @@ We add the three tasks inside `initConfig`:
 
 This sets a couple of options for the less compiler and tells it which file we’re interested in.
 
-{#browserify-config}
-{linenos=off,lang=js,crop-start-line=19,crop-end-line=37}
+{id=browserify-config,linenos=off,lang=js,crop-start-line=19,crop-end-line=37}
 <<[Browserify task config](code/Gruntfile.js)
 
 We’re using the `reactify` transform to transform JSX files into plain JavaScript. The rest just tells `browserify` what our main file is going to be and where to put the compiled result.
