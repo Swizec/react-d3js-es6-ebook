@@ -22,6 +22,7 @@ Make sure you have it by installing node.js from [nodejs.org](http://nodejs.org)
 
 Once you’ve got it, create a working directory, navigate to it, and run:
 
+{linenos=off}
     npm init .
 
 This will create a `package.json` file, which stores some basic info about your project. Most importantly, it’s got a list of dev dependencies. This is useful when you return to a project months or years later, and can’t remember how to get it running.
@@ -36,11 +37,49 @@ We’re going to use `live-server`, which is a great static server written in Ja
 
 Just run:
 
+{linenos=off}
     npm install -g live-server
 
-If all went well, you should be able to start the server by running `live-server` in the command line. It’s even nice enough to immediately open a browser tab pointing at `http://localhost:8080`.
+If all went well, you should be able to start the server by running `live-server` in the command line. It’s even going to open a browser tab pointing at `http://localhost:8080` for you.
 
+## Compiling our code
 
+Strictly speaking, we’re writing JavaScript and some CSS. We don’t *really* have to compile our code. But it’s easier to work with, if we do.
+
+Our compilation process is going to do three things:
+
+* compile Less to CSS
+* compile JSX to pure JavaScript
+* concatenate source files
+
+We have to compile Less because browsers don’t support it natively. We’re not going to use it for anything super fancy, but I prefer having some extra power in my stylesheets. Makes them easier to write.
+
+You can use some other compile-to-CSS language, or even straight up CSS, but the code samples in this book assume you’re using Less.
+
+Compiling JSX is far more important. 
+
+JSX is React’s new file format that lets us embed HTML snippets straight in our JavaScript code. You’ll often see render methods doing something like this:
+
+{crop-start-line=399, crop-end-line=403}
+<<[A basic Render](code/src/main.jsx)
+
+See, we’re treating HTML - in this case an H1BGraph component - just like a normal part of our code. I haven’t decided yet if this is cleaner than something like Mustache yet, but it’s definitely much better than manually `+`-ing strings together.
+
+As you’ll see later, it’s also very powerful.
+
+But obviously, browsers don’t support this format, so we have to compile it into JavaScript. The above code ends up looking like this:
+
+{linenos=off}
+    React.render(
+        React.createElement(H1BGraph, {url: “data/h1bs.csv”}),
+        document.querySelectorAll(‘.h1bgraph’)[0]
+    );
+
+React gives us a `JSXTransform` that handles these transformations in the browser, but that wastes visitor’s CPU cycles and makes our site slower. It will even throw a warning in the console, telling you never to use it in production.
+
+Finally, we concatenate all our code into a single file because that makes it quicker to download for users. Instead of starting a gazillion requests for each and every file, the client only ever makes one request.
+
+### Install Grunt
 
 
 
