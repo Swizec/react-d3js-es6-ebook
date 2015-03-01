@@ -1,3 +1,4 @@
+{#the-environment}
 # A good work environment
 
 Before we begin, let’s set up a work environment. We’re after three things:
@@ -128,6 +129,7 @@ We add the three tasks inside `initConfig`:
 
 This sets a couple of options for the less compiler and tells it which file we’re interested in.
 
+{#browserify-config}
 {linenos=off,lang=js,crop-start-line=19,crop-end-line=37}
 <<[Browserify task config](code/Gruntfile.js)
 
@@ -187,7 +189,7 @@ Install it with:
 {linenos=off}
     npm install —save-dev debowerify
 
-And we already configured Browserify to use it earlier. Now we’ll be able to use d3 with just `require(‘d3’);`. Much better.
+And [we already configured Browserify](#browserify-config) to use it earlier. Now we’ll be able to use d3 with just `require(‘d3’);`. Much better.
 
 ## Final check
 
@@ -207,5 +209,7 @@ I’d also suggest adding a `.gitignore` that looks like this:
 
 {linenos=off}
 <<[.gitignore](code/.gitignore)
+
+And you might want to set up your text editor to understand JSX files.
 
 If anything is acting up, Google and the respective project’s documentation are your friends. You can also try poking me on Twitter (@swizec).

@@ -1,3 +1,19 @@
-# The meat
+# Visualizing data with React and d3.js
 
-This will be the meat of the book with all the code and stuff
+Welcome to the main part of the book. I’m going to walk you through an example of building a simple visualization using React and d3.js.
+
+We are going to build a subset of the code I used to visualize the salary distribution of H1B workers in the United States software industry.
+
+![H1B salary distribution for engineers in California](images/engineers-california.png)
+
+If you skipped the [section on setting up your environment](#the-environment), make sure you’ve got the following dependencies:
+
+* d3.js
+* React
+* Bootstrap (for styling)
+* Lodash
+
+And you should have some way of starting a static file server locally. I like `live-server`.
+
+We’re going to put all our code in a `src/` directory, and serve the compiled version out of `build/`. A `data/` directory is going to hold our data.
+
