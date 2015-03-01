@@ -60,7 +60,7 @@ Compiling JSX is far more important.
 
 JSX is React’s new file format that lets us embed HTML snippets straight in our JavaScript code. You’ll often see render methods doing something like this:
 
-{crop-start-line=414,crop-end-line=450}
+{crop-start-line=446,crop-end-line=450}
 <<[A basic Render](code/src/main.jsx)
 
 See, we’re treating HTML - in this case an H1BGraph component - just like a normal part of our code. I haven’t decided yet if this is cleaner than something like Mustache yet, but it’s definitely much better than manually `+`-ing strings together.
