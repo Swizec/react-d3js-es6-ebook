@@ -1,3 +1,47 @@
 # The environment
 
-This is where we’re going to set up the environment
+Before we begin, let’s set up a work environment. We’re after three things:
+
+ * page should auto-refresh when we make changes
+ * our code should auto-compile when we save a file
+ * a good way to manage dependencies and modules
+
+To achieve these, we’re going to use Grunt, Browserify, Bower, and Npm. This will make coding a joy, and ultimately enable us to host our visualization on anything capable of serving static files. Even the free Github Pages will be enough.
+
+And let me tell you, there’s nothing like free static page hosting when 25,000 visitors descend upon your site in four hours.
+
+If you already know how to set this all up. Great! Skip to next chapter.
+
+## NPM for server-side tols
+
+NPM is node.js’s default package manager. Originally used only for dependency management in node.js projects, it seems to have taken hold of the JavaScript world as a way to manage the proverbial tool belt.
+
+We’ll use it to install the other tools we need.
+
+Make sure you have it by installing node.js from [nodejs.org](http://nodejs.org). Grunt, Bower, and our development server will run in node as well.
+
+Once you’ve got it, create a working directory, navigate to it, and run:
+
+    npm init .
+
+This will create a `package.json` file, which stores some basic info about your project. Most importantly, it’s got a list of dev dependencies. This is useful when you return to a project months or years later, and can’t remember how to get it running.
+
+Also great, if you want to share the code.
+
+## The development server
+
+Production servers are beyond the scope of this book, but we need a server running locally. You could work on a static website without one, but we’re loading data into the visualisation dynamically and that makes browser security models panic.
+
+We’re going to use `live-server`, which is a great static server written in JavaScript. Its biggest advantage is that the page refreshes automatically when CSS, HTML, or JavaScript files in the current directory change.
+
+Just run:
+
+    npm install -g live-server
+
+If all went well, you should be able to start the server by running `live-server` in the command line. It’s even nice enough to immediately open a browser tab pointing at `http://localhost:8080`.
+
+
+
+
+
+
