@@ -1,4 +1,4 @@
-# The environment
+# A good work environment
 
 Before we begin, let’s set up a work environment. We’re after three things:
 
@@ -86,12 +86,12 @@ We’re going to use [Grunt](http://gruntjs.com) for all of this. Grunt is a too
 To install Grunt and the plugins we need, run:
 
 {linenos=off}
-    npm install --saveDev grunt
-    npm install --saveDev grunt-browserify
-    npm install --saveDev grunt-contrib-less
-    npm install --saveDev grunt-contrib-watch
-    npm install --saveDev jit-grunt
-    npm install --saveDev reactify
+    npm install --save-dev grunt
+    npm install --save-dev grunt-browserify
+    npm install --save-dev grunt-contrib-less
+    npm install --save-dev grunt-contrib-watch
+    npm install --save-dev jit-grunt
+    npm install --save-dev reactify
 
 [Browserify](http://browserify.org) will allow us to write our code in modules that we can use with `require(‘foo.js’)`. Just like we would in node.js. It’s also going to concatenate the resulting module hierarchy into a single file.
 
@@ -142,3 +142,70 @@ This tells `watch`, which files it needs to watch for changes, and what to do wi
 
 You should now be able to start compiling your code by running `grunt` in the command line. 
 
+## Managing client-side dependencies with Bower
+
+Client-side dependency management is the final piece in the puzzle.
+
+Traditionally this is done by dumping all JavaScript plugins into a `vendor/` directory of some kind. Or having a `plugins.js` file and manually copy-pasting plugins in there.
+
+The approach works fine right until the day you want to update one of the plugins. Then you can’t remember exactly which of the ten plugins with a similar name and purpose you used, or you can no longer find the Github repository and so on.
+
+Even worse if the plugin’s got some dependencies that also need to be updated …
+
+This is where Bower comes in. Instead of worrying about any of that, you can just run:
+
+{linenos=off}
+    bower install <something>
+
+You could use `npm` for this, of course, but Bower can play with any source anywhere. It understands several package repositories, and can even download code straight from Github if need be.
+
+To begin using it, init the project:
+
+{linenos=off}
+    bower init
+
+This will create a `bower.json` file with some basic configuration.
+
+When that’s done, install the four dependencies we need:
+
+{linenos=off}
+    bower install -S d3
+    bower install -S react
+    bower install -S bootstrap
+    bower install -S lodash
+
+We’re going to heavily rely on d3 and React. Bootstrap is there to give us some basic styling, and lodash will make it easier to  play around with the data.
+
+All of these were installed in the `bower_components/` directory.
+
+Which is awesome, but creates a small problem. If you want to use Browserify to include d3, you have to write something like `require(‘../bower_components/d3/d3.js’);`, which not only looks ugly, but also means you have to understand the internal structure of all the packages.
+
+Using `debowerify` solves this.
+
+Install it with:
+
+{linenos=off}
+    npm install —save-dev debowerify
+
+And we already configured Browserify to use it earlier. Now we’ll be able to use d3 with just `require(‘d3’);`. Much better.
+
+## Final check
+
+Congratulations! You should have a sane work environment now.
+
+Running `grunt` will compile your code and keep it compiling. And `live-server` will start a static file server that auto-updates every time some code changes.
+
+Check that your work directory has at least these files:
+
+* package.json
+* Gruntfile.js
+* bower.json
+* node_modules/
+* bower_components/
+
+I’d also suggest adding a `.gitignore` that looks like this:
+
+{linenos=off}
+<<[.gitignore](code/.gitignore)
+
+If anything is acting up, Google and the respective project’s documentation are your friends. You can also try poking me on Twitter (@swizec).
