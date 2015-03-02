@@ -70,7 +70,7 @@ As you’ll see later, it’s also very powerful.
 
 But obviously, browsers don’t support this format, so we have to compile it into JavaScript. The above code ends up looking like this:
 
-{title=“JSX compile result”, linenos=off, lang=js}
+{title="JSX compile result", linenos=off, lang=js}
     React.render(
         React.createElement(H1BGraph, {url: “data/h1bs.csv”}),
         document.querySelectorAll(‘.h1bgraph’)[0]

@@ -19,6 +19,93 @@ We’re going to put all our code in a `src/` directory, and serve the compiled 
 
 Before we begin, you should download the dataset from my Github repository, [here](https://github.com/Swizec/h1b-software-salaries/blob/65fac70fb44b23b1a9fe2ec923d246d654fb42e1/data/h1bs.csv). Save it in `data/`.
 
+## JSX
+
+We’re going to use Facebook’s JavaScript syntax extension called JSX to write our code. You can use React without JSX, but I feel that JSX exposes React’s full power much better.
+
+The gist of JSX is that we can use HTML just like it was part of  JavaScript. No Mustache or messy string concatenation necessary. Your functions can return straight up HTML.
+
+For instance, the code that renders our whole application is going to look like this:
+
+{crop-start-line=418,crop-end-line=422,linenos=off,lang=jsx}
+<<[A basic Render](code/src/main.jsx)
+
+Which compiles to:
+
+{title="JSX compile result", linenos=off, lang=js}
+    React.render(
+        React.createElement(H1BGraph, {url: “data/h1bs.csv”}),
+        document.querySelectorAll(‘.h1bgraph’)[0]
+    );
+
+As you can see, HTML code translates to `React.createElement` calls, with attributes translated into a property dictionary. The beauty of this approach is that you can use React components as if they were HTML tags and that HTML attributes can be anything.
+
+You’ll see later that anything from a simple value to a function or an object works equally well.
+
+The approach is obviously than `+`-ing strings, but I haven’t decided whether it’s better than Mustache yet. Rich attributes are certainly powerful, but something feels fishy about essentially having multiple languages in a single file.
+
+It’s definitely better than Angular’s put everything into HTML files approach though! Much better.
+
+If you skipped the previous section and don’t have React compilation set up, I suggest you go do that now. You can also use `JSXTransform.js`, which performs the translation in browser. But the official documentation says you should avoid the client-side transform because of performance issues.
+
+## The basic approach
+
+Because SVG is just another XML-like format that fits into the DOM, we can assemble it with React. To draw a 100px by 200px rectangle inside a grouping element moved to (50, 20) we can do something like this:
+
+{lang=jsx}
+    render: function () {
+        return (
+            <g transform=“translate(50, 20)”>
+                <rect width=“100” height=“200” />
+            </g>
+        );
+    }
+
+If the parent component makes sure to render this inside an `<svg>` element, the user will see a rectangle on their screen. At first glance this might look cumbersome compared to traditional d3.js. But look closely:
+
+{lang=js}
+    d3.select(“svg”)
+      .append(“g”)
+      .attr(“transform”, “translate(50, 20)”)
+      .append(“rect”)
+      .attr(“width”, 100)
+      .attr(“height”, 200);
+
+The d3 approach might look cleaner because it’s pure JavaScript and outputs SVG as if by magic. But it’s a lot more typing and function calls for the same result.
+
+Well, after counting, the pure d3 example uses 10 less characters than the React example. Oops.
+
+Anyway, my point is that manipulating the DOM is not d3’s strong suit. Especially once you get into the range of a few thousand elements and things become very slow unless you’re careful to only render what’s changing.
+
+But with React, you get that behaviour for free. Its primary purpose in life is observing data changes and only updating those components that have actually changed.
+
+So our app is going to follow a simple approach:
+
+* React owns the DOM
+* d3 calculates properties
+
+This way we leverage both React and d3 just for what they’re best at.
+
+## The architecture
+
+To make our lives easier we are going to use a flow-down architecture. I think Facebook has come up with a buzzword for this approach, but whatever.
+
+The idea is this:
+
+* The Main Component is the repository of truth
+* Child components react to user events
+* They announce changes up the chain of parents via callbacks
+* The Main Component updates its truth
+* The real changes flow back down the chain to update UI
+
+This might look like a roundabout way of doing things, but I promise it’s awesome. Definitely easier than worrying about having parts of your UI out of date with the rest of the app. 
+
+Having most of your components rely on just the properties they are given, is like having your functions rely on just the arguments they are given. This makes them easier to reason about, and you always know what you’re going to get.
+
+Basically, rendering the same component with the same properties, will *always* give you the same output.
+
+Functional programming for HTML. Sweet!
+
 ## The HTML skeleton
 
 Even though we’re going to build the whole interface with React, we still need some HTML to start with. We have to include the code files and set up a container.
@@ -28,8 +115,4 @@ Even though we’re going to build the whole interface with React, we still need
 
 These 20 lines do everything we need. The `<head>` sets some meta properties recommended by Bootstrap and includes our stylesheet. The `<body>` sets up a container and includes the JavaScript code.
 
-We didn’t necessarily have to use a `<div>` within a `<div>` like that, but it’s a good idea to avoid controling the whole `.container` with React in case you want to add stuff later.
-
-
-
-
+We didn’t necessarily have to use a `<div>` within a `<div>` like that, but it’s a good idea to avoid controling the whole `.container` with React. You might want to add stuff later.
