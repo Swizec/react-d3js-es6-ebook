@@ -86,6 +86,7 @@ So our app is going to follow a simple approach:
 
 This way we leverage both React and d3 just for what they’re best at.
 
+{#the-architecture}
 ## The architecture
 
 To make our lives easier we are going to use a flow-down architecture. I think Facebook has come up with a buzzword for this approach, but whatever.
@@ -108,11 +109,42 @@ Functional programming for HTML. Sweet!
 
 ## The HTML skeleton
 
-Even though we’re going to build the whole interface with React, we still need some HTML to start with. We have to include the code files and set up a container.
+We’re building the whole interface with React, but we still need some HTML. It will take care of including files and giving us a container for React stuff.
+
+Make an index.html file that looks like this:
 
 {linenos=off,lang=html}
-<<[HTML skeleton](code/index-bare.html)
+<<[HTML skeleton](code_samples/index.html)
 
 These 20 lines do everything we need. The `<head>` sets some meta properties recommended by Bootstrap and includes our stylesheet. The `<body>` sets up a container and includes the JavaScript code.
 
-We didn’t necessarily have to use a `<div>` within a `<div>` like that, but it’s a good idea to avoid controling the whole `.container` with React. You might want to add stuff later.
+We didn’t really need a `<div>` inside a `<div>` like that, but I like to avoid taking over the whole `.container` with React. Gives you more flexibility to add dumb static content that really doesn’t need React.
+
+## The Main Component
+
+As [mentioned before](#the-architecture) we are going to build everything off a central repository of truth - The Main Component. We’re going to call it `H1BGraph` because it draws a graph of H1B data.
+
+Very imaginative, I know.
+
+This code lives in `src/main.jsx` and starts by requiring React, Lodash, and d3:
+
+{crop-start-line=5,crop-end-line=8,linenos=off,lang=jsx}
+<<[Require the libraries](code_samples/main.jsx)
+
+We’re going to add more imports later.
+
+We also need a basic React component called `H1BGraph`. It should look like this:
+
+{crop-start-line=10,crop-end-line=23,linenos=off,lang=jsx}
+<<[Blank component](code_samples/main.jsx)
+
+This creates a Bootstrap row with an `<svg>` element.
+
+Add this at the bottom to make sure our component actually renders:
+
+{crop-start-line=25,crop-end-line=29,linenos=off,lang=jsx}
+<<[Render our component](code_samples/main.jsx)
+
+### Loading data
+
+
