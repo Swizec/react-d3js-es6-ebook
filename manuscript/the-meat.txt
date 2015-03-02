@@ -145,6 +145,55 @@ Add this at the bottom to make sure our component actually renders:
 {crop-start-line=25,crop-end-line=29,linenos=off,lang=jsx}
 <<[Render our component](code_samples/main.jsx)
 
+If all is well, your browser’s document inspector should show a blank SVG wrapped in some divs.
+
 ### Loading data
 
+Great, we’ve got something rendering. But we need to load some data before we can draw a picture. If you still haven’t downloaded the file into `data/h1bs.csv`, do it now. You can find it on Github, [here](https://github.com/Swizec/h1b-software-salaries).
+
+We’re going to use d3’s built-in data loading magic and hook it into React’s component lifecycle. 
+
+We start by adding three short methods to `H1BGraph`:
+
+{crop-start-line=34,crop-end-line=49,linenos=off,lang=jsx}
+<<[Base methods to load data](code_samples/main.jsx)
+
+React calls `componentWillMount` right before inserting the component into the document. It’s a great opportunity to make any last minute preparations before rendering. In our case, it’s a good spot to start loading data.
+
+You should avoid loading data that’s never rendered.
+
+`getInitialState` is the React way to set up a default state. An empty `rawData` array in our case.
+
+And we’re going to put d3’s data loading magic in `loadRawData`. 
+
+We add a call to `d3.csv` because our data is in CSV format. D3 is smart enough to change every row into an object using values from the title row (first row) as keys.
+
+{crop-start-line=74,crop-end-line=86,linenos=off,lang=jsx}
+<<[Load data with d3.csv](code_samples/main.jsx)
+
+This will asynchronously load a CSV file, parse it, and return the result in the `rows` argument to the callback. We then use `this.setState()` to save the data in our component.
+
+Using `setState()` triggers a re-render and should generally be avoided because relying on state can cause inconsistencies in your UI. It’s very appropriate to store 12MB of raw data as state, though.
+
+But the data we’ve got now has keys with spaces like `submit date` and `job title`. And everything is a string. Not very nice to work with.
+
+We can add some cleanup in one fell swoop:
+
+{crop-start-line=113,crop-end-line=144,linenos=off,lang=jsx}
+<<[Data cleanup](code_samples/main.jsx)
+
+Using `.row()`, we’ve given a callback to `d3.csv` that tells it what to do with every row it reads. Each row is fed into the function as a raw object, and whatever the function returns is added to the final result.
+
+In our case we cleaned up the keys, parsed dates into `Date()` objects and made sure numbers are numbers. If a row didn’t have a `base_salary`, we filtered it out by returning null.
+
+It’s also a good idea to give users some idea what’s going on. Especially when they’re looking at a blank page while the data loads. 
+
+The easiest way to do that is by rendering some explainer text when there’s no data.
+
+{crop-start-line=205,crop-end-line=223,linenos=off,lang=jsx}
+<<[Loading state](code_samples/main.jsx)
+
+The beauty of this approach is that our `render` method just needs to return different elements based on whether we’ve got some data or not. Notice we access the data as `this.state.rawData` and rely on the re-render when the state updates.
+
+Marvelous.
 
