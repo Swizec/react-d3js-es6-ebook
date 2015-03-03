@@ -52,7 +52,7 @@ If you skipped the previous section and don’t have React compilation set up, I
 
 Because SVG is just another XML-like format that fits into the DOM, we can assemble it with React. To draw a 100px by 200px rectangle inside a grouping element moved to (50, 20) we can do something like this:
 
-{lang=jsx}
+{linenos=off,lang=jsx}
     render: function () {
         return (
             <g transform=“translate(50, 20)”>
@@ -63,7 +63,7 @@ Because SVG is just another XML-like format that fits into the DOM, we can assem
 
 If the parent component makes sure to render this inside an `<svg>` element, the user will see a rectangle on their screen. At first glance this might look cumbersome compared to traditional d3.js. But look closely:
 
-{lang=js}
+{linenos=off,lang=js}
     d3.select(“svg”)
       .append(“g”)
       .attr(“transform”, “translate(50, 20)”)
@@ -191,9 +191,119 @@ It’s also a good idea to give users some idea what’s going on. Especially wh
 The easiest way to do that is by rendering some explainer text when there’s no data.
 
 {crop-start-line=205,crop-end-line=223,linenos=off,lang=jsx}
-<<[Loading state](code_samples/main.jsx)
+<<[Loading indicator](code_samples/main.jsx)
 
-The beauty of this approach is that our `render` method just needs to return different elements based on whether we’ve got some data or not. Notice we access the data as `this.state.rawData` and rely on the re-render when the state updates.
+The beauty of this approach is that our `render` method just returns different elements based on whether we’ve got some data or not. Notice we access the data as `this.state.rawData` and rely on the re-render when the state updates.
+
+If you’ve kept live-server and Grunt running in the background, you should see your browser flash the loading text before becoming blank.
 
 Marvelous.
 
+## Drawing the loaded data
+
+Now that we’ve got our data loading, it’s time to start drawing.  We’ll start with a basic histogram, then add an axis, and an indicator for the mean value.
+
+Create a new file in `src/` called `drawers.jsx`. We’ll put all our drawing logic here.
+
+### Using d3 for calculations
+
+We start with a blank component called `Histogram`.
+
+{crop-start-line=5,crop-end-line=21,linenos=off,lang=jsx}
+<<[Empty histogram](code_samples/drawers.jsx)
+
+Once more we required external libraries on top and started our component with a simple `render` function. On the bottom we added it to the exports. This will allow other parts of the codebase to use it as `require(‘drawers.jsx’).Histogram`.
+
+In the `render` method we created a grouping, `<g>` element that will hold our histogram together and used the `transform` property to move it into place. The reason we have to do it with some ugly string concatenation is that we can’t mix string and variable attribute values.
+
+But we do want to get `topMargin` via properties given to our component. We access those with `this.props` and they make our components more flexible.
+
+Anyway, we’re going to use d3’s built-in histogram layout to make our histogram. It’s smart enough to do everything on its own, we just give it some data, and tell it how many bars we want.
+
+We add three methods to our `Histogram` component to manage d3:
+
+{crop-start-line=26,crop-end-line=45,linenos=off,lang=jsx}
+<<[D3 management functions](code_samples/drawers.jsx)
+
+This is the cleanest approach I’ve found to make d3 and React work together. We’ll use it for all our d3-enabled components.
+	
+The problem is that the way d3 achieves its declarative nature is through objects. When you call a d3 function it will almost always have some internal state.
+
+Which is great when you want to change how it behaves by daisy chaining getters and setters on top of it. But it causes problem with React because it means we have to make sure that internal state is always up to date.
+
+We do this by relying on `componentWillMount` to set the defaults, and then `componentWillRecieveProps` to update them whenever the component receives new properties.
+
+Each time we call `this.update_d3` to do the heavy lifting.
+
+{crop-start-line=71,crop-end-line=90,linenos=off,lang=jsx}
+<<[update_d3 function body](code_samples/drawers.jsx)
+
+If you’re used to d3, this code should look familiar. We updated the number of bins in the histogram with `.bins()` and gave it a new value accessor with `.value()`. This tells it how to get the interesting data point from our data objects.
+
+We’re actually just using the function given to us by our parent component. This makes our `Histogram` component more reusable. The less we assume about what we’re doing, the better.
+
+Then we called `this.histogram()` to group our data into bins and saved it to the component’s state with `this.setState()`.
+
+Finally we updated our scales. You can think of them as simple mathematical functions that map a domain to a range. Domain tells them the extent of our data, range tells them the extent of our desired drawing area.
+
+### Outputting the result
+
+Now that we’ve got our histogram in memory, it’s time to output it. This will be standard React stuff, but SVG.
+
+{crop-start-line=137,crop-end-line=166,linenos=off,lang=jsx}
+<<[Draw the histogram bars](code_samples/drawers.jsx)
+
+We added another grouping element to our `render` function. This one just holds all the bars. I’ll show you why we need two grouping elements later.
+
+But notice how we can just `.map()` through our histogram data in `this.state.bars`? That’s the magic of React - JavaScript and XML living together as one.
+
+We could have put the entire `makeBar` method in here, but I think the code looks cleaner when it’s separate. `makeBar` takes data about a single bar, constructs the properties object and returns a `HistogramBar` component.
+
+We could have returned the whole lump of SVG code right here, but using a subcomponent is better aligned with React principles. 
+
+Also notice how we can pass the entire `props` object with `{...props}`. That’s an ES6 trick for passing around complex attributes. React translates it into something like `percent={percent} x={this.props.axisMargin} y={this.yScale(bar.x)} …`.
+
+Let’s add the `HistogramBar` component.
+
+{crop-start-line=172,crop-end-line=192,linenos=off,lang=jsx}
+<<[HistogramBar component](code_samples/drawers.jsx)
+
+As you can see, nothing special is happening here. We take some properties and return a grouping element containing a rectangle and a text label.
+
+We’ve made the rectangle a bit smaller than `this.props.height` so the bars get some spacing, and we positioned the `text` element at the end of the bar. This will make the histogram easier to read because every bar will have its percentage rendered at its top.
+
+But some bars are going to be very small. It’s a good idea to avoid rendering the label in those cases.
+
+{crop-start-line=196,crop-end-line=213,linenos=off,lang=jsx}
+<<[Adjust label for small bars](code_samples/drawers.jsx)
+
+Simple stuff. We add some decimal points if we’re showing small numbers, and we completely remove the label when the bar is very small.
+
+### Adding Histogram to the main component
+
+Marvelous, we know how to draw a histogram!
+
+But the page is still blank. We now have to go back to `main.jsx` and tell `H1BGraph` to render our `Histogram` component.
+
+First we have to add `drawers.jsx` to our requires.
+
+{crop-start-line=229,crop-end-line=234,linenos=off,lang=jsx}
+<<[Require drawers.jsx](code_samples/main.jsx)
+
+Then we can add the histogram component to our `render` method.
+
+{crop-start-line=274,crop-end-line=305,linenos=off,lang=jsx}
+<<[Render the histogram component](code_samples/main.jsx)
+
+And that’s it. You can render as many histograms as you want by just adding `<drawers.Histogram />` to your output and feeding it some info.
+
+We just have to add some styling to `src/style.less` to make the Histogram prettier:
+
+{crop-start-line=5,crop-end-line=19,linenos=off,lang=less}
+<<[style.less](code_samples/style.less)
+
+You should be able to see something like this now:
+
+![Basic Histogram](images/base_histogram.png)
+
+## Add an axis
