@@ -306,4 +306,61 @@ You should be able to see something like this now:
 
 ![Basic Histogram](images/base_histogram.png)
 
-## Add an axis
+## Adding an axis
+
+Axes are one of my favourite feats of d3 magic. You just call a function, set some parameters and bam, you’ve got an axis.
+
+The created axis automatically adapts to your data, draws just the ticks it actually needs and even labels them. They’re even smart enough to work with different types of scales. You don’t have to do anything special to turn a linear axis into a logarithmic axis.
+
+But these are complex objects and recreating them in React would be silly. We’re going to use a dirty trick and give d3 control of the DOM just this once.
+
+Let’s start with a blank component that’s got function stubs for d3 integration. Put it in `src/drawers.jsx`.
+
+{crop-start-line=232,crop-end-line=252,linenos=off,lang=jsx}
+<<[Axis component with function stubs](code_samples/drawers.jsx)
+
+Even though we’re going to let d3 handle DOM changes in this case, we still have to return *something* in `render`. A grouping element that moves the resulting axis into position is the perfect candidate.
+
+Now let’s set some axis defaults in `componentWillMount`:
+
+{crop-start-line=257,crop-end-line=270,linenos=off,lang=jsx}
+<<[Axis default properties](code_samples/drawers.jsx)
+
+We created a scale and an axis. The axis will use our linear scale, will be oriented to the left, and is going to prepend a dollar sign to the scale’s default tick formatter.
+
+Yes, scales have tick formatters. It’s awesome.
+
+In `update_d3` we have to make sure thing stay up to date:
+
+{crop-start-line=309,crop-end-line=324,linenos=off,lang=jsx}
+<<[Update axis state](code_samples/drawers.jsx)
+
+Just like we did in the previous section, we had to tell `yScale` the extent of our data and drawing area. But we didn’t have to tell any of this to the axis. It already knows because we updated the scale.
+
+But we did have to get around a lot of the axis’s smartness. We gave it the exact number of ticks we want and the exact values they should show. This is because we wanted every bar in the histogram to have a corresponding label on the axis.
+
+And finally, the dirty trick.
+
+{crop-start-line=369,crop-end-line=381,linenos=off,lang=jsx}
+<<[The dirty trick](code_samples/drawers.jsx)
+
+I’m sure this goes against everything React designers fought for, but it works great. We hook into the `componentDidUpdate` and `componentDidMount` callbacks with a `renderAxis` method. Then we use `this.getDOMNode()` to get a reference to the rendered element, feed it into `d3.select()` and `.call()` the axis on it.
+
+What we’re doing is basically throwing away the whole element and creating it from scratch on every render. Rather inefficient, but it’s okay if used sparingly.
+
+But we do have to handle two more things before our Axis renders on page.
+
+First, add some styling to `src/style.less`:
+
+{crop-start-line=23,crop-end-line=46,linenos=off,lang=less}
+<<[Styling the axis](code_samples/style.less)
+
+And we have to add the axis to our Histogram component’s `render` method.
+
+{crop-start-line=446,crop-end-line=459,linenos=off,lang=jsx}
+<<[Add Axis to Histogram.render](code_samples/drawers.jsx)
+
+That’s it. Your histogram should now look something like this:
+
+![Histogram with axis](images/axis_histogram.png)
+
