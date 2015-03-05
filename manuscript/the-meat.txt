@@ -147,7 +147,7 @@ Add this at the bottom to make sure our component actually renders:
 
 If all is well, your browser’s document inspector should show a blank SVG wrapped in some divs.
 
-### Loading data
+## Loading data
 
 Great, we’ve got something rendering. But we need to load some data before we can draw a picture. If you still haven’t downloaded the file into `data/h1bs.csv`, do it now. You can find it on Github, [here](https://github.com/Swizec/h1b-software-salaries).
 
@@ -287,7 +287,7 @@ But the page is still blank. We now have to go back to `main.jsx` and tell `H1BG
 
 First we have to add `drawers.jsx` to our requires.
 
-{crop-start-line=229,crop-end-line=234,linenos=off,lang=jsx}
+{crop-start-line=230,crop-end-line=234,linenos=off,lang=jsx}
 <<[Require drawers.jsx](code_samples/main.jsx)
 
 Then we can add the histogram component to our `render` method.
@@ -363,4 +363,78 @@ And we have to add the axis to our Histogram component’s `render` method.
 That’s it. Your histogram should now look something like this:
 
 ![Histogram with axis](images/axis_histogram.png)
+
+## Reacting to data changes
+
+We’ve got a histogram with an axis. And reusable building blocks to make as many as we want. That’s awesome!
+
+But our histogram looks kind of weird. Most of the data is scrunched up into the first three bars and a lone outlier stretches our data range far too much.
+
+Sure, we could take care of this by removing the outlier. But let’s leave defining statistical anomalies to statisticians. We’re here to draw pictures.
+
+The next best thing is giving users the ability to filter data and take a closer look. Solves our problem of finding outliers, gives users more freedom. And maybe, just maybe, they’re going to spend more time on our site. 
+
+Win-win-win.
+
+We’re going to make controls that let users filter data by year. In the full example I added filtering by state and job title as well, but they follow the same principles and including them here would take too long.
+
+### Creating user controls
+
+Our controls are going to be organised into three components:
+
+* Controls, which holds the controls together
+* ControlRow, which is a row of buttons
+* Toggle, which is a toggleable button
+
+Let’s start a new file called `src/controls.jsx` with a `Controls` component stub:
+
+{crop-start-line=5,crop-end-line=19,linenos=off,lang=jsx}
+<<[Controls component stub](code_samples/controls.jsx)
+
+We’re going to need React and Lodash in this file, and Controls is the only component we’ll expose to the outside.
+
+Before we can start having fun with passing events up the hierarchy, we need some buttons. We add them in the `render` method:
+
+{crop-start-line=24,crop-end-line=47,linenos=off,lang=jsx}
+<<[Render a ControlRow](code_samples/controls.jsx)
+
+This will break in your browser because we don’t have a `ControlRow` component yet. The idea is to have component that takes data, a function that generates the button labels and an `updateDataFilter` callback.
+
+We’ll define the callback later. Let’s make the `ControlRow` component first.
+
+{crop-start-line=51,crop-end-line=72,linenos=off,lang=jsx}
+<<[ControlRow component](code_samples/controls.jsx)
+
+Nothing special going on here. We’ve got a `render` method that returns a Bootstrap row and fills with with a bunch of `Toggle` components. It does this by looping over the result of `this.props.getTogglevalues`, which is teh function we defined in `Controls.render`.
+
+Normally `onClick` is a click event handler. React gives us this sort of magic prop for every valid user event. It’s the same as jQuery’s `$(‘foo’).on(‘click’)`.
+
+But they only work on HTML elements, not React components. So this one is just a function callback that we’ll use.
+
+We had to define the `key` property to help React identify specific elements. I assume it uses these to identify which elements to re-render, if they’re created in a loop.
+
+There’s also the weird `on` property that comes out of `this.state.togglesOn`. It tells our toggles whether to render as turned on or off and the reason we track this state in `ControlRow` is to make sure only one can be turned on at a time.
+
+Let’s add this state handling.
+
+{crop-start-line=77,crop-end-line=100,linenos=off,lang=jsx}
+<<[Exclusive toggling](code_samples/controls.jsx)
+
+The `makePick` function is called when the user clicks on a `Toggle` element. It goes through the `togglesOn` dictionary and  sets them to `false` if they aren’t the one currently picked. That one is set to `true`.
+
+Then it saves the dictionary with `this.setState`, which triggers a re-render and updates all the buttons.
+
+And we used the trusty `getInitialState` to create the `togglesOn` dictionary with everything set to `false`.
+
+Now we need the `Toggle` component.
+
+{crop-start-line=124,crop-end-line=146,linenos=off,lang=jsx}
+<<[Toggle component](code_samples/controls.jsx)
+
+Toggle renders a button. If `this.state.on` is true, the button is highlighted. It’s off by default, and we update it when `componentWillReceiveProps` triggers. That happens when the component’s properties change from above.
+
+### Propagating changes up the hierarchy
+
+
+
 

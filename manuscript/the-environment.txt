@@ -43,7 +43,7 @@ Just run:
 
 If all went well, you should be able to start the server by running `live-server` in the command line. It’s even going to open a browser tab pointing at `http://localhost:8080` for you.
 
-## Compiling our code
+## Compiling our code with Grunt
 
 Strictly speaking, we’re writing JavaScript and some CSS. We don’t *really* have to compile our code. But it’s easier to work with, if we do.
 
