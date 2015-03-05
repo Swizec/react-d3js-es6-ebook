@@ -144,3 +144,111 @@ var Toggle = React.createClass({
         );
     }
 });
+
+//
+// Example 6
+//
+var Toggle = React.createClass({
+    getInitialState: function () {
+        return {on: false};
+    },
+    // leanpub-start-insert
+    handleClick: function (event) {
+       var newState = !this.state.on;
+       this.setState({on: newState});
+       this.props.onClick(this.props.value, newState);
+    },
+    // leanpub-end-insert
+
+    componentWillReceiveProps: function (newProps) {
+        this.setState({on: newProps.on});
+    },
+
+    render: function () {
+        var className = "btn btn-default";
+
+        if (this.state.on) {
+            className += " btn-primary";
+        }
+
+        return (
+            <button className={className} onClick={this.handleClick}>
+                {this.props.label}
+            </button>
+        );
+    }
+});
+
+//
+// Example 7
+//
+var ControlRow = React.createClass({
+    makePick: function (picked, newState) {
+        var togglesOn = this.state.togglesOn;
+
+        togglesOn = _.mapValues(togglesOn,
+                              function (value, key) {
+                                  return newState && key == picked;
+                              });
+
+        // leanpub-start-insert
+        // if newState is false, we want to reset
+        this.props.updateDataFilter(picked, !newState);
+        // leanpub-end-insert
+
+        this.setState({togglesOn: togglesOn});
+    },
+
+    getInitialState: function () {
+        var toggles = this.props.getToggleValues(this.props.data),
+            togglesOn = _.zipObject(toggles,
+                                    toggles.map(function () { return false; }));
+
+        return {togglesOn: togglesOn};
+    },
+
+    componentWillMount: function () {
+        var hash = window.location.hash.replace('#', '').split("-");
+
+        if (hash.length) {
+            var fromUrl = hash[this.props.hashPart];
+
+            if (fromUrl != '*' && fromUrl != '') {
+                this.makePick(fromUrl, true);
+            }else{
+                // reset
+                this.props.updateDataFilter('', true);
+            }
+        }
+    },
+
+    render: function () {
+
+        return (
+            <div className="row">
+                <div className="col-md-12">
+            {this.props.getToggleValues(this.props.data).map(function (value) {
+                var key = "toggle-"+value,
+                    label = value;
+
+                if (this.props.capitalize) {
+                    label = label.toUpperCase();
+                }
+
+                return (
+                    <Toggle label={label}
+                            value={value}
+                            key={key}
+                            on={this.state.togglesOn[value]}
+                            onClick={this.makePick} />
+                );
+             }.bind(this))}
+                </div>
+            </div>
+        );
+    }
+});
+
+//
+// Example 8
+//

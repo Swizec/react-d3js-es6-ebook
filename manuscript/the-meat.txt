@@ -431,10 +431,43 @@ Now we need the `Toggle` component.
 {crop-start-line=124,crop-end-line=146,linenos=off,lang=jsx}
 <<[Toggle component](code_samples/controls.jsx)
 
-Toggle renders a button. If `this.state.on` is true, the button is highlighted. It’s off by default, and we update it when `componentWillReceiveProps` triggers. That happens when the component’s properties change from above.
+1. Toggle renders a button. If `this.state.on` is true, the button is highlighted. We set it to off by default, and update it when `componentWillReceiveProps` triggers. That happens when the component’s properties change from above.
 
-### Propagating changes up the hierarchy
+Now your page shows three buttons under the histogram:
 
+![Histogram with buttons](images/buttons_histogram.png)
+
+But clicking on a button will throw an error.
+
+### Propagating events up the hierarchy
+
+To make the buttons work, we have to implement our click event handler - `this.handleClick`. Then we have to call every callback up the chain until we get to the histogram component, which is our holder of truth.
+
+It’s a roundabout way of doing things, but it makes our architecture simpler. Data always flows down from the bottom and data changing events flow up.
+
+Let’s start by adding a click handler to the `Toggle` component:
+
+{crop-start-line=151,crop-end-line=163,linenos=off,lang=jsx}
+<<[Toggle click handler](code_samples/controls.jsx)
+
+A simple function as you can see. It toggles the `on` state and calls the `this.props.onClick` callback.
+
+The reason we’re using state to highlight the button is that making this change eagerly instead of waiting for propagation looks better to the user. It’s a tiny bit more instant and it makes our app look less laggy.
+
+But we still override this state in `componentWillReceiveProps` if the parent component wants us to.
+
+If you click around now, the buttons are going to toggle on and off. And `ControlRow` will keep making sure you can only choose one at a time.
+
+![2013 toggled on](images/togglable_buttons.png)
+
+To make these changes propagate further than `ControlRow`, we have to call its callback in the `makePick` method:
+
+{crop-start-line=185,crop-end-line=200,linenos=off,lang=jsx}
+<<[Callback in ControlRow.makePick](code_samples/controls.jsx)
+
+Nothing fancy, just a call to `this.props.updateDataFilter` with information on what was picked and whether we want to reset the filter or not. The reset is used when the user clicks on a button that’s turned on.
+
+Now comes the fun part. We get to construct the data filter in our `Controls` component, then tell the main `H1BGraph` component about it.
 
 
 
