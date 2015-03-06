@@ -393,7 +393,15 @@ Let’s start a new file called `src/controls.jsx` with a `Controls` component s
 
 We’re going to need React and Lodash in this file, and Controls is the only component we’ll expose to the outside.
 
-Before we can start having fun with passing events up the hierarchy, we need some buttons. We add them in the `render` method:
+And let’s quickly add this to the main `H1BGraph` component. It’s just three lines of HTML inside `render`:
+
+{crop-start-line=370,crop-end-line=385,linenos=off,lang=jsx}
+
+We had to wrap everything in another `<div>` because React throws a hissy fit if we try to return multiple elements side-by-side, and we used props to give the `Controls` component some data and the update callback.
+
+And don’t forget to add `Controls = require(‘./controls.jsx’)` somewhere near the top of the file.
+
+Great, you’ve got some empty components showing up on the screen. Let’s add some rows of buttons to the `Controls.render` method:
 
 {crop-start-line=24,crop-end-line=47,linenos=off,lang=jsx}
 <<[Render a ControlRow](code_samples/controls.jsx)
@@ -431,7 +439,7 @@ Now we need the `Toggle` component.
 {crop-start-line=124,crop-end-line=146,linenos=off,lang=jsx}
 <<[Toggle component](code_samples/controls.jsx)
 
-1. Toggle renders a button. If `this.state.on` is true, the button is highlighted. We set it to off by default, and update it when `componentWillReceiveProps` triggers. That happens when the component’s properties change from above.
+Toggle renders a button. If `this.state.on` is true, the button is highlighted. We set it to off by default, and update it when `componentWillReceiveProps` triggers. That happens when the component’s properties change from above.
 
 Now your page shows three buttons under the histogram:
 
@@ -469,5 +477,46 @@ Nothing fancy, just a call to `this.props.updateDataFilter` with information on 
 
 Now comes the fun part. We get to construct the data filter in our `Controls` component, then tell the main `H1BGraph` component about it.
 
+We gave `this.updateYearFilter` as the update callback to `ControlRow`. It’s a simple function that just creates a filter function based on the chosen year and saves it with `setState()`. Like this:
+
+{crop-start-line=255,crop-end-line=274,linenos=off,lang=jsx}
+<<[Controls.updateYearFilter function](code_samples/controls.jsx)
+
+And we added the `getInitialState` function to make sure the filter is set to an “accept everything” version at first.
+
+Next step is to tell the parent component about our new filter.
+
+{crop-start-line=348,crop-end-line=368,linenos=off,lang=jsx}
+<<[Propagating filter up the chain](code_samples/controls.jsx)
+
+React calls `componentDidUpdate` when we change the state, which gives us a great opportunity to call our filter callback - `this.props.updateDataFilter`. We feed it a new filter function that combines all the potential filters in our state. In this case just `yearFilter`.
+
+Now, you’d think we could do all of this straight in the `updateYearFilter` function, but we don’t have access to the new state yet. And because we might add more types of filters later, it’s easier to just rely on the filters already saved in state.
+
+But we’ve just caused an infinite loop. When `componentDidUpdate` is called we call something on the parent component. This potentially changes our `props`, which again triggers `componentDidUpdate`.
+
+We have to make sure the component updates *only* when properties have actually changed. The easiest way to do that is using `shouldComponentUpdate` like we did. If it returns false, component doesn’t update.
+
+An apparently better option is using the [PureRenderMixin](http://facebook.github.io/react/docs/pure-render-mixin.html), which makes sure components only update when properties actually change. Could be worth a shot.
+
+Anyway, it’s time to add the filtering functionality to `H1BGraph`.
+
+{crop-start-line=427,crop-end-line=440,linenos=off,lang=jsx}
+<<[Filter update callback in H1BGraph](code_samples/main.jsx)
+
+Nothing fancy. We initially set the `dataFilter` to accept everything and update it when something calls `updateDataFilter` with a new one.
+
+The last step is actually filtering the data in our `H1BGraph.render` method.
+
+{crop-start-line=535,crop-end-line=555,linenos=off,lang=jsx}
+<<[Filter data in H1BGraph.render](code_samples/main.jsx)
+
+As you can see, we didn’t have to do much. We just gave the `Histogram` component data passed through a filter instead of raw.
+
+You should now be able to see something like this:
+
+![Histogram with only 2014 salaries](images/2014_histogram.png)
+
+## Adding a nice title
 
 
