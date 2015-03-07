@@ -517,6 +517,18 @@ You should now be able to see something like this:
 
 ![Histogram with only 2014 salaries](images/2014_histogram.png)
 
+Hooray! Histogram with user filtering.
+
+A lot of work went into that and we’ve got plenty of moving parts. But remember, all you have to do now to add more filters is to add another `<ControlRow />` to `Controls`, write a filter function for it, and make sure it’s included in `updateDataFilter`.
+
+That’s it. A minute of typing to give users the ability to filter by almost anything.
+
 ## Adding a nice title
 
+If you’ve followed along this far, you’ve got a nice histogram of H1B salaries in the software industry. It renders fully on the frontend, changes when the user picks a specific year, and you’ve got a couple of building blocks to make it better.
 
+But all good visualizations need a title. Otherwise users don’t know what they’re looking at.
+
+Let’s add one. And let’s make it change when the visualization changes.
+
+Bloop.
