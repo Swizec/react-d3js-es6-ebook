@@ -523,12 +523,18 @@ A lot of work went into that and we’ve got plenty of moving parts. But remembe
 
 That’s it. A minute of typing to give users the ability to filter by almost anything.
 
-## Adding a nice title
+## Adding some meta data
 
 If you’ve followed along this far, you’ve got a nice histogram of H1B salaries in the software industry. It renders fully on the frontend, changes when the user picks a specific year, and you’ve got a couple of building blocks to make it better.
 
-But all good visualizations need a title. Otherwise users don’t know what they’re looking at.
+But a good visualization needs a title and a description. The title tells the user what they’re looking at, the description tells them the story.
 
-Let’s add one. And let’s make it change when the visualization changes.
+As great as people are at understanding pictures, they’re much better when you flat out tell them what they’re looking at.
 
-Bloop.
+We start with a stubbed out `src/meta.jsx` file:
+
+{crop-start-line=5,crop-end-line=34,linenos=off,lang=jsx}
+<<[Stubbed meta.jsx file](code_samples/meta.jsx)
+
+
+
