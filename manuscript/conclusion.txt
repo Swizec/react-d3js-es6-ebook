@@ -1,3 +1,15 @@
 # Conclusion
 
-These will be the parting words.
+If you followed the examples, you just created your first visualization with React and d3.js. You’re amazing!
+
+If you only read through the book, that’s awesome too. You understand much more about how React and d3.js interact to make reusable visualizations than you did an hour ago.
+
+You understand how the declarative nature of React works really well with d3.js and vice-versa. You know what it takes to write reusable components and how much easier they make your life once you’ve built them. And you know how to configure grunt, browserify, and all the other bits of the puzzle to create an awesome environment to work with.
+
+In short, you know everything you need to start making your own reusable visualization components.
+
+At the very least, you know whether this is a good tech stack for you.
+
+And that’s awesome!
+
+If you have any questions just poke me on twitter. I’m [@Swizec](https://twitter.com/Swizec) or send me an email at swizec@swizec.com.
