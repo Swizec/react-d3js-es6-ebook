@@ -508,7 +508,7 @@ Nothing fancy. We initially set the `dataFilter` to accept everything and update
 
 The last step is actually filtering the data in our `H1BGraph.render` method.
 
-{crop-start-line=535,crop-end-line=555,linenos=off,lang=jsx}
+{crop-start-line=535,crop-end-line=557,linenos=off,lang=jsx}
 <<[Filter data in H1BGraph.render](code_samples/main.jsx)
 
 As you can see, we didn’t have to do much. We just gave the `Histogram` component data passed through a filter instead of raw.
@@ -533,8 +533,94 @@ As great as people are at understanding pictures, they’re much better when you
 
 We start with a stubbed out `src/meta.jsx` file:
 
-{crop-start-line=5,crop-end-line=34,linenos=off,lang=jsx}
+{crop-start-line=5,crop-end-line=32,linenos=off,lang=jsx}
 <<[Stubbed meta.jsx file](code_samples/meta.jsx)
 
+We’re going to make a mixin called `MetaMixing` because both the `Title` and the `Description` component are going to use some of the same functions. It will have a function to get a list of years out of data, a function to give us a label formatter, and a function to give us data filtered by a specific year.
 
+Let’s add them.
+
+{crop-start-line=37,crop-end-line=63,linenos=off,lang=jsx}
+<<[MetaMixin functions](code_samples/meta.jsx)
+
+There’s nothing special going on here. `getYears` uses `_.groupBy` to group the data by year, then returns the keys of the array. We could probably make this more efficient, but it works well enough and is easy to read.
+
+`getFormatter` relies on the fact that d3 scales have formatters. It creates a linear scale with a defined domain, and returns the `tickFormat()` function. The formatter doesn’t work well without a defined domain.
+
+`getAllDataByYear` is a simple filter function. We’ll use it to access data for specific years when making the description.
+
+But let’s start with the title.
+
+### The title
+
+Our titles are going to follow a formula like: “H1B workers in the software industry made $x/year in <year>”. 
+
+We start with the year fragment:
+
+{crop-start-line=68,crop-end-line=83,linenos=off,lang=jsx}
+<<[getYearsFragment function](code_samples/meta.jsx)
+
+Nothing special going on. We get the list of years in the current data and return either an empty string or `in Year`. If there’s only one year in the data, we assume it’s been filtered by year.
+
+The render function is going to be simple as well:
+
+{crop-start-line=110,crop-end-line=129,linenos=off,lang=jsx}
+<<[Title.render function](code_samples/meta.jsx)
+
+We’re basically just returning an `<h2>` with a title that includes some dynamic tags. We change `made` to `make` based on whether or not we’re adding `in years`, and we used `d3.mean` to get the average.
+
+Now we can just add the title into H1BGraph’s `render` method. You can use as many as you want, wherever you want, but I think one above the graph works best.
+
+{crop-start-line=629,crop-end-line=636,linenos=off,lang=jsx}
+<<[Add title to H1BGraph.render](code_samples/main.jsx)
+
+Don’t forget to add a `meta = require(‘./meta.jsx’);` at the top of the file.
+
+Your histogram should now look like this:
+
+![Histogram with title](images/titled_histogram.png)
+
+Now let’s add a paragraph of description to make the story clearer.
+
+### The description
+
+Our descriptions won’t be much more complicated than the titles. Just a sentence or two explaining what the histogram is showing and comparing it to the previous year.
+
+First, we add the `getYearFragment` function:
+
+{crop-start-line=134,crop-end-line=150,linenos=off,lang=jsx}
+<<[Description.getYearFragment function](code_samples/meta.jsx)
+
+Same as in `Title`, but with a capital first letter. Yes, this would might fit better in `MetaMixin`.
+
+But the `getPreviousYearFragment` function is a bit more complex:
+
+{code-start-line=177,code-end-line=194,linenos=off,lang=jsx}
+<<[Description.getPreviousYearFragment function](code_samples/meta.jsx)
+
+First we get the list of years. If it’s empty or the current year is 2012 (the first in our dataset), we return an empty fragment.
+
+Otherwise we get last year’s data with `this.getAllDataByYear()`, then compare the number of entries with this year. We return a fragment that’s either “X% **more** than the year before” or “X% **less** than the year before”.
+
+Now we’ve just got to use these two fragments in the render method.
+
+{crop-start-line=240,crop-end-line=258,linenos=off,lang=jsx}
+<<[Description.render function](code_samples/meta.jsx)
+
+We’ve crammed a lot into that return statement, but it’s really not as hairy as it looks. We start the sentence with either “Since 2012” or “In Year”, then decide what tense to use for “give”, followed by the count of H1Bs in the current data and “foreign nationals”.
+
+Right after that, with no space, we add the previous year fragment. Followed by a sentence describing the range the majority of salaries fall into. To get the numbers we used d3’s built in standard deviation calculator and assumed the distribution is roughly gaussian. That means 68.2% of our datapoints fall within a standard deviation to each side of the mean.
+
+Yes, my statistics professor would be very angry, but it’s a good enough approximation.
+
+Let’s put the description next to our title.
+
+{crop-start-line=717,crop-end-line=721,linenos=off,lang=jsx}
+<<[Add description to H1BGraph.render](code_samples/main.jsx)
+
+Unlike the title, our description needs the full data as well. Otherwise it won’t be able to write the year comparison fragment.
+
+Your histogram should now have a nice description:
+
+![Histogram with description](images/description_histogram.png)
 
