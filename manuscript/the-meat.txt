@@ -27,7 +27,7 @@ The gist of JSX is that we can use HTML just like it was part of  JavaScript. No
 
 For instance, the code that renders our whole application is going to look like this:
 
-{crop-start-line=418,crop-end-line=422,linenos=off,lang=jsx}
+{crop-start-line=399,crop-end-line=402,linenos=off,lang=jsx}
 <<[A basic Render](code/src/main.jsx)
 
 Which compiles to:
@@ -624,3 +624,6 @@ Your histogram should now have a nice description:
 
 ![Histogram with description](images/description_histogram.png)
 
+Hooray, you’ve made a histogram of H1B salaries with a title and description that change when the visualization changes. You’re awesome!
+
+And now you know how to make React and d3 work together. Yay!
