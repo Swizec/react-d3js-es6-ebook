@@ -413,7 +413,7 @@ We’ll define the callback later. Let’s make the `ControlRow` component first
 {crop-start-line=51,crop-end-line=72,linenos=off,lang=jsx}
 <<[ControlRow component](code_samples/controls.jsx)
 
-Nothing special going on here. We’ve got a `render` method that returns a Bootstrap row and fills with with a bunch of `Toggle` components. It does this by looping over the result of `this.props.getTogglevalues`, which is teh function we defined in `Controls.render`.
+Nothing special going on here. We’ve got a `render` method that returns a Bootstrap row and fills with with a bunch of `Toggle` components. It does this by looping over the result of `this.props.getToggleNames`, which is the function we defined in `Controls.render`.
 
 Normally `onClick` is a click event handler. React gives us this sort of magic prop for every valid user event. It’s the same as jQuery’s `$(‘foo’).on(‘click’)`.
 
@@ -421,25 +421,25 @@ But they only work on HTML elements, not React components. So this one is just a
 
 We had to define the `key` property to help React identify specific elements. I assume it uses these to identify which elements to re-render, if they’re created in a loop.
 
-There’s also the weird `on` property that comes out of `this.state.togglesOn`. It tells our toggles whether to render as turned on or off and the reason we track this state in `ControlRow` is to make sure only one can be turned on at a time.
+There’s also the weird `value` property that comes out of `this.state.toggleValues`. It tells our toggles whether to render as turned on or off and the reason we track this state in `ControlRow` is to make sure only one can be turned on at a time.
 
 Let’s add this state handling.
 
 {crop-start-line=77,crop-end-line=100,linenos=off,lang=jsx}
 <<[Exclusive toggling](code_samples/controls.jsx)
 
-The `makePick` function is called when the user clicks on a `Toggle` element. It goes through the `togglesOn` dictionary and  sets them to `false` if they aren’t the one currently picked. That one is set to `true`.
+The `makePick` function is called when the user clicks on a `Toggle` element. It goes through the `toggleValues` dictionary and  sets them to `false` if they aren’t the one currently picked. That one is set to `true`.
 
 Then it saves the dictionary with `this.setState`, which triggers a re-render and updates all the buttons.
 
-And we used the trusty `getInitialState` to create the `togglesOn` dictionary with everything set to `false`.
+And we used the trusty `getInitialState` to create the `toggleValues` dictionary with everything set to `false`.
 
 Now we need the `Toggle` component.
 
 {crop-start-line=124,crop-end-line=146,linenos=off,lang=jsx}
 <<[Toggle component](code_samples/controls.jsx)
 
-Toggle renders a button. If `this.state.on` is true, the button is highlighted. We set it to off by default, and update it when `componentWillReceiveProps` triggers. That happens when the component’s properties change from above.
+Toggle renders a button. If `this.state.value` is true, the button is highlighted. We set it to off by default, and update it when `componentWillReceiveProps` triggers. That happens when the component’s properties change from above.
 
 Now your page shows three buttons under the histogram:
 
@@ -458,7 +458,7 @@ Let’s start by adding a click handler to the `Toggle` component:
 {crop-start-line=151,crop-end-line=163,linenos=off,lang=jsx}
 <<[Toggle click handler](code_samples/controls.jsx)
 
-A simple function as you can see. It toggles the `on` state and calls the `this.props.onClick` callback.
+A simple function as you can see. It toggles the `value` state and calls the `this.props.onClick` callback.
 
 The reason we’re using state to highlight the button is that making this change eagerly instead of waiting for propagation looks better to the user. It’s a tiny bit more instant and it makes our app look less laggy.
 
@@ -536,7 +536,7 @@ We start with a stubbed out `src/meta.jsx` file:
 {crop-start-line=5,crop-end-line=32,linenos=off,lang=jsx}
 <<[Stubbed meta.jsx file](code_samples/meta.jsx)
 
-We’re going to make a mixin called `MetaMixing` because both the `Title` and the `Description` component are going to use some of the same functions. It will have a function to get a list of years out of data, a function to give us a label formatter, and a function to give us data filtered by a specific year.
+We’re going to make a mixin called `MetaMixin` because both the `Title` and the `Description` component are going to use some of the same functions. It will have a function to get a list of years out of data, a function to give us a label formatter, and a function to give us data filtered by a specific year.
 
 Let’s add them.
 
