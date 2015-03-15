@@ -615,7 +615,6 @@ But the `getPreviousYearFragment` function is a bit more complex:
         return fragment;
     },
 
-
 First we get the list of years. If it’s empty or the current year is 2012 (the first in our dataset), we return an empty fragment.
 
 Otherwise we get last year’s data with `this.getAllDataByYear()`, then compare the number of entries with this year. We return a fragment that’s either “X% **more** than the year before” or “X% **less** than the year before”.
