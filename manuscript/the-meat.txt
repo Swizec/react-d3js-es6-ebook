@@ -595,11 +595,26 @@ Same as in `Title`, but with a capital first letter. Yes, this would might fit b
 
 But the `getPreviousYearFragment` function is a bit more complex:
 
-{code-start-line=176,code-end-line=193,linenos=off,lang=jsx}
-<<[Bloop](code_samples/meta.jsx)
+{title="Description.getPreviousYearFragment",linenos=off,lang=jsx}
+    getPreviousYearFragment: function () {
+        var years = this.getYears().map(Number),
+            fragment;
 
-{code-start-line=176,code-end-line=193,linenos=off,lang=jsx}
-<<[Description.getPreviousYearFragment function](code_samples/meta.jsx)
+        if (years.length > 1) {
+            fragment = "";
+        }else if (years[0] == 2012) {
+            fragment = "";
+        }else{
+            var year = years[0],
+                lastYear = this.getAllDataByYear(year-1),
+                percent = ((1-lastYear.length/this.props.data.length)*100).toFixed();
+
+            fragment = ", "+Math.abs(percent)+"% "+(percent > 0 ? "more" : "less")+" than the year before";
+        }
+
+        return fragment;
+    },
+
 
 First we get the list of years. If it’s empty or the current year is 2012 (the first in our dataset), we return an empty fragment.
 
