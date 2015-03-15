@@ -173,7 +173,6 @@ var Description = React.createClass({
         return fragment;
     },
 
-    // leanpub-start-insert
     getPreviousYearFragment: function () {
         var years = this.getYears().map(Number),
             fragment;
@@ -192,7 +191,6 @@ var Description = React.createClass({
 
         return fragment;
     },
-    // leanpub-end-insert
 
     render: function () {
         return null

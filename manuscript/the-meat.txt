@@ -595,7 +595,7 @@ Same as in `Title`, but with a capital first letter. Yes, this would might fit b
 
 But the `getPreviousYearFragment` function is a bit more complex:
 
-{code-start-line=174,code-end-line=197,linenos=off,lang=jsx}
+{code-start-line=176,code-end-line=193,linenos=off,lang=jsx}
 <<[Description.getPreviousYearFragment function](code_samples/meta.jsx)
 
 First we get the list of years. If it’s empty or the current year is 2012 (the first in our dataset), we return an empty fragment.
@@ -604,7 +604,7 @@ Otherwise we get last year’s data with `this.getAllDataByYear()`, then compare
 
 Now we’ve just got to use these two fragments in the render method.
 
-{crop-start-line=240,crop-end-line=258,linenos=off,lang=jsx}
+{crop-start-line=238,crop-end-line=256,linenos=off,lang=jsx}
 <<[Description.render function](code_samples/meta.jsx)
 
 We’ve crammed a lot into that return statement, but it’s really not as hairy as it looks. We start the sentence with either “Since 2012” or “In Year”, then decide what tense to use for “give”, followed by the count of H1Bs in the current data and “foreign nationals”.
