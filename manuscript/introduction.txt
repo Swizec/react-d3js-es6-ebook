@@ -37,7 +37,7 @@ Just you and some fun code. To get the most out of this material I suggest two t
 1. Try the example code yourself. Don’t just copy paste, type it over. Execute frequently. If something doesn’t fit together, look at the full working project on Github, [here](https://github.com/Swizec/h1b-software-salaries), or the zip files that came with the book
 2. If you already know something, skip that section. You’re awesome.
 
-React+d3.js is based heavily on code samples. They look like this:
+React+d3.js is heavily based on code samples. They look like this:
 
 {linenos=off,lang=jsx}
      var foo = 'bar';
@@ -82,9 +82,9 @@ Your graph changes. The title changes. The description changes. Everything chang
 
 Look how this H1B salary visualization changes when the user picks a subset of the data to look at.
 
-[Default H1B histogram](images/full_default_h1b.png)
+![Default H1B histogram](images/full_default_h1b.png)
 
-[Changes after user picks a data subset](images/full_changed_h1b.png)
+![Changes after user picks a data subset](images/full_changed_h1b.png)
 
 A powerful combination indeed.
 
