@@ -1,29 +1,29 @@
 # Visualizing data with React and d3.js
 
-Welcome to the main part of the book. I’m going to walk you through an example of building a simple visualization using React and d3.js.
+Welcome to the main part of React+d3.js. I’m going to walk you through an example of building a visualization using React and d3.js.
 
-We are going to build a subset of the code I used to [visualize the salary distribution of H1B workers](http://swizec.github.io/h1b-software-salaries/#2014-ca-engineer) in the United States software industry.
+We're going to build a subset of the code I used to [visualize the salary distribution of H1B workers](http://swizec.github.io/h1b-software-salaries/#2014-ca-engineer) in the United States software industry.
 
 ![H1B salary distribution for engineers in California](images/engineers-california.png)
 
-If you skipped the [section on setting up your environment](#the-environment), make sure you’ve got the following dependencies:
+If you skipped the [environment setup section](#the-environment), make sure you’ve got the following dependencies:
 
 * d3.js
 * React
 * Bootstrap (for styling)
 * Lodash
 
-And you should have some way of starting a static file server locally. I like `live-server`.
+And you should have some way of runing a static file server. I like `live-server`.
 
 We’re going to put all our code in a `src/` directory, and serve the compiled version out of `build/`. A `data/` directory is going to hold our data.
 
-Before we begin, you should download the dataset from my Github repository, [here](https://github.com/Swizec/h1b-software-salaries/blob/65fac70fb44b23b1a9fe2ec923d246d654fb42e1/data/h1bs.csv). Save it in `data/`.
+Before we begin, you should copy the dataset from the stub project you got with the book. It shold be in the `data/` directory of your project.
 
 ## JSX
 
-We’re going to use Facebook’s JavaScript syntax extension called JSX to write our code. You can use React without JSX, but I feel that JSX exposes React’s full power much better.
+We’re going to write our code in JSX. A JavaScript syntax extension that lets us treat XML-like data as normal citizens. You can use React without JSX, but I feel that it makes React’s full power easier to use.
 
-The gist of JSX is that we can use HTML just like it was part of  JavaScript. No Mustache or messy string concatenation necessary. Your functions can return straight up HTML.
+The gist of JSX is that we can use any XML-like string just like it was part of  JavaScript. No Mustache or messy string concatenation necessary. Your functions can return straight up HTML, SVG, or XML.
 
 For instance, the code that renders our whole application is going to look like this:
 
@@ -38,15 +38,17 @@ Which compiles to:
         document.querySelectorAll(‘.h1bgraph’)[0]
     );
 
-As you can see, HTML code translates to `React.createElement` calls, with attributes translated into a property dictionary. The beauty of this approach is that you can use React components as if they were HTML tags and that HTML attributes can be anything.
+As you can see, HTML code translates to `React.createElement` calls with attributes translated into a property dictionary. The beauty of this approach is that you can use React components as if they were HTML tags and that HTML attributes can be anything.
 
-You’ll see later that anything from a simple value to a function or an object works equally well.
+You’ll see that anything from a simple value to a function or an object works equally well.
 
-The approach is obviously than `+`-ing strings, but I haven’t decided whether it’s better than Mustache yet. Rich attributes are certainly powerful, but something feels fishy about essentially having multiple languages in a single file.
+I'm not sure yet whether this is better than separate template files in Mustache or whatever. There are benefits to both approaches. I mean, would you let a designer write the HTML inside your JavaScript files? I wouldn't.
 
-It’s definitely better than Angular’s put everything into HTML files approach though! Much better.
+But it's definitely better than manually `+`-ing strings or Angular's approach of putting everything into HTML. Much better.
 
-If you skipped the previous section and don’t have React compilation set up, I suggest you go do that now. You can also use `JSXTransform.js`, which performs the translation in browser. But the official documentation says you should avoid the client-side transform because of performance issues.
+If you skipped the setup section and don't have a JSX compilation system set up, I suggest you do that now. You can also use the project stub you got with the book.
+
+Just like the official documentation, I don't suggest using `JSXTransform.js`. Sure it's neat to have all this compilation happen right in the browser, but it's bad practice.
 
 ## The basic approach
 
