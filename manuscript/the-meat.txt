@@ -596,6 +596,9 @@ Same as in `Title`, but with a capital first letter. Yes, this would might fit b
 But the `getPreviousYearFragment` function is a bit more complex:
 
 {code-start-line=176,code-end-line=193,linenos=off,lang=jsx}
+<<[Bloop](code_samples/meta.jsx)
+
+{code-start-line=176,code-end-line=193,linenos=off,lang=jsx}
 <<[Description.getPreviousYearFragment function](code_samples/meta.jsx)
 
 First we get the list of years. If it’s empty or the current year is 2012 (the first in our dataset), we return an empty fragment.
