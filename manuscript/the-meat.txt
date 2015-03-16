@@ -52,46 +52,46 @@ Just like the official documentation, I don't suggest using `JSXTransform.js`. S
 
 ## The basic approach
 
-Because SVG is just another XML-like format that fits into the DOM, we can assemble it with React. To draw a 100px by 200px rectangle inside a grouping element moved to (50, 20) we can do something like this:
+Because SVG is an XML format that fits into the DOM, we can assemble it with React. To draw a `100px` by `200px` rectangle inside a grouping element moved to `(50, 20)` we can do something like this:
 
-{linenos=off,lang=jsx}
+{title="A simple rectangle in React",linenos=off,lang=jsx}
     render: function () {
         return (
-            <g transform=“translate(50, 20)”>
-                <rect width=“100” height=“200” />
+            <g transform="translate(50, 20)">
+                <rect width="100" height="200" />
             </g>
         );
     }
 
-If the parent component makes sure to render this inside an `<svg>` element, the user will see a rectangle on their screen. At first glance this might look cumbersome compared to traditional d3.js. But look closely:
+If the parent component puts this inside an `<svg>` element, the user will see a rectangle. At first glance this looks cumbersome compared to traditional d3.js. But look closely:
 
-{linenos=off,lang=js}
-    d3.select(“svg”)
-      .append(“g”)
-      .attr(“transform”, “translate(50, 20)”)
-      .append(“rect”)
-      .attr(“width”, 100)
-      .attr(“height”, 200);
+{title="A simple rectangle in d3.js",linenos=off,lang=js}
+    d3.select("svg")
+      .append("g")
+      .attr("transform", "translate(50, 20)")
+      .append("rect")
+      .attr("width", 100)
+      .attr("height", 200);
 
-The d3 approach might look cleaner because it’s pure JavaScript and outputs SVG as if by magic. But it’s a lot more typing and function calls for the same result.
+The d3.js approach outputs SVG as if by magic. It also looks a bit cleaner because it's pure JavaScript. But it’s a lot more typing and function calls for the same result.
 
-Well, after counting, the pure d3 example uses 10 less characters than the React example. Oops.
+Well, actually, the pure d3.js example is 10 characters shorter. But trust me, React is cool, okay.
 
-Anyway, my point is that manipulating the DOM is not d3’s strong suit. Especially once you get into the range of a few thousand elements and things become very slow unless you’re careful to only render what’s changing.
+Anyway, my point is that dealing with the DOM is not d3.js’s strong suit. Especially once you're drawing a few thousand elements and your visualization slows down to a leisurely stroll if you’re careful.
 
-But with React, you get that behaviour for free. Its primary purpose in life is observing data changes and only updating those components that have actually changed.
+You always have to keep an eye on how many elements you're updating. React gives you all of that for free. Its primary purpose in life is knowing exactly which elements to update when some data changes.
 
-So our app is going to follow a simple approach:
+We're going to follow this simple approach:
 
 * React owns the DOM
 * d3 calculates properties
 
-This way we leverage both React and d3 just for what they’re best at.
+This way we leverage both React and d3.js for what they’re best at.
 
 {#the-architecture}
 ## The architecture
 
-To make our lives easier we are going to use a flow-down architecture. I think Facebook has come up with a buzzword for this approach, but whatever.
+To make our lives easier we're going to use a flow-down architecture, called Flux.
 
 The idea is this:
 
@@ -101,13 +101,13 @@ The idea is this:
 * The Main Component updates its truth
 * The real changes flow back down the chain to update UI
 
-This might look like a roundabout way of doing things, but I promise it’s awesome. Definitely easier than worrying about having parts of your UI out of date with the rest of the app. 
+This might look roundabout, but I promise it’s awesome. It's definitely better than worrying about parts of the UI going out of date with the rest of the app.
 
-Having most of your components rely on just the properties they are given, is like having your functions rely on just the arguments they are given. This makes them easier to reason about, and you always know what you’re going to get.
+Having your components rely solely on their properties, is like having functions that rely just on the arguments they are given.  This means that given the same arguments, they *always* render the same output.
 
-Basically, rendering the same component with the same properties, will *always* give you the same output.
+This *should* be called "idempotent JavaScript", but the community has decided to call it "isomorphic JavaScript". I guess it sounds cooler. But if you're going to look up functional programming literature, look for idempotent, if you're going to look at popular blogs, look for isomorphic.
 
-Functional programming for HTML. Sweet!
+Either way, functional programming for HTML. Yay!
 
 ## The HTML skeleton
 
