@@ -93,6 +93,8 @@ This way we leverage both React and d3.js for what they’re best at.
 
 To make our lives easier we're going to use a flow-down architecture, called Flux.
 
+![The basic architecture](images/architecture.jpg)
+
 The idea is this:
 
 * The Main Component is the repository of truth
@@ -103,9 +105,11 @@ The idea is this:
 
 This might look roundabout, but I promise it’s awesome. It's definitely better than worrying about parts of the UI going out of date with the rest of the app.
 
-Having your components rely solely on their properties, is like having functions that rely just on the arguments they are given.  This means that given the same arguments, they *always* render the same output.
+![Data flows down](images/architecture_data.jpg)
 
-This *should* be called "idempotent JavaScript", but the community has decided to call it "isomorphic JavaScript". I guess it sounds cooler. But if you're going to look up functional programming literature, look for idempotent, if you're going to look at popular blogs, look for isomorphic. Another ancient buzzword that talks about these principles is "referential transparency".
+Having your components rely solely on their properties, is like having functions that rely just on their arguments.  This means that given the same arguments, they *always* render the same output.
+
+If you want to read about this in more detail Google for "isomorphic JavaScript". A good buzzword is also "referential transparency" and "idempotent functions".
 
 Either way, functional programming for HTML. Yay!
 
@@ -409,6 +413,16 @@ Win-win-win.
 
 We’re going to make controls that let users filter data by year. In the full example I added filtering by state and job title as well, but they follow the same principles and talking about them here would take too long.
 
+![Events flow up through callbacks](images/architecture_events.jpg)
+
+Our approach will follow the approach of having events flow up the hierarchy and data updates flowing down. When a user clicks a button, it calls a function on its parent. This in turn calls a function on its parent and so on until we hit `H1BGraph`, which is our holder of truth.
+
+We could also call functions directly on `H1BGraph` if we had a reference to them, but that would break the separation of concerns in our case.
+
+Once `H1BGraph` updates its state, the changed data flows back down to the relevant components via `props`.
+
+![Updated data flows back down](images/architecture_updates.jpg)
+
 ### Creating user controls
 
 We're going to organise our controls into three components:
@@ -482,8 +496,6 @@ But clicking on a button will throw an error.
 ### Propagating events up the hierarchy
 
 To make the buttons work, we have to implement the click event handler - `this.handleClick`. Then we have to call every callback up the chain until we get to the histogram component, which is our holder of truth.
-
-It’s a roundabout way of doing things, but it makes our architecture simpler. Data always flows down from the top and events flow up.
 
 Let’s start by adding a click handler to the `Toggle` component:
 
