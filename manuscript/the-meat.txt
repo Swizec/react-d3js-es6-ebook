@@ -397,25 +397,25 @@ That’s it. Your histogram should look like this:
 
 ## Reacting to data changes
 
-We’ve got a histogram with an axis. And reusable building blocks to make as many as we want. That’s awesome!
+We’ve got a histogram with an axis. And the building blocks to make as many as we want. Awesome!
 
-But our histogram looks kind of weird. Most of the data is scrunched up into the first three bars and a lone outlier stretches our data range far too much.
+But our histogram looks weird. Most of our data falls into the first three bars and a lone outlier stretches the data range far too much.
 
-Sure, we could take care of this by removing the outlier. But let’s leave defining statistical anomalies to statisticians. We’re here to draw pictures.
+Sure, we could take care of this by removing the outlier. But statisticians should worry about statistical anomalies. We’re here to draw pictures.
 
-The next best thing is giving users the ability to filter data and take a closer look. Solves our problem of finding outliers, gives users more freedom. And maybe, just maybe, they’re going to spend more time on our site. 
+The next best thing is letting users filter data and take a closer look. Solves our problem of finding outliers, gives users more freedom. And maybe, just maybe, they’re going to spend more time on our site. 
 
 Win-win-win.
 
-We’re going to make controls that let users filter data by year. In the full example I added filtering by state and job title as well, but they follow the same principles and including them here would take too long.
+We’re going to make controls that let users filter data by year. In the full example I added filtering by state and job title as well, but they follow the same principles and talking about them here would take too long.
 
 ### Creating user controls
 
-Our controls are going to be organised into three components:
+We're going to organise our controls into three components:
 
-* Controls, which holds the controls together
-* ControlRow, which is a row of buttons
-* Toggle, which is a toggleable button
+* `Controls`, which holds the controls together
+* `ControlRow`, which is a row of buttons
+* `Toggle`, which is a toggleable button
 
 Let’s start a new file called `src/controls.jsx` with a `Controls` component stub:
 
@@ -424,42 +424,43 @@ Let’s start a new file called `src/controls.jsx` with a `Controls` component s
 
 We’re going to need React and Lodash in this file, and Controls is the only component we’ll expose to the outside.
 
-And let’s quickly add this to the main `H1BGraph` component. It’s just three lines of HTML inside `render`:
+And let’s add all of this to the main `H1BGraph` component. It’s just three lines inside `render`:
 
-{crop-start-line=370,crop-end-line=385,linenos=off,lang=jsx}
+{crop-start-line=366,crop-end-line=381,linenos=off,lang=jsx}
+<<[Add Controls to H1BGraph.render](code_samples/main.jsx)
 
-We had to wrap everything in another `<div>` because React throws a hissy fit if we try to return multiple elements side-by-side, and we used props to give the `Controls` component some data and the update callback.
+We had to wrap everything in another `<div>` because React throws a hissy fit if we try to return multiple elements side-by-side. We used props to give the `Controls` component some data and the filter update callback.
 
 And don’t forget to add `Controls = require(‘./controls.jsx’)` somewhere near the top of the file.
 
-Great, you’ve got some empty components showing up on the screen. Let’s add some rows of buttons to the `Controls.render` method:
+You should have some empty components showing up on the screen. Let’s add the row of buttons to the `Controls.render` method:
 
 {crop-start-line=24,crop-end-line=47,linenos=off,lang=jsx}
 <<[Render a ControlRow](code_samples/controls.jsx)
 
-This will break in your browser because we don’t have a `ControlRow` component yet. The idea is to have component that takes data, a function that generates the button labels and an `updateDataFilter` callback.
+This will break in your browser because we don’t have a `ControlRow` component yet. The idea is to have a component that takes data, a function that generates the button labels and an `updateDataFilter` callback.
 
 We’ll define the callback later. Let’s make the `ControlRow` component first.
 
 {crop-start-line=51,crop-end-line=72,linenos=off,lang=jsx}
 <<[ControlRow component](code_samples/controls.jsx)
 
-Nothing special going on here. We’ve got a `render` method that returns a Bootstrap row and fills with with a bunch of `Toggle` components. It does this by looping over the result of `this.props.getToggleNames`, which is the function we defined in `Controls.render`.
+Nothing special going on here. We’ve got a `render` method that returns a Bootstrap row and fills it with with a bunch of `Toggle` components. It does so by looping over the result of `this.props.getToggleNames`, which is the function we defined in `Controls.render`.
 
 Normally `onClick` is a click event handler. React gives us this sort of magic prop for every valid user event. It’s the same as jQuery’s `$(‘foo’).on(‘click’)`.
 
-But they only work on HTML elements, not React components. So this one is just a function callback that we’ll use.
+But they only work on HTML elements, not React components. So this one is just a function callback that we’ll use manually.
 
 We had to define the `key` property to help React identify specific elements. I assume it uses these to identify which elements to re-render, if they’re created in a loop.
 
-There’s also the weird `value` property that comes out of `this.state.toggleValues`. It tells our toggles whether to render as turned on or off and the reason we track this state in `ControlRow` is to make sure only one can be turned on at a time.
+We've also got a `value` property that comes out of `this.state.toggleValues`. It tells our toggles whether to render as turned on or off. We track this state in `ControlRow` instead of just the `Toggle` itself, so we can make sure only one turns on at the time.
 
-Let’s add this state handling.
+Let’s add the state handling.
 
 {crop-start-line=77,crop-end-line=100,linenos=off,lang=jsx}
 <<[Exclusive toggling](code_samples/controls.jsx)
 
-The `makePick` function is called when the user clicks on a `Toggle` element. It goes through the `toggleValues` dictionary and  sets them to `false` if they aren’t the one currently picked. That one is set to `true`.
+The `makePick` function is called when the user clicks on a `Toggle` element. It goes through the `toggleValues` dictionary and  sets them to `false` if they aren't the one the user clicked on. The one they did, is set to `true`.
 
 Then it saves the dictionary with `this.setState`, which triggers a re-render and updates all the buttons.
 
@@ -470,7 +471,7 @@ Now we need the `Toggle` component.
 {crop-start-line=124,crop-end-line=146,linenos=off,lang=jsx}
 <<[Toggle component](code_samples/controls.jsx)
 
-Toggle renders a button. If `this.state.value` is true, the button is highlighted. We set it to off by default, and update it when `componentWillReceiveProps` triggers. That happens when the component’s properties change from above.
+Toggle renders a button. If `this.state.value` is `true`, the button is highlighted. We set it to off by default, and update it when `componentWillReceiveProps` triggers. That happens when the component’s properties change from above.
 
 Now your page shows three buttons under the histogram:
 
@@ -480,103 +481,103 @@ But clicking on a button will throw an error.
 
 ### Propagating events up the hierarchy
 
-To make the buttons work, we have to implement our click event handler - `this.handleClick`. Then we have to call every callback up the chain until we get to the histogram component, which is our holder of truth.
+To make the buttons work, we have to implement the click event handler - `this.handleClick`. Then we have to call every callback up the chain until we get to the histogram component, which is our holder of truth.
 
-It’s a roundabout way of doing things, but it makes our architecture simpler. Data always flows down from the bottom and data changing events flow up.
+It’s a roundabout way of doing things, but it makes our architecture simpler. Data always flows down from the top and events flow up.
 
 Let’s start by adding a click handler to the `Toggle` component:
 
 {crop-start-line=151,crop-end-line=163,linenos=off,lang=jsx}
 <<[Toggle click handler](code_samples/controls.jsx)
 
-A simple function as you can see. It toggles the `value` state and calls the `this.props.onClick` callback.
+It's a simple function. All it cares about is toggling the `value` state and calling the `this.props.onClick` callback.
 
-The reason we’re using state to highlight the button is that making this change eagerly instead of waiting for propagation looks better to the user. It’s a tiny bit more instant and it makes our app look less laggy.
+The reason we’re using state to highlight the button is that making this change optimistically instead of waiting for propagation looks better to the user. It’s a tiny bit more instant, which makes our app feel faster.
 
-But we still override this state in `componentWillReceiveProps` if the parent component wants us to.
+But we still override the `value` in `componentWillReceiveProps`, if the parent component wants us to.
 
-If you click around now, the buttons are going to toggle on and off. And `ControlRow` will keep making sure you can only choose one at a time.
+If you click around now, the buttons are going to toggle on and off. `ControlRow` will keep making sure you can only choose one at a time.
 
 ![2013 toggled on](images/togglable_buttons.png)
 
-To make these changes propagate further than `ControlRow`, we have to call its callback in the `makePick` method:
+To make these changes propagate further than `ControlRow`, we have to call `ControlRow`'s callback in the `makePick` method:
 
 {crop-start-line=185,crop-end-line=200,linenos=off,lang=jsx}
 <<[Callback in ControlRow.makePick](code_samples/controls.jsx)
 
-Nothing fancy, just a call to `this.props.updateDataFilter` with information on what was picked and whether we want to reset the filter or not. The reset is used when the user clicks on a button that’s turned on.
+Nothing fancy, just a call to `this.props.updateDataFilter` with information on what was picked and whether we want to reset the filter or not. The reset is used when the user clicks on a button that’s already turned on.
 
-Now comes the fun part. We get to construct the data filter in our `Controls` component, then tell the main `H1BGraph` component about it.
+Now comes the fun part. We get to construct the data filter in our `Controls` component, then tell the main `H1BGraph` component.
 
-We gave `this.updateYearFilter` as the update callback to `ControlRow`. It’s a simple function that just creates a filter function based on the chosen year and saves it with `setState()`. Like this:
+We gave `this.updateYearFilter` as the update callback to `ControlRow`. It’s a simple function that creates a filter function based on the chosen year and saves it with `setState()`. Like this:
 
 {crop-start-line=255,crop-end-line=274,linenos=off,lang=jsx}
 <<[Controls.updateYearFilter function](code_samples/controls.jsx)
 
-And we added the `getInitialState` function to make sure the filter is set to an “accept everything” version at first.
+We also added the `getInitialState` function to make sure the filter is set to an "accept everything" version at first.
 
 Next step is to tell the parent component about our new filter.
 
 {crop-start-line=348,crop-end-line=368,linenos=off,lang=jsx}
 <<[Propagating filter up the chain](code_samples/controls.jsx)
 
-React calls `componentDidUpdate` when we change the state, which gives us a great opportunity to call our filter callback - `this.props.updateDataFilter`. We feed it a new filter function that combines all the potential filters in our state. In this case just `yearFilter`.
+React calls `componentDidUpdate` when we change the state. This gives us a great opportunity to call our filter callback - `this.props.updateDataFilter`. We feed it a new filter function that combines all the potential filters in our state. In our trimmed down example, just the `yearFilter`.
 
-Now, you’d think we could do all of this straight in the `updateYearFilter` function, but we don’t have access to the new state yet. And because we might add more types of filters later, it’s easier to just rely on the filters already saved in state.
+You’d think we could do all of this straight in the `updateYearFilter` function, but we don’t have access to the updated state yet. And because we might add more types of filters later, it’s better to rely just on the already saved filters.
 
-But we’ve just caused an infinite loop. When `componentDidUpdate` is called we call something on the parent component. This potentially changes our `props`, which again triggers `componentDidUpdate`.
+But we’ve just created an infinite loop. When `componentDidUpdate` is called we call something on the parent component. This potentially changes our `props`, which again triggers `componentDidUpdate`.
 
-We have to make sure the component updates *only* when properties have actually changed. The easiest way to do that is using `shouldComponentUpdate` like we did. If it returns false, component doesn’t update.
+We have to make sure the component updates *only* when properties have actually changed. The easiest way to do that is using `shouldComponentUpdate`. If it returns `false`, the component doesn’t update.
 
 An apparently better option is using the [PureRenderMixin](http://facebook.github.io/react/docs/pure-render-mixin.html), which makes sure components only update when properties actually change. Could be worth a shot.
 
 Anyway, it’s time to add the filtering functionality to `H1BGraph`.
 
-{crop-start-line=427,crop-end-line=440,linenos=off,lang=jsx}
+{crop-start-line=422,crop-end-line=435,linenos=off,lang=jsx}
 <<[Filter update callback in H1BGraph](code_samples/main.jsx)
 
-Nothing fancy. We initially set the `dataFilter` to accept everything and update it when something calls `updateDataFilter` with a new one.
+Nothing fancy. We initially set the `dataFilter` to accept everything and update it when something calls `updateDataFilter` with a new filter function.
 
-The last step is actually filtering the data in our `H1BGraph.render` method.
+The last step is filtering the data in our `H1BGraph.render` method.
 
-{crop-start-line=535,crop-end-line=557,linenos=off,lang=jsx}
+{crop-start-line=530,crop-end-line=552,linenos=off,lang=jsx}
 <<[Filter data in H1BGraph.render](code_samples/main.jsx)
 
-As you can see, we didn’t have to do much. We just gave the `Histogram` component data passed through a filter instead of raw.
+As you can see, we didn’t have to do much. We just passed the `rawData` through our filter before feeding it to the `Histogram.
 
-You should now be able to see something like this:
+You should now see a histogram like this:
 
 ![Histogram with only 2014 salaries](images/2014_histogram.png)
 
 Hooray! Histogram with user filtering.
 
-A lot of work went into that and we’ve got plenty of moving parts. But remember, all you have to do now to add more filters is to add another `<ControlRow />` to `Controls`, write a filter function for it, and make sure it’s included in `updateDataFilter`.
+A lot of work went into that and we’ve got plenty of moving parts. But remember, all it takes to add more filters is adding another `<ControlRow />` to `Controls`, writing a filter function, and making sure it’s included in `updateDataFilter`.
 
-That’s it. A minute of typing to give users the ability to filter by almost anything.
+That’s it. A minute of typing to let users filter by almost anything.
 
 ## Adding some meta data
 
-If you’ve followed along this far, you’ve got a nice histogram of H1B salaries in the software industry. It renders fully on the frontend, changes when the user picks a specific year, and you’ve got a couple of building blocks to make it better.
+If you’ve followed along this far, you’ve got a nice histogram of H1B salaries in the software industry. It renders fully on the front-end and changes when the user picks a specific year. You’ve even got a couple of building blocks to make it better.
 
-But a good visualization needs a title and a description. The title tells the user what they’re looking at, the description tells them the story.
+But a good visualization needs a title and a description. The title tells users what they’re looking at, the description gives them the story.
 
-As great as people are at understanding pictures, they’re much better when you flat out tell them what they’re looking at.
+As great as people are at understanding pictures, it goes much better when you flat out tell them what they’re looking at.
 
 We start with a stubbed out `src/meta.jsx` file:
 
 {crop-start-line=5,crop-end-line=32,linenos=off,lang=jsx}
 <<[Stubbed meta.jsx file](code_samples/meta.jsx)
 
-We’re going to make a mixin called `MetaMixin` because both the `Title` and the `Description` component are going to use some of the same functions. It will have a function to get a list of years out of data, a function to give us a label formatter, and a function to give us data filtered by a specific year.
+We’re going to make a mixin called `MetaMixin` because both the `Title` and `Description` components are going to use some of the same functions. It will have a function to get a list of years out of data, a function to give us a label formatter, and a function to give us data filtered by a specific year.
 
 Let’s add them.
 
 {crop-start-line=37,crop-end-line=63,linenos=off,lang=jsx}
 <<[MetaMixin functions](code_samples/meta.jsx)
 
-There’s nothing special going on here. `getYears` uses `_.groupBy` to group the data by year, then returns the keys of the array. We could probably make this more efficient, but it works well enough and is easy to read.
+There’s nothing special going on here. `getYears` uses `_.groupBy` to group the data by year, then returns the keys of the array. We could make this more efficient, but it works well enough and is easy to read.
 
-`getFormatter` relies on the fact that d3 scales have formatters. It creates a linear scale with a defined domain, and returns the `tickFormat()` function. The formatter doesn’t work well without a defined domain.
+`getFormatter` relies on the fact that d3.js scales have formatters. It creates a linear scale with a domain, and returns the `tickFormat()` function. Formatters don't work well without a defined domain.
 
 `getAllDataByYear` is a simple filter function. We’ll use it to access data for specific years when making the description.
 
@@ -591,21 +592,21 @@ We start with the year fragment:
 {crop-start-line=68,crop-end-line=83,linenos=off,lang=jsx}
 <<[getYearsFragment function](code_samples/meta.jsx)
 
-Nothing special going on. We get the list of years in the current data and return either an empty string or `in Year`. If there’s only one year in the data, we assume it’s been filtered by year.
+We get the list of years in the current data and return either an empty string or `in Year`. If there’s only one year in the data, we assume it’s been filtered by year.
 
 The render function is going to be simple as well:
 
 {crop-start-line=110,crop-end-line=129,linenos=off,lang=jsx}
 <<[Title.render function](code_samples/meta.jsx)
 
-We’re basically just returning an `<h2>` with a title that includes some dynamic tags. We change `made` to `make` based on whether or not we’re adding `in years`, and we used `d3.mean` to get the average.
+We’re returning an `<h2>` element with a title that includes some dynamic tags. We change `made` to `make` based on whether or not we’re adding `in years`, and we used `d3.mean` to get the average.
 
-Now we can just add the title into H1BGraph’s `render` method. You can use as many as you want, wherever you want, but I think one above the graph works best.
+Now we can just add the title into H1BGraph’s `render` method. You can use as many as you want, wherever you want, but I think putting it above the graph works best.
 
-{crop-start-line=629,crop-end-line=636,linenos=off,lang=jsx}
+{crop-start-line=622,crop-end-line=636,linenos=off,lang=jsx}
 <<[Add title to H1BGraph.render](code_samples/main.jsx)
 
-Don’t forget to add a `meta = require(‘./meta.jsx’);` at the top of the file.
+Don’t forget to add a `meta = require(‘./meta.jsx’);` at the top of the `src/main.jsx`.
 
 Your histogram should now look like this:
 
@@ -622,9 +623,9 @@ First, we add the `getYearFragment` function:
 {crop-start-line=134,crop-end-line=150,linenos=off,lang=jsx}
 <<[Description.getYearFragment function](code_samples/meta.jsx)
 
-Same as in `Title`, but with a capital first letter. Yes, this would might fit better in `MetaMixin`.
+Same as in `Title`, but with a capital first letter. Yes, this might fit better in `MetaMixin`.
 
-But the `getPreviousYearFragment` function is a bit more complex:
+But the `getPreviousYearFragment` function is more complex:
 
 {title="Description.getPreviousYearFragment",linenos=off,lang=jsx}
     getPreviousYearFragment: function () {
@@ -655,18 +656,18 @@ Now we’ve just got to use these two fragments in the render method.
 {crop-start-line=238,crop-end-line=256,linenos=off,lang=jsx}
 <<[Description.render function](code_samples/meta.jsx)
 
-We’ve crammed a lot into that return statement, but it’s really not as hairy as it looks. We start the sentence with either “Since 2012” or “In Year”, then decide what tense to use for “give”, followed by the count of H1Bs in the current data and “foreign nationals”.
+We’ve crammed a lot into that return statement. But it's not as hairy as it looks. We start the sentence with either “Since 2012” or “In Year”, then decide what tense to use for the verb “give”, followed by the count of H1Bs in the current data and “foreign nationals”.
 
-Right after that, with no space, we add the previous year fragment. Followed by a sentence describing the range the majority of salaries fall into. To get the numbers we used d3’s built in standard deviation calculator and assumed the distribution is roughly gaussian. That means 68.2% of our datapoints fall within a standard deviation to each side of the mean.
+Right after that, with no space, we add the previous year fragment. Then a sentence describing the range that the majority of salaries fall into. To get the numbers we used d3.js’s built-in standard deviation calculator and assumed the distribution is roughly normal. That means 68.2% of our data falls within a standard deviation to each side of the mean.
 
 Yes, my statistics professor would be very angry, but it’s a good enough approximation.
 
 Let’s put the description next to our title.
 
-{crop-start-line=717,crop-end-line=721,linenos=off,lang=jsx}
+{crop-start-line=707,crop-end-line=722,linenos=off,lang=jsx}
 <<[Add description to H1BGraph.render](code_samples/main.jsx)
 
-Unlike the title, our description needs the full data as well. Otherwise it won’t be able to write the year comparison fragment.
+Unlike the title, our description needs the full data just like the controls do. Without this, it wouldn't be able to get data for previous years.
 
 Your histogram should now have a nice description:
 
@@ -674,4 +675,4 @@ Your histogram should now have a nice description:
 
 Hooray, you’ve made a histogram of H1B salaries with a title and description that change when the visualization changes. You’re awesome!
 
-And now you know how to make React and d3 work together. Yay!
+Now you know how to make React and d3.js work together. Yay!
