@@ -105,30 +105,30 @@ This might look roundabout, but I promise it’s awesome. It's definitely better
 
 Having your components rely solely on their properties, is like having functions that rely just on the arguments they are given.  This means that given the same arguments, they *always* render the same output.
 
-This *should* be called "idempotent JavaScript", but the community has decided to call it "isomorphic JavaScript". I guess it sounds cooler. But if you're going to look up functional programming literature, look for idempotent, if you're going to look at popular blogs, look for isomorphic.
+This *should* be called "idempotent JavaScript", but the community has decided to call it "isomorphic JavaScript". I guess it sounds cooler. But if you're going to look up functional programming literature, look for idempotent, if you're going to look at popular blogs, look for isomorphic. Another ancient buzzword that talks about these principles is "referential transparency".
 
 Either way, functional programming for HTML. Yay!
 
 ## The HTML skeleton
 
-We’re building the whole interface with React, but we still need some HTML. It will take care of including files and giving us a container for React stuff.
+We’re building the whole interface with React, but we still need some HTML to start with. It's going to take care of including files and giving our UI a container.
 
 Make an index.html file that looks like this:
 
 {linenos=off,lang=html}
 <<[HTML skeleton](code_samples/index.html)
 
-These 20 lines do everything we need. The `<head>` sets some meta properties recommended by Bootstrap and includes our stylesheet. The `<body>` sets up a container and includes the JavaScript code.
+These 20 lines do everything we need. The `<head>` sets some meta properties that Bootstrap recommends and includes our stylesheet. The `<body>` creates container and includes the JavaScript code.
 
-We didn’t really need a `<div>` inside a `<div>` like that, but I like to avoid taking over the whole `.container` with React. Gives you more flexibility to add dumb static content that really doesn’t need React.
+We didn’t really need a `<div>` inside a `<div>` like that, but I like to avoid taking over the whole `.container` with React. This gives you more flexibility for adding dumb static content.
 
 ## The Main Component
 
-As [mentioned before](#the-architecture) we are going to build everything off a central repository of truth - The Main Component. We’re going to call it `H1BGraph` because it draws a graph of H1B data.
+As [mentioned before](#the-architecture) we're going to build everything off a central repository of truth - The Main Component. We'll call this component `H1BGraph` because it draws a graph of H1B data.
 
 Very imaginative, I know.
 
-This code lives in `src/main.jsx` and starts by requiring React, Lodash, and d3:
+This code is going to live in `src/main.jsx` and start by requiring React, Lodash, and d3.js:
 
 {crop-start-line=5,crop-end-line=8,linenos=off,lang=jsx}
 <<[Require the libraries](code_samples/main.jsx)
@@ -142,33 +142,33 @@ We also need a basic React component called `H1BGraph`. It should look like this
 
 This creates a Bootstrap row with an `<svg>` element.
 
-Add this at the bottom to make sure our component actually renders:
+We also have to render our component into the page, like this:
 
 {crop-start-line=25,crop-end-line=29,linenos=off,lang=jsx}
 <<[Render our component](code_samples/main.jsx)
 
-If all is well, your browser’s document inspector should show a blank SVG wrapped in some divs.
+If all went well, your browser’s document inspector will show a blank SVG wrapped in some divs. Don't forget to keep `live-server` and `grunt` running in the background.
 
 ## Loading data
 
-Great, we’ve got something rendering. But we need to load some data before we can draw a picture. If you still haven’t downloaded the file into `data/h1bs.csv`, do it now. You can find it on Github, [here](https://github.com/Swizec/h1b-software-salaries).
+Great, we’ve got something rendering. But we need to load some data before we can draw a picture. If you still don't have `data/h1bs.csv`, now is the time to get it. You can find it on Github, [here](https://github.com/Swizec/h1b-software-salaries),  or in the stub project included with the book.
 
-We’re going to use d3’s built-in data loading magic and hook it into React’s component lifecycle. 
+We’re going to use d3.js’s built-in data loading magic and hook it into React’s component lifecycle. 
 
 We start by adding three short methods to `H1BGraph`:
 
 {crop-start-line=34,crop-end-line=49,linenos=off,lang=jsx}
 <<[Base methods to load data](code_samples/main.jsx)
 
-React calls `componentWillMount` right before inserting the component into the document. It’s a great opportunity to make any last minute preparations before rendering. In our case, it’s a good spot to start loading data.
+React calls `componentWillMount` right before inserting the component into our document. It’s a great opportunity to make any last minute preparations before rendering. In our case, it’s a good spot to start loading data. 
 
-You should avoid loading data that’s never rendered.
+I'm sure better spots exist, but loading a 12MB data file is always going to take a couple of seconds. And you should avoid loading data you never intend to render.
 
 `getInitialState` is the React way to set up a default state. An empty `rawData` array in our case.
 
-And we’re going to put d3’s data loading magic in `loadRawData`. 
+And we’re going to put d3.js’s data loading magic in `loadRawData`. 
 
-We add a call to `d3.csv` because our data is in CSV format. D3 is smart enough to change every row into an object using values from the title row (first row) as keys.
+We add a call to `d3.csv` because our data is in CSV format. D3.js is smart enough to change every row into an object using values from the title row (first row) as keys.
 
 {crop-start-line=74,crop-end-line=86,linenos=off,lang=jsx}
 <<[Load data with d3.csv](code_samples/main.jsx)
@@ -181,23 +181,54 @@ But the data we’ve got now has keys with spaces like `submit date` and `job ti
 
 We can add some cleanup in one fell swoop:
 
-{crop-start-line=113,crop-end-line=144,linenos=off,lang=jsx}
+{crop-start-line=113,crop-end-line=143,linenos=off,lang=jsx}
 <<[Data cleanup](code_samples/main.jsx)
 
-Using `.row()`, we’ve given a callback to `d3.csv` that tells it what to do with every row it reads. Each row is fed into the function as a raw object, and whatever the function returns is added to the final result.
+Using `.row()`, we’ve given a callback to `d3.csv` that tells it how to change every row that it reads. Each row is fed into the function as a raw object, and whatever the function returns is added to the final result.
 
-In our case we cleaned up the keys, parsed dates into `Date()` objects and made sure numbers are numbers. If a row didn’t have a `base_salary`, we filtered it out by returning null.
+We're changing objects that look like this:
 
-It’s also a good idea to give users some idea what’s going on. Especially when they’re looking at a blank page while the data loads. 
+{title="Raw CSV rows",linenos=off,lang=js}
+			{
+			    "employer": "american legalnet inc",
+			    "submit date": "7/10/2013",
+			    "start date": "8/1/2013",
+			    "case status": "certified",
+			    "job title": "software",
+			    "base salary": "80000",
+			    "salary to": "",
+			    "city": "encino",
+			    "state": "ca"
+			}
 
-The easiest way to do that is by rendering some explainer text when there’s no data.
+Into objects that look like this:
 
-{crop-start-line=205,crop-end-line=223,linenos=off,lang=jsx}
+{title="Cleaned CSV rows",linenos=off,lang=js}
+			{
+			    "employer": "american legalnet inc",
+			    "submit_date": "2013-07-09T22:00:00.000Z",
+			    "start_date": "2013-07-31T22:00:00.000Z",
+			    "case_status": "certified",
+			    "job_title": "software",
+			    "clean_job_title": "other",
+			    "base_salary": 80000,
+			    "salary_to": null,
+			    "city": "encino",
+			    "state": "ca"
+			}
+
+In our case we cleaned up the keys, parsed dates into `Date()` objects and made sure numbers are numbers. If a row didn’t have a `base_salary`, we filtered it out by returning `null`.
+
+But loading and parsing 81,000 datapoints takes some time. Let's tell users what they're waiting for by rendering some explainer text when there's no data.
+
+{crop-start-line=203,crop-end-line=221,linenos=off,lang=jsx}
 <<[Loading indicator](code_samples/main.jsx)
 
-The beauty of this approach is that our `render` method just returns different elements based on whether we’ve got some data or not. Notice we access the data as `this.state.rawData` and rely on the re-render when the state updates.
+The beauty of our approach is that the `render` method just returns different elements based on whether we’ve got some data or not. Notice, we access the data as `this.state.rawData` and rely on the re-render when the state updates.
 
-If you’ve kept live-server and Grunt running in the background, you should see your browser flash the loading text before becoming blank.
+If you’ve kept `live-server` and `grunt` running in the background, you should see your browser flash the loading text before becoming blank.
+
+![Loading message](images/loading_message.png)
 
 Marvelous.
 
@@ -289,7 +320,7 @@ But the page is still blank. We now have to go back to `main.jsx` and tell `H1BG
 
 First we have to add `drawers.jsx` to our requires.
 
-{crop-start-line=230,crop-end-line=234,linenos=off,lang=jsx}
+{crop-start-line=229,crop-end-line=233,linenos=off,lang=jsx}
 <<[Require drawers.jsx](code_samples/main.jsx)
 
 Then we can add the histogram component to our `render` method.
