@@ -1,0 +1,114 @@
+# Visualizing data with React and d3.js
+
+Welcome to the main part of React+d3.js. I’m going to walk you through an example of building a visualization using React and d3.js.
+
+We're going to build a subset of the code I used to [visualize the salary distribution of H1B workers](http://swizec.github.io/h1b-software-salaries/#2014-ca-engineer) in the United States software industry.
+
+![H1B salary distribution for engineers in California](images/engineers-california.png)
+
+If you skipped the [environment setup section](#the-environment), make sure you’ve got the following dependencies:
+
+* d3.js
+* React
+* Bootstrap (for styling)
+* Lodash
+
+And you should have some way of runing a static file server. I like `live-server`.
+
+We’re going to put all our code in a `src/` directory, and serve the compiled version out of `build/`. A `data/` directory is going to hold our data.
+
+Before we begin, you should copy the dataset from the stub project you got with the book. It shold be in the `data/` directory of your project.
+
+## JSX
+
+We’re going to write our code in JSX. A JavaScript syntax extension that lets us treat XML-like data as normal citizens. You can use React without JSX, but I feel that it makes React’s full power easier to use.
+
+The gist of JSX is that we can use any XML-like string just like it was part of  JavaScript. No Mustache or messy string concatenation necessary. Your functions can return straight up HTML, SVG, or XML.
+
+For instance, the code that renders our whole application is going to look like this:
+
+{crop-start-line=399,crop-end-line=402,linenos=off,lang=jsx}
+<<[A basic Render](code/src/main.jsx)
+
+Which compiles to:
+
+{title="JSX compile result", linenos=off, lang=js}
+    React.render(
+        React.createElement(H1BGraph, {url: “data/h1bs.csv”}),
+        document.querySelectorAll(‘.h1bgraph’)[0]
+    );
+
+As you can see, HTML code translates to `React.createElement` calls with attributes translated into a property dictionary. The beauty of this approach is that you can use React components as if they were HTML tags and that HTML attributes can be anything.
+
+You’ll see that anything from a simple value to a function or an object works equally well.
+
+I'm not sure yet whether this is better than separate template files in Mustache or whatever. There are benefits to both approaches. I mean, would you let a designer write the HTML inside your JavaScript files? I wouldn't.
+
+But it's definitely better than manually `+`-ing strings or Angular's approach of putting everything into HTML. Much better.
+
+If you skipped the setup section and don't have a JSX compilation system set up, I suggest you do that now. You can also use the project stub you got with the book.
+
+Just like the official documentation, I don't suggest using `JSXTransform.js`. Sure it's neat to have all this compilation happen right in the browser, but it's bad practice.
+
+## The basic approach
+
+Because SVG is an XML format that fits into the DOM, we can assemble it with React. To draw a `100px` by `200px` rectangle inside a grouping element moved to `(50, 20)` we can do something like this:
+
+{title="A simple rectangle in React",linenos=off,lang=jsx}
+    render: function () {
+        return (
+            <g transform="translate(50, 20)">
+                <rect width="100" height="200" />
+            </g>
+        );
+    }
+
+If the parent component puts this inside an `<svg>` element, the user will see a rectangle. At first glance this looks cumbersome compared to traditional d3.js. But look closely:
+
+{title="A simple rectangle in d3.js",linenos=off,lang=js}
+    d3.select("svg")
+      .append("g")
+      .attr("transform", "translate(50, 20)")
+      .append("rect")
+      .attr("width", 100)
+      .attr("height", 200);
+
+The d3.js approach outputs SVG as if by magic. It also looks a bit cleaner because it's pure JavaScript. But it’s a lot more typing and function calls for the same result.
+
+Well, actually, the pure d3.js example is 10 characters shorter. But trust me, React is cool, okay.
+
+Anyway, my point is that dealing with the DOM is not d3.js’s strong suit. Especially once you're drawing a few thousand elements and your visualization slows down to a leisurely stroll if you’re careful.
+
+You always have to keep an eye on how many elements you're updating. React gives you all of that for free. Its primary purpose in life is knowing exactly which elements to update when some data changes.
+
+We're going to follow this simple approach:
+
+* React owns the DOM
+* d3 calculates properties
+
+This way we leverage both React and d3.js for what they’re best at.
+
+{#the-architecture}
+## The architecture
+
+To make our lives easier we're going to use a flow-down architecture, called Flux.
+
+![The basic architecture](images/architecture.jpg)
+
+The idea is this:
+
+* The Main Component is the repository of truth
+* Child components react to user events
+* They announce changes up the chain of parents via callbacks
+* The Main Component updates its truth
+* The real changes flow back down the chain to update UI
+
+This might look roundabout, but I promise it’s awesome. It's definitely better than worrying about parts of the UI going out of date with the rest of the app.
+
+![Data flows down](images/architecture_data.jpg)
+
+Having your components rely solely on their properties, is like having functions that rely just on their arguments.  This means that given the same arguments, they *always* render the same output.
+
+If you want to read about this in more detail Google for "isomorphic JavaScript". A good buzzword is also "referential transparency" and "idempotent functions".
+
+Either way, functional programming for HTML. Yay!
