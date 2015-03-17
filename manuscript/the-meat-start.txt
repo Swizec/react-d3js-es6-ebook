@@ -112,3 +112,43 @@ Having your components rely solely on their properties, is like having functions
 If you want to read about this in more detail Google for "isomorphic JavaScript". A good buzzword is also "referential transparency" and "idempotent functions".
 
 Either way, functional programming for HTML. Yay!
+
+## The HTML skeleton
+
+We’re building the whole interface with React, but we still need some HTML to start with. It's going to take care of including files and giving our UI a container.
+
+Make an index.html file that looks like this:
+
+{linenos=off,lang=html}
+<<[HTML skeleton](code_samples/index.html)
+
+These 20 lines do everything we need. The `<head>` sets some meta properties that Bootstrap recommends and includes our stylesheet. The `<body>` creates container and includes the JavaScript code.
+
+We didn’t really need a `<div>` inside a `<div>` like that, but I like to avoid taking over the whole `.container` with React. This gives you more flexibility for adding dumb static content.
+
+## The Main Component
+
+As [mentioned before](#the-architecture) we're going to build everything off a central repository of truth - The Main Component. We'll call this component `H1BGraph` because it draws a graph of H1B data.
+
+Very imaginative, I know.
+
+This code is going to live in `src/main.jsx` and start by requiring React, Lodash, and d3.js:
+
+{crop-start-line=5,crop-end-line=8,linenos=off,lang=jsx}
+<<[Require the libraries](code_samples/main.jsx)
+
+We’re going to add more imports later.
+
+We also need a basic React component called `H1BGraph`. It should look like this:
+
+{crop-start-line=10,crop-end-line=23,linenos=off,lang=jsx}
+<<[Blank component](code_samples/main.jsx)
+
+This creates a Bootstrap row with an `<svg>` element.
+
+We also have to render our component into the page, like this:
+
+{crop-start-line=25,crop-end-line=29,linenos=off,lang=jsx}
+<<[Render our component](code_samples/main.jsx)
+
+If all went well, your browser’s document inspector will show a blank SVG wrapped in some divs. Don't forget to keep `live-server` and `grunt` running in the background.
