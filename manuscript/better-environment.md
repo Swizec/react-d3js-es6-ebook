@@ -74,6 +74,8 @@ The first step is to rename the directory and remove Git's version history and t
 
 We now have a directory called `react-d3-example` that contains some config files, a bit of code, and isn't tied to a Git project.
 
+### Make it your own
+
 To make it our own, we have to change some information inside `package.json`: the name, version, and description.
 
 {linenos=off,lang=json}
@@ -125,12 +127,14 @@ Now that we have all the basic libraries and tools we need to run our code, we h
 
 The `--save` option saves them to `package.json`.
 
-You should be ready to go. Start the dev server, and background code compilation to make sure everything works.
+## Check that it works
+
+You should be good to go. Start the dev server:
 
 {linenos=off}
     $ npm start
 
-This command runs a simple static file server written in node.js. The server also makes sure to keep Webpack compiling your code when it detects a file change. It also puts some magic in place that hot loads code into the browser without refreshing, and without losing variable values.
+This command runs a small static file server written in node.js. The server makes sure to keep Webpack compiling your code when it detects a file change. It also puts some magic in place that hot loads code into the browser without refreshing, and without losing variable values.
 
 I don't know how that part works.
 
@@ -138,4 +142,12 @@ Assuming there were no errors, you can go to `http://localhost:3000` and see a c
 
 If it worked: Awesome, you got the code running! The development environment works, yay!
 
-If it didn't work: Poop. A number of things could have gone wrong. Your best bet is to Google any error messages the local server spits out.
+If it didn't work: Poop. A number of things could have gone wrong. I would suggest making sure `npm install` ran fine, and Googling for any error messages that you get.
+
+### Remove the sample code
+
+Now that we know our development environment works, we can get rid of the sample code inside `src/`. We're going to put our own code files in there.
+
+We're left with a skeleton project that's full of configuration files, a dev server, and an empty `index.html`. This is a good time to make another `git commit`.
+
+In the rest of this chapter, we're going to look at the different config files to get some understanding of what's going on. You should jump straight to [the meat](#the-meat-start), if you don't care about understanding config files right now.
