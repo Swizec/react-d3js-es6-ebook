@@ -19,7 +19,7 @@ It's a mess. I'm sorry I told you to use it. The old system is included in [the 
 
 If you already know how to set up the perfect development environment for modern JavaScript work, then you should skip this section.
 
-## There is a better way: Webpack
+## Bundle with Webpack, compile with Babel
 
 Webpack calls itself a *"flexible unbiased extensible module bundler"*, which doesn't say much and sounds like buzzword soup. At its most basic, it gives you the ability to organize code into modules and 'require()' what you need. Much like Browserify.
 
@@ -144,10 +144,74 @@ If it worked: Awesome, you got the code running! The development environment wor
 
 If it didn't work: Poop. A number of things could have gone wrong. I would suggest making sure `npm install` ran fine, and Googling for any error messages that you get.
 
-### Remove the sample code
+## Remove sample code, add LESS
 
 Now that we know our development environment works, we can get rid of the sample code inside `src/`. We're going to put our own code files in there.
 
-We're left with a skeleton project that's full of configuration files, a dev server, and an empty `index.html`. This is a good time to make another `git commit`.
+We're left with a skeleton project that's full of configuration files, a dev server, and an empty `index.html`. This is a good opportunity for another `git commit`.
 
-In the rest of this chapter, we're going to look at the different config files to get some understanding of what's going on. You should jump straight to [the meat](#the-meat-start), if you don't care about understanding config files right now.
+### Add LESS compiling
+
+Less is my favorite way to write stylesheets. It looks almost like traditional CSS, but gives you the ability to use variables, nest definitions, and write mixins. We won't need much of this for the H1B graphs project, but nesting will make our style definitions nicer, and LESS will make your life easier in bigger projects.
+
+Webpack can handle compiling LESS to CSS for us. We just have to install a couple of Webpack loaders, and add three lines to the config.
+
+Let's start with the loaders:
+
+{linenos=off}
+   $ npm install --save style-loader less-loader
+
+Remember, `--save` adds `style-loader` and `less-loader` to package.json. The `style-loader` takes care of transforming `require()` calls into `<link rel="stylesheet"` definitions, and `less-loader` takes care of compiling LESS into CSS.
+
+To add them to our build step, we have to go into `webpack.config.dev.js`, find the `loaders: [` definition and add a new object. Like this:
+
+{linenos=on,starting-line-number=19}
+    module: {
+        loaders: [{
+          test: /\.js$/,
+          loaders: ['babel'],
+          include: path.join(__dirname, 'src')
+        },
+				// leanpub-start-insert
+				{
+           test: /\.less$/,
+           loader: "style!css!less"
+        }
+				// leanpub-end-insert
+        ]
+    }
+
+Don't worry if you don't understand what the rest of this file does. We're going to look at that in the next section.
+
+Our addition tells Webpack to load any files that end with `.less` using `style!css!less`. The `test:` part is a regex that  describes which files to match, and the `loader` part uses bangs to chain three loaders. The file is first compiled with `less`, then compiled into `css`, and finally loaded as a `style`.
+
+At least that's how I understand it. These loader incantations can get pretty intricate and to be honest, I usually copy paste them from examples in README files.
+
+If we got everything right, we should now be able to use `require('./style.less')` to load style definitions. This is great because it allows us to have separate style files for each component, which makes our code more reusable since every module comes with its own styles.
+
+Wonderful.
+
+In the rest of this chapter, we're going to take a deeper look into all the config files that came with our boilerplate. You should jump straight to [the meat](#the-meat-start), if you don't care about that right now.
+
+## What's in the boilerplate
+
+Boilerplate is great because it lets you get started right away.  No setup, no fuss, just `npm install` and away we go.
+
+But you *will* have to change something eventually. When you do, understanding how the boilerplate you used is constructed will help. You don't have to know every detail about everything of course. That's what Google is for.
+
+To make future googling easier, we're now going to look at the core ingredients of the boilerplate we used. Other boilerplates, of which there are many, might include other bits and pieces but they're all going to have at least two:
+
+* the webpack config
+* the dev server
+
+Everything else is optional.
+
+### Webpack config
+
+
+
+### Dev server
+
+### Babel config
+
+### Editor config
