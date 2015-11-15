@@ -197,9 +197,11 @@ In the rest of this chapter, we're going to take a deeper look into all the conf
 
 Boilerplate is great because it lets you get started right away.  No setup, no fuss, just `npm install` and away we go.
 
-But you *will* have to change something eventually. When you do, understanding how the boilerplate you used is constructed will help. You don't have to know every detail about everything of course. That's what Google is for.
+But you *will* have to change something eventually, and when you do, you'll want to know what to look for. There's no need to know every detail about every config file, but you do have to know enough so that you can Google for help.
 
-To make future googling easier, we're now going to look at the core ingredients of the boilerplate we used. Other boilerplates, of which there are many, might include other bits and pieces but they're all going to have at least two:
+Let's take a deeper look at the config files to make future googling easier. We're relying on Dan Abramov's `react-transform-boilerplate`, but many others exist with different amounts of bells and whistles. I like Dan's because it's simple.
+
+All modern boilerplates are going to include at least two bits:
 
 * the webpack config
 * the dev server
@@ -208,7 +210,16 @@ Everything else is optional.
 
 ### Webpack config
 
+Wepback is where the real magic happens so this is the most important configuration file in your project. It's just a JavaScript file though so there's nothing to fear.
 
+Most projects have two versions of this file: a dev version, and a prod version. The first is geared more towards what we need in development - a compile step that leaves our JavaScript easy to debug - while the second is geared towards what we need in production - compressed and uglified JavaScript that's quick to load.
+
+Since both files are so similar, we're only going to look at the dev version.
+
+It comes in four parts:
+
+{crop-start-line=3,crop-end-line=18,linenos=off,lang=javascript}
+<<[Webpack config structure](code_samples/env/webpack.config.dev.js)
 
 ### Dev server
 
