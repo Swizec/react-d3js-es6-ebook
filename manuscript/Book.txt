@@ -2,8 +2,5 @@ introduction.txt
 better-environment.md
 the-meat-start.txt
 the-meat.txt
-testing.txt
-using-in-real-world.txt
-a-fluxier-approach.txt
 conclusion.txt
 appendix.txt
