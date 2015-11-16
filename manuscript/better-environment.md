@@ -165,21 +165,8 @@ Remember, `--save` adds `style-loader` and `less-loader` to package.json. The `s
 
 To add them to our build step, we have to go into `webpack.config.dev.js`, find the `loaders: [` definition and add a new object. Like this:
 
-{linenos=on,starting-line-number=19}
-    module: {
-        loaders: [{
-          test: /\.js$/,
-          loaders: ['babel'],
-          include: path.join(__dirname, 'src')
-        },
-				// leanpub-start-insert
-				{
-           test: /\.less$/,
-           loader: "style!css!less"
-        }
-				// leanpub-end-insert
-        ]
-    }
+{crop-start-line=4,crop-end-line=17,linenos=on,starting-line-number=19,lang=javascript}
+<<[Add LESS loaders](code_samples/env/webpack.config.dev.js)
 
 Don't worry if you don't understand what the rest of this file does. We're going to look at that in the next section.
 
@@ -193,7 +180,7 @@ Wonderful.
 
 In the rest of this chapter, we're going to take a deeper look into all the config files that came with our boilerplate. You should jump straight to [the meat](#the-meat-start), if you don't care about that right now.
 
-## What's in the boilerplate
+## What's in the environment
 
 Boilerplate is great because it lets you get started right away.  No setup, no fuss, just `npm install` and away we go.
 
@@ -218,10 +205,109 @@ Since both files are so similar, we're only going to look at the dev version.
 
 It comes in four parts:
 
-{crop-start-line=3,crop-end-line=18,linenos=off,lang=javascript}
+{crop-start-line=22,crop-end-line=36,linenos=off,lang=js}
 <<[Webpack config structure](code_samples/env/webpack.config.dev.js)
 
+ - Entry, which tells Webpack where to start building our project's dependency tree.
+
+ - Output, which tells Webpack where to put the result. This is what our index.html file loads.
+
+ - Plugins, which tells Webpack what plugins to use when building our code.
+
+ - Loaders, which tells Webpack about the different file loaders we'd like to use.
+
+There's also the `devtool: 'eval'` option, which tells Webpack how to package our files so they're easier to debug. In this case our code will come inside `eval()` statements, which makes it hot loadable.
+
+Let's go through the four sections one by one.
+
+#### Entry
+
+The entry section of Webpack's config specifies the entry points of our dependency tree. It's an array of files that `require()` all other files.
+
+In our case, it looks like this:
+
+{crop-start-line=46,crop-end-line=51,linenos=off,lang=js}
+<<[Entry part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
+
+We specify that `./src/main` is the main file. Index is another common name. In the next section you'll see that this is the file that requires our app and renders it into the page.
+
+The `webpack-hot-middleware/client` line enables Webpack's hot loading, which can load new versions of JavaScript files without reloading the page.
+
+If we wanted to compile multiple independent apps with a single Webpack config file, we could add more files. A common example is when you have a separate admin dashboard app for some users, and a friendly end-user app for others.
+
+#### Output
+
+The output section specifies which files to output to. Our config is going to put all compiled code into a single `bundle.js` file, but it's common to have multiple output files. In the case of an admin dashboard and a user-facing app that would allow us to avoid loading unnecessary JavaScript for users who don't need that functionality.
+
+The config looks like this:
+
+{crop-start-line=73,crop-end-line=79,linenos=off,lang=js}
+<<[Output part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
+
+We define a path, `./dist/`, where compiled files live, say the filename for JavaScript is `bundle.js`, and specify `/static/` as the public path. That means the `<script>` tag in our HTML should use `/static/bundle.js` to get our code, but we should use `./dist/bundle.js` to copy the compiled file.
+
+#### Plugins
+
+There's a plethora of Webpack plugins out there and to be honest I haven't even begun to explore them all. We're only going to use two of them in our example.
+
+{crop-start-line=104,crop-end-line=109,linenos=off,lang=js}
+<<[Plugins part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
+
+As you might have guessed, this config is just an array of plugin object instances. Both plugins we're using come with Webpack by default, otherwise we'd have to `require()` them at the top of the file.
+
+`HotModuleReplacementPlugin` is where the hot loading magic happens. I have no idea how it works, but it's the most magical thing that's ever happened to my coding abilities.
+
+The `NoErrorsPlugin` makes sure that Webpack doesn't error out and die when there's a problem with our code. The internet recommends using it when you rely on hot loading new code.
+
+#### Loaders
+
+Finally we come to the loaders section. Much like with plugins, there is a universe of Webpack loaders out there, that I've barely started to explore.
+
+If you can think of it, there's a loader for it. In my day job we use a Webpack loader for everything from JavaScript code, to images and font files.
+
+But for the purposes of this book, we don't need anything that fancy; just JavaScript and styles.
+
+{crop-start-line=136,crop-end-line=148,linenos=off,lang=js}
+<<[Loaders part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
+
+Each of these definitions comes in three parts:
+
+ * `test`, which specifies the regex for matching files.
+ * `loader` or `loaders`, which specifies which loader to use for these files. You can compose loader sequences with bangs, `!`. 
+ * optional `include`, which specifies the directory to search for files
+
+There might be loaders out there with more options, but this is the basic I've seen in all of them.
+
+That's it for our very basic Webpack config. You can read about all the other options in [Webpack's own documentation](http://webpack.github.io/docs/).
+
+My friend Juho Vepsäläinen has also written a marvelous book that dives deeper into Webpack. You can find it at [survivejs.com](http://survivejs.com).
+
 ### Dev server
+
+The dev server that comes with Dan's boilerplate is based on the Express framework. It's a popular framework for building websites in node.js, but that's not important. Other boilerplates use different approaches.
+
+Many better and more in depth books have been written about node.js and its frameworks. In this book, we're going to take a quick look at some of the key parts.
+
+For example, on line 9, you can see that we tell the server to use Webpack for ... things. It's been a few versions since I wrote an Express server for scratch, so I usually cargo cult this part.
+
+{crop-start-line=9,crop-end-line=14,linenos=on,starting-line-number=9,lang=js}
+<<[Lines that tell Express to use Webpack](code_samples/env/devServer.js)
+
+The `compiler` variable is an instance of Webpack, and `config` is the config we looked at earlier. `app` is an instance of the Express server.
+
+Another important bit of the `devServer.js` file specifies routes. In our case, we want to serve everything from `public` as a static file, and anything else to serve `index.html` and let JavaScript handle routing.
+
+{crop-start-line=16,crop-end-line=20,linenos=on,starting-line-number=16,lang=js}
+<<[Lines that tell Express how to route requests](code_samples/env/devServer.js)
+
+This tells Express to use a static file server everything in `public`, and to serve `index.html` for anything else.
+
+At the bottom there is a line that starts the server:
+
+{crop-start-line=22,crop-end-line=22,linenos=on,starting-line-number=22,lang=js}
+<<[Line that starts the server](code_samples/env/devServer.js)
+
+I know I didn't explain much, but that's as deep as we can go at this point. You can read more about node.js servers, and Express in particular in [Azat Mardan's books](http://azat.co/). They're pretty great.
 
 ### Babel config
 
