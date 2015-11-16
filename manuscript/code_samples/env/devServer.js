@@ -27,3 +27,17 @@ app.listen(3000, 'localhost', function(err) {
 
   console.log('Listening at http://localhost:3000');
 });
+
+
+//
+// Example 0
+//
+app.use(require('webpack-hot-middleware')(compiler));
+
+// leanpub-start-insert
+app.use(express.static('public'));
+// leanpub-end-insert
+
+app.get('*', function(req, res) {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});

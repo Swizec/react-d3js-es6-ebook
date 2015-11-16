@@ -136,7 +136,7 @@ module.exports = {
   module: {
    loaders: [
        // leanpub-start-insert
-       {test: /\.js|.jsx$/,
+       {test: /\.js|\.jsx$/,
         loaders: ['babel'],
         include: path.join(__dirname, 'src')
        },
@@ -147,3 +147,36 @@ module.exports = {
     ]
   }
 };
+
+//
+// Example 7
+//
+module: {
+   loaders: [
+       // leanpub-start-delete
+       {test: /\.js$/,
+       // leanpub-end-delete
+       // leanpub-start-insert
+       {test: /\.js|\.jsx$/
+       // leanpub-end-insert
+        loaders: ['babel'],
+        include: path.join(__dirname, 'src')
+       },
+       {test: /\.less$/,
+        loader: "style!css!less"
+       }
+    ]
+  }
+
+
+//
+// Example 8
+//
+    new webpack.NoErrorsPlugin()
+  ],
+  // leanpub-start-insert
+  resolve: {
+    extensions: ['', '.js', '.jsx']
+  },
+  // leanpub-end-insert
+  module: {

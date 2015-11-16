@@ -21,7 +21,7 @@ If you already know how to set up the perfect development environment for modern
 
 ## Bundle with Webpack, compile with Babel
 
-Webpack calls itself a *"flexible unbiased extensible module bundler"*, which doesn't say much and sounds like buzzword soup. At its most basic, it gives you the ability to organize code into modules and 'require()' what you need. Much like Browserify.
+Webpack calls itself a *"flexible unbiased extensible module bundler"*, which sounds like buzzword soup. At its most basic, Webpack gives you the ability to organize code into modules and 'require()' what you need. Much like Browserify.
 
 But unlike Browserify, Webpack comes with a sea of built-in features, and a rich ecosystem of extensions called plugins. I can't hope to know even half of them, but some of the coolest I've used are plugins that let you 'require()' Less files *with* magic Less-to-CSS compilation, plugins for require-ing images, and JavaScript minification.
 
@@ -33,11 +33,41 @@ Webpack can solve two more annoyances - losing state when loading new code, and 
   * page shouldn't lose state when loading new code
   * browser should report errors accurately in the right source files
 
+### Babel
+
+Webpack can't do all this alone though - it needs a compiler.
+
+We're going to use Babel to compile our JSX and ES6 code into the kind of code all browsers understand, ES5. Don't worry if you're not ready to learn ES6, you can read the ES5 version of React+d3.js.
+
+Babel isn't really a compiler because it produces JavaScript, not machine code, but it's very important at this point. According to the roadmap, browsers aren't expected to fully support ES6 until some time in 2017. This is a long time to wait, so the community came up with transpilers, which let us use some ES6 features *right now*. Yay!
+
+Transpilers are even the officially encouraged stepping stone towards full ES6 support.
+
+To give you a rough idea of what Babel does with your code, here's a fat arrow function with JSX. Don't worry if you don't understand this code just yet, we'll go through that later.
+
+{linenos=no}
+    () => (<div>Hello there</div>)
+
+After Babel transpiles that line into ES5, it looks like this:
+
+{linenos=no}
+    (function () {
+      return React.createElement(
+        'div',
+        null,
+        'Hello there'
+      );
+    });
+
+Babel developers have created a [playground that live-compiles](https://babeljs.io/repl/) code for you. Have fun.
+
+## Quickstart
+
 The quickest way to set this up is using Dan Abramov's [react-transform-boilerplate](https://github.com/gaearon/react-transform-boilerplate) project. It's what I use for new projects these days.
 
-If you know how to do that, skip ahead to the [Visualizing data with React.js](#the-meat-start) chapter. In the rest of this chapter, I'm going to show you how to get started with the boilerplate project, and explain all the moving parts.
+If you know how to do that, skip ahead to the [Visualizing data with React.js](#the-meat-start) chapter. In the rest of this chapter, I'm going to show you how to get started with the boilerplate project, and explain some of the moving parts that make it tick.
 
-## NPM for installing dependencies
+## NPM for dependencies and tools
 
 NPM is node.js’s default package manager. Originally developed as a dependency management tool for node.js projects, it's since taken hold of the JavaScript world as a way to manage the tool belt, and with Webpack's growing popularity, a way to manage client-side dependencies as well.
 
@@ -52,7 +82,12 @@ Once you have NPM, you can install Webpack globally with:
 
 If that worked well, you're ready to go. If it didn't, Google is your friend.
 
-## Starting with boilerplate
+At this point, there are two ways to proceed:
+
+* You can continue with the step-by-step instructions using a boilerplate
+* If you bought the Engineer or Business package, you can use the included stub project that includes everything you need
+
+## Step-by-step with boilerplate
 
 All it takes to start a project from boilerplate is to clone the boilerplate project, remove a few files, and run the code to make sure everything works.
 
@@ -127,30 +162,7 @@ Now that we have all the basic libraries and tools we need to run our code, we h
 
 The `--save` option saves them to `package.json`.
 
-## Check that it works
-
-You should be good to go. Start the dev server:
-
-{linenos=off}
-    $ npm start
-
-This command runs a small static file server written in node.js. The server makes sure to keep Webpack compiling your code when it detects a file change. It also puts some magic in place that hot loads code into the browser without refreshing, and without losing variable values.
-
-I don't know how that part works.
-
-Assuming there were no errors, you can go to `http://localhost:3000` and see a counter doing some counting. That's the sample code that comes with the boilerplate.
-
-If it worked: Awesome, you got the code running! The development environment works, yay!
-
-If it didn't work: Poop. A number of things could have gone wrong. I would suggest making sure `npm install` ran fine, and Googling for any error messages that you get.
-
-## Remove sample code, add LESS
-
-Now that we know our development environment works, we can get rid of the sample code inside `src/`. We're going to put our own code files in there.
-
-We're left with a skeleton project that's full of configuration files, a dev server, and an empty `index.html`. This is a good opportunity for another `git commit`.
-
-### Add LESS compiling
+## Add LESS compiling
 
 Less is my favorite way to write stylesheets. It looks almost like traditional CSS, but gives you the ability to use variables, nest definitions, and write mixins. We won't need much of this for the H1B graphs project, but nesting will make our style definitions nicer, and LESS will make your life easier in bigger projects.
 
@@ -175,6 +187,57 @@ Our addition tells Webpack to load any files that end with `.less` using `style!
 At least that's how I understand it. These loader incantations can get pretty intricate and to be honest, I usually copy paste them from examples in README files.
 
 If we got everything right, we should now be able to use `require('./style.less')` to load style definitions. This is great because it allows us to have separate style files for each component, which makes our code more reusable since every module comes with its own styles.
+
+## Change a few knickknacks
+
+There's a few more things we have to change. They will make the rest of this book flow more smoothly. 
+
+The first and most important is making sure we can load our data files when running the project through our local server. We have to add a line to `devServer.js`:
+
+{start-crop-line=35,end-crop-line=41,linenos=off,lang=js}
+<<[Enable static server on ./public](code_samples/env/devServer.js)
+
+Don't worry, if you don't understand what this line does. We're going to look at this file in more detail later on.
+
+Now come two nice-to-haves for `webpack.config.dev.js`. They aren't super important, but I like to add them to make my life a  little easier.
+
+I like to add the `.jsx` extension to the list of files loaded with Babel. This lets me write React code in `.jsx` files, which is no longer encouraged by the community, but it makes my Emacs behave better for some reason.
+
+{crop-start-line=154,crop-end-line=169,linenos=off,lang=js}
+<<[Add .jsx to Babel file extensions](code_samples/env/webpack.config.dev.js)
+
+We changed the `test` regex to add `.jsx`. You can read more detail about how these configs work in later parts of this chapter.
+
+Finally, I like to add a `resolve` config to Webpack, which lets me load files without writing their extensions. Small detail, but makes code a lot cleaner.
+
+{crop-start-line=175,crop-end-line=182,linenos=off,lang=js}
+<<[Add resolve to webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
+
+It's a list of file extensions that Webpack tries to guess when a path you use doesn't match any files.
+
+
+## Check that it works
+
+Your environment should be ready to get started now. The best way to make sure is to try. Start the dev server:
+
+{linenos=off}
+    $ npm start
+
+This command runs a small static file server written in node.js. The server makes sure to keep Webpack compiling your code when it detects a file change. It also puts some magic in place that hot loads code into the browser without refreshing, and without losing variable values.
+
+I don't know how that part works.
+
+Assuming there were no errors, you can go to `http://localhost:3000` and see a counter doing some counting. That's the sample code that comes with the boilerplate.
+
+If it worked: Awesome, you got the code running! The development environment works, yay!
+
+If it didn't work: Poop. A number of things could have gone wrong. I would suggest making sure `npm install` ran fine, and Googling for any error messages that you get.
+
+## Remove sample code
+
+Now that we know our development environment works, we can get rid of the sample code inside `src/`. We're going to put our own code files in there.
+
+We're left with a skeleton project that's full of configuration files, a dev server, and an empty `index.html`. This is a good opportunity for another `git commit`.
 
 Wonderful.
 
@@ -311,4 +374,48 @@ I know I didn't explain much, but that's as deep as we can go at this point. You
 
 ### Babel config
 
+Babel works great out of the box. There's no need to configure anything, if you just want to get started, and don't care about optimizing the compilation process.
+
+But there is [a bunch of configuration options](http://babeljs.io/docs/usage/options/) you can play with. Everything from enabling and disabling ES6 features, to sourcemaps and basic code compacting. More importantly, you can define custom transforms for your code. 
+
+We don't need anything fancy for the purposes of our example project - just the hot module React transform. As you can guess, it enables that hot code loading magic we've mentioned a couple of times.
+
+`.babelrc` is a JSON file that looks like this:
+
+{linenos=off,lang=json}
+<<[.babelrc config](code_samples/env/babelrc)
+
+I imagine this file is something most people cargo cult, but the basic rundown is that for the `development` environment, we're loading the `react-transform` plugin, and enabling two different transforms.
+
+The first one, `react-transform-hmr`, enables hot loading. The second, `react-transform-catch-errors`, uses `redbox-react` to show us errors thrown by the compiler. This makes keeping an eye on the console less important, which means one less window to look at.
+
+We don't want either of those in production, so we leave the `production` environment without config. Defaults are enough.
+
 ### Editor config
+
+A lot has been written about tabs vs. spaces and other endless debates we programmers like to have. *Obviously* single quotes are better than double quotes ... unless  ... well ... it depends, really.
+
+I've been coding since I was a kid and there's still no consensus. Most people just wing it. Even nowadays when most editors come with a built-in linter, most people still wing it.
+
+But in recent months (years?) a solution appeared. The `.eslintrc` file. It lets you define project-specific code styles that are programmatically enforced by your editor.
+
+From what I've heard, most modern editors support `.eslintrc` out of the box so all you have to do is include the file in your project. When you do that, your editor keeps encouraging you to write beautiful code.
+
+The eslint config that comes with Dan's boilerplate loads a React linter plugin and defines a few Rect-specific rules. It also enables JSX linting, modern ES6 modules stuff, and it looks like Dan is a fan of single quotes.
+  
+{linenos=off,lang=json}
+<<[.eslintrc for React code](code_samples/env/eslintrc)
+
+I haven't really had a chance to play around with linting configs like these because Emacs defaults have been good to me so far, but I think they're a great idea. The biggest problem in a team is syncing everyone's linter configs, but you can just put a file like this in your Git project and bam, everyone's always in sync.
+
+You can find a semi-exhaustive list of options in [this helpful gist](https://gist.github.com/cletusw/e01a85e399ab563b1236).
+
+## That's it, time to play
+
+At this point you not only have a working environment to write code in, you also understand how it does what it does. At least from a high level perspective, the details are far too intricate even for me. 
+
+But that's how environments usually are: a combination of cargo culting and rough understanding. 
+
+What we care about is that our ES6 code compiles into ES5 so that everyone can run it, and that our local version automatically loads new code.
+
+We're going to start building a visualization in the next section.
