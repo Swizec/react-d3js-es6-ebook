@@ -1,41 +1,41 @@
 # Introduction
 
-Hi, I wrote this book for you as an experiment. The theory we’re  testing is that technical content works better as a short ebook than a very long blogpost.
+My dear reader, I wrote this book for you as an experiment. The theory we’re testing is that technical content works better as a short e-book than as a long blog post.
 
-You see, the issue with technical blogging is that posts live and die by their length. As soon as you broach 700 words, everything falls apart. Readers wander off to a different tab and never return.
+You see, the issue with technical blogging is that posts live and die by their length. As soon as you surpass 700 words, everything falls apart. Readers wander off to a different tab in search of other material, never to be seen or commented from again.
 
-Which sucks for me as a writer, but more importantly, it sucks for you as a reader. You’re not going to learn something if you don’t finish reading.
+This sucks for me as a writer, but more importantly, it sucks for you as a reader. You’re not going to learn something if you don’t finish reading.
 
-So here we both are. 
+So here we both are.
 
-I’m counting on you to take some time away from the internet. To actually sit down and read. To follow the examples. To *learn*.
+I’m counting on you to take some time away from the internet, to truly sit down and read. I'm counting on you to follow the examples. I'm counting on you to *learn*.
 
-You’re counting on me to have taken more care in crafting this than I would a blogpost. And I have.
+You’re counting on me to have invested more time, effort, and care in crafting this than I would invested in a blog post. I assure you that I have.
 
-I’ve tried to keep this book as short and concise as possible. My text editor thinks it should take just under an hour to read through. But playing with the examples could take longer than that.
+I’ve tried to keep this book as concise as possible. My hope is that it should take you just under an hour to read in its entirety, but playing with the examples could add some time to that.
 
 ## Why you should read React+d3.js
 
-After an hour with React+d3.js, you’ll know how to make React and d3.js play together. You’ll know how to create composable data visualizations. You’re going to understand *why* that’s a good idea, and you will have the tools to build your own library of re-usable visualization parts. 
+After an hour with React+d3.js, you’ll know how to make React and d3.js play together. You’ll know how to create composable data visualizations. You’re going to understand *why* that’s a good idea, and you will have the tools to build your own library of reusable visualization parts.
 
 Ultimately, you’re going to understand whether React and d3.js fit the needs of your project.
 
 ## What you need to know
 
-I’m going to assume you already know how to code and that you’re great with JavaScript. Many better books have been written to teach you JavaScript.
+I’m going to assume you already know how to code and that you’re great with JavaScript. Many books have been written to teach the basics of JavaScript; this is not one of them.
 
-I’m also going to assume some knowledge of d3.js. Since it isn’t a widely used library, I’m still going to explain the specific bits that we use. If you want to learn d3.js in depth, you should read my book, [Data Visualization with d3.js](https://www.packtpub.com/web-development/data-visualization-d3js).
+I’m also going to assume some knowledge of d3.js. Since it isn’t a widely-used library, I’m still going to explain the specific bits that we use. If you want to learn d3.js in depth, you should read my book, [Data Visualization with d3.js](https://www.packtpub.com/web-development/data-visualization-d3js).
 
-React is still a new kid on the block, so I’m going to assume less knowledge there. We’re not going to talk about all the details, but you’ll be fine even if this is your first time looking at React.
+React is still a new kid on the block, so I’m going to assume you're not quite as familiar. We’re not going to talk about all the details, but you’ll be fine, even if this is your first time looking at React.
 
 ## How to read this book
 
-Relax. Breathe. You’re here to learn. I’m here to teach. I promise Twitter will wait and so will Facebook. 
+Relax. Breathe. You’re here to learn. I’m here to teach. I promise Twitter will wait and so will Facebook.
 
 Just you and some fun code. To get the most out of this material I suggest two things:
 
-1. Try the example code yourself. Don’t just copy paste, type it over. Execute frequently. If something doesn’t fit together, look at the full working project on Github, [here](https://github.com/Swizec/h1b-software-salaries), or the zip files that came with the book
-2. If you already know something, skip that section. You’re awesome.
+1. Try the example code yourself. Don’t just copy-paste; type it and execute it. As a matter-of-fact, execute frequently. If something doesn’t fit together, look at the full working project on Github [here](https://github.com/Swizec/h1b-software-salaries), or check out the zip files that came with the book.
+2. If you already know something, skip that section. You’re awesome. Thanks for making this easier for me.
 
 React+d3.js is heavily based on code samples. They look like this:
 
@@ -60,25 +60,25 @@ Removed code looks like this:
 
 # Why React and d3.js
 
-React is Facebook's and Instagram's approach to writing modern JavaScript front-ends. It encourages building an app out of small re-usable components. Each is self-contained and only needs to know how to render a small bit of the interface.
+React is Facebook's and Instagram's approach to writing modern JavaScript front-ends. It encourages building an app out of small, re-usable components. Each component is self-contained and only needs to know how to render a small bit of the interface.
 
-But many frameworks have attempted this. Everything from Angular to Backbone and jQuery plugins. But where jQuery plugins fast become messy, Angular depends too much on HTML structure, and Backbone needs a lot of boilerplate, React has found a sweet spot.
+The catch is that many frameworks have attempted this: everything from Angular to Backbone and jQuery plugins. But where jQuery plugins quickly become messy, Angular depends too much on HTML structure, and Backbone needs a lot of boilerplate, React has found a sweet spot.
 
 I have found it a joy to use. Using React was the first time I have ever been able to move a piece of HTML without having to change any JavaScript.
 
-D3.js is Mike Bostock’s infamous data visualization library used by The New York Times and many others. It is the workhorse of data visualization on the web and many charting libraries out there are based on it.
+D3.js is Mike Bostock’s infamous data visualization library. It's being used by The New York Times along with many other sites. It is the workhorse of data visualization on the web, and many charting libraries out there are based on it.
 
-But d3.js is a fairly low-level library. You can’t just say *"I have data, give me a barchart"*. Well you can, but it takes a few more lines of code than that. However once you get used to it, d3.js is a joy to use.
+But d3.js is a fairly low-level library. You can’t just say *"I have data; give me a barchart"*. Well, you can, but it takes a few more lines of code than that. Once you get used to it though, d3.js is a joy to use.
 
-Just like React, d3.js is declarative. You tell it *what* you want, instead of *how* you want it. It gives you access straight to the SVG so you can manipulate your lines and rectangles at will. But d3.js isn't that great, if all you want are charts.
+Just like React, d3.js is declarative. You tell it *what* you want, instead of *how* you want it. It gives you access straight to the SVG so you can manipulate your lines and rectangles at will. The issue is that d3.js isn't that great if all you want are charts.
 
-Which is where React comes in. Once you’ve created a histogram component, for instance, you can always get a histogram with `<Histogram {...params} />`.
+This is where React comes in. For instance, once you’ve created a histogram component, you can always get a histogram with `<Histogram {...params} />`.
 
-Doesn’t that sound like the best? It does to me.
+Doesn’t that sound like the best? It's pretty amazing.
 
-And it gets even better. With React you can make various graph and chart components build off the same data. This means that when your data changes, the whole visualization reacts.
+And it gets even better. With React, you can make various graph and chart components build off the same data. This means that when your data changes, the whole visualization reacts.
 
-Your graph changes. The title changes. The description changes. Everything changes.
+Your graph changes. The title changes. The description changes. Everything changes. Mind = blown.
 
 Look how this H1B salary visualization changes when the user picks a subset of the data to look at.
 
@@ -86,5 +86,4 @@ Look how this H1B salary visualization changes when the user picks a subset of t
 
 ![Changes after user picks a data subset](images/full_changed_h1b.png)
 
-A powerful combination indeed.
-
+React + d3.js. A powerful combination indeed.
