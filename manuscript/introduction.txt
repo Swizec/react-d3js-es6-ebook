@@ -1,6 +1,6 @@
 # Introduction
 
-My dear reader, I wrote this book for you as an experiment. The theory we’re testing is that technical content works better as a short e-book than as a long blog post.
+Hi, I wrote this book for you as an experiment. The theory we’re testing is that technical content works better as a short e-book than as a long blog post.
 
 You see, the issue with technical blogging is that posts live and die by their length. As soon as you surpass 700 words, everything falls apart. Readers wander off to a different tab in search of other material, never to be seen or commented from again.
 
@@ -10,9 +10,9 @@ So here we both are.
 
 I’m counting on you to take some time away from the internet, to truly sit down and read. I'm counting on you to follow the examples. I'm counting on you to *learn*.
 
-You’re counting on me to have invested more time, effort, and care in crafting this than I would invested in a blog post. I assure you that I have.
+You’re counting on me to have invested more time, effort, and care in crafting this than I would invested in a blog post. I have.
 
-I’ve tried to keep this book as concise as possible. My hope is that it should take you just under an hour to read in its entirety, but playing with the examples could add some time to that.
+I’ve tried to keep this book as concise as possible. iA Writer estimates it will take you about an hour to read React+d3.js in its entirety, but playing with the examples could add some time to that.
 
 ## Why you should read React+d3.js
 
@@ -34,7 +34,7 @@ Relax. Breathe. You’re here to learn. I’m here to teach. I promise Twitter w
 
 Just you and some fun code. To get the most out of this material I suggest two things:
 
-1. Try the example code yourself. Don’t just copy-paste; type it and execute it. As a matter-of-fact, execute frequently. If something doesn’t fit together, look at the full working project on Github [here](https://github.com/Swizec/h1b-software-salaries), or check out the zip files that came with the book.
+1. Try the example code yourself. Don’t just copy-paste; type it and execute it. Execute it frequently. If something doesn’t fit together, look at the full working project on Github [here](https://github.com/Swizec/h1b-software-salaries), or check out the zip files that came with the book.
 2. If you already know something, skip that section. You’re awesome. Thanks for making this easier for me.
 
 React+d3.js is heavily based on code samples. They look like this:
@@ -74,7 +74,7 @@ Just like React, d3.js is declarative. You tell it *what* you want, instead of *
 
 This is where React comes in. For instance, once you’ve created a histogram component, you can always get a histogram with `<Histogram {...params} />`.
 
-Doesn’t that sound like the best? It's pretty amazing.
+Doesn’t that sound like the best? I think it's pretty amazing.
 
 And it gets even better. With React, you can make various graph and chart components build off the same data. This means that when your data changes, the whole visualization reacts.
 

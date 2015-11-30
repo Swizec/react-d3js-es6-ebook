@@ -5,7 +5,7 @@ Before we begin, we need a good work environment. We're after three things:
 
  * code should re-compile when we change a file
  * page should update automatically when the code changes
- * our dependencies and modules should be relatively simple to manage
+ * dependencies and modules should be simple to manage
 
 When I first wrote this chapter in April 2015, I suggested using a combination of Browserify, Grunt, NPM, and Bower. This was the wrong approach. It was complicated to set up, it wasn't very extensible, and it took a while to compile everything.
 
@@ -29,7 +29,7 @@ Webpack can solve two more annoyances - losing state when loading new code and a
 
   * code should re-compile when we change a file
   * page should update automatically when the code changes
-  * a simple way to manage dependencies and modules
+  * dependencies and modules should be simple to manage
   * page shouldn't lose state when loading new code
   * browser should report errors accurately in the right source files
 
@@ -39,7 +39,7 @@ Webpack can't do all this alone though - it needs a compiler.
 
 We're going to use Babel to compile our JSX and ES6 code into the kind of code all browsers understand: ES5. Don't worry if you're not ready to learn ES6, you can read the ES5 version of React+d3.js.
 
-Babel isn't really a compiler because it produces JavaScript, not machine code. That being said, it's still important at this point. According to the roadmap, browsers aren't expected to fully support ES6 until some time in 2017. That's a long time to wait, so the community came up with transpilers which let us use some ES6 features *right now*. Yay!
+Babel isn't really a compiler because it produces JavaScript, not machine code. That being said, it's still important at this point. According to the JavaScript roadmap, browsers aren't expected to fully support ES6 until some time in 2017. That's a long time to wait, so the community came up with transpilers which let us use some ES6 features *right now*. Yay!
 
 Transpilers are the officially-encouraged stepping stone towards full ES6 support.
 
@@ -184,9 +184,7 @@ Don't worry if you don't understand what the rest of this file does. We're going
 
 Our addition tells Webpack to load any files that end with `.less` using `style!css!less`. The `test:` part is a regex that describes which files to match, and the `loader` part uses bangs to chain three loaders. The file is first compiled with `less`, then compiled into `css`, and finally loaded as a `style`.
 
-At least, that's how I understand it. These loader incantations can get pretty intricate. To be honest, I usually copy-paste them from examples in README files. Better safe than sorry.
-
-If everything went smoothly, we should now be able to use `require('./style.less')` to load style definitions. This is great because it allows us to have separate style files for each component, and that makes our code more reusable since every module comes with its own styles.
+If everything went well, we should now be able to use `require('./style.less')` to load style definitions. This is great because it allows us to have separate style files for each component, and that makes our code more reusable since every module comes with its own styles.
 
 ## Change a few knickknacks
 
@@ -201,14 +199,14 @@ Don't worry if you don't understand what this line does. We're going to look at 
 
 Now we'll add two nice-to-haves for `webpack.config.dev.js`. They aren't super important, but I like to add them to make my life a little easier.
 
-I like to add the `.jsx` extension to the list of files loaded with Babel. This lets me write React code in `.jsx` files. I know what you're thinking: writing files like that is no longer encouraged by the community, but hey, it makes my Emacs behave better for some reason.
+I like to add the `.jsx` extension to the list of files loaded with Babel. This lets me write React code in `.jsx` files. I know what you're thinking: writing files like that is no longer encouraged by the community, but hey, it makes my Emacs behave better.
 
 {crop-start-line=154,crop-end-line=169,linenos=off,lang=js}
 <<[Add .jsx to Babel file extensions](code_samples/env/webpack.config.dev.js)
 
 We changed the `test` regex to add `.jsx`. You can read more detail about how these configs work in later parts of this chapter.
 
-Finally, I like to add a `resolve` config to Webpack. This lets me load files without writing their extensions. It's a small detail, but it makes the code cleaner.
+Finally, I like to add a `resolve` config to Webpack. This lets me load files without writing their extensions. It's a small detail, but it makes your code cleaner.
 
 {crop-start-line=175,crop-end-line=182,linenos=off,lang=js}
 <<[Add resolve to webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
@@ -225,8 +223,6 @@ Your environment should be ready to get started now. Let's try it out. First, st
 
 This command runs a small static file server that's written in node.js. The server ensures that Webpack continues to compile your code when it detects a file change. It also puts some magic in place that hot loads code into the browser without refreshing and without losing variable values.
 
-Honestly, I don't know how that part works.
-
 Assuming there were no errors, you can go to `http://localhost:3000` and see a counter doing some counting. That's the sample code that comes with the boilerplate.
 
 If it worked: Awesome, you got the code running! Your development environment works! Hurray!
@@ -241,7 +237,7 @@ We're left with a skeleton project that's full of configuration files, a dev ser
 
 Done? Wonderful.
 
-In the rest of this chapter, we're going to take a deeper look into all the config files that came with our boilerplate. Ff you don't care about that right now, you should jump straight to [the meat](#the-meat-start).
+In the rest of this chapter, we're going to take a deeper look into all the config files that came with our boilerplate. If you don't care about that right now, you should jump straight to [the meat](#the-meat-start).
 
 ## What's in the environment
 
@@ -311,7 +307,7 @@ We define a path, `./dist/`, where compiled files live, say the filename for Jav
 
 #### Plugins
 
-There's a plethora of Webpack plugins out there, and I haven't even begun to explore them all. We're only going to use two of them in our example.
+There's a plethora of Webpack plugins out there. We're only going to use two of them in our example.
 
 {crop-start-line=104,crop-end-line=109,linenos=off,lang=js}
 <<[Plugins part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
@@ -324,7 +320,7 @@ The `NoErrorsPlugin` makes sure that Webpack doesn't error out and die when ther
 
 #### Loaders
 
-Finally, we come to the loaders section. Much like the plugins section, there is a universe of Webpack loaders out there, and I've barely scratched the surface.
+Finally, we come to the loaders section. Much like with plugins, there is a universe of Webpack loaders out there, and I've barely scratched the surface.
 
 If you can think of it, there's likely a loader for it. At my day job, we use a Webpack loader for everything from JavaScript code to images and font files.
 
@@ -351,7 +347,7 @@ The dev server that comes with Dan's boilerplate is based on the Express framewo
 
 Many better and more in-depth books have been written about node.js and its frameworks. In this book, we're only going to take a quick look at some of the key parts.
 
-For example, on line 9, you can see that we tell the server to use Webpack for ... things. It's been a few versions since I wrote an Express server from scratch, so I usually cargo cult this part.
+For example, on line 9, you can see that we tell the server to use Webpack as a middleware. That means the server passes every request through Webpack and lets it change anything it needs.
 
 {crop-start-line=9,crop-end-line=14,linenos=on,starting-line-number=9,lang=js}
 <<[Lines that tell Express to use Webpack](code_samples/env/devServer.js)
@@ -376,7 +372,7 @@ I know I didn't explain much, but that's as deep as we can go at this point. You
 
 Babel works great out of the box. There's no need to configure anything if you just want to get started and don't care about optimizing the compilation process.
 
-But there are [a bunch of configuration options](http://babeljs.io/docs/usage/options/) if you feel like playing. You can configure everything from enabling and disabling ES6 features to sourcemaps and basic code compacting and more. More importantly, you can define custom transforms for your code.
+But there are [a bunch of configuration options](http://babeljs.io/docs/usage/options/) if you want to play around. You can configure everything from enabling and disabling ES6 features to sourcemaps and basic code compacting and more. More importantly, you can define custom transforms for your code.
 
 We don't need anything fancy for the purposes of our example project - just the hot module React transform. As you can guess, it enables that hot code loading magic we've mentioned a couple of times.
 
@@ -385,17 +381,25 @@ We don't need anything fancy for the purposes of our example project - just the 
 {linenos=off,lang=json}
 <<[.babelrc config](code_samples/env/babelrc)
 
-I imagine this file is something most people cargo cult, but the basic rundown is that for the `development` environment, we're loading the `react-transform` plugin and enabling two different transforms.
+I imagine this file is something most people copy paste from the internet, but the basic rundown is that for the `development` environment, we're loading the `react-transform` plugin and enabling two different transforms.
 
 The first one, `react-transform-hmr`, enables hot loading. The second, `react-transform-catch-errors`, uses `redbox-react` to show us errors thrown by the compiler. This makes keeping an eye on the console less important. That gives us one less window with which to convern ourselves.
 
 We don't want either of those in production, so we'll leave the `production` environment without config. Defaults are enough.
 
+#### A note on Babel 6
+
+Babel 6 came out recently, which changes an important detail: ES6 -> ES5 compilation has to be enabled manually.
+
+The easiest way to do that is to install `babel-preset-es2015`, and add `"es2015"` to the `plugins:` array inside `.babelrc`. This enables all the different transpiles, which now exist as independent projects.
+
+As of late November 2015, `babel-plugin-react-transform`, which our boilerplate relies on, doesn't support Babel 6 yet. That's why we're using Babel 5 and why we don't have to add the `es2015` transform.
+
 ### Editor config
 
-A great deal has been written about tabs vs. spaces. It's one of the many endless debates we programmers like to have. *Obviously* single quotes are better than double quotes ... unless  ... well ... it depends, really.
+A great deal has been written about tabs vs. spaces. It's one of the endless debates we programmers like to have. *Obviously* single quotes are better than double quotes ... unless  ... well ... it depends, really.
 
-I've been coding since I was a kid, and there's still no consensus. Most people just wing it. Even nowadays when most editors come with a built-in linter, most people still wing it.
+I've been coding since I was a kid, and there's still no consensus. Most people wing it. Even nowadays when editors come with a built-in linter, people still wing it.
 
 But in recent months (years?), a solution has appeared: the `.eslintrc` file. It lets you define project-specific code styles that are programmatically enforced by your editor.
 
@@ -412,7 +416,7 @@ You can find a semi-exhaustive list of options in [this helpful gist](https://gi
 
 ## That's it. Time to play!
 
-By this point, you not only have a working environment in which to write your code, you also understand how it does what it does, at least from a high-level perspective. The details are far too intricate, even for me.
+By this point, you not only have a working environment in which to write your code, you also understand how it does what it does, at least from a high-level perspective. The details are far too intricate and, frankly, not that important to your project as a whole.
 
 That's how environments usually are: a combination of cargo culting and rough understanding.
 
