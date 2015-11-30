@@ -58,7 +58,7 @@ Compiling JSX is far more important.
 JSX is React’s new file format that lets us embed HTML snippets straight in our JavaScript code. You’ll often see render methods doing something like this:
 
 {crop-start-line=399,crop-end-line=402,linenos=off,lang=jsx}
-<<[A basic Render](code/src/main.jsx)
+<<[A basic Render](code_samples/old/main.jsx)
 
 See, we’re treating HTML - in this case an H1BGraph component - just like a normal part of our code. I haven’t decided yet if this is cleaner than other templating approaches like Mustache, but it’s definitely much better than manually concatenating strings.
 
@@ -124,19 +124,19 @@ The basic file with no configs should look like this:
 We add the three tasks inside `initConfig`:
 
 {linenos=off,lang=js,crop-start-line=6,crop-end-line=17}
-<<[Less task config](code/Gruntfile.js)
+<<[Less task config](code_samples/old/Gruntfile.js)
 
 This sets a couple of options for the less compiler and tells it which file we’re interested in.
 
 {id=browserify-config,linenos=off,lang=js,crop-start-line=19,crop-end-line=37}
-<<[Browserify task config](code/Gruntfile.js)
+<<[Browserify task config](code_samples/old/Gruntfile.js)
 
 The `reactify` transform is going to transform JSX files into plain JavaScript. The rest just tells `browserify` what our main file is going to be and where to put the compiled result.
 
 I’m going to explain `debowerify` when we talk about client-side package management in the next section.
 
 {linenos=off,lang=js,crop-start-line=39,crop-end-line=52}
-<<[Watch task config](code/Gruntfile.js)
+<<[Watch task config](code_samples/old/Gruntfile.js)
 
 This tells `watch`, which files it needs to watch for changes, and what to do with them.
 
@@ -208,7 +208,7 @@ Check that your work directory has at least these files:
 I’d suggest adding a `.gitignore` as well. Something like this:
 
 {linenos=off}
-<<[.gitignore](code/.gitignore)
+<<[.gitignore](code_samples/old/.gitignore)
 
 And you might want to set up your text editor to understand JSX files. I'm using Emacs and `web-mode` is perfect for this type of work.
 
