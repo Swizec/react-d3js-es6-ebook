@@ -58,6 +58,12 @@ Removed code looks like this:
      foo += 'this is added';
      // leanpub-end-delete
 
+This book comes in two versions: ES5 and ES6. They are functionally the same, but use different versions of JavaScript for their code samples. The ES6 version also has a cleaner, but more complicated, file structure.
+
+You can read either version depending on which version of JavaScript you're more comfortable with.
+
+As of November 30th, 2015, the ES6 version is delayed by a few days, but you'll get it soon.
+
 # Why React and d3.js
 
 React is Facebook's and Instagram's approach to writing modern JavaScript front-ends. It encourages building an app out of small, re-usable components. Each component is self-contained and only needs to know how to render a small bit of the interface.
