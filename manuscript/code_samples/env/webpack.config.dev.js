@@ -46,7 +46,7 @@ module.exports = {
   entry: [
     // leanpub-start-insert
     'webpack-hot-middleware/client',
-    './src/main'
+    './src/index'
     // leanpub-end-insert
   ],
   output: {
@@ -68,7 +68,7 @@ module.exports = {
   devtool: 'eval',
   entry: [
     'webpack-hot-middleware/client',
-    './src/main'
+    './src/index'
   ],
   output: {
     // leanpub-start-insert
@@ -94,7 +94,7 @@ module.exports = {
   devtool: 'eval',
   entry: [
     'webpack-hot-middleware/client',
-    './src/main'
+    './src/index'
   ],
   output: {
     path: path.join(__dirname, 'dist'),
@@ -122,7 +122,7 @@ module.exports = {
   devtool: 'eval',
   entry: [
     'webpack-hot-middleware/client',
-    './src/main'
+    './src/index'
   ],
   output: {
     path: path.join(__dirname, 'dist'),

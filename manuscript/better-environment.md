@@ -108,6 +108,7 @@ Our first step is to rename the directory and remove Git's version history and t
     $ cd react-d3-example
 
 We now have a directory called `react-d3-example` that contains some config files and a bit of code. most importantly, it isn't tied to a Git project, so we can make it all ours.
+
 ### Make it your own
 
 To make it our own, we have to change some information inside `package.json`: the name, version, and description.
@@ -171,13 +172,13 @@ Webpack can handle compiling LESS to CSS for us. We just have to install a coupl
 Let's start with the loaders:
 
 {linenos=off}
-    $ npm install --save style-loader less-loader`
+    $ npm install --save style-loader less less-loader
 
 Remember, `--save` adds `style-loader` and `less-loader` to package.json. The `style-loader` takes care of transforming `require()` calls into `<link rel="stylesheet"` definitions, and `less-loader` takes care of compiling LESS into CSS.
 
 To add them to our build step, we have to go into `webpack.config.dev.js`, find the `loaders: [` definition, and add a new object like this:
 
-{crop-start-line=4,crop-end-line=17,linenos=on,starting-line-number=19,lang=javascript}
+{crop-start-line=4,crop-end-line=17,linenos=on,starting-line-number=19}
 <<[Add LESS loaders](code_samples/env/webpack.config.dev.js)
 
 Don't worry if you don't understand what the rest of this file does. We're going to look at that in the next section.
@@ -192,7 +193,7 @@ There's a few more things we have to change to make the rest of this book flow m
 
 The first and most important is to make sure we can load our data files while we're running the project through our local server. We have to add a line to `devServer.js`:
 
-{start-crop-line=35,end-crop-line=41,linenos=off,lang=js}
+{crop-start-line=35,crop-end-line=41,linenos=off}
 <<[Enable static server on ./public](code_samples/env/devServer.js)
 
 Don't worry if you don't understand what this line does. We're going to look at this file in more detail later.
@@ -201,18 +202,17 @@ Now we'll add two nice-to-haves for `webpack.config.dev.js`. They aren't super i
 
 I like to add the `.jsx` extension to the list of files loaded with Babel. This lets me write React code in `.jsx` files. I know what you're thinking: writing files like that is no longer encouraged by the community, but hey, it makes my Emacs behave better.
 
-{crop-start-line=154,crop-end-line=169,linenos=off,lang=js}
+{crop-start-line=154,crop-end-line=169,linenos=off}
 <<[Add .jsx to Babel file extensions](code_samples/env/webpack.config.dev.js)
 
 We changed the `test` regex to add `.jsx`. You can read more detail about how these configs work in later parts of this chapter.
 
 Finally, I like to add a `resolve` config to Webpack. This lets me load files without writing their extensions. It's a small detail, but it makes your code cleaner.
 
-{crop-start-line=175,crop-end-line=182,linenos=off,lang=js}
+{crop-start-line=175,crop-end-line=182,linenos=off}
 <<[Add resolve to webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
 
 It's a list of file extensions that Webpack tries to guess when a path you use doesn't match any files.
-
 
 ## Check that it works
 
@@ -264,7 +264,7 @@ Since both files are so similar, we're only going to look at the dev version.
 
 It comes in four parts:
 
-{crop-start-line=22,crop-end-line=36,linenos=off,lang=js}
+{crop-start-line=22,crop-end-line=36,linenos=off}
 <<[Webpack config structure](code_samples/env/webpack.config.dev.js)
 
  - **Entry**, which tells Webpack where to start building our project's dependency tree.
@@ -285,10 +285,10 @@ The entry section of Webpack's config specifies the entry points of our dependen
 
 In our case, it looks like this:
 
-{crop-start-line=46,crop-end-line=51,linenos=off,lang=js}
+{crop-start-line=46,crop-end-line=51,linenos=off}
 <<[Entry part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
 
-We specify that `./src/main` is the main file. Index is another common name. In the next section, you'll see that this is the file that requires our app and renders it into the page.
+We specify that `./src/index` is the main file. In the next section, you'll see that this is the file that requires our app and renders it into the page.
 
 The `webpack-hot-middleware/client` line enables Webpack's hot loading, which can load new versions of JavaScript files without reloading the page.
 
@@ -300,7 +300,7 @@ The output section specifies which files get the output. Our config is going to 
 
 The config looks like this:
 
-{crop-start-line=73,crop-end-line=79,linenos=off,lang=js}
+{crop-start-line=73,crop-end-line=79,linenos=off}
 <<[Output part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
 
 We define a path, `./dist/`, where compiled files live, say the filename for JavaScript is `bundle.js`, and specify `/static/` as the public path. That means the `<script>` tag in our HTML should use `/static/bundle.js` to get our code, but we should use `./dist/bundle.js` to copy the compiled file.
@@ -309,7 +309,7 @@ We define a path, `./dist/`, where compiled files live, say the filename for Jav
 
 There's a plethora of Webpack plugins out there. We're only going to use two of them in our example.
 
-{crop-start-line=104,crop-end-line=109,linenos=off,lang=js}
+{crop-start-line=104,crop-end-line=109,linenos=off}
 <<[Plugins part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
 
 As you might have guessed, this config is just an array of plugin object instances. Both plugins we're using come with Webpack by default. Otherwise, we'd have to `require()` them at the top of the file.
@@ -326,7 +326,7 @@ If you can think of it, there's likely a loader for it. At my day job, we use a 
 
 For the purposes of this book, we don't need anything that fancy. We just need a loader for JavaScript and styles.
 
-{crop-start-line=136,crop-end-line=148,linenos=off,lang=js}
+{crop-start-line=136,crop-end-line=148,linenos=off}
 <<[Loaders part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
 
 Each of these definitions comes in three parts:
@@ -349,21 +349,21 @@ Many better and more in-depth books have been written about node.js and its fram
 
 For example, on line 9, you can see that we tell the server to use Webpack as a middleware. That means the server passes every request through Webpack and lets it change anything it needs.
 
-{crop-start-line=9,crop-end-line=14,linenos=on,starting-line-number=9,lang=js}
+{crop-start-line=9,crop-end-line=14,linenos=on,starting-line-number=9}
 <<[Lines that tell Express to use Webpack](code_samples/env/devServer.js)
 
 The `compiler` variable is an instance of Webpack, and `config` is the config we looked at earlier. `app` is an instance of the Express server.
 
 Another important bit of the `devServer.js` file specifies routes. In our case, we want to serve everything from `public` as a static file, and anything else to serve `index.html` and let JavaScript handle routing.
 
-{crop-start-line=16,crop-end-line=20,linenos=on,starting-line-number=16,lang=js}
+{crop-start-line=16,crop-end-line=20,linenos=on,starting-line-number=16}
 <<[Lines that tell Express how to route requests](code_samples/env/devServer.js)
 
 This tells Express to use a static file server for everything in `public` and to serve `index.html` for anything else.
 
 At the bottom, there is a line that starts the server:
 
-{crop-start-line=22,crop-end-line=22,linenos=on,starting-line-number=22,lang=js}
+{crop-start-line=22,crop-end-line=22,linenos=on,starting-line-number=22}
 <<[Line that starts the server](code_samples/env/devServer.js)
 
 I know I didn't explain much, but that's as deep as we can go at this point. You can read more about node.js servers, and Express in particular, in [Azat Mardan's books](http://azat.co/). They're great.
@@ -378,7 +378,7 @@ We don't need anything fancy for the purposes of our example project - just the 
 
 `.babelrc` is a JSON file that looks like this:
 
-{linenos=off,lang=json}
+{linenos=off}
 <<[.babelrc config](code_samples/env/babelrc)
 
 I imagine this file is something most people copy paste from the internet, but the basic rundown is that for the `development` environment, we're loading the `react-transform` plugin and enabling two different transforms.
@@ -407,7 +407,7 @@ From what I've heard, most modern editors support `.eslintrc` out of the box, so
 
 The `eslint` config that comes with Dan's boilerplate loads a React linter plugin and defines a few React-specific rules. It also enables JSX linting and modern ES6 modules stuff. By the looks of it, Dan is a fan of single quotes.
 
-{linenos=off,lang=json}
+{linenos=off}
 <<[.eslintrc for React code](code_samples/env/eslintrc)
 
 I haven't really had a chance to play around with linting configs like these. Emacs defaults have been good to me so far, but I think these types of configs are a great idea. The biggest problem in a team is syncing everyone's linter configs, but if you can  put a file like this in your Git project, then **BAM!**, everyone's always in sync.
