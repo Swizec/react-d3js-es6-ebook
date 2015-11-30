@@ -155,11 +155,14 @@ Our new project comes preconfigured for React and all the other tools and compil
 
 This will install a bunch of dependencies like React, a few Webpack extensions, and a JavaScript transpiler (Babel) with a few bells and whistles. Sometimes, parts of the installation fail. If it happens to you, try re-running `npm install` for the libraries that threw an error. I don't know why this happens, but you're not alone. I've been seeing this behavior for years.
 
-Now that we have all the basic libraries and tools we need to run our code, we have to install two more: `d3` for drawing, and `autobind-decorator`, which I will explain later.
+Now that we have all the basic libraries and tools we need to run our code, we have to install three more: 
 
+1. `d3` for drawing
+2. `lodash` for some utility functions
+3. `autobind-decorator`, which I will explain later.
 
 {linenos=off}
-    $ npm install --save d3 autobind-decorator
+    $ npm install --save d3 lodash autobind-decorator
 
 The `--save` option saves them to `package.json`.
 
@@ -212,7 +215,7 @@ Finally, I like to add a `resolve` config to Webpack. This lets me load files wi
 {crop-start-line=175,crop-end-line=182,linenos=off}
 <<[Add resolve to webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
 
-It's a list of file extensions that Webpack tries to guess when a path you use doesn't match any files.
+It's a list of file extensions that Webpack tries to guess when a path you use doesn't match any files
 
 ## Check that it works
 

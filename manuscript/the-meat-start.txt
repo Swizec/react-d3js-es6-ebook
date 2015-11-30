@@ -11,18 +11,17 @@ If you skipped the [environment setup section](#the-environment), make sure you�
 
 * d3.js
 * React
-* Bootstrap (for styling)
 * Lodash
 
-And you should have some way of runing a static file server. I like `live-server`.
+And you should have some way of runing a static file server. I like having a simple node.js server that enables hot loading via Webpack.
 
-We’re going to put all our code in a `src/` directory, and serve the compiled version out of `build/`. A `data/` directory is going to hold our data.
+We’re going to put all our code in a `src/` directory, and serve the compiled version out of `static/`. A `public/data/` directory is going to hold our data.
 
-Before we begin, you should copy the dataset from the stub project you got with the book. It shold be in the `data/` directory of your project.
+Before we begin, you should copy the dataset from the stub project you got with the book. It should be in the `public/data/` directory of your project.
 
 ## JSX
 
-We’re going to write our code in JSX. A JavaScript syntax extension that lets us treat XML-like data as normal citizens. You can use React without JSX, but I feel that it makes React’s full power easier to use.
+We’re going to write our code in JSX. A JavaScript syntax extension that lets us treat XML-like data as normal code. You can use React without JSX, but I feel that it makes React’s full power easier to use.
 
 The gist of JSX is that we can use any XML-like string just like it was part of  JavaScript. No Mustache or messy string concatenation necessary. Your functions can return straight up HTML, SVG, or XML.
 
@@ -92,7 +91,9 @@ This way we leverage both React and d3.js for what they’re best at.
 {#the-architecture}
 ## The architecture
 
-To make our lives easier we're going to use a flow-down architecture, called Flux.
+To make our lives easier we're going to use a flow-down architecture where the entire application state is stored in one place. It's inspired by Flux, but uses less code and is easier to explain. The downside is that it doesn't scale as well as Flux would.
+
+If you don't know about Flux, don't worry, the explanations are self-contained. I only mention Flux to make your googling easier and to give you an idea of how this approach compares.
 
 ![The basic architecture](images/architecture.jpg)
 
@@ -108,7 +109,7 @@ This might look roundabout, but I promise it’s awesome. It's definitely better
 
 ![Data flows down](images/architecture_data.jpg)
 
-Having your components rely solely on their properties, is like having functions that rely just on their arguments.  This means that given the same arguments, they *always* render the same output.
+Having your components rely solely on their properties, is like having functions that rely just on their arguments. This means that given the same arguments, they *always* render the same output.
 
 If you want to read about this in more detail Google for "isomorphic JavaScript". A good buzzword is also "referential transparency" and "idempotent functions".
 
@@ -123,9 +124,11 @@ Make an index.html file that looks like this:
 {linenos=off,lang=html}
 <<[HTML skeleton](code_samples/index.html)
 
-These 20 lines do everything we need. The `<head>` sets some meta properties that Bootstrap recommends and includes our stylesheet. The `<body>` creates container and includes the JavaScript code.
+These 20 lines do everything we need. The `<head>` sets some meta properties that Bootstrap recommends and includes Bootstrap's stylesheet. This is a good approach for when you just need Bootstrap's default styles and don't want to change anything. We'll use `require()` statements to load our own stylesheets with Webpack.
 
-We didn’t really need a `<div>` inside a `<div>` like that, but I like to avoid taking over the whole `.container` with React. This gives you more flexibility for adding dumb static content.
+The `<body>` tag creates container and includes the JavaScript code. We didn’t really need a `<div>` inside a `<div>` like that, but I like to avoid taking over the whole `.container` with React. This gives you more flexibility for adding dumb static content.
+
+At the bottom we we load our compiled JavaScript from `static/bundle.js`. This is a virtual path created by our dev server so it doesn't point to any actual files.
 
 ## The Main Component
 
@@ -133,7 +136,7 @@ As [mentioned before](#the-architecture) we're going to build everything off a c
 
 Very imaginative, I know.
 
-This code is going to live in `src/main.jsx` and start by requiring React, Lodash, and d3.js:
+This code is going to live in `src/index.jsx` and start by requiring React, Lodash, and d3.js:
 
 {crop-start-line=5,crop-end-line=8,linenos=off,lang=jsx}
 <<[Require the libraries](code_samples/main.jsx)
@@ -152,4 +155,4 @@ We also have to render our component into the page, like this:
 {crop-start-line=25,crop-end-line=29,linenos=off,lang=jsx}
 <<[Render our component](code_samples/main.jsx)
 
-If all went well, your browser’s document inspector will show a blank SVG wrapped in some divs. Don't forget to keep `live-server` and `grunt` running in the background.
+If all went well, your browser’s document inspector will show a blank SVG wrapped in some divs. Don't forget to keep `npm start` running in the background.

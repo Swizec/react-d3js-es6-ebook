@@ -1,6 +1,6 @@
 ## Loading data
 
-Great, we’ve got something rendering. But we need to load some data before we can draw a picture. If you still don't have `data/h1bs.csv`, now is the time to get it. You can find it on Github, [here](https://github.com/Swizec/h1b-software-salaries),  or in the stub project included with the book.
+Great, we’ve got something rendering. But we need to load some data before we can draw a picture. If you still don't have `public/data/h1bs.csv`, now is the time to get it. You can find it on Github, [here](https://github.com/Swizec/h1b-software-salaries), or in the stub project included with the book.
 
 We’re going to use d3.js’s built-in data loading magic and hook it into React’s component lifecycle. 
 
@@ -75,7 +75,7 @@ But loading and parsing 81,000 datapoints takes some time. Let's tell users what
 
 The beauty of our approach is that the `render` method just returns different elements based on whether we’ve got some data or not. Notice, we access the data as `this.state.rawData` and rely on the re-render when the state updates.
 
-If you’ve kept `live-server` and `grunt` running in the background, you should see your browser flash the loading text before becoming blank.
+If you’ve kept `npm start` running in the background, you should see your browser flash the loading text before becoming blank.
 
 ![Loading message](images/loading_message.png)
 
@@ -290,7 +290,7 @@ And let’s add all of this to the main `H1BGraph` component. It’s just three 
 
 We had to wrap everything in another `<div>` because React throws a hissy fit if we try to return multiple elements side-by-side. We used props to give the `Controls` component some data and the filter update callback.
 
-And don’t forget to add `Controls = require(‘./controls.jsx’)` somewhere near the top of the file.
+And don’t forget to add `Controls = require('./controls.jsx')` somewhere near the top of the file.
 
 You should have some empty components showing up on the screen. Let’s add the row of buttons to the `Controls.render` method:
 
@@ -306,7 +306,7 @@ We’ll define the callback later. Let’s make the `ControlRow` component first
 
 Nothing special going on here. We’ve got a `render` method that returns a Bootstrap row and fills it with with a bunch of `Toggle` components. It does so by looping over the result of `this.props.getToggleNames`, which is the function we defined in `Controls.render`.
 
-Normally `onClick` is a click event handler. React gives us this sort of magic prop for every valid user event. It’s the same as jQuery’s `$(‘foo’).on(‘click’)`.
+Normally `onClick` is a click event handler. React gives us this sort of magic prop for every valid user event. It’s the same as jQuery’s `$('foo').on('click')`.
 
 But they only work on HTML elements, not React components. So this one is just a function callback that we’ll use manually.
 
@@ -438,7 +438,17 @@ There’s nothing special going on here. `getYears` uses `_.groupBy` to group th
 
 `getAllDataByYear` is a simple filter function. We’ll use it to access data for specific years when making the description.
 
-But let’s start with the title.
+To keep our meta data code clean, we've also got a file that maps state abbreviations to names. It's called `src/states.jsx` and exports an object that looks like this:
+
+{linenos=no}
+   module.exports = {
+      "AL": "Alabama",
+      "AK": "Alaska",
+      // ...
+
+You can build your own, or [get it from Github](https://github.com/Swizec/h1b-software-salaries/blob/master/src/states.js).
+
+Now let’s start with the title.
 
 ### The title
 
