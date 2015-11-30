@@ -58,6 +58,8 @@ Removed code looks like this:
      foo += 'this is added';
      // leanpub-end-delete
 
+## ES5 and ES6 versions
+
 This book comes in two versions: ES5 and ES6. They are functionally the same, but use different versions of JavaScript for their code samples. The ES6 version also has a cleaner, but more complicated, file structure.
 
 You can read either version depending on which version of JavaScript you're more comfortable with.
