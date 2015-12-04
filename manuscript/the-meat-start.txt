@@ -7,13 +7,13 @@ We're going to build a subset of the code I used to [visualize the salary distri
 
 ![H1B salary distribution for engineers in California](images/engineers-california.png)
 
-If you skipped the [environment setup section](#the-environment), make sure you’ve got the following dependencies:
+If you skipped the [environment setup section](#the-environment), make sure you’ve installed the following dependencies:
 
 * d3.js
 * React
 * Lodash
 
-And you should have some way of runing a static file server. I like having a simple node.js server that enables hot loading via Webpack.
+You should also have some way of running a static file server. I like having a simple node.js server that enables hot loading via Webpack.
 
 We’re going to put all our code in a `src/` directory, and serve the compiled version out of `static/`. A `public/data/` directory is going to hold our data.
 
@@ -21,9 +21,9 @@ Before we begin, you should copy the dataset from the stub project you got with 
 
 ## JSX
 
-We’re going to write our code in JSX. A JavaScript syntax extension that lets us treat XML-like data as normal code. You can use React without JSX, but I feel that it makes React’s full power easier to use.
+We’re going to write our code in JSX, a JavaScript syntax extension that lets us treat XML-like data as normal code. You can use React without JSX, but I feel that it makes React’s full power easier to use.
 
-The gist of JSX is that we can use any XML-like string just like it was part of  JavaScript. No Mustache or messy string concatenation necessary. Your functions can return straight up HTML, SVG, or XML.
+The gist of JSX is that we can use any XML-like string just like it is part of JavaScript. No Mustache or messy string concatenation necessary. Your functions can return straight-up HTML, SVG, or XML.
 
 For instance, the code that renders our whole application is going to look like this:
 
@@ -38,17 +38,15 @@ Which compiles to:
         document.querySelectorAll(‘.h1bgraph’)[0]
     );
 
-As you can see, HTML code translates to `React.createElement` calls with attributes translated into a property dictionary. The beauty of this approach is that you can use React components as if they were HTML tags and that HTML attributes can be anything.
+As you can see, HTML code translates to `React.createElement` calls with attributes translated into a property dictionary. The beauty of this approach is two-pronged: you can use React components as if they were HTML tags and  HTML attributes can be anything.
 
 You’ll see that anything from a simple value to a function or an object works equally well.
 
-I'm not sure yet whether this is better than separate template files in Mustache or whatever. There are benefits to both approaches. I mean, would you let a designer write the HTML inside your JavaScript files? I wouldn't.
+I'm not sure yet whether this is better than separate template files in Mustache or whatever. There are benefits to both approaches. I mean, would you let a designer write the HTML inside your JavaScript files? I wouldn't, but it's definitely better than manually `+`-ing strings or Angular's approach of putting everything into HTML. Considerably better.
 
-But it's definitely better than manually `+`-ing strings or Angular's approach of putting everything into HTML. Much better.
+If you skipped the setup section and don't have a JSX compilation system set up, you should do that now. You can also use the project stub you got with the book.
 
-If you skipped the setup section and don't have a JSX compilation system set up, I suggest you do that now. You can also use the project stub you got with the book.
-
-Just like the official documentation, I don't suggest using `JSXTransform.js`. Sure it's neat to have all this compilation happen right in the browser, but it's bad practice.
+Just like the official documentation, I don't suggest using `JSXTransform.js`. Sure, it's neat to have all this compilation happen right in the browser, but it's bad practice.
 
 ## The basic approach
 
@@ -63,7 +61,7 @@ Because SVG is an XML format that fits into the DOM, we can assemble it with Rea
         );
     }
 
-If the parent component puts this inside an `<svg>` element, the user will see a rectangle. At first glance this looks cumbersome compared to traditional d3.js. But look closely:
+If the parent component puts this inside an `<svg>` element, the user will see a rectangle. At first glance, this looks cumbersome compared to traditional d3.js. But look closely:
 
 {title="A simple rectangle in d3.js",linenos=off,lang=js}
     d3.select("svg")
@@ -75,9 +73,9 @@ If the parent component puts this inside an `<svg>` element, the user will see a
 
 The d3.js approach outputs SVG as if by magic. It also looks a bit cleaner because it's pure JavaScript. But it’s a lot more typing and function calls for the same result.
 
-Well, actually, the pure d3.js example is 10 characters shorter. But trust me, React is cool, okay.
+Well, actually, the pure d3.js example is 10 characters shorter. But trust me, React is way cooler.
 
-Anyway, my point is that dealing with the DOM is not d3.js’s strong suit. Especially once you're drawing a few thousand elements and your visualization slows down to a leisurely stroll if you’re careful.
+My point is that dealing with the DOM is not d3.js’s strong suit, especially once you're drawing a few thousand elements and your visualization slows down to a leisurely stroll if you’re careful.
 
 You always have to keep an eye on how many elements you're updating. React gives you all of that for free. Its primary purpose in life is knowing exactly which elements to update when some data changes.
 
@@ -86,14 +84,14 @@ We're going to follow this simple approach:
 * React owns the DOM
 * d3 calculates properties
 
-This way we leverage both React and d3.js for what they’re best at.
+This way we leverage both React and d3.js for their best functions.
 
 {#the-architecture}
 ## The architecture
 
-To make our lives easier we're going to use a flow-down architecture where the entire application state is stored in one place. It's inspired by Flux, but uses less code and is easier to explain. The downside is that it doesn't scale as well as Flux would.
+To make our lives easier, we're going to use a flow-down architecture where the entire application state is stored in one place. It's inspired by Flux, but it uses less code and is easier to explain. The downside is that it doesn't scale as well as Flux would.
 
-If you don't know about Flux, don't worry, the explanations are self-contained. I only mention Flux to make your googling easier and to give you an idea of how this approach compares.
+If you don't know about Flux, don't worry; the explanations are self-contained. I only mention Flux to make your Googling easier and to give you an idea of how this approach compares.
 
 ![The basic architecture](images/architecture.jpg)
 
@@ -105,30 +103,30 @@ The idea is this:
 * The Main Component updates its truth
 * The real changes flow back down the chain to update UI
 
-This might look roundabout, but I promise it’s awesome. It's definitely better than worrying about parts of the UI going out of date with the rest of the app.
+This might look roundabout, but I promise, it’s awesome. It's definitely better than worrying about parts of the UI going out of date with the rest of the app.
 
 ![Data flows down](images/architecture_data.jpg)
 
-Having your components rely solely on their properties, is like having functions that rely just on their arguments. This means that given the same arguments, they *always* render the same output.
+Having your components rely solely on their properties is like having functions that rely only on their arguments. This means that if given the same arguments, they *always* render the same output.
 
-If you want to read about this in more detail Google for "isomorphic JavaScript". A good buzzword is also "referential transparency" and "idempotent functions".
+If you want to read about this in more detail, Google "isomorphic JavaScript". You could also search for "referential transparency" and "idempotent functions".
 
 Either way, functional programming for HTML. Yay!
 
 ## The HTML skeleton
 
-We’re building the whole interface with React, but we still need some HTML to start with. It's going to take care of including files and giving our UI a container.
+We’re building the whole interface with React, but we still need to being with some HTML. It's going to take care of including files and giving our UI a container.
 
 Make an index.html file that looks like this:
 
 {linenos=off,lang=html}
 <<[HTML skeleton](code_samples/index.html)
 
-These 20 lines do everything we need. The `<head>` sets some meta properties that Bootstrap recommends and includes Bootstrap's stylesheet. This is a good approach for when you just need Bootstrap's default styles and don't want to change anything. We'll use `require()` statements to load our own stylesheets with Webpack.
+These 20 lines do everything we need. The `<head>` sets some meta properties that Bootstrap recommends and includes Bootstrap's stylesheet. This is a good approach for when you only need Bootstrap's default styles and don't want to change anything. We'll use `require()` statements to load our own stylesheets with Webpack.
 
-The `<body>` tag creates container and includes the JavaScript code. We didn’t really need a `<div>` inside a `<div>` like that, but I like to avoid taking over the whole `.container` with React. This gives you more flexibility for adding dumb static content.
+The `<body>` tag creates a container and includes the JavaScript code. We didn’t really need a `<div>` inside a `<div>` like that, but I like to avoid taking over the whole `.container` with React. This gives you more flexibility for adding dumb static content.
 
-At the bottom we we load our compiled JavaScript from `static/bundle.js`. This is a virtual path created by our dev server so it doesn't point to any actual files.
+At the bottom, we load our compiled JavaScript from `static/bundle.js`. This is a virtual path created by our dev server, so it doesn't point to any actual files.
 
 ## The Main Component
 
@@ -150,7 +148,7 @@ We also need a basic React component called `H1BGraph`. It should look like this
 
 This creates a Bootstrap row with an `<svg>` element.
 
-We also have to render our component into the page, like this:
+We also have to render our component into the page like this:
 
 {crop-start-line=25,crop-end-line=29,linenos=off,lang=jsx}
 <<[Render our component](code_samples/main.jsx)
