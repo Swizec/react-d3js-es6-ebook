@@ -11,7 +11,7 @@ We start by adding three short methods to `H1BGraph`:
 
 React calls `componentWillMount` right before inserting the component into our document. It’s a great opportunity to make any last-minute preparations before rendering. In our case, it’s a good spot to start loading data.
 
-I'm sure better spots exist, but loading a 12MB data file is always going to take a couple of seconds, and you should avoid loading data you never intend to render.
+I'm sure better spots exist, but loading a 12MB data file is always going to take a couple of seconds. You should try to avoid loading data you never intend to render.
 
 `getInitialState` is the React way to set up a default state; in our case, we get an empty `rawData` array.
 
@@ -26,7 +26,7 @@ This will asynchronously load a CSV file, parse it, and return the result in the
 
 Using `setState()` triggers a re-render and should generally be avoided because relying on state can cause inconsistencies in your UI. It’s very appropriate to store 12MB of raw data as state, though.
 
-So the data we’ve got now has keys with spaces like `submit date` and `job title`, and everything is a string. This is less than ideal, and not very nice to work with.
+The data we’ve got now has keys with spaces like `submit date` and `job title`, and everything is a string. This is not very nice to work with.
 
 We can add some cleanup in one fell swoop:
 
@@ -68,7 +68,7 @@ Into objects that look like this:
 
 In our case we cleaned up the keys, parsed dates into `Date()` objects, and made sure numbers are numbers. If a row didn’t have a `base_salary`, we filtered it out by returning `null`.
 
-But loading and parsing 81,000 data points takes some time. Let's tell users what they're waiting for by rendering some explainer text when there's no data.
+Loading and parsing 81,000 data points takes some time. Let's tell users what they're waiting for by rendering some explainer text when there's no data.
 
 {crop-start-line=203,crop-end-line=221,linenos=off,lang=jsx}
 <<[Loading indicator](code_samples/main.jsx)
@@ -111,9 +111,9 @@ This is the cleanest approach I’ve found to make d3.js and React work together
 
 The problem we're facing is that the way d3.js achieves its declarative nature is through objects. When you call a d3.js function, it's usually going to have some internal state.
 
-This is great when you want to change how it behaves by daisy-chaining getters and setters, but it causes problems with React because it means we have to make sure the internal state is always up-to-date.
+This is great when you want to change how d3.js behaves by daisy-chaining getters and setters, but that approach causes problems with React. It means we have to make sure the internal state is always up-to-date.
 
-We do this by relying on `componentWillMount` to set the defaults, and then `componentWillRecieveProps` to update them when necessary.
+We'll use `componentWillMount` to set the defaults, and then `componentWillRecieveProps` to update them when necessary.
 
 Each time, we call `this.update_d3` to do the heavy lifting.
 
@@ -188,7 +188,7 @@ You should now see a histogram like this:
 
 ## Adding an axis
 
-Axes are one of my favourite feats of d3.js magic. You simply call a function, set some parameters, and **BAM**, you’ve got an axis.
+Axes are one of my favourite feats of d3.js magic. You call a function, set some parameters, and **BAM**, you’ve got an axis.
 
 The axis automatically adapts to your data, draws the ticks it needs, and labels them. Axes are even smart enough to work with different types of scales. You don’t have to do anything special to turn a linear axis into a logarithmic axis.
 
@@ -226,7 +226,7 @@ Finally, here comes the dirty trick:
 
 I’m sure this goes against everything React designers fought for, but it works. We hook into the `componentDidUpdate` and `componentDidMount` callbacks with a `renderAxis` method. Then, we use `this.getDOMNode()` to get a reference to the rendered element, feed it into `d3.select()`, and `.call()` the axis on it.
 
-What we’re doing is basically throwing away the whole element and creating it from scratch on every render. It's rather inefficient, but it’s okay if it's used sparingly.
+What we’re doing is basically throwing away the whole element and creating it from scratch on every render. It's rather inefficient, but it’s okay when used sparingly.
 
 Now we have to add some styling and make sure the axis is included somewhere.
 
@@ -304,7 +304,7 @@ We’ll define the callback later. Let’s make the `ControlRow` component first
 {crop-start-line=51,crop-end-line=72,linenos=off,lang=jsx}
 <<[ControlRow component](code_samples/controls.jsx)
 
-There's nothing special going on here. We’ve got a `render` method that returns a Bootstrap row and fills it with with a bunch of `Toggle` components. It does so by looping over the result of `this.props.getToggleNames`, which is the function we defined in `Controls.render`.
+There's nothing special going on here. We’ve got a `render` method that returns a Bootstrap row and fills it with a bunch of `Toggle` components. It does so by looping over the result of `this.props.getToggleNames`, which is the function we defined in `Controls.render`.
 
 Normally, `onClick` is a click event handler. React gives us this sort of magic prop for every valid user event. It’s the same as jQuery’s `$('foo').on('click')`.
 
@@ -386,8 +386,6 @@ Ok, we’ve just created an infinite loop. When `componentDidUpdate` is called w
 
 We have to make sure the component updates *only* when properties have actually changed. The easiest way to do that is using `shouldComponentUpdate`. If it returns `false`, the component doesn’t update.
 
-A possibly better option is using the [PureRenderMixin](http://facebook.github.io/react/docs/pure-render-mixin.html), which makes sure components only update when properties actually change. It could be worth a shot.
-
 Anyway, it’s time to add the filtering functionality to `H1BGraph`.
 
 {crop-start-line=422,crop-end-line=435,linenos=off,lang=jsx}
@@ -400,7 +398,7 @@ The last step is filtering the data in our `H1BGraph.render` method.
 {crop-start-line=530,crop-end-line=552,linenos=off,lang=jsx}
 <<[Filter data in H1BGraph.render](code_samples/main.jsx)
 
-As you can see, we didn’t have to do much. We just passed the `rawData` through our filter before feeding it to the `Histogram`.
+As you can see, we didn’t have to do much. We passed the `rawData` through our filter before feeding it to the `Histogram`.
 
 You should now see a histogram like this:
 
@@ -468,7 +466,7 @@ The `render` function is going to be simple as well:
 
 We’re returning an `<h2>` element with a title that includes some dynamic tags. We change `made` to `make` based on whether or not we’re adding `in years`, and we used `d3.mean` to get the average.
 
-Now we can just add the title into H1BGraph’s render method. You can use as many as you want, wherever you want, but I think putting it above the graph works best.
+Now we can add the title into H1BGraph’s render method. You can use as many as you want, wherever you want, but I think putting it above the graph works best.
 
 {crop-start-line=622,crop-end-line=636,linenos=off,lang=jsx}
 <<[Add title to H1BGraph.render](code_samples/main.jsx)
@@ -483,7 +481,7 @@ Now let’s add a paragraph of description to make the story clearer.
 
 ### The description
 
-Our descriptions won’t be much more complicated than the titles. We'll just need a sentence or two explaining what the histogram is showing and comparing it to the previous year.
+Our descriptions won’t be much more complicated than the titles. We'll need a sentence or two explaining what the histogram is showing and comparing it to the previous year.
 
 First, we add the `getYearFragment` function:
 
@@ -513,10 +511,10 @@ But the `getPreviousYearFragment` function is more complex:
 
         return fragment;
     },
-**
+
 First, we get the list of years. If it’s empty or the current year is 2012 (the first in our dataset), we return an empty fragment.
 
-Otherwise, we get last year’s data with `this.getAllDataByYear()`, then compare the number of entries with this year. We return a fragment that’s either “X% **more** than the year before” or “X% **less** than the year before”.
+In any other case, we get a look at last year’s data with `this.getAllDataByYear()`. We can then compare the number of entries with this year and return a fragment that’s either “X% **more** than the year before” or “X% **less** than the year before”.
 
 Now we’ve just got to use these two fragments in the render method.
 

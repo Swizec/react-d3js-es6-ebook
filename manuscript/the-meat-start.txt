@@ -38,15 +38,13 @@ Which compiles to:
         document.querySelectorAll(‘.h1bgraph’)[0]
     );
 
-As you can see, HTML code translates to `React.createElement` calls with attributes translated into a property dictionary. The beauty of this approach is two-pronged: you can use React components as if they were HTML tags and  HTML attributes can be anything.
+As you can see, HTML code translates to `React.createElement` calls with attributes translated into a property dictionary. The beauty of this approach is two-pronged: you can use React components as if they were HTML tags and HTML attributes can be anything.
 
 You’ll see that anything from a simple value to a function or an object works equally well.
 
 I'm not sure yet whether this is better than separate template files in Mustache or whatever. There are benefits to both approaches. I mean, would you let a designer write the HTML inside your JavaScript files? I wouldn't, but it's definitely better than manually `+`-ing strings or Angular's approach of putting everything into HTML. Considerably better.
 
 If you skipped the setup section and don't have a JSX compilation system set up, you should do that now. You can also use the project stub you got with the book.
-
-Just like the official documentation, I don't suggest using `JSXTransform.js`. Sure, it's neat to have all this compilation happen right in the browser, but it's bad practice.
 
 ## The basic approach
 
@@ -75,7 +73,7 @@ The d3.js approach outputs SVG as if by magic. It also looks a bit cleaner becau
 
 Well, actually, the pure d3.js example is 10 characters shorter. But trust me, React is way cooler.
 
-My point is that dealing with the DOM is not d3.js’s strong suit, especially once you're drawing a few thousand elements and your visualization slows down to a leisurely stroll if you’re careful.
+My point is that dealing with the DOM is not d3.js’s strong suit, especially once you're drawing a few thousand elements and your visualization slows down to a leisurely stroll… if you’re careful.
 
 You always have to keep an eye on how many elements you're updating. React gives you all of that for free. Its primary purpose in life is knowing exactly which elements to update when some data changes.
 
@@ -84,12 +82,12 @@ We're going to follow this simple approach:
 * React owns the DOM
 * d3 calculates properties
 
-This way we leverage both React and d3.js for their best functions.
+This way we leverage both React and d3.js for their best functions and not much else.
 
 {#the-architecture}
 ## The architecture
 
-To make our lives easier, we're going to use a flow-down architecture where the entire application state is stored in one place. It's inspired by Flux, but it uses less code and is easier to explain. The downside is that it doesn't scale as well as Flux would.
+To make our lives easier, we're going to use a flow-down architecture where the entire application state is stored in one place. The architecture itself inspired by Flux, but the way we're structuring it uses less code and is easier to explain. The downside is that our version doesn't scale as well as Flux would.
 
 If you don't know about Flux, don't worry; the explanations are self-contained. I only mention Flux to make your Googling easier and to give you an idea of how this approach compares.
 
@@ -115,7 +113,7 @@ Either way, functional programming for HTML. Yay!
 
 ## The HTML skeleton
 
-We’re building the whole interface with React, but we still need to being with some HTML. It's going to take care of including files and giving our UI a container.
+We’re building the whole interface with React, but we still need to begin with some HTML. It's going to take care of including files and giving our UI a container.
 
 Make an index.html file that looks like this:
 
