@@ -109,7 +109,7 @@ We add three methods to our `Histogram` component to manage d3.js:
 
 This is the cleanest approach I’ve found to make d3.js and React work together. We’ll use it for all of our d3.js-enabled components.
 
-The problem we're facing is that the way d3.js achieves its declarative nature is through objects. When you call a d3.js function, it's usually going to have some internal state.
+The problem we're facing is that d3.js achieves its declarative nature is through objects. When you call a d3.js function, it's usually going to have some internal state.
 
 This is great when you want to change how d3.js behaves by daisy-chaining getters and setters, but that approach causes problems with React. It means we have to make sure the internal state is always up-to-date.
 
