@@ -69,7 +69,7 @@ If the parent component puts this inside an `<svg>` element, the user will see a
       .attr("width", 100)
       .attr("height", 200);
 
-The d3.js approach outputs SVG as if by magic. It also looks a bit cleaner because it's pure JavaScript. But it’s a lot more typing and function calls for the same result.
+The d3.js approach outputs SVG as if by magic and looks cleaner because it's pure JavaScript. But it’s a lot more typing and function calls for the same result.
 
 Well, actually, the pure d3.js example is 10 characters shorter. But trust me, React is way cooler.
 
