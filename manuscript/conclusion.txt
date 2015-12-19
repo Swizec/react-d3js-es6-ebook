@@ -2,12 +2,14 @@
 
 If you've followed the examples, you've just created your first visualization with React and d3.js. You’re amazing!
 
-If you've only read through the book, that’s awesome too. You know much more about making reusable visualizations than you did an hour ago.
+If you've only read through the book, that’s awesome, too. You know much more about making reusable visualizations than you did an hour ago.
 
-You understand how the declarative nature of React works really well with d3.js and vice-versa. You know what it takes to write reusable components and how much easier they make your life once you’ve built them. And you know how to configure grunt, browserify, and everything else to create an awesome environment to work with.
+You understand how the declarative nature of React works really well with d3.js and vice-versa. You know what it takes to write reusable components and how much easier they make your life once you’ve built them. And you know how to configure Webpack, Babel, and everything else to create an awesome environment to work with.
 
-In short, you know everything you need to start making your own visualization components. At the very least, you know whether React and d3.js good tech stack for you.
+ {>>You'll still need to change the references to `grunt` and `browserify` up there.<<}
+
+In short, you know everything you need to start making your own visualization components. At the very least, you know whether React and d3.js are a good tech stack for you.
 
 And that’s awesome!
 
-If you have any questions just poke me on twitter. I’m [@Swizec](https://twitter.com/Swizec). Or send me an email at swizec@swizec.com.
+If you have any questions, just poke me on twitter. I’m [@Swizec](https://twitter.com/Swizec). Or send me an email at swizec@swizec.com.
