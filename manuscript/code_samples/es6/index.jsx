@@ -3,6 +3,7 @@
 // Example 1
 //
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import H1BGraph from './components/H1BGraph';
 
@@ -10,6 +11,7 @@ import H1BGraph from './components/H1BGraph';
 // Example 2
 //
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import H1BGraph from './components/H1BGraph';
 
@@ -27,6 +29,7 @@ String.prototype.decapitalize = function () {
 // Example 3
 //
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import H1BGraph from './components/H1BGraph';
 
@@ -39,7 +42,7 @@ String.prototype.decapitalize = function () {
 }
 
 // leanpub-start-insert
-React.render(
+ReactDOM.render(
     <H1BGraph url="data/h1bs.csv" />,
     document.querySelectorAll('.h1bgraph')[0]
 );

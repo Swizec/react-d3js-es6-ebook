@@ -3,15 +3,12 @@
 // Example 1
 //
 import React, { Component } from 'react';
-import autobind from 'autobind-decorator';
 
 //
 // Example 2
 //
 import React, { Component } from 'react';
-import autobind from 'autobind-decorator';
-
-@autobind
+// leanpub-start-insert
 class H1BGraph extends Component {
     render() {
         return (
@@ -22,14 +19,13 @@ class H1BGraph extends Component {
         );
     }
 }
+// leanpub-end-insert
 
 //
 // Example 3
 //
 import React, { Component } from 'react';
-import autobind from 'autobind-decorator';
 
-@autobind
 class H1BGraph extends Component {
     render() {
         return (
@@ -41,7 +37,9 @@ class H1BGraph extends Component {
     }
 }
 
+// leanpub-start-insert
 export default H1BGraph;
+// leanpub-end-insert
 
 
 

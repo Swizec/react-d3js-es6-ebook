@@ -154,58 +154,73 @@ You can read more about these ideas, if you google for ["leaky abstractions"](ht
 
 ## Bootstrap your app into place
 
-Let's start by bootstrapping our app into place. We're going to make a simple `src/index.jsx` file - that's the main entry file for our app, if you remember from the environment section - and an empty `H1BGraph` component that renders an SVG element.
+Let's start by bootstrapping our app into place. We're going to make a simple `src/index.jsx` file - we sat that to be our main entry file in the environment section - and an empty `H1BGraph` component that renders an SVG element.
 
-We start by importing `React` and `H1BGraph`.
+We start by importing `React`, `ReactDOM`, and `H1BGraph`.
 
-{crop-start-line=5,crop-end-line=8,linenos=off,lang=jsx}
+{crop-start-line=5,crop-end-line=9,linenos=off,lang=jsx}
 <<[Import main dependencies](code_samples/es6/index.jsx)
+
+`React` is, well, React. We need it for just about everything. `ReactDOM` is React's DOM renderer, which is new in v0.14. Rendering got split out of base React so that it's easier to build React apps for different render targets like canvas, WebGL, native mobile, etc. And `H1BGraph` is going to be our main component.
 
 We're using ES6 style imports instead of `require()` because it gives us greater flexibility to import just the parts we want and reads like a normal English sentence in most common use cases. You'll see this play out more in future examples.
 
-Keep in mind that the second argument must be a string even if you're importing a library.
+The second argument must be a string even if you're importing a library.
 
-For the sake of convenience, we use this opportunity to define two helper functions on the `String` class: capitalize and decapitalize. We could use a full-blown string library for this sort of thing, but there's no need.
+The main entry point for the app is also a good place to define any convenience helper functions that should be available globally, but aren't big or important enough to make a new library for. We'll add `capitalize` and `decapitalize` to the `String` class. There are libraries out there that do this, but there's no need to add an entire string manipulation library to our codebase, if all we need are two functions.
 
-{crop-start-line=14,crop-end-line=25,linenos=off,lang=jsx}
+{crop-start-line=13,crop-end-line=27,linenos=off,lang=jsx}
 <<[Define two string helpers](code_samples/es6/index.jsx)
 
-Now we'll be able to capitalize and decapitalize any string in our codebase with a call like `"some thing".capitalize()`. We're going to use this in our `Title` and `Description` meta components, but we define it here because it changes the `String` object globally. Doing that deep down in a child component feels weird.
+Now we'll be able to capitalize and decapitalize any string in our codebase with a call like `"some thing".capitalize()`. We're going to use this in the `Title` and `Description` meta components. We define them here because they change the global String class and it would be odd if that happened deep down in a child component ... maybe we should've just avoided changing built-in classes.
 
 All we need now is to render `H1BGraph` into the page.
 
-{crop-start-line=38,crop-end-line=47,linenos=off,lang=jsx}
+{crop-start-line=41,crop-end-line=50,linenos=off,lang=jsx}
 <<[Render H1BGraph onto page](code_samples/es6/index.jsx)
 
-This tells React to take control of the HTML element with the `h1bgraph` class and render the `H1BGraph` component. In our case that's a `<div>` inside the main container.
+This tells React to take control of the HTML element with class `h1bgraph` - a `<div>` inside the main container in our case - and render the `H1BGraph` component. We used `ReactDOM.render` because we're rendering for and in a browser. Other renderers exist, but they're not important for us right now.
 
-You can do this part in many ways. You could build it as a Backbone view, as a jQuery plugin, or even integrate with Angular. The approach we're using is the simplest when no other environment exists in your project.
+You can think of this function call as a *"Give me a Thing That Does Stuff"*. It doesn't have to stand on its own. You could wrap it in a jQuery plugin, use it inside a Backbone or Angular view, or really in whatever you're already using. That's how you can make a gradual transition towards React that doesn't force you to throw existing code away.
 
-If you've kept `npm start` running in the background, it should complain that `components/H1BGraph` doesn't exist. Let's fix that and get an empty `<svg>` element rendering.
+If you've kept `npm start` running in the background, it should now complain that `components/H1BGraph` doesn't exist. Let's fix that and get an empty `<svg>` element rendering.
 
-## An empty component
+## Start with a basic component
 
 All of our components are going to start the same way - some imports, a class with a `render()` method, and a default module export. That's the minimum we need in `<component>/index.jsx` to define a component that doesn't break our build.
 
-Our main entry file already tries to render the `H1BGraph` component into the page so let's start with that. As we add more stuff later, this will become our main component.
+Our build is breaking right now. The main entry file tries to import and render `H1BGraph`, but it doesn't exist. Let's start a new file in `src/components/H1BGraph/index.jsx`.
 
-{crop-start-line=5,crop-end-line=7,linenos=off,lang=jsx}
+{crop-start-line=5,crop-end-line=6,linenos=off,lang=jsx}
 <<[Basic imports](code_samples/es6/H1BGraph/index.jsx)
 
-First we import React, and a base `Component` class. We have to import `React` even if we don't use it explicitly because hot loading otherwise complains that React is not defined. We'll use the `Component` class to build our own components.
+First we import React, and a base `Component` class. We have to import `React` even if we don't use it explicitly because we'll get a "React not defined" error otherwise. We'll use the `Component` class to build our own components off of.
 
-Then we import the `autobind` decorator. Decorators are a feature from the future and are becoming part of vanilla JavaScript with ES7. If you're familiar with Python, this is the same thing - decorators wrap functions in other functions.
-
-The autobind decorator makes sure functions are always bound to current object scope, which is convenient when you want to pass them around as callbacks. It means you don't have to wrap them in a fat arrow function or bind them manually each time.
-
-React's official documentation suggests binding all event callbacks in your object constructor, but I think `autobind` is a better approach.
-
-{crop-start-line=12,crop-end-line=25,linenos=off,lang=jsx}
+{crop-start-line=10,crop-end-line=23,linenos=off,lang=jsx}
 <<[Empty H1BGraph component](code_samples/es6/H1BGraph/index.jsx)
 
 Then we define a component that renders an empty `<svg>` tag inside a `<div>`. A component must have at least a `render()` function, otherwise React throws an error when it tries to render.
 
 We're using ES6's concept of classes and class inheritance to extend React's basic `Component`, which we imported earlier. This is widely accepted as more readable than JavaScript's old/standard prototypical inheritance.
 
-In theory it's equivalent to using the old `React.createClass`, or something like the `Object.assign(Component, { // ... })` approach. A new class is built that merges properties and methods of the base class with the properties and methods of your class.
+You can still use `React.createClass` if you want. It works just fine and is equivalent to `class X extends Component`.
 
+{crop-start-line=36,crop-end-line=43,linenos=off,lang=jsx}
+<<[Export H1BGraph](code_samples/es6/H1BGraph/index.jsx)
+
+In the end, we export `H1BGraph` so other parts of the codebase can import it. We define it as the `default` export because this particular file only exports a single class.
+
+If we had multiple things to export, we'd use named exports. They look like this: `export Thing`. You can also define the Thing anonymously when exporting, like this: `export function Thing () { // ... }`.
+
+Using default exports makes our components easier to import. You just have to write a simple import like we saw earlier: `import Thing from 'file'`. To import named exports, you have to specify them inside curly braces: `import { Thing1, Thing2 } from 'file'`.
+
+Hot reloading and continuous compilation should have done their magic now, and you should see an empty `<svg>` element in your page. You have to keep `npm start` running and a browser window pointing to `localhost:3000` for that.
+
+Congratz! You just made your first React component with ES6 classes. Or at least the first in this book. You're awesome!
+
+Here's what happens next:
+
+1. We'll make `H1BGraph` load our dataset
+2. Build a Histogram component
+3. Add dynamic meta text descriptions
+4. Add some data filtering
