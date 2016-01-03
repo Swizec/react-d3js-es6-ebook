@@ -12,7 +12,6 @@ If you skipped the [environment setup section](#the-environment), make sure youâ
 * d3.js
 * React
 * Lodash
-* autobind-decorator
 
 You should also have some way of running a static file server, and a way to compile JSX into pure JavaScript. I like having a simple node.js server that enables hot loading via Webpack, and compiling with Babel.
 

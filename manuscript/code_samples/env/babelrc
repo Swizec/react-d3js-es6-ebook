@@ -1,20 +1,28 @@
+//
+// Example 1
+//
 {
-  "stage": 0,
+  // leanpub-start-delete
+  "presets": ["react", "es2015"],
+  // leanpub-end-delete
+  // leanpub-start-insert
+  "presets": ["react", "es2015", "stage-0"],
+  // leanpub-end-insert
   "env": {
     "development": {
-      "plugins": ["react-transform"],
-      "extra": {
-        "react-transform": {
-          "transforms": [{
-            "transform": "react-transform-hmr",
-            "imports": ["react"],
-            "locals": ["module"]
-          }, {
-            "transform": "react-transform-catch-errors",
-            "imports": ["react", "redbox-react"]
-          }]
-        }
-      }
+      "presets": ["react-hmre"]
+    }
+  }
+}
+
+//
+// Example 2
+//
+{
+  "presets": ["react", "es2015", "stage-0"],
+  "env": {
+    "development": {
+      "presets": ["react-hmre"]
     }
   }
 }
