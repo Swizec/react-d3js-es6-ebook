@@ -95,3 +95,30 @@ Look how this H1B salary visualization changes when the user picks a subset of t
 ![Changes after user picks a data subset](images/full_changed_h1b.png)
 
 React + d3.js. A powerful combination indeed.
+
+## JSX
+
+We’re going to write our code in JSX, a JavaScript syntax extension that lets us treat XML-like data as normal code. You can use React without JSX, but I feel that it makes React’s full power easier to use.
+
+The gist of JSX is that we can use any XML-like string just like it is part of JavaScript. No Mustache or messy string concatenation necessary. Your functions can return straight-up HTML, SVG, or XML.
+
+For instance, the code that renders our whole application is going to look like this:
+
+{crop-start-line=399,crop-end-line=402,linenos=off,lang=jsx}
+<<[A basic Render](code_samples/old/main.jsx)
+
+Which compiles to:
+
+{title="JSX compile result", linenos=off, lang=js}
+    React.render(
+        React.createElement(H1BGraph, {url: “data/h1bs.csv”}),
+        document.querySelectorAll(‘.h1bgraph’)[0]
+    );
+
+As you can see, HTML code translates to `React.createElement` calls with attributes translated into a property dictionary. The beauty of this approach is two-pronged: you can use React components as if they were HTML tags and HTML attributes can be anything.
+
+You’ll see that anything from a simple value to a function or an object works equally well.
+
+I'm not sure yet whether this is better than separate template files in Mustache or whatever. There are benefits to both approaches. I mean, would you let a designer write the HTML inside your JavaScript files? I wouldn't, but it's definitely better than manually `+`-ing strings or Angular's approach of putting everything into HTML. Considerably better.
+
+If you skipped the setup section and don't have a JSX compilation system set up, you should do that now. You can also use the project stub you got with the book.
