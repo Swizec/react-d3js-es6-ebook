@@ -163,12 +163,14 @@ All of our components are going to start the same way - some imports, a class wi
 
 Our build is breaking right now. The main entry file tries to import and render `H1BGraph`, but it doesn't exist. Let's start a new file in `src/components/H1BGraph/index.jsx`.
 
-{crop-start-line=5,crop-end-line=6,linenos=off,lang=jsx}
+{crop-start-line=5,crop-end-line=7,linenos=off,lang=jsx}
 <<[Basic imports](code_samples/es6/H1BGraph/index.jsx)
 
-First we import React, and a base `Component` class. We have to import `React` even if we don't use it explicitly because we'll get a "React not defined" error otherwise. We'll use the `Component` class to build our own components off of.
+We import React, and a base `Component` class. We have to import `React` even if we don't use it explicitly because we'll get a "React not defined" error otherwise. We'll use the `Component` class to build our own components off of.
 
-{crop-start-line=10,crop-end-line=23,linenos=off,lang=jsx}
+We also import `d3` because we'll use it to load data later. 
+
+{crop-start-line=12,crop-end-line=25,linenos=off,lang=jsx}
 <<[Empty H1BGraph component](code_samples/es6/H1BGraph/index.jsx)
 
 Then we define a component that renders an empty `<svg>` tag inside a `<div>`. A component must have at least a `render()` function, otherwise React throws an error when it tries to render.
@@ -177,7 +179,7 @@ We're using ES6's concept of classes and class inheritance to extend React's bas
 
 You can still use `React.createClass` if you want. It works just fine and is equivalent to `class X extends Component`.
 
-{crop-start-line=36,crop-end-line=43,linenos=off,lang=jsx}
+{crop-start-line=39,crop-end-line=46,linenos=off,lang=jsx}
 <<[Export H1BGraph](code_samples/es6/H1BGraph/index.jsx)
 
 In the end, we export `H1BGraph` so other parts of the codebase can import it. We define it as the `default` export because this particular file only exports a single class.

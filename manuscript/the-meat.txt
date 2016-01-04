@@ -1,37 +1,43 @@
-## Loading data
+## Asynchronously loading data
 
-Great, we’ve got something rendering. Now we need to load some data before we can draw a picture. If you still don't have `public/data/h1bs.csv`, now is the time to get it. You can find it on Github [here](https://github.com/Swizec/h1b-software-salaries), or in the stub project included with the book.
+Great, we’ve got a component rendering. Now we need to load some data before we can draw a picture. If you still don't have `public/data/h1bs.csv`, now is the time to get it. You can find it on Github [here](https://github.com/Swizec/h1b-software-salaries), or in the stub project included with the book.
 
-We’re going to use d3.js’s built-in data-loading magic and hook it into React’s component lifecycle.
+We’re going to use d3.js’s built-in data-loading magic and hook it into React’s component lifecycle for a seamless integration. You could implement calls to a REST API in the same way.
 
-We start by adding three short methods to `H1BGraph`:
+We start by adding three methods to `H1BGraph` in `src/components/H1BGraph/index.jsx`:
 
-{crop-start-line=34,crop-end-line=49,linenos=off,lang=jsx}
-<<[Base methods to load data](code_samples/main.jsx)
+{crop-start-line=54,crop-end-line=72,linenos=off,lang=jsx}
+<<[Base methods to load data](code_samples/es6/H1BGraph/index.jsx)
 
-React calls `componentWillMount` right before inserting the component into our document. It’s a great opportunity to make any last-minute preparations before rendering. In our case, it’s a good spot to start loading data.
+With ES6 classes we no longer use `getInitialState` to set the initial state of our component. That job is taken over by the constructor, which is a function that gets called every time our class is instantiated into an object. We always have to call `super()` first to call the parent's constructor. In our case that's React's `Component`.
 
-I'm sure better spots exist, but loading a 12MB data file is always going to take a couple of seconds. You should try to avoid loading data you never intend to render.
+After calling `super()`, we can use `this.state` as a dictionary that hold's our component's current state. We'll want to avoid using component state as much as possible and rely instead on props fed into the component at render time. 
 
-`getInitialState` is the React way to set up a default state; in our case, we get an empty `rawData` array.
+Next we have `componentWillMount`, which is a component lifecycle function that React calls just before mounting, also known as rendering, our component into the page. This is where you'd want to fit any last minute preparations before rendering.
 
-We’re going to put d3.js’s data loading magic in `loadRawData`.
+It's also a great moment to start loading data. Especially when you have 12MB of data like we do. Wouldn't want to load that unless you know for sure, the component is getting rendered.
 
-We add a call to `d3.csv` because our data is in CSV format. D3.js is smart enough to change every row into an object using values from the title row (first row) as keys.
+We’re going to put d3.js’s data loading magic in `loadRawData`. The reason we have a separate function and don't stick everything into `componentWillMount` is flexibility - we can call the function whenever we want without messing with React's built-in functions.
 
-{crop-start-line=74,crop-end-line=86,linenos=off,lang=jsx}
-<<[Load data with d3.csv](code_samples/main.jsx)
+We use `d3.csv` to load our dataset because it's in CSV format. `d3.csv` understands CSV well enough to turn it into an array of dictionaries, using the first row as keys. If our data was JSON, we'd use `d3.json`, `d3.html` for HTML, etc. You can find the full list of data loaders in d3's documentation.
 
-This will asynchronously load a CSV file, parse it, and return the result in the `rows` argument to the callback. We then use `this.setState()` to save the data in our component.
+{crop-start-line=103,crop-end-line=115,linenos=off,lang=jsx}
+<<[Load data with d3.csv](code_samples/es6/H1BGraph/index.jsx)
 
-Using `setState()` triggers a re-render and should generally be avoided because relying on state can cause inconsistencies in your UI. It’s very appropriate to store 12MB of raw data as state, though.
+This asynchronously loads a CSV file, parses it, and returns the result in the `rows` argument to the callback. The callback is an ES6 fat arrow, which is syntax sugar for `function () { // .. }.bind(this)` - a function bound to current scope. We're going to use these a lot.
 
-The data we’ve got now has keys with spaces like `submit date` and `job title`, and everything is a string. This is not very nice to work with.
+Inside the callback we check for errors, and if everything went well, use `this.setState()` to save the loaded data in our component's state. Calling `setState()` triggers a re-render and should generally be avoided because relying on state can lead to inconsistencies in your UI. It’s very appropriate to store 12MB of raw data as state, though.
+
+We're now going to be able to access our data with `this.state.rawData`. Hooray!
+
+### Data cleanup
+
+Datasets are often messy or at least annoying to work with. After a naive load like that, our data uses keys with spaces in them and everything is a string. Not nice to work with at all.
 
 We can add some cleanup in one fell swoop:
 
-{crop-start-line=113,crop-end-line=143,linenos=off,lang=jsx}
-<<[Data cleanup](code_samples/main.jsx)
+{crop-start-line=148,crop-end-line=172,linenos=off,lang=jsx}
+<<[Data cleanup](code_samples/es6/H1BGraph/index.jsx)
 
 Using `.row()`, we’ve given a callback to `d3.csv` that tells it how to change every row that it reads. Each row is fed into the function as a raw object, and whatever the function returns is added to the final result.
 
@@ -66,16 +72,18 @@ Into objects that look like this:
 			    "state": "ca"
 			}
 
-In our case we cleaned up the keys, parsed dates into `Date()` objects, and made sure numbers are numbers. If a row didn’t have a `base_salary`, we filtered it out by returning `null`.
+In our case we cleaned up the keys, parsed dates into `Date()` objects using d3's built-in date formatters, and made sure numbers are numbers. If a row didn’t have a `base_salary`, we filtered it out by returning `null`.
+
+### Visual feedback that loading is happening
 
 Loading and parsing 81,000 data points takes some time. Let's tell users what they're waiting for by rendering some explainer text when there's no data.
 
-{crop-start-line=203,crop-end-line=221,linenos=off,lang=jsx}
-<<[Loading indicator](code_samples/main.jsx)
+{crop-start-line=244,crop-end-line=253,linenos=off,lang=jsx}
+<<[Loading indicator](code_samples/es6/H1BGraph/index.jsx)
 
-The beauty of our approach is that the `render` method just returns different elements based on whether or not we’ve got some data. Notice that we access the data as `this.state.rawData` and rely on the re-render when the state updates.
+The beauty of our approach is that the `render` method returns different elements based on whether or not we’ve got some data. Notice that we access the data as `this.state.rawData` and rely on the re-render triggered by `this.setState` to get rid of the loading notice.
 
-If you’ve kept `npm start` running in the background, you should see your browser flash the loading text before becoming blank.
+If you’ve kept `npm start` running in the background, your browser should flash the loading text before becoming blank.
 
 ![Loading message](images/loading_message.png)
 

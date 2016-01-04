@@ -3,11 +3,14 @@
 // Example 1
 //
 import React, { Component } from 'react';
+import d3 from 'd3';
 
 //
 // Example 2
 //
 import React, { Component } from 'react';
+import d3 from 'd3';
+
 // leanpub-start-insert
 class H1BGraph extends Component {
     render() {
@@ -25,6 +28,7 @@ class H1BGraph extends Component {
 // Example 3
 //
 import React, { Component } from 'react';
+import d3 from 'd3';
 
 class H1BGraph extends Component {
     render() {
@@ -41,10 +45,225 @@ class H1BGraph extends Component {
 export default H1BGraph;
 // leanpub-end-insert
 
+//
+// Example 4
+//
+import React, { Component } from 'react';
+import d3 from 'd3';
+
+class H1BGraph extends Component {
+    // leanpub-start-insert
+    constructor() {
+        super();
+
+        this.state = {
+            rawData: []
+        };
+    }
+
+    componentWillMount() {
+        this.loadRawData();
+    }
+
+    loadRawData() {
+    }
+    // leanpub-end-insert
+
+    render() {
+        return (
+            <div>
+                <svg>
+                </svg>
+            </div>
+        );
+    }
+}
+
+export default H1BGraph;
+
+//
+// Example 5
+//
+import React, { Component } from 'react';
+import d3 from 'd3';
+
+class H1BGraph extends Component {
+    constructor() {
+        super();
+
+        this.state = {
+            rawData: []
+        };
+    }
+
+    componentWillMount() {
+        this.loadRawData();
+    }
+
+    loadRawData() {
+        // leanpub-start-insert
+        d3.csv(this.props.url)
+          .get((error, rows) => {
+              if (error) {
+                  console.error(error);
+                  console.error(error.stack);
+              }else{
+                  this.setState({rawData: rows});
+              }
+          });
+        // leanpub-end-insert
+    }
+
+    render() {
+        return (
+            <div>
+                <svg>
+                </svg>
+            </div>
+        );
+    }
+}
+
+export default H1BGraph;
+
+//
+// Example 6
+//
+import React, { Component } from 'react';
+import d3 from 'd3';
+
+class H1BGraph extends Component {
+    constructor() {
+        super();
+
+        this.state = {
+            rawData: []
+        };
+    }
+
+    componentWillMount() {
+        this.loadRawData();
+    }
+
+    loadRawData() {
+        // leanpub-start-insert
+        let dateFormat = d3.time.format("%m/%d/%Y");
+        // leanpub-end-insert
+
+        d3.csv(this.props.url)
+            // leanpub-start-insert
+          .row((d) => {
+              if (!d['base salary']) {
+                  return null;
+              }
+
+              return {employer: d.employer,
+                      submit_date: dateFormat.parse(d['submit date']),
+                      start_date: dateFormat.parse(d['start date']),
+                      case_status: d['case status'],
+                      job_title: d['job title'],
+                      clean_job_title: this.cleanJobs(d['job title']),
+                      base_salary: Number(d['base salary']),
+                      salary_to: d['salary to'] ? Number(d['salary to']) : null,
+                      city: d.city,
+                      state: d.state};
+          })
+            // leanpub-end-insert
+          .get((error, rows) => {
+              if (error) {
+                  console.error(error);
+                  console.error(error.stack);
+              }else{
+                  this.setState({rawData: rows});
+              }
+          });
+    }
+
+    render() {
+        return (
+            <div>
+                <svg>
+                </svg>
+            </div>
+        );
+    }
+}
+
+export default H1BGraph;
+
+
+//
+// Example 6
+//
+import React, { Component } from 'react';
+import d3 from 'd3';
+
+class H1BGraph extends Component {
+    constructor() {
+        super();
+
+        this.state = {
+            rawData: []
+        };
+    }
+
+    componentWillMount() {
+        this.loadRawData();
+    }
+
+    loadRawData() {
+        let dateFormat = d3.time.format("%m/%d/%Y");
+
+        d3.csv(this.props.url)
+          .row((d) => {
+              if (!d['base salary']) {
+                  return null;
+              }
+
+              return {employer: d.employer,
+                      submit_date: dateFormat.parse(d['submit date']),
+                      start_date: dateFormat.parse(d['start date']),
+                      case_status: d['case status'],
+                      job_title: d['job title'],
+                      clean_job_title: this.cleanJobs(d['job title']),
+                      base_salary: Number(d['base salary']),
+                      salary_to: d['salary to'] ? Number(d['salary to']) : null,
+                      city: d.city,
+                      state: d.state};
+          })
+          .get((error, rows) => {
+              if (error) {
+                  console.error(error);
+                  console.error(error.stack);
+              }else{
+                  this.setState({rawData: rows});
+              }
+          });
+    }
+
+    render() {
+        // leanpub-start-insert
+        if (!this.state.rawData.length) {
+            return (
+                <h2>Loading data about 81,000 H1B visas in the software industry</h2>
+            );
+        }
+        // leanpub-end-insert
+
+        return (
+            <div>
+                <svg>
+                </svg>
+            </div>
+        );
+    }
+}
+
+export default H1BGraph;
+
 
 
 import React, { Component } from 'react';
-import autobind from 'autobind-decorator';
 import d3 from 'd3';
 
 import { Title, Description } from './Meta';
@@ -55,14 +274,13 @@ import Controls from './Controls';
 
 require('./style.less');
 
-@autobind
 class H1BGraph extends Component {
     constructor() {
         super();
 
         this.state = {
             rawData: [],
-            dataFilter: function () { return true; }
+            dataFilter: () => true
         };
     }
 
@@ -102,7 +320,7 @@ class H1BGraph extends Component {
         let dateFormat = d3.time.format("%m/%d/%Y");
 
         d3.csv(this.props.url)
-          .row(function (d) {
+          .row((d) => {
               if (!d['base salary']) {
                   return null;
               }
@@ -117,15 +335,15 @@ class H1BGraph extends Component {
                       salary_to: d['salary to'] ? Number(d['salary to']) : null,
                       city: d.city,
                       state: d.state};
-          }.bind(this))
-          .get(function (error, rows) {
+          })
+          .get((error, rows) => {
               if (error) {
                   console.error(error);
                   console.error(error.stack);
               }else{
                   this.setState({rawData: rows});
               }
-          }.bind(this));
+          });
     }
 
     updateDataFilter(filter) {
@@ -150,13 +368,13 @@ class H1BGraph extends Component {
             axisMargin: 83,
             topMargin: 10,
             bottomMargin: 5,
-            value: function (d) { return d.base_salary; }
+            value: (d) => d.base_salary
         },
             fullWidth = 700;
 
-        let onlyGoodVisas = this.state.rawData.filter(function (d) {
-            return d.case_status == "certified";
-        }),
+        let onlyGoodVisas = this.state
+                                .rawData
+                                .filter((d) => d.case_status == "certified"),
             filteredData = onlyGoodVisas.filter(this.state.dataFilter);
 
         return (
@@ -167,7 +385,7 @@ class H1BGraph extends Component {
                     <Histogram {...params} data={filteredData} />
                     <Mean {...params} data={filteredData} width={fullWidth} />
                 </svg>
-                <Controls data={onlyGoodVisas} updateDataFilter={this.updateDataFilter} />
+                <Controls data={onlyGoodVisas} updateDataFilter={::this.updateDataFilter} />
             </div>
         );
     }
