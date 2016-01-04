@@ -121,14 +121,14 @@ We used ES6's string templates to create `transform`'s value. These are denoted 
 
 In this case, we're using this SVG transformation to give our Histogram some room to breathe. Exactly how much room comes from `this.props.topMargin` - a component property specified by whomever renders our `Histogram` component.
 
-### d3.js for [dataviz] calculations
+### d3.js for \[dataviz\] calculations
 
 We're going to build our histogram with d3.js’s built-in histogram layout. It’s smart enough to do everything on its own. Data binning, calculating positions and dimension of histogram bars, and a few other useful tidbits. We just have to give it some data and some configuration.
 
 We add three methods to our `Histogram` component to manage d3.js:
 
 {crop-start-line=27,crop-end-line=47,linenos=off,lang=jsx}
-<<[D3.js management functions](code_samples/es6/Histogram/index.jsx)
+<<[D3.js management functions](code_samples/es6/Histogram/Histogram.jsx)
 
 In `constructor()` we create the d3 objects we need and give them any defaults we know about, in `componentWillReceiveProps()` we make sure to call `this.update_d3`, and `update_d3()` is the function that does our heavy lifting. It updates d3 objects with any new properties our component gets from above.
 

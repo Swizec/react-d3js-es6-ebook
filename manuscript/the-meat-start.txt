@@ -170,7 +170,7 @@ We import React, and a base `Component` class. We have to import `React` even if
 
 We also import `d3` because we'll use it to load data later. 
 
-{crop-start-line=12,crop-end-line=25,linenos=off,lang=jsx}
+{crop-start-line=13,crop-end-line=25,linenos=off,lang=jsx}
 <<[Empty H1BGraph component](code_samples/es6/H1BGraph/index.jsx)
 
 Then we define a component that renders an empty `<svg>` tag inside a `<div>`. A component must have at least a `render()` function, otherwise React throws an error when it tries to render.
