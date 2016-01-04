@@ -89,54 +89,74 @@ If you’ve kept `npm start` running in the background, your browser should flas
 
 Marvelous.
 
-## Drawing the loaded data
+## Making your first dataviz component - a Histogram
 
 Now that our data is loading, it’s time to start drawing.  We’ll start with a basic histogram, then add an axis, and then add an indicator for the mean value (also known as the "average").
 
-Create a new file in `src/` called `drawers.jsx`. We’ll put all our drawing logic here.
+A histogram component isn't unique to our project, so we're going to build it as a standalone component. Create a new directory `src/components/Histogram/`, with an empty `index.jsx` file.
 
-### Using d3.js for calculations
+We use `index.jsx` as a convenience to make our component easier to import so we won't put any logic in here. The whole file looks like this:
 
-We start with a blank component called `Histogram`.
+{linenos=off,lang=jsx}
+<<[src/components/Histogram/index.jsx](code_samples/es6/Histogram/index.jsx)
 
-{crop-start-line=5,crop-end-line=21,linenos=off,lang=jsx}
-<<[Empty histogram](code_samples/drawers.jsx)
+It just imports and exports `Histogram`. Now the rest of our project can use `import Histogram from '../Histogram'` without understanding the internal file structure of our component. Users of your components should never have to know how you organized your component internally.
 
-Once more, we required external libraries on top and started our component with a simple `render` function. On the bottom, we added it to the exports. This will allow other parts of the codebase to use it as `require(‘drawers.jsx’).Histogram`.
+### A blank Histogram component
 
-In the `render` method, we created a grouping, `<g>`, element that will hold our histogram together. We used the `transform` property to move it into place. The reason we did some ugly string concatenation is that we can’t mix string and variable attribute values.
+We start with a blank `Histogram` component in `src/components/Histogram/Histogram.jsx`, like this:
 
-However, we do want to get `topMargin` via properties given to our component. We access those with `this.props` and they make our components more flexible.
+{crop-start-line=4,crop-end-line=19,linenos=off,lang=jsx}
+<<[Empty histogram](code_samples/es6/Histogram/Histogram.jsx)
 
-We're going to build our histogram with d3.js’s built-in histogram layout. It’s smart enough to do everything on its own. We just have to give it some data and some configuration.
+Just like in `H1BGraph`, we first required some external libraries - React and d3, created a class with a `render()` function, and added it to our exports. This lets other parts of the codebase use it by calling `import Histogram from './Histogram'`.
+
+Right now the `render()` method contains only an empty grouping, `<g>`, element. These are much like divs in HTML, they hold elements together to make them easier to reference. Unlike divs, however, they don't come with any concept of formatting or sizing.
+
+The grouping element has a class `histogram`, which we'll use later for styling, and uses the `transform` attribute to move into position via the `translate` property.
+
+SVG transforms are a powerful tool in SVG drawing, but teaching you all about them goes beyond the scope of this book. We're only going to use the `translate()` property, which specifies a new `x, y` position for the given element.
+
+We used ES6's string templates to create `transform`'s value. These are denoted with backticks and evaluate any JavaScript you put into `${}`. It's a great alternative to concatenating strings, but don't go crazy with these lest you won't understand what your code is doing six months from now when you have to fix a bug.
+
+In this case, we're using this SVG transformation to give our Histogram some room to breathe. Exactly how much room comes from `this.props.topMargin` - a component property specified by whomever renders our `Histogram` component.
+
+### d3.js for [dataviz] calculations
+
+We're going to build our histogram with d3.js’s built-in histogram layout. It’s smart enough to do everything on its own. Data binning, calculating positions and dimension of histogram bars, and a few other useful tidbits. We just have to give it some data and some configuration.
 
 We add three methods to our `Histogram` component to manage d3.js:
 
-{crop-start-line=26,crop-end-line=45,linenos=off,lang=jsx}
-<<[D3.js management functions](code_samples/drawers.jsx)
+{crop-start-line=27,crop-end-line=47,linenos=off,lang=jsx}
+<<[D3.js management functions](code_samples/es6/Histogram/index.jsx)
+
+In `constructor()` we create the d3 objects we need and give them any defaults we know about, in `componentWillReceiveProps()` we make sure to call `this.update_d3`, and `update_d3()` is the function that does our heavy lifting. It updates d3 objects with any new properties our component gets from above.
 
 This is the cleanest approach I’ve found to make d3.js and React work together. We’ll use it for all of our d3.js-enabled components.
 
-The problem we're facing is that d3.js achieves its declarative nature is through objects. When you call a d3.js function, it's usually going to have some internal state.
+The problem we're facing is that d3.js achieves its declarative nature through objects. When you call a d3.js function, it's usually got some internal state.
 
-This is great when you want to change how d3.js behaves by daisy-chaining getters and setters, but that approach causes problems with React. It means we have to make sure the internal state is always up-to-date.
+This is great when you want to change how d3.js behaves by daisy-chaining getters and setters, but it causes problems with React. We have to make sure to keep that internal state up-to-date.
 
-We'll use `componentWillMount` to set the defaults, and then `componentWillRecieveProps` to update them when necessary.
+We *could* create new objects on every `render()`, but that feels wasteful. Maybe I'm just old fashioned.
 
-Each time, we call `this.update_d3` to do the heavy lifting.
+This time `update_d3()` does its heavy lifting like this:
 
-{crop-start-line=71,crop-end-line=90,linenos=off,lang=jsx}
-<<[update_d3 function body](code_samples/drawers.jsx)
+{crop-start-line=81,crop-end-line=98,linenos=off,lang=jsx}
+<<[update_d3 function body](code_samples/es6/Histogram/Histogram.jsx)
 
-If you’re used to d3.js, this code should look familiar. We updated the number of bins in the histogram with `.bins()` and gave it a new value accessor with `.value()`. This tells the layout how to get the interesting datapoint from our data objects.
+If you’re used to d3.js, this code should look familiar. We updated the number of bins in our histogram with `.bins()` and gave it a new value accessor with `.value()`. This tells the layout how to get the interesting datapoint from our data objects.
 
+{# this is a weird sentence #}
 We’re doing one better by just passing in the function from our properties. This makes the `Histogram` component more reusable. The less we assume about what we’re doing, the better.
 
-Then, we called `this.histogram()` to group our data into bins and saved it to our component’s state with `this.setState()`.
+Then, we called `this.histogram()` to group our data into bins and got a count of entries in each bin with a `.map()` call. 
 
-Finally, we updated our scales. You can think of them as simple mathematical functions that map a domain to a range. Domain tells them the extent of our data; range tells them the extent of our drawing area.
+Finally, we updated our scales. You can think of scales as simple mathematical functions that map a domain to a range. Domain tells them the extent of our data; range tells them the extent of our drawing area. So if you have a linear scale with a domain `[0, 1]` and a range `[1, 2]` and you call `scale(0.5)`, you will get `1.5`.
 
-### Outputting the result
+Scales are one of my favorite parts of d3.js. You'll see why when we start drawing stuff.
+
+### React for the SVG output
 
 Now that we’ve got our histogram in memory, it’s time to turn it into SVG elements.
 
