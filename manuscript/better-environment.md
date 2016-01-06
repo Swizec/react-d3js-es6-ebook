@@ -219,6 +219,7 @@ Finally, I like to add a `resolve` config to Webpack. This lets me load files wi
 
 It's a list of file extensions that Webpack tries to guess when a path you use doesn't match any files
 
+{#enable-es7}
 ## Optionally enable ES7
 
 Examples in this book are written in ES6, also known as ECMAScript2015. If you're using the boilerplate approach, or the stub project that came with the book, all ES6 features work out of the box in any browser thanks to the Babel 6 compiler, which transpiles ES6 into ES5.

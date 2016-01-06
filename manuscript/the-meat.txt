@@ -74,7 +74,7 @@ Into objects that look like this:
 
 In our case we cleaned up the keys, parsed dates into `Date()` objects using d3's built-in date formatters, and made sure numbers are numbers. If a row didn’t have a `base_salary`, we filtered it out by returning `null`.
 
-### Visual feedback that loading is happening
+### Add visual feedback that loading is happening
 
 Loading and parsing 81,000 data points takes some time. Let's tell users what they're waiting for by rendering some explainer text when there's no data.
 
@@ -150,24 +150,68 @@ If you’re used to d3.js, this code should look familiar. We updated the number
 {# this is a weird sentence #}
 We’re doing one better by just passing in the function from our properties. This makes the `Histogram` component more reusable. The less we assume about what we’re doing, the better.
 
-Then, we called `this.histogram()` to group our data into bins and got a count of entries in each bin with a `.map()` call. 
+Then, we called `this.histogram()` to ask d3's histogram layout to do its magic. If you print the result in `bars`, you'll see it's an array of arrays that have some properties.
 
-Finally, we updated our scales. You can think of scales as simple mathematical functions that map a domain to a range. Domain tells them the extent of our data; range tells them the extent of our drawing area. So if you have a linear scale with a domain `[0, 1]` and a range `[1, 2]` and you call `scale(0.5)`, you will get `1.5`.
+{title="Histogram printout",linenos=off}
+	 // console.log(bars) in update_d3()
+   [Array[26209], Array[48755], // ...]
+    0: Array[26209]
+       [0 … 9999]
+       [10000 … 19999]
+       [20000 … 26208]
+       dx: 69999.273
+       length: 26209
+       x: 14.54
+       y: 26209
 
-Scales are one of my favorite parts of d3.js. You'll see why when we start drawing stuff.
+Each array holds:
+  - data for its respective histogram bin
+  - a `dx` property for bar thickness
+  - a `length`, which is the number of items in this bin
+  - an `x` coordinate
+  - a `y` coordinate
+
+We'll use these to draw our histogram bars.
+
+But before we can do that, we have to update our scales. You can think of scales as mathematical functions that map a domain to a range. Domain tells them the extent of our data; range tells them the extent of our drawing area. So if you have a linear scale with a domain `[0, 1]` and a range `[1, 2]` and you call `scale(0.5)`, you will get `1.5`.
+
+To define the correct domains, we first got the `counts` of elements in each bin, then used `min`/`max` helpers to find smallest and largest values. In case of height, we had to add each bar's thickness to its position to find the max.
+
+To define the ranges, we relied on chart dimension properties.
+
+Notice how we use the `x` position to define the domain for our `yScale`? That's because our histogram is going to be horizontal.
+
+We can do that so simply because scales don't care about anything, they just map a domain to a range. How you use that is up to you.
+
+Scales are my favorite. You'll see why when we start drawing.
 
 ### React for the SVG output
 
-Now that we’ve got our histogram in memory, it’s time to turn it into SVG elements.
+Great, our scales are ready to help us draw, so let's add the drawing bit to `render()`.
 
-{crop-start-line=137,crop-end-line=166,linenos=off,lang=jsx}
-<<[Draw the histogram bars](code_samples/drawers.jsx)
+{crop-start-line=151,crop-end-line=166,linenos=off,lang=jsx}
+<<[Add histogram bars to SVG](code_samples/es6/Histogram/Histogram.jsx)
 
-We added another grouping element to our `render` function, which holds all the bars. I’ll show you why we need two grouping elements later.
+Even though we already calculated our histogram data in `update_d3()`, we calculate it again in `render()`. This lets us avoid using state and triggering unnecessary re-renders. It seems wasteful at first, but think about it: Which is quicker? Re-rendering twice on every prop change, or running a d3 function twice?
 
- Notice how we can just `.map()` through our histogram data in `this.state.bars`? That’s the magic of React - JavaScript and XML living together as one.
+Ok, it's not immediately obvious which one uses less processing power, but we prefer avoiding state because it saves *our* brain cycles. Those are almost always more expensive than computer cycles.
 
-We could have put the entire `makeBar` method in here, but I think the code looks cleaner when it’s separate. `makeBar` takes data about a single bar, constructs the properties object, and returns a `HistogramBar` component.
+We also added a new grouping element for the histogram bars. You'll see why we need a group inside a group later.
+
+The more important bit is that we could just `.map()` through our histogram data even though we're technically inside XML. That's the magic of JSX - JavaScript and XML living together as one.
+
+We could even have put the entire `makeBar` function in here, but that makes our code harder to read.
+
+One last trick was using ES7's double-colon operator. This is syntax sugar for `this.makeBar.bind(this)`. Remember, we have to manually bind methods to `this` scope because we're using ES6 classes.
+
+You can use this syntax sugar, if you [enabled `stage-0`](#enable-es7) in the chapter about your dev environment.
+
+Now we need the `makeBar` method, it looks like this:
+
+{crop-start-line=209,crop-end-line=227,linenos=off,lang=jsx}
+<<[The makeBar helper method](code_samples/es6/Histogram/Histogram.jsx)
+
+
 
 We could have returned the whole lump of SVG code right here, but using a subcomponent is better aligned with React principles.
 
