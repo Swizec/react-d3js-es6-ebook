@@ -241,6 +241,68 @@ class Histogram extends Component {
 export default Histogram;
 
 
+//
+// Example 6
+//
+class HistogramBar extends Component {
+    render() {
+        let translate = `translate(${this.props.x}, ${this.props.y})`,
+            label = this.props.percent.toFixed(0)+'%';
+
+        return (
+            <g transform={translate} className="bar">
+                <rect width={this.props.width}
+                      height={this.props.height-2}
+                      transform="translate(0, 1)">
+                </rect>
+                <text textAnchor="end"
+                      x={this.props.width-5}
+                      y={this.props.height/2+3}>
+                    {label}
+                </text>
+            </g>
+        );
+    }
+}
+
+//
+// Example 7
+//
+class HistogramBar extends Component {
+    render() {
+        let translate = `translate(${this.props.x}, ${this.props.y})`,
+            label = this.props.percent.toFixed(0)+'%';
+
+        // leanpub-start-insert
+        if (this.props.percent < 1) {
+            label = this.props.percent.toFixed(2)+"%";
+        }
+
+        if (this.props.width < 20) {
+            label = label.replace("%", "");
+        }
+
+        if (this.props.width < 10) {
+            label = "";
+        }
+        // leanpub-end-insert
+
+        return (
+            <g transform={translate} className="bar">
+                <rect width={this.props.width}
+                      height={this.props.height-2}
+                      transform="translate(0, 1)">
+                </rect>
+                <text textAnchor="end"
+                      x={this.props.width-5}
+                      y={this.props.height/2+3}>
+                    {label}
+                </text>
+            </g>
+        );
+    }
+}
+
 
 // -------------
 
