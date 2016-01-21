@@ -417,10 +417,41 @@ As always, we start with imports, a class, a render method, and exports. Like th
 
 Your browser should stop panicking now. Instead, it shows a blank `<div>` under your histogram.
 
-Now we're going to add the first `ControlRow` and break it all over again.
+Now we're going to add the first `ControlRow` and break the page all over again.
 
-{crop-start-line=27,crop-end-line=45,linenos=off,lang=jsx}
+{crop-start-line=31,crop-end-line=49,linenos=off,lang=jsx}
 <<[Year ControlRow in Controls](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+We defined a function called `getYears` that can go through our dataset and find all year values. The `groupBy` creates a dictionary with years as keys, `keys` returns the dictionary's keys, and `map(Number)` makes sure they're all numbers so we won't have to worry about that later.
+
+Then we added a `ControlRow` component to the return statement. As props we gave it our dataset, the `getYears` function so it can decide which buttons to render, and a dummy update filter callback.
+
+We'll define the filter when we look at propagating events back up the chain.
+
+And of course, don't forget to import `ControlRow`.
+
+{crop-start-line=24,crop-end-line=28,linenos=off,lang=jsx}
+<<[Import ControlRow](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+Perfect. Your browser should start panicking again.
+
+Let's calm down your browser and create `src/components/H1BGraph/Controls/ControlRow.jsx`.
+
+{crop-start-line=5,crop-end-line=22,linenos=off,lang=jsx}
+<<[Stubbed ControlRow component](code_samples/es6/H1BGraph/Controls/ControlRow.jsx)
+
+Start with imports, define a class, render some empty divs, export class. The usual.
+
+Before your browser stops panicking, we also need the Toggle component in `src/components/H1BGraph/Controls/Toggle.jsx`.
+
+{crop-start-line=5,crop-end-line=13,linenos=off,lang=jsx}
+<<[Stubbed Toggle component](code_samples/es6/H1BGraph/Controls/Toggle.jsx)
+
+Okay, your browser should stop panicking now and there should be some divs within divs under the histogram.
+
+To make stuff show up, we first have to add toggles to ControlRow, then make sure the Toggle component returns something visible.
+
+
 
 
 Let’s start a new file called `src/controls.jsx` with a `Controls` component stub:

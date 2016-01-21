@@ -23,6 +23,10 @@ export default Controls;
 import React, { Component } from 'react';
 import _ from 'lodash';
 
+// leanpub-start-insert
+import ControlRow from './ControlRow';
+// leanpub-end-insert
+
 class Controls extends Component {
     render() {
         // leanpub-start-insert
