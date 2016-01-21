@@ -271,7 +271,7 @@ You should now see a histogram like this:
 
 ![Basic Histogram](images/base_histogram.png)
 
-## Adding an axis
+## Wrapping a pure-d3 element in React - an Axis
 
 Axes are my favourite feat of d3.js magic right after scales.  You call a function, set some parameters, and **BAM**, you’ve got an axis.
 
@@ -348,37 +348,80 @@ If it doesn't, you should send me an email and I'll try to help.
 
 Next up: making the Histogram interactive.
 
-## Reacting to data changes
+## Interacting with the user
 
 We’ve got a histogram with an axis and the building blocks to make as many as we want. Awesome!
 
 But our histogram looks weird. Most of our data falls into the first three bars and a lone outlier stretches the data range far too much.
 
-Sure, we could take care of this by removing the outlier, but let's be honest: statisticians should worry about statistical anomalies. We’re here to draw pictures.
+We could take care of this by removing the outlier, but let's be honest: statisticians should worry about statistical anomalies. We’re here to draw pretty pictures.
 
-The next best thing is letting users filter data and take a closer look. This solves our problem of finding outliers, and it gives users more freedom. And maybe, just maybe, they’re going to spend more time on our site.
+It's better to give users some filters, so they can look only at the parts they care about. This solves our problem of finding outliers, and gives users more freedom. And maybe, just maybe, they’re going to spend more time on our site.
 
 Win-win-win.
 
-We’re going to make controls that let users filter data by year. In the full example, I added filtering by state and job title as well, but they follow the same principles and talking about them here would take too long.
+We're going to make controls that let users filter data by year. Then just to show you how reusable React components are, we're going to add filtering by state as well. In the full example, I also added filtering by job title, but that would take too long to explain because the dataset is messy.
 
 ![Events flow up through callbacks](images/architecture_events.jpg)
 
-Our approach will follow the approach of having events flow up the hierarchy and having data updates flow down. When a user clicks a button, it calls a function on its parent. This in turn calls a function on its parent and so on until we hit `H1BGraph`, which is our holder of truth.
+Remember, we talked about using a flux-like approach in our [architecture](#the-architecture). That means:
 
-We could also call functions directly on `H1BGraph` if we had a reference to them, but that would break the separation of concerns in our case.
-
-Once `H1BGraph` updates its state, the changed data flows back down to the relevant components via `props`.
+- user events are going to flow up the component hierarchy via callbacks
+- the main component will change its data state
+- React will propagate data changes back down through component props
 
 ![Updated data flows back down](images/architecture_updates.jpg)
 
-### Creating user controls
+The only difference between this bi-directional data-flow and a true Flux architecture is that in a true Flux architecture, the data store is separate from the main component. As a result, everyone has a way to affect changes directly on the data store, which means we don't have to mess about with callbacks.
 
-We're going to organise our controls into three components:
+That turns out to be easier to manage when you have a lot of interacting components. Because our example is so simple using Flux isn't really worth the extra code. 
+
+To get a better idea of Flux's pros and cons, you can read this side-by-side comparison of React+Flux (130 lines) and pure jQuery (10 lines) [I wrote in October 2015](http://swizec.com/blog/reactflux-can-do-in-just-137-lines-what-jquery-can-do-in-10/swizec/6740). It's based on a simple form example.
+
+### Adding user controls
+
+Our controls are going to look like rows of togglable buttons. Each row represents a filter - year and state - and each button represents a value. When the button is "on", our histogram shows only the entries that have that value. Each row can have only one active value.
+
+The end result will be something like this:
+
+![Histogram with buttons](images/buttons_histogram.png)
+
+We'll build the controls out of three components:
 
 * `Controls`, which holds the controls together
 * `ControlRow`, which is a row of buttons
 * `Toggle`, which is a toggle-able button
+
+These components are going to live in a `Controls` subdirectory of `H1BGraph` - `src/components/H1BGraph/Controls`. We could build controls as a standalone component, and in a way we will, but for now it's easier to assume they're a specific solution to a specific problem.
+
+Before diving in, let's render `Controls` in `H1BGraph.render`. It's going to break the build, but you'll see things added to the page in real-time as you code. I love it when that happens.
+
+{crop-start-line=441,crop-end-line=447,linenos=off,lang=jsx}
+<<[Add Controls to H1BGraph.render](code_samples/es6/H1BGraph/index.jsx)
+
+Notice we added `Controls` outside the `<svg>` element. That's because they aren't a part of the visualization. Not of the graphical part at least.
+
+We used props to give our `Controls` component some data, which it will use to generate the buttons, and a filter update callback. This function doesn't do anything yet. We'll add that in a bit when we talk about propagating events back up the chain. For now it's here so that we have something to call without throwing an exception.
+
+Don't forget to import controls at the top of the file.
+
+{crop-start-line=372,crop-end-line=377,linenos=off,lang=jsx}
+<<[Import Controls](code_samples/es6/H1BGraph/index.jsx)
+
+Great. If you've kept `npm start` running in the background, your browser should start panicking right now. That's because `Controls/index.jsx` doesn't exist.
+
+As always, we start with imports, a class, a render method, and exports. Like this:
+
+{crop-start-line=4,crop-end-line=17,linenos=off,lang=jsx}
+<<[Controls component stub](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+Your browser should stop panicking now. Instead, it shows a blank `<div>` under your histogram.
+
+Now we're going to add the first `ControlRow` and break it all over again.
+
+{crop-start-line=27,crop-end-line=45,linenos=off,lang=jsx}
+<<[Year ControlRow in Controls](code_samples/es6/H1BGraph/Controls/index.jsx)
+
 
 Let’s start a new file called `src/controls.jsx` with a `Controls` component stub:
 
