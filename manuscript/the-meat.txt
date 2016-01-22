@@ -449,9 +449,52 @@ Before your browser stops panicking, we also need the Toggle component in `src/c
 
 Okay, your browser should stop panicking now and there should be some divs within divs under the histogram.
 
-To make stuff show up, we first have to add toggles to ControlRow, then make sure the Toggle component returns something visible.
+To make stuff show up, we first have to add toggles to ControlRow, then make sure the Toggle component returns a visible button.
 
+#### A row of buttons
 
+Adding buttons to `ControlRow` isn't too hard. 
+
+The `getToggleNames` function in our props gives us a list of button names, and the `Toggle` component renders a button. All we need is a loop that places the buttons.
+
+Let's go back to `src/components/H1BGraph/Controls/ControlRow.jsx` and add it.
+
+{crop-start-line=53,crop-end-line=65,linenos=off,lang=jsx}
+<<[Loop through toggle names](code_samples/es6/H1BGraph/Controls/ControlRow.jsx)
+
+This code calls `getToggleNames` with the data in our props, and calls `this._addToggle` on every value. Here you can once more see the power of JSX - we could embed a JavaScript incantation right in what looks like HTML code.
+
+Now we need to define the `_addToggle` function, which returns a Toggle component. We do this in a function call so the code is easier to read.
+
+{crop-start-line=33,crop-end-line=53,linenos=off,lang=jsx}
+<<[Create a Toggle](code_samples/es6/H1BGraph/Controls/ControlRow.jsx)
+
+We return a `<Toggle>` component with some properties:
+
+ - `label` for the visible label
+ - `name` for the button's name property
+ - `key` is something React needs to tell similar components apart; it has to be unique
+ - `value` for the button's initial value state
+ - `onClick` for the click callback
+
+These follow the common convention for form elements because it's the standard I got used to. It's a decent convention and there's no need to re-invent the wheel.
+
+We also capitalize the first letter of the label, if that flag is set in our props. This is where those `String` class helper functions we defined earlier come into play.
+
+Now that we defined that `onClick` callback, we have to at least stub the function to keep the build working. And we have to define initial state because we used `this.state.toggleValues`. It's easier than checking if the variable exists every time.
+
+{crop-start-line=79,crop-end-line=94,linenos=off,lang=jsx}
+<<[makePick and default state](code_samples/es6/H1BGraph/Controls/ControlRow.jsx)
+
+We keep `makePick` empty for now because we'll define it later when we look at propagating events. It's there just to keep things working.
+
+Using `componentWillMount` to define default state is an exception. You're supposed to do that in the class constructor, but we don't have access to props there. It makes sense, you can't populate an object property before the property exists. Remember, constructors are called while an object is being created.
+
+If you're not used to lodash's functional approach, the code in `componentWillMount` might look strange. It loops through the values returned by `getToggleNames` and builds a dictionary - or object - with those names as keys, and `false` as the value.
+
+We're later going to use the `toggleValues` state to ensure users can only select one value per row of toggles.
+
+#### Toggle-able buttons
 
 
 Let’s start a new file called `src/controls.jsx` with a `Controls` component stub:
