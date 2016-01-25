@@ -575,13 +575,107 @@ Two things happen here:
 1. We make sure only one value can be turned on at a time
 2. We call `updateDataFilter` with the new value
 
-For both of these we need the clicked toggle's name. When we use `_.mapValues` to reconstruct the `toggleValues` dictionary it tells us which field should be set to `true`. When we call `updateDataFilter` it tells us the value we're filtering by.
+For both of these we need the clicked toggle's name. When we use `_.mapValues` to reconstruct the `toggleValues` dictionary the name tells us which field should be set to `true`. When we call `updateDataFilter` it tells us the value we're filtering by.
 
 Remember, we collected toggle names out of possible values for each filter. In the case of filtering by year, each year value became a toggle button.
 
+If you click on a button now, you'll see it disables all the others. When `this.state.toggleValues` changes, it triggers a re-render, which pushes new props down to `Toggle` components, which then re-render themselves with the new `className`.
 
+Neat.
 
-## Adding some meta data
+---
+
+Now we can go back to `src/components/H1BGraph/Controls/index.jsx` and implement that `updateDataFilter` callback we stubbed earlier.
+
+We have to change the callback definition in `render`.
+
+{crop-start-line=94,crop-end-line=105,linenos=off,lang=jsx}
+<<[Change ControlRow callback](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+Same sort of code as always. If you don't like the `::` syntax sugar from ES7, you can use `this.updateDataFilter.bind(this)` instead.
+
+Now here's the interesting part: We'll have to hold the current year filter function and value in memory, the component's state.  We have to do this so that we can build complex filters on multiple properties.
+  
+Each time a user clicks a toggle button, we only know the current selection and property. But we don't want to delete the filtering on, say, US state.
+
+We have to define some default state in the constructor.
+
+{crop-start-line=63,crop-end-line=72,linenos=off,lang=jsx}
+<<[Default filter state](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+`yearFilter` is a dummy function, and `year` is an asterisk. It could be anything, but a few months from now, you will still recognize an asterisk as an anything goes value.
+
+With that done, we need the `updateYearFilter` function itself. It looks like this:
+
+{crop-start-line=74,crop-end-line=87,linenos=off,lang=jsx}
+<<[updateYearFilter function](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+Our filter is a function that checks for equality between the year in a datum and the year argument to `updateYearFilter` function itself. This works because of JavaScript's wonderful scoping, which means that functions carry their entire scope around. No matter where we pass the filter function to, the local variables that existed where it was defined, are always going to be there.
+
+This might lead to memory leaks. Which is probably why Chrome takes some 10 gigabytes of memory on my laptop.
+
+If the year is not defined, or reset is explicitly set to true, we reset the filter back to defaults.
+
+Almost there! We are handling the in-state representation of the year filter. Now we have to tell the parent component, `H1BGraph`.
+
+We do that in the `componentDidUpdate` lifecycle method. As you can guess, it gets called on every re-render, which is triggered every time we use `this.setState`.
+
+{crop-start-line=236,crop-end-line=245,linenos=off,lang=jsx}
+<<[Propagate filter changes up the hierarchy](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+For every update, we call `this.props.updateDataFilter`, which is the change callback defined by `H1BGraph` when it rends `Controls`. As the sole argument, we give it our filter wrapped in another function.
+
+This looks far too complicated and it is. It will make more sense when we add another filter. Hint: this is where we combine multiple filters into a single function.
+
+But whatever you do, *DON'T* click a button yet. Your code will go into an infinite loop and crash your browser tab.
+
+That's because when React decides whether to update your component or not, it only performs a shallow state and props comparison. Because we rely on function changes, we need a better comparison.
+
+{crop-start-line=246,crop-end-line=251,linenos=off,lang=jsx}
+<<[Prevent infinite loops](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+With `shouldComponentUpdate` we can define a custom comparison function. In our case, using Lodash's `isEqual` between current and future state is good enough.
+
+Crisis averted! You can click the buttons.
+
+Just one thing left to do before the graph starts changing for every click: Use the new filters to filter data before rendering.
+
+Go to `src/components/H1BGraph/index.jsx` and add this function:
+
+{crop-start-line=508,crop-end-line=515,linenos=off,lang=jsx}
+<<[Filter update callback](code_samples/es6/H1BGraph/index.jsx)
+
+Guess what it does? Stores the new filter in `this.state`. 
+
+Of course, this means we have to add a default filter in the constructor as well.
+
+{crop-start-line=463,crop-end-line=473,linenos=off,lang=jsx}
+<<[Default dataFilter](code_samples/es6/H1BGraph/index.jsx)
+
+The default is a function that always says *"Yup, leave it in."*.
+
+Now let's add all the heavy lifting to the `render` method. It looks like this:
+
+{crop-start-line=531,crop-end-line=556,linenos=off,lang=jsx}
+<<[Rendering filter data](code_samples/es6/H1BGraph/index.jsx)
+
+A few things happened:
+
+1. We passed our data through a filter
+2. We feed filtered data into the `Histogram`
+3. We gave `Controls` the correct callback
+
+Yes, this means we filter the data from scratch every time the page re-renders for whatever reason. Turns out this is pretty fast and works well enough. Even with tens of thousands of data points.
+
+And there you go. You have a histogram that changes its shape when you click a button.
+
+Amazing.
+
+Now let me show you just how reusable React components can be.
+
+## Component reusability
+
+## Making disparate components interact
 
 If you’ve followed along this far, you’ve got a nice histogram of H1B salaries in the software industry. It renders fully on the front-end and changes when the user picks a specific year. You’ve even got a couple of building blocks to make it better.
 

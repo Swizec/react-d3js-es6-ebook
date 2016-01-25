@@ -52,6 +52,130 @@ class Controls extends Component {
 export default Controls;
 
 
+//
+// Example 3
+//
+import React, { Component } from 'react';
+import _ from 'lodash';
+
+import ControlRow from './ControlRow';
+
+class Controls extends Component {
+    // leanpub-start-insert
+    constructor() {
+        super();
+
+        this.state = {
+            yearFilter: () => true,
+            year: '*',
+        };
+    }
+
+    updateYearFilter(year, reset) {
+        let filter = (d) => d.submit_date.getFullYear() == year;
+
+        if (reset || !year) {
+            filter = () => true;
+            year = '*';
+        }
+
+        this.setState({yearFilter: filter,
+                       year: year});
+    }
+    // leanpub-end-insert
+
+    render() {
+        let getYears = (data) => {
+            return _.keys(_.groupBy(data,
+                                    (d) => d.submit_date.getFullYear()))
+                    .map(Number);
+        }
+
+        return (
+            <div>
+                <ControlRow data={this.props.data}
+                            getToggleNames={getYears}
+                // leanpub-start-delete
+                            updateDataFilter={() => true} />
+                // leanpub-end-delete
+                // leanpub-start-insert
+                            updateDataFilter={::this.updateYearFilter} />
+                // leanpub-end-insert
+            </div>
+        )
+    }
+}
+
+export default Controls;
+
+
+//
+// Example 4
+//
+import React, { Component } from 'react';
+import _ from 'lodash';
+
+import ControlRow from './ControlRow';
+
+class Controls extends Component {
+    constructor() {
+        super();
+
+        this.state = {
+            yearFilter: () => true,
+            year: '*',
+        };
+    }
+
+    updateYearFilter(year, reset) {
+        let filter = (d) => d.submit_date.getFullYear() == year;
+
+        if (reset || !year) {
+            filter = () => true;
+            year = '*';
+        }
+
+        this.setState({yearFilter: filter,
+                       year: year});
+    }
+
+    componentDidUpdate() {
+        window.location.hash = [this.state.year || '*',
+                                this.state.state || '*',
+                                this.state.jobTitle || '*'].join("-");
+
+        this.props.updateDataFilter(
+            ((filters) => {
+                return (d) =>  filters.yearFilter(d)
+                            && filters.jobTitleFilter(d)
+                            && filters.stateFilter(d);
+            })(this.state)
+        );
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(this.state, nextState);
+    }
+
+    render() {
+        let getYears = (data) => {
+            return _.keys(_.groupBy(data,
+                                    (d) => d.submit_date.getFullYear()))
+                    .map(Number);
+        }
+
+        return (
+            <div>
+                <ControlRow data={this.props.data}
+                            getToggleNames={getYears}
+                            updateDataFilter={::this.updateYearFilter} />
+            </div>
+        )
+    }
+}
+
+export default Controls;
+
 
 /// ----
 
@@ -110,16 +234,11 @@ class Controls extends Component {
                        state: state});
     }
 
+    // leanpub-start-insert
     componentDidUpdate() {
-        window.location.hash = [this.state.year || '*',
-                                this.state.state || '*',
-                                this.state.jobTitle || '*'].join("-");
-
         this.props.updateDataFilter(
             ((filters) => {
-                return (d) =>  filters.yearFilter(d)
-                            && filters.jobTitleFilter(d)
-                            && filters.stateFilter(d);
+                return (d) =>  filters.yearFilter(d);
             })(this.state)
         );
     }
@@ -127,6 +246,7 @@ class Controls extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(this.state, nextState);
     }
+    // leanpub-end-insert
 
     render() {
         let getYears = (data) => _.keys(_.groupBy(data,

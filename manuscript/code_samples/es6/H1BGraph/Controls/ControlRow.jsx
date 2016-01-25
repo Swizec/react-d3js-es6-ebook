@@ -154,7 +154,7 @@ class ControlRow extends Component {
 
         this.state = {toggleValues: toggleValues};
     }
-    _addToggle(nme) {
+    _addToggle(name) {
         let key = `toggle-${name}`,
             label = name;
 
