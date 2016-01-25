@@ -488,148 +488,98 @@ Now that we defined that `onClick` callback, we have to at least stub the functi
 
 We keep `makePick` empty for now because we'll define it later when we look at propagating events. It's there just to keep things working.
 
-Using `componentWillMount` to define default state is an exception. You're supposed to do that in the class constructor, but we don't have access to props there. It makes sense, you can't populate an object property before the property exists. Remember, constructors are called while an object is being created.
+Using `componentWillMount` to define default state is an exception. You're supposed to set default state in the class constructor, but we don't have access to props there. You can't populate an object property before the property exists. Remember, constructors are called while an object is being created.
 
 If you're not used to lodash's functional approach, the code in `componentWillMount` might look strange. It loops through the values returned by `getToggleNames` and builds a dictionary - or object - with those names as keys, and `false` as the value.
 
-We're later going to use the `toggleValues` state to ensure users can only select one value per row of toggles.
+We're later going to use `this.state.toggleValues` in combination with the `makePick` callback to ensure users can only select one value per row of toggles.
 
 #### Toggle-able buttons
 
+After all that, we still don't have anything to show to the user. `ControlRow` tries to render a bunch of buttons, but our `Toggle` component returns `null` every time.
 
-Let’s start a new file called `src/controls.jsx` with a `Controls` component stub:
+Let's go back to `src/components/H1BGraph/Controls/Toggle.jsx` and make it work. Here's what we need:
 
-{crop-start-line=5,crop-end-line=19,linenos=off,lang=jsx}
-<<[Controls component stub](code_samples/controls.jsx)
+ - render a button
+ - define its class based on toggle-ness
+ - handle click events
+ - eagerly update toggle-ness on clicks
 
-We’re going to need React and Lodash in this file, and Controls is the only component we’ll expose to the outside.
+Handling toggle-ness is going to be the tricky part. We want the buttons to feel fast, but also respond to upstream data changes.  
 
-Let’s add all of this to the main `H1BGraph` component. It’s just three lines inside `render`:
+First, let's render the button. We add a few lines to the `render` method:
 
-{crop-start-line=366,crop-end-line=381,linenos=off,lang=jsx}
-<<[Add Controls to H1BGraph.render](code_samples/main.jsx)
+{crop-start-line=21,crop-end-line=40,linenos=off,lang=jsx}
+<<[Toggle renders a button](code_samples/es6/H1BGraph/Controls/Toggle.jsx)
 
-We had to wrap everything in another `<div>` because React throws a hissy fit if we try to return multiple elements side-by-side. We used props to give the `Controls` component some data and the filter update callback.
+We're using a basic HTML `<button>` element and giving it some React magic properties. `className` is an alias for the DOM `class` attribute. This is necessary because `class` is a reserved symbol in JavaScript. `onClick` defines a click event handler similar to using `$('selector').click(do_thing)`.
 
-Don’t forget to add `Controls = require('./controls.jsx')` somewhere near the top of the file.
+React gives us all the important event handlers in its `onSomething` magic properties. They might look like the DOM Level 2 event handlers from the early 2000's, but their implementation is cleaner. Don't worry if everyone has been telling you for the past 10 years not to use `onclick`. This usage is okay and has all the merits of using the newer *"find element, attach listener"* approach, I promise.
 
-You should have some empty components showing up on the screen. Let’s add the row of buttons to the `Controls.render` method:
+As you can see on line 8 of that example, we change the button's color based on `this.state.value`. (btn-primary is the Bootstrap class that makes buttons blue)
 
-{crop-start-line=24,crop-end-line=47,linenos=off,lang=jsx}
-<<[Render a ControlRow](code_samples/controls.jsx)
+{crop-start-line=29,crop-end-line=31,linenos=off,lang=jsx}
+<<[Toggle color switch](code_samples/es6/H1BGraph/Controls/Toggle.jsx)
 
-This will break in your browser because we don’t have a `ControlRow` component yet. The idea is to have a component that takes data, a function that generates the button labels, and an `updateDataFilter` callback.
+We only check `this.state.value` and don't worry about props vs. state issues in the `render` method. That comes next.
 
-We’ll define the callback later. Let’s make the `ControlRow` component first.
+We need three different functions to make this work smoothly:
 
-{crop-start-line=51,crop-end-line=72,linenos=off,lang=jsx}
-<<[ControlRow component](code_samples/controls.jsx)
+- `constructor`, which sets default state
+- `componentWillReceiveProps`, which updates internal state when props update
+- `handleClick`, which is the click event callback
 
-There's nothing special going on here. We’ve got a `render` method that returns a Bootstrap row and fills it with a bunch of `Toggle` components. It does so by looping over the result of `this.props.getToggleNames`, which is the function we defined in `Controls.render`.
+{crop-start-line=50,crop-end-line=68,linenos=off,lang=jsx}
+<<[State and click handling in Toggle](code_samples/es6/H1BGraph/Controls/Toggle.jsx)
 
-Normally, `onClick` is a click event handler. React gives us this sort of magic prop for every valid user event. It’s the same as jQuery’s `$('foo').on('click')`.
+You know the drill by now: `constructor` sets initial state dictionary to `{value: false}`, `componentWillReceiveProps` updates it when a new value comes down from above. This lets us both have internal state, and defer to global application state when needed.
 
-They only work on HTML elements, not React components, so this one is just a function callback that we’ll use manually.
+The `handleClick` function toggles that same internal state. If it's `true` it becomes `false and vice-versa. Calling `setState` triggers a re-render and our button changes color.
 
-We had to define the `key` property to help React identify specific elements. I assume it uses these to identify which elements to re-render if they’re created in a loop.
+Magic.
 
-We've also got a `value` property that comes out of `this.state.toggleValues`. It tells our toggles whether to render as turned on or off. We track this state in `ControlRow` instead of just the `Toggle` itself, so we can make sure only one turns on at the time.
+Using both state and props lets us change buttons the moment a user clicks them without waiting for the rest of the page to react. This makes user interactions feel snappier.
 
-Let’s add the state handling.
+You should see a row of buttons under your histogram. Each can be toggled on and off, but nothing else happens yet. 
 
-{crop-start-line=77,crop-end-line=100,linenos=off,lang=jsx}
-<<[Exclusive toggling](code_samples/controls.jsx)
+### Propagating events through the hierarchy
 
-The `makePick` function is called when the user clicks on a `Toggle` element. It goes through the `toggleValues` dictionary and sets them to `false` if they aren't the one the user clicked on. The one they did click is set to `true`.
+If we want the histogram to change when buttons are toggled, we have to propagate those click events through the hierarchy. The information being propagated is going to change each step of the way. This will reflect semantic changes in its meaning.
 
-Then it saves the dictionary with `this.setState`, which triggers a re-render and updates all the buttons.
+Toggles say something happened.
 
-We used the trusty `getInitialState` to create the `toggleValues` dictionary with everything set to `false`.
+ControlRow says what happened.
 
-Now we need the `Toggle` component.
+Controls explains how to filter.
 
-{crop-start-line=124,crop-end-line=146,linenos=off,lang=jsx}
-<<[Toggle component](code_samples/controls.jsx)
+H1BGraph filters.
 
-Toggle renders a button. If `this.state.value` is `true`, then the button is highlighted. We set it to off by default and update it when `componentWillReceiveProps` triggers. That happens when the component’s properties change from above.
+Our `Toggle` component is pretty much wired up already. It responds to user events in the `handleClick` method. Telling `ControlRow` that something happened is as easy as adding a function call.
 
-Now your page shows three buttons under the histogram:
+{crop-start-line=102,crop-end-line=108,linenos=off,lang=jsx}
+<<[Call event callback in handleClick](code_samples/es6/H1Bgraph/Controls/Toggle.jsx)
 
-![Histogram with buttons](images/buttons_histogram.png)
+Notice how we can just call functions given in props? I love that. It's the simplest approach to inter-component interaction that I've ever seen.
 
-But clicking on a button will throw an error.
+And yes, I know, we have a leaky abstraction right here. The parent component gives us a callback via props, and the first argument is also a prop. Why does the toggle have to tell its name to the callback, when the callback comes from the same place that the name does?
+  
+Because it makes our code simpler. 
 
-### Propagating events up the hierarchy
+Let me show you. We implement the `makePick` function back in `src/components/H1BGraph/Controls/ControlRow.jsx`.
 
-To make the buttons work, we have to implement the click event handler - `this.handleClick`. Then we have to call every callback up the chain until we get to the histogram component, which is our holder of truth.
+{crop-start-line=135,crop-end-line=148,linenos=off,lang=jsx}
+<<[makePick function in ControlRow component](code_samples/es6/H1BGraph/Controls/ControlRow.jsx)
 
-Let’s start by adding a click handler to the `Toggle` component:
+Two things happen here:
 
-{crop-start-line=151,crop-end-line=163,linenos=off,lang=jsx}
-<<[Toggle click handler](code_samples/controls.jsx)
+1. We make sure only one value can be turned on at a time
+2. We call `updateDataFilter` with the new value
 
-It's a simple function. All it cares about is toggling the `value` state and calling the `this.props.onClick` callback.
+For both of these we need the clicked toggle's name. When we use `_.mapValues` to reconstruct the `toggleValues` dictionary it tells us which field should be set to `true`. When we call `updateDataFilter` it tells us the value we're filtering by.
 
-The reason we’re using state to highlight the button is that making this change optimistically instead of waiting for propagation looks better to the user. It’s a tiny bit more instant, which makes our app feel faster.
+Remember, we collected toggle names out of possible values for each filter. In the case of filtering by year, each year value became a toggle button.
 
-We still override the `value` in `componentWillReceiveProps`, if the parent component wants us to.
 
-If you click around now, the buttons are going to toggle on and off. `ControlRow` will continue making sure you can only choose one at a time.
-
-![2013 toggled on](images/togglable_buttons.png)
-
-To make these changes propagate further than `ControlRow`, we have to call `ControlRow`'s callback in the `makePick` method:
-
-{crop-start-line=185,crop-end-line=200,linenos=off,lang=jsx}
-<<[Callback in ControlRow.makePick](code_samples/controls.jsx)
-
-Nothing fancy, just a call to `this.props.updateDataFilter` with information on what was picked and whether we want to reset the filter or not. The reset is used when the user clicks on a button that’s already turned on.
-
-Now comes the fun part. We get to construct the data filter in our `Controls` component, then tell the main `H1BGraph` component.
-
-We gave `this.updateYearFilter` as the update callback to `ControlRow`. It’s a simple function that creates a filter function based on the chosen year and saves it with `setState()` like this:
-
-{crop-start-line=255,crop-end-line=274,linenos=off,lang=jsx}
-<<[Controls.updateYearFilter function](code_samples/controls.jsx)
-
-We also added the `getInitialState` function to make sure the filter is set to an "accept everything" version by default.
-
-Our next step is to tell the parent component about our new filter.
-
-{crop-start-line=348,crop-end-line=368,linenos=off,lang=jsx}
-<<[Propagating filter up the chain](code_samples/controls.jsx)
-
-React calls `componentDidUpdate` when we change the state. This gives us a great opportunity to call our filter callback - `this.props.updateDataFilter`. We feed it a new filter function that combines all of the potential filters in our state. In our trimmed-down example, our only filter is `yearFilter`.
-
-You’d think we could do all of this straight in the `updateYearFilter` function, but we don’t have access to the updated state yet. Because we might add more types of filters later, it’s better to rely on the already saved filters.
-
-Ok, we’ve just created an infinite loop. When `componentDidUpdate` is called we call something on the parent component. This potentially changes our `props`, which again triggers `componentDidUpdate`.
-
-We have to make sure the component updates *only* when properties have actually changed. The easiest way to do that is using `shouldComponentUpdate`. If it returns `false`, the component doesn’t update.
-
-Anyway, it’s time to add the filtering functionality to `H1BGraph`.
-
-{crop-start-line=422,crop-end-line=435,linenos=off,lang=jsx}
-<<[Filter update callback in H1BGraph](code_samples/main.jsx)
-
-Nothing fancy. We initially set the `dataFilter` to accept everything and update it when something calls `updateDataFilter` with a new filter function.
-
-The last step is filtering the data in our `H1BGraph.render` method.
-
-{crop-start-line=530,crop-end-line=552,linenos=off,lang=jsx}
-<<[Filter data in H1BGraph.render](code_samples/main.jsx)
-
-As you can see, we didn’t have to do much. We passed the `rawData` through our filter before feeding it to the `Histogram`.
-
-You should now see a histogram like this:
-
-![Histogram with only 2014 salaries](images/2014_histogram.png)
-
-Hooray! We have a histogram with user filtering.
-
-A lot of work went into that, and we’ve got plenty of moving parts. But remember, all it takes to add more filters is adding another `<ControlRow />` to `Controls`, writing a filter function, and making sure it’s included in `updateDataFilter`.
-
-That’s it. A minute of typing to let users filter by almost anything.
 
 ## Adding some meta data
 
