@@ -139,16 +139,95 @@ class Controls extends Component {
                        year: year});
     }
 
+    // leanpub-start-insert
     componentDidUpdate() {
-        window.location.hash = [this.state.year || '*',
-                                this.state.state || '*',
-                                this.state.jobTitle || '*'].join("-");
+        this.props.updateDataFilter(
+            ((filters) => {
+                return (d) =>  filters.yearFilter(d);
+            })(this.state)
+        );
+    }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(this.state, nextState);
+    }
+    // leanpub-end-insert
+
+    render() {
+        let getYears = (data) => {
+            return _.keys(_.groupBy(data,
+                                    (d) => d.submit_date.getFullYear()))
+                    .map(Number);
+        }
+
+        return (
+            <div>
+                <ControlRow data={this.props.data}
+                            getToggleNames={getYears}
+                            updateDataFilter={::this.updateYearFilter} />
+            </div>
+        )
+    }
+}
+
+export default Controls;
+
+
+//
+// Example 5
+//
+import React, { Component } from 'react';
+import _ from 'lodash';
+
+import ControlRow from './ControlRow';
+
+class Controls extends Component {
+    constructor() {
+        super();
+
+        this.state = {
+            yearFilter: () => true,
+            year: '*',
+            // leanpub-start-insert
+            USstateFilter: () => true,
+            USstate: '*'
+            // leanpub-end-insert
+        };
+    }
+
+    updateYearFilter(year, reset) {
+        let filter = (d) => d.submit_date.getFullYear() == year;
+
+        if (reset || !year) {
+            filter = () => true;
+            year = '*';
+        }
+
+        this.setState({yearFilter: filter,
+                       year: year});
+    }
+
+    // leanpub-start-insert
+    updateUSStateFilter(USstate, reset) {
+        var filter = (d) => d.state == USstate;
+
+        if (reset || !state) {
+            filter = () => true;
+            USstate = '*';
+        }
+
+        this.setState({USstateFilter: filter,
+                       USstate: state});
+    }
+    // leanpub-end-insert
+
+    componentDidUpdate() {
         this.props.updateDataFilter(
             ((filters) => {
                 return (d) =>  filters.yearFilter(d)
-                            && filters.jobTitleFilter(d)
-                            && filters.stateFilter(d);
+                    // leanpub-start-insert
+                    && filters.USstateFilter(d)
+                    // leanpub-end-insert
             })(this.state)
         );
     }
@@ -164,11 +243,21 @@ class Controls extends Component {
                     .map(Number);
         }
 
+        // leanpub-start-insert
+        let getUSStates = (data) => _.sortBy(_.keys(_.groupBy(data, (d) => d.state)));
+        // leanpub-end-insert
+
         return (
             <div>
                 <ControlRow data={this.props.data}
                             getToggleNames={getYears}
                             updateDataFilter={::this.updateYearFilter} />
+                // leanpub-start-insert
+                <ControlRow data={this.props.data}
+                            getToggleNames={getUSStates}
+                            updateDataFilter={::this.updateUSStateFilter}
+                            capitalize="true" />
+                // leanpub-end-insert
             </div>
         )
     }
@@ -234,11 +323,16 @@ class Controls extends Component {
                        state: state});
     }
 
-    // leanpub-start-insert
     componentDidUpdate() {
+        window.location.hash = [this.state.year || '*',
+                                this.state.state || '*',
+                                this.state.jobTitle || '*'].join("-");
+
         this.props.updateDataFilter(
             ((filters) => {
-                return (d) =>  filters.yearFilter(d);
+                return (d) =>  filters.yearFilter(d)
+                            && filters.jobTitleFilter(d)
+                            && filters.stateFilter(d);
             })(this.state)
         );
     }
@@ -246,7 +340,6 @@ class Controls extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(this.state, nextState);
     }
-    // leanpub-end-insert
 
     render() {
         let getYears = (data) => _.keys(_.groupBy(data,

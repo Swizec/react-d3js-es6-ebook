@@ -620,7 +620,7 @@ Almost there! We are handling the in-state representation of the year filter. No
 
 We do that in the `componentDidUpdate` lifecycle method. As you can guess, it gets called on every re-render, which is triggered every time we use `this.setState`.
 
-{crop-start-line=236,crop-end-line=245,linenos=off,lang=jsx}
+{crop-start-line=141,crop-end-line=149,linenos=off,lang=jsx}
 <<[Propagate filter changes up the hierarchy](code_samples/es6/H1BGraph/Controls/index.jsx)
 
 For every update, we call `this.props.updateDataFilter`, which is the change callback defined by `H1BGraph` when it rends `Controls`. As the sole argument, we give it our filter wrapped in another function.
@@ -631,7 +631,7 @@ But whatever you do, *DON'T* click a button yet. Your code will go into an infin
 
 That's because when React decides whether to update your component or not, it only performs a shallow state and props comparison. Because we rely on function changes, we need a better comparison.
 
-{crop-start-line=246,crop-end-line=251,linenos=off,lang=jsx}
+{crop-start-line=151,crop-end-line=156,linenos=off,lang=jsx}
 <<[Prevent infinite loops](code_samples/es6/H1BGraph/Controls/index.jsx)
 
 With `shouldComponentUpdate` we can define a custom comparison function. In our case, using Lodash's `isEqual` between current and future state is good enough.
@@ -675,7 +675,51 @@ Now let me show you just how reusable React components can be.
 
 ## Component reusability
 
-## Making disparate components interact
+All right, we have a filter for years. It looks like a row of buttons and users can select a specific year to focus the histogram.
+
+Let's look at how reusable we've made the `ControlRow` component by adding another filter - US states.
+
+Here's a quick rundown of what we're going to do:
+
+1. Add another `ControlRow` to `Controls`
+2. Build a list of US states from the data
+3. Add an `udpateStateFilter` function to `Controls`
+4. Add `stateFilter` to component state
+5. Include `stateFilter` in `componentDidUpdate`
+
+That's all we need. A few lines of copypasted code in `src/components/H1BGraph/Controls/index.jsx`. No changes necessary to either `ControlRow` or `Toggle`. No changes to anything to do with the graph itself either.
+
+Adding a new ControlRow and building a list of US states, probably looks familiar by now.
+
+{crop-start-line=236,crop-end-line=260,linenos=off,lang=jsx}
+<<[Add another ControlRow](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+This adds a new `ControlRow` to render, gives it a function that extracts US states from the data, and a new update callback, which we'll define next.
+
+{crop-start-line=209,crop-end-line=224,linenos=off,lang=jsx}
+<<[Add a US state filter update](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+The new update filter callback is a copypaste of `updateYearFilter` with a few keywords changed. We *could* have been clever about it and implemented dynamic magic that would let us get away with a single function, but it's unnecessary. And it makes the code both harder to explain and to understand a few months down the line.
+
+Now let's add the new US state filter to the main filter callback in `componentDidUpdate`.
+
+{crop-start-line=224,crop-end-line=233,linenos=off,lang=jsx}
+<<[Include the new filter in the main callback](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+See, this is why we went through the trouble of wrapping filters in another function. It lets us compose different filters into a single expression.
+
+Finally, we need to define a default state for the US state filter. We do that in the class constructor.
+
+{crop-start-line=185,crop-end-line=196,linenos=off,lang=jsx}
+<<[Add default value for US state filter](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+Same as the year filter, different keynames.
+
+If all went well, you should have a histogram with two rows of filters underneath. Users can choose a year *and* a US state to filter by.
+
+![Histogram with two filters](images/more_buttons_histogram.png)
+
+## Making disparate components act together
 
 If you’ve followed along this far, you’ve got a nice histogram of H1B salaries in the software industry. It renders fully on the front-end and changes when the user picks a specific year. You’ve even got a couple of building blocks to make it better.
 
