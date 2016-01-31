@@ -721,41 +721,71 @@ If all went well, you should have a histogram with two rows of filters underneat
 
 ## Making disparate components act together
 
-If you’ve followed along this far, you’ve got a nice histogram of H1B salaries in the software industry. It renders fully on the front-end and changes when the user picks a specific year. You’ve even got a couple of building blocks to make it better.
+If you came this far, you have a nice histogram of H1B salaries in the software industry. It's blue and there's an axis. Everything renders on the front-end and changes when the user picks a specific year or US state. 
 
 But a good visualization needs a title and a description. The title tells users what they’re looking at, and the description gives them the story.
 
 As great as people are at understanding pictures, it goes much better when you flat-out *tell* them what they’re looking at.
 
-We start with a stubbed out `src/meta.jsx` file:
+----
 
-{crop-start-line=5,crop-end-line=32,linenos=off,lang=jsx}
-<<[Stubbed meta.jsx file](code_samples/meta.jsx)
+We're going to build two components - a Title and a Description. They're going to share some common methods, which we'll put in a base component.
 
-We’re going to make a mixin called `MetaMixin` because both the `Title` and `Description` components are going to use some of the same functions. It will have a function to get a list of years out of the data, a function to give us a label formatter, and a function to give us data filtered by a specific year.
+When users filter our histogram, both the title and the description will update to reflect the filtered dataset.
 
-Let’s add them.
+Let's start with the base component. It goes in `src/components/H1BGraph/Meta/BaseComponent.jsx`.
 
-{crop-start-line=37,crop-end-line=63,linenos=off,lang=jsx}
-<<[MetaMixin functions](code_samples/meta.jsx)
+{crop-start-line=5,crop-end-line=21,linenos=off,lang=jsx}
+<<[Stubbed base component](code_samples/es6/H1BGraph/Meta/BaseComponent.jsx)
 
-There’s nothing special going on here. `getYears` uses `_.groupBy` to group the data by year, then returns the keys of the array. We could make this more efficient, but it works well enough and is easy to read.
+The `BaseComponent` exports a `Meta` class which is all about common getters that both `Title` and `Description` are going to use. Extending from `Meta` will put functions from here into local scope so we can do stuff like `this.getYears()` and it calls the function from `Meta`.
 
-`getFormatter` relies on the fact that d3.js scales have formatters. It creates a linear scale with a domain and returns the `tickFormat()` function. Formatters don't work well without a defined domain.
+Neat, huh? I think it is.
 
-`getAllDataByYear` is a simple filter function. We’ll use it to access data for specific years when making the description.
+The function bodies themselves aren't too difficult. They go through the dataset and return lists of values. `getYears` returns all year values, `getUSStates` returns all states, and `getFormatter` returns a salary value formatter.
 
-To keep our meta data code clean, we've also got a file that maps state abbreviations to names. It's called `src/states.jsx` and exports an object that looks like this:
+{crop-start-line=30,crop-end-line=61,linenos=off,lang=jsx}
+<<[The entire Meta base component](code_samples/es6/H1BGraph/Meta/BaseComponent.jsx)
 
-{linenos=no}
-   module.exports = {
-      "AL": "Alabama",
-      "AK": "Alaska",
-      // ...
+See, nothing we haven't done before. Sprinkle some lodash functions for traversals and groupings, and use some d3 linear scale magic for the formatter.
 
-You can build your own, or you can [get it from Github](https://github.com/Swizec/h1b-software-salaries/blob/master/src/states.js).
+Now let's stub out the `Title` and `Description` components real quick. That way we can add them to `H1BGraph` and let hot loading do its magic so we can see what we're adding in real time.
 
-Let’s start with the title.
+`Title` goes in `src/components/H1BGraph/Meta/Title.jsx`.
+
+{crop-start-line=5,crop-end-line=20,linenos=off,lang=jsx}
+<<[Stubbed Title component](code_samples/es6/H1BGraph/Meta/Title.jsx)
+
+For now we return a dummy title just so we get something rendering. Notice that we extended from `Meta`, not `Component` like usual.
+
+`Description` goes in `src/components/H1BGraph/Meta/Description.jsx`.
+
+{crop-start-line=5,crop-end-line=20,linenos=off,lang=jsx}
+<<[Stubbed Description component](code_samples/es6/H1BGraph/Meta/Description.jsx)
+
+Same as before - dummy description and a few basic imports.
+
+Both of those files imported a `StatesMap` file alongside `BaseComponent`. That's a mapping of US state shortcodes to full names.
+
+You can get it from my github, [here](https://github.com/Swizec/h1b-software-salaries/blob/e032f5b131af4659c5f9a0981b9d85054d2b5a17/src/components/H1BGraph/Meta/StatesMap.jsx). It was a pain in the ass to make so I don't suggest doing it yourself. Put it in `src/components/H1BGraph/Meta/StatesMap.jsx`. If you're using the stub project, it's already there.
+
+One last bit we need is a `src/components/H1BGraph/Meta/index.jsx` file to make importing easier.
+
+{crop-start-line=2,crop-end-line=6,linenos=off,lang=jsx}
+<<[Meta/index.jsx](code_samples/es6/H1BGraph/Meta/index.jsx)
+
+This looks weird. We have to do some roundabout hand waving so that we can both import and export classes with the same name. So called pass-through imports.
+
+I don't know if that's the best way to do it, but it's what I came to after hours of banging my head against a wall. You can read the background behind these four lines of code [on my blog](http://swizec.com/blog/theres-a-bug-in-es6-modules/swizec/6753).
+
+### Add Title and Description to the main view
+
+Now that everything's stubbed out, adding the Title and Description components to the main view doesn't take much. We have to add three lines of code.
+
+The imports:
+
+{crop-start-line=569,crop-end-line=574,linenos=off,lang=jsx}
+<<[Import Title and Description](code_samples/es6/H1BGraph/index.jsx)
 
 ### The title
 
@@ -850,3 +880,4 @@ Your histogram should now have a nice description:
 Hooray, you’ve made a histogram of H1B salaries with a title and description that both change when the visualization changes. You’re awesome!
 
 Now you know how to make React and d3.js work together. Yay!
+- 
