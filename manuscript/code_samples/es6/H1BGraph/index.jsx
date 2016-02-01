@@ -642,6 +642,10 @@ class H1BGraph extends Component {
 
         return (
             <div>
+                // leanpub-start-insert
+                <Title data={filteredData} />
+                <Description data={filteredData} allData={this.state.rawData} />
+                // leanpub-end-insert
                 <svg width={fullWidth} height={params.height}>
                     <Histogram {...params} data={this.state.rawData} />
                     <Histogram {...params} data={filteredData} />

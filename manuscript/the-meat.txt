@@ -727,11 +727,15 @@ But a good visualization needs a title and a description. The title tells users 
 
 As great as people are at understanding pictures, it goes much better when you flat-out *tell* them what they’re looking at.
 
+The key to making disparate components act together is the data flow-down architecture. Because there is only one repository of truth and because every component renders from props, we can make every component on the page change when data changes.
+
+This enables us to change the title and description together with the histogram, which in turn means that they can always be accurate and specific to what the user is currently looking at. They never have to think hard about the story behind the data, we can just tell them.
+
+Marvelous.
+
 ----
 
 We're going to build two components - a Title and a Description. They're going to share some common methods, which we'll put in a base component.
-
-When users filter our histogram, both the title and the description will update to reflect the filtered dataset.
 
 Let's start with the base component. It goes in `src/components/H1BGraph/Meta/BaseComponent.jsx`.
 
@@ -782,41 +786,55 @@ I don't know if that's the best way to do it, but it's what I came to after hour
 
 Now that everything's stubbed out, adding the Title and Description components to the main view doesn't take much. We have to add three lines of code.
 
-The imports:
+The import:
 
 {crop-start-line=569,crop-end-line=574,linenos=off,lang=jsx}
 <<[Import Title and Description](code_samples/es6/H1BGraph/index.jsx)
 
+The render:
+
+{crop-start-line=643,crop-end-line=656,linenos=off,lang=jsx}
+<<[Add Title and Description to render method](code_samples/es6/H1BGraph/index.jsx)
+
+That's it. If you have `npm start` running in the background, you should see something like this now:
+
+![Histogram with dummy title and description](images/dummy_title_description.png)
+
 ### The title
 
-Our titles are going to follow a formula like: “H1B workers in the software industry made $x/year in <year>”.
+Our titles are going to follow a formula like: “In <US state>, H1B workers in the software industry made $x/year in <year>”.
 
 We start with the year fragment:
 
-{crop-start-line=68,crop-end-line=83,linenos=off,lang=jsx}
-<<[getYearsFragment function](code_samples/meta.jsx)
+{crop-start-line=32,crop-end-line=45,linenos=off,lang=jsx}
+<<[getYearsFragment function](code_samples/es6/H1BGraph/Meta/Title.jsx)
 
-We get the list of years in the current data and return either an empty string or `in Year`. If there’s only one year in the data, we assume it’s been filtered by year.
+We get the list of years in the current data and return either an empty string or `in Year`. If there’s only one year, we assume it’s been filtered by year.
 
-The `render` function is going to be simple as well:
+We make the same sort of assumptions for the US state fragment.
 
-{crop-start-line=110,crop-end-line=129,linenos=off,lang=jsx}
-<<[Title.render function](code_samples/meta.jsx)
+{crop-start-line=47,crop-end-line=62,linenos=off,lang=jsx}
+<<[getUSStateFragment function](code_samples/es6/H1BGraph/Meta/Title.jsx)
 
-We’re returning an `<h2>` element with a title that includes some dynamic tags. We change `made` to `make` based on whether or not we’re adding `in years`, and we used `d3.mean` to get the average.
+Great, we've got the two dynamic pieces we need. Now let's put them together in the `render` method.
 
-Now we can add the title into H1BGraph’s render method. You can use as many as you want, wherever you want, but I think putting it above the graph works best.
+{crop-start-line=111,crop-end-line=136,linenos=off,lang=jsx}
+<<[Title render method](code_samples/es6/H1BGraph/Meta/Title.jsx)
 
-{crop-start-line=622,crop-end-line=636,linenos=off,lang=jsx}
-<<[Add title to H1BGraph.render](code_samples/main.jsx)
+Plenty going on here, but the gist of it is that big `if` statement:
 
-Don’t forget to add a `meta = require(‘./meta.jsx’);` at the top of the `src/main.jsx`.
+- if both the years and US state fragments have content, our title is "In <State>, blahblah made $X/year in <Year>"
+- if one or neither have content, our title is "Blahblah <made/make> $X/year <in State / in Year>"
 
-Your histogram should now look like this:
+The `$X/year` comes from combining the average salary in our dataset, calculated with `d3.mean`, and the number formatter. The rest is just about plugging both fragments in the right parts of the string.
+
+Note that in the second case we still have to render both fragments because we don't know which one has content. They're syntactically interchangeable at this point. The sentence works the same if it ends "in California" or "in 2014".
+
+Your histogram should look like this:
 
 ![Histogram with title](images/titled_histogram.png)
 
-Now let’s add a paragraph of description to make the story clearer.
+Now let's fix that description.
 
 ### The description
 
