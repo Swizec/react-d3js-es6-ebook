@@ -840,62 +840,55 @@ Now let's fix that description.
 
 Our descriptions won’t be much more complicated than the titles. We'll need a sentence or two explaining what the histogram is showing and comparing it to the previous year.
 
-First, we add the `getYearFragment` function:
+We need two helper functions to get all data for a specific year or US state. This will help us do the last year look backs.
 
-{crop-start-line=134,crop-end-line=150,linenos=off,lang=jsx}
-<<[Description.getYearFragment function](code_samples/meta.jsx)
+{crop-start-line=32,crop-end-line=47,linenos=off,lang=jsx}
+<<[Description's getAllData functions](code_samples/es6/H1BGraph/Meta/Description.jsx)
 
-It's the same as in `Title`, but with a capital first letter. Yes, this might fit better in `MetaMixin`.
+Not much happens here. They're just filter functions.
 
-But the `getPreviousYearFragment` function is more complex:
+The `getPreviousYearFragment` function is more interesting.
 
-{title="Description.getPreviousYearFragment",linenos=off,lang=jsx}
-    getPreviousYearFragment: function () {
-        var years = this.getYears().map(Number),
-            fragment;
+{crop-start-line=79,crop-end-line=114,linenos=off,lang=jsx}
+<<[Description getPreviousYearFragment function](code_samples/es6/Meta/Description.jsx)
 
-        if (years.length > 1) {
-            fragment = "";
-        }else if (years[0] == 2012) {
-            fragment = "";
-        }else{
-            var year = years[0],
-                lastYear = this.getAllDataByYear(year-1),
-                percent = ((1-lastYear.length/this.props.data.length)*100).toFixed();
+Whoa, so much going on. We first get all the years in filtered data, then:
 
-            fragment = ", "+Math.abs(percent)+"% "+(percent > 0 ? "more" : "less")+" than the year before";
-        }
+- if there's more than one, we stop
+- if it's the first year in our dataset, we stop
+- otherwise:
+	- we get all datapoints for last year
+	- get US states in filtered data
+	- filter `lastYear` by US state if user filtered by that as well
+	- if the factor between this and last year is big, return "X times more" fragment
+	- otherwise return "X% more/less" fragment
 
-        return fragment;
-    },
+That wasn't too bad, was it? I'm sure better ways exist to generate human text based on parameters, but there's no need to be fancy.
 
-First, we get the list of years. If it’s empty or the current year is 2012 (the first in our dataset), we return an empty fragment.
+Now we need the year and US state fragments, same as the title. Their functions look like this:
 
-In any other case, we get a look at last year’s data with `this.getAllDataByYear()`. We can then compare the number of entries with this year and return a fragment that’s either “X% **more** than the year before” or “X% **less** than the year before”.
+{crop-start-line=178,crop-end-line=207,linenos=off,lang=jsx}
+<<[Year and US state fragment functions](code_samples/es6/Meta/Description.jsx)
 
-Now we’ve just got to use these two fragments in the render method.
+See, nothing special. You already know all this code from the `Title` component. The only difference is in the strings produced. This is also why we can't throw these two functions into `BaseComponent`.
 
-{crop-start-line=238,crop-end-line=256,linenos=off,lang=jsx}
-<<[Description.render function](code_samples/meta.jsx)
+Ok, now that we have all the helper functions, it's time to put them together. We do that in the `render` method. Like this:
 
-We’ve crammed a bunch into that return statement, but it's not as hairy as it looks. We start the sentence with either “Since 2012” or “In Year”, then decide what tense to use for the verb “give”, followed by the count of H1Bs in the current data and “foreign nationals”.
+{crop-start-line=298,crop-end-line=322,linenos=off,lang=jsx}
+<<[Description render function](code_samples/es6/Meta/Description.jsx)
 
-Right after that, with no space, we add the previous year fragment. Then we add a sentence describing the range that the majority of salaries fall into. To get the numbers, we used d3.js’s built-in standard deviation calculator and assumed the distribution is roughly normal. That means 68.2% of our data falls within a standard deviation to each side of the mean.
+That is one beast of a return statement right there.
 
-Yes, my statistics professor would be very angry, but it’s a good-enough approximation.
+But it's not too bad when you take a closer look. The description can start with either "Since 2012" or "In <Year>". Then it adds the selected US state, the correct tense of "to give", the number `N` of H1Bs in our dataset, and the previous year fragment. In the end it adds info about the one standard deviation spread of salaries for selected year and US state.
 
-Let’s put the description next to our title.
+We got those numbers using d3's default math functions. Assuming salaries follow a normal distribution, 68% of them fall within this 1-standard-deviation range.
 
-{crop-start-line=707,crop-end-line=722,linenos=off,lang=jsx}
-<<[Add description to H1BGraph.render](code_samples/main.jsx)
+This is the sort of assumption that would make your and my statistics professors cry. But it's good enough, I think. Given enough datapoints, everything becomes normally distributed according to the [central limit theorem](https://en.wikipedia.org/wiki/Central_limit_theorem) anyway.
 
-Unlike the title, our description needs the full data just like the controls do. Without this, it wouldn't be able to get data for previous years.
-
-Your histogram should now have a nice description:
+You should have a histogram with a nice description now:
 
 ![Histogram with description](images/description_histogram.png)
 
 Hooray, you’ve made a histogram of H1B salaries with a title and description that both change when the visualization changes. You’re awesome!
 
-Now you know how to make React and d3.js work together. Yay!
-- 
+Now you know how to make React and d3.js work together. Woohoo!
