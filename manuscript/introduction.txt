@@ -26,13 +26,13 @@ I’m going to assume you already know how to code and that you’re great with 
 
 I’m also going to assume some knowledge of d3.js. Since it isn’t a widely-used library, I’m still going to explain the specific bits that we use. If you want to learn d3.js in depth, you should read my book, [Data Visualization with d3.js](https://www.packtpub.com/web-development/data-visualization-d3js).
 
-React is still a new kid on the block, so I’m going to assume you're not quite as familiar. We’re not going to talk about all the details, but you’ll be fine, even if this is your first time looking at React.
+React is still a new kid on the block, so I’m going to assume you're not quite as familiar with it. We’re not going to talk about all the details, but you’ll be fine, even if this is your first time looking at React.
 
 ## How to read this book
 
 Relax. Breathe. You’re here to learn. I’m here to teach. I promise Twitter will wait and so will Facebook.
 
-Just you and some fun code. To get the most out of this material I suggest two things:
+Just you and some fun code. To get the most out of this material, I suggest two things:
 
 1. Try the example code yourself. Don’t just copy-paste; type it and execute it. Execute it frequently. If something doesn’t fit together, look at the full working project on Github [here](https://github.com/Swizec/h1b-software-salaries), or check out the zip files that came with the book.
 2. If you already know something, skip that section. You’re awesome. Thanks for making this easier for me.
@@ -60,11 +60,9 @@ Removed code looks like this:
 
 ## ES5 and ES6 versions
 
-This book comes in two versions: ES5 and ES6. They are functionally the same, but use different versions of JavaScript for their code samples. The ES6 version also has a cleaner, but more complicated, file structure.
+This book comes in two versions: ES5 and ES6. They are functionally the same, but they use different versions of JavaScript for their code samples. The ES6 version also has a cleaner (but more complicated) file structure.
 
 You can read either version depending on which version of JavaScript you're more comfortable with.
-
-As of November 30th, 2015, the ES6 version is delayed by a few days, but you'll get it soon.
 
 # Why React and d3.js
 
@@ -76,9 +74,9 @@ I have found it a joy to use. Using React was the first time I have ever been ab
 
 D3.js is Mike Bostock’s infamous data visualization library. It's being used by The New York Times along with many other sites. It is the workhorse of data visualization on the web, and many charting libraries out there are based on it.
 
-But d3.js is a fairly low-level library. You can’t just say *"I have data; give me a barchart"*. Well, you can, but it takes a few more lines of code than that. Once you get used to it though, d3.js is a joy to use.
+But d3.js is a fairly low-level library. You can’t just say *"I have data; give me a bar chart"*. Well, you can, but it takes a few more lines of code than that. Once you get used to it though, d3.js is a joy to use.
 
-Just like React, d3.js is declarative. You tell it *what* you want, instead of *how* you want it. It gives you access straight to the SVG so you can manipulate your lines and rectangles at will. The issue is that d3.js isn't that great if all you want are charts.
+Just like React, d3.js is declarative. You tell it *what* you want instead of *how* you want it. It gives you access straight to the SVG so you can manipulate your lines and rectangles at will. The issue is that d3.js isn't that great if all you want are charts.
 
 This is where React comes in. For instance, once you’ve created a histogram component, you can always get a histogram with `<Histogram {...params} />`.
 
