@@ -1,7 +1,8 @@
 {#the-environment}
 # A good work environment
+If you already know how to set up the perfect development environment for modern JavaScript work, go ahead and skip this section. If you don't, there are a few things you should know.
 
-Before we begin, we need a good work environment. We're after three things:
+In order to be the most effective, we need a good work environment. We're after three things:
 
  * code should re-compile when we change a file
  * page should update automatically when the code changes
@@ -17,15 +18,14 @@ To make matters worse, your page loses state every time it auto-reloads. That ha
 
 It's a mess. I'm sorry I told you to use it. The old system is included in [the appendix](#appendix) for the curious and those stuck in legacy environments.
 
-If you already know how to set up the perfect development environment for modern JavaScript work, go ahead and skip this section.
+## Bundle with Webpack
+Instead of using the old setup, I think the best choice now is to use a combination of Webpack and Babel.
 
-## Bundle with Webpack, compile with Babel
+Webpack calls itself a *"flexible unbiased extensible module bundler"*, which sounds like buzzword soup. At its most basic, Webpack gives you the ability to organize code into modules and `require()` what you need, much like Browserify.
 
-Webpack calls itself a *"flexible unbiased extensible module bundler"*, which sounds like buzzword soup. At its most basic, Webpack gives you the ability to organize code into modules and 'require()' what you need, much like Browserify.
+Unlike Browserify however, Webpack comes with a sea of built-in features and a rich ecosystem of extensions called plugins. I can't hope to know even half of them, but some of the coolest I've used are plugins that let you `require()` Less files *with* magical Less-to-CSS compilation, plugins for require-ing images, and JavaScript minification.
 
-Unlike Browserify, Webpack comes with a sea of built-in features and a rich ecosystem of extensions called plugins. I can't hope to know even half of them, but some of the coolest I've used are plugins that let you 'require()' Less files *with* magical Less-to-CSS compilation, plugins for require-ing images, and JavaScript minification.
-
-Webpack can solve two more annoyances - losing state when loading new code and accurately reporting errors. We add two more requirements for a total of five:
+Webpack can also solve two more annoyances - losing state when loading new code and accurately reporting errors. So we can add two more requirements to our work environment checklist (for a total of five):
 
   * code should re-compile when we change a file
   * page should update automatically when the code changes
@@ -33,11 +33,11 @@ Webpack can solve two more annoyances - losing state when loading new code and a
   * page shouldn't lose state when loading new code
   * browser should report errors accurately in the right source files
 
-### Babel
+## Compile with Babel
 
 Webpack can't do all this alone though - it needs a compiler.
 
-We're going to use Babel to compile our JSX and ES6 code into the kind of code all browsers understand: ES5. Don't worry if you're not ready to learn ES6, you can read the ES5 version of React+d3.js.
+We're going to use Babel to compile our JSX and ES6 code into the kind of code all browsers understand: ES5. Don't worry if you're not ready to learn ES6; you can read the ES5 version of React+d3.js.
 
 Babel isn't really a compiler because it produces JavaScript, not machine code. That being said, it's still important at this point. According to the JavaScript roadmap, browsers aren't expected to fully support ES6 until some time in 2017. That's a long time to wait, so the community came up with transpilers which let us use some ES6 features *right now*. Yay!
 
@@ -65,11 +65,11 @@ Babel developers have created a [playground that live-compiles](https://babeljs.
 
 The quickest way to set this up is using Dan Abramov's [react-transform-boilerplate](https://github.com/gaearon/react-transform-boilerplate) project. It's what I use for new projects these days.
 
-If you know how to do this already, skip ahead to the [Visualizing data with React.js](#the-meat-start) chapter. In the rest of this chapter, I'm going to show you how to get started with the boilerplate project. I'll also explain some of the moving parts that make it tick.
+If you know how to do this already, skip ahead to the [Visualizing Data with React.js](#the-meat-start) chapter. In the rest of this chapter, I'm going to show you how to get started with the boilerplate project. I'll also explain some of the moving parts that make it tick.
 
 ## NPM for dependencies and tools
 
-NPM is node.js’s default package manager. Originally developed as a dependency management tool for node.js projects, it's since taken hold of the JavaScript world as a way to manage the tool belt, and with Webpack's growing popularity, a way to manage client-side dependencies as well.
+NPM is node.js’s default package manager. Originally developed as a dependency management tool for node.js projects, it's since taken hold of the JavaScript world as a way to manage the toolbelt, and with Webpack's growing popularity, a way to manage client-side dependencies as well.
 
 That's because Webpack automatically recognizes NPM modules, which means we are going to use NPM to install both our toolbelt dependencies (like Webpack) and our client-side dependencies (like React and d3.js).
 
@@ -84,8 +84,8 @@ If that worked, you're ready to go. If it didn't, Google is your friend.
 
 At this point, there are two ways to proceed:
 
-* You can continue with the step-by-step instructions using a boilerplate
-* If you bought the Engineer or Business package, you can use the included stub project that has everything you need
+* You can continue with the step-by-step instructions using a boilerplate.
+* If you bought the Engineer or Business package, you can use the included stub project that has everything you need.
 
 ## Step-by-step with boilerplate
 
@@ -107,7 +107,7 @@ Our first step is to rename the directory and remove Git's version history and t
     $ rm -rf react-d3-example/.git
     $ cd react-d3-example
 
-We now have a directory called `react-d3-example` that contains some config files and a bit of code. most importantly, it isn't tied to a Git project, so we can make it all ours.
+We now have a directory called `react-d3-example` that contains some config files and a bit of code. Most importantly, it isn't tied to a Git project, so we can make it all ours.
 
 ### Make it your own
 
@@ -155,7 +155,7 @@ Our new project comes preconfigured for React and all the other tools and compil
 
 This will install a bunch of dependencies like React, a few Webpack extensions, and a JavaScript transpiler (Babel) with a few bells and whistles. Sometimes, parts of the installation fail. If it happens to you, try re-running `npm install` for the libraries that threw an error. I don't know why this happens, but you're not alone. I've been seeing this behavior for years.
 
-Now that we have all the basic libraries and tools we need to run our code, we have to install three more: 
+Now that we have all the basic libraries and tools we need to run our code, we have to install three more things:
 
 1. `d3` for drawing
 2. `lodash` for some utility functions
@@ -168,9 +168,9 @@ The `--save` option saves them to `package.json`.
 
 ## Add LESS compiling
 
-Less is my favorite way to write stylesheets. It looks almost like traditional CSS, but gives you the ability to use variables, nest definitions, and write mixins. We won't need much of this for the H1B graphs project, but nesting will make our style definitions nicer, and LESS will make your life easier in bigger projects.
+Less is my favorite way to write stylesheets. It looks almost like traditional CSS, but it gives you the ability to use variables, nest definitions, and write mixins. We won't need much of this for the H1B graphs project, but nesting will make our style definitions nicer, and LESS will make your life easier in bigger projects.
 
-Webpack can handle compiling LESS to CSS for us. We just have to install a couple of Webpack loaders, and add three lines to the config.
+Webpack can handle compiling LESS to CSS for us. We just have to install a couple of Webpack loaders and add three lines to the config.
 
 Let's start with the loaders:
 
@@ -192,7 +192,7 @@ If everything went well, we should now be able to use `require('./style.less')` 
 
 ## Change a few knickknacks
 
-There's a few more things we have to change to make the rest of this book flow more smoothly.
+There are a few more things we have to change to make the rest of this book flow more smoothly.
 
 The first and most important is to make sure we can load our data files while we're running the project through our local server. We have to add a line to `devServer.js`:
 
@@ -215,7 +215,7 @@ Finally, I like to add a `resolve` config to Webpack. This lets me load files wi
 {crop-start-line=175,crop-end-line=182,linenos=off}
 <<[Add resolve to webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
 
-It's a list of file extensions that Webpack tries to guess when a path you use doesn't match any files
+It's a list of file extensions that Webpack tries to guess when a path you use doesn't match any files.
 
 ## Check that it works
 
@@ -248,7 +248,7 @@ Boilerplate is great because it lets you get started right away.  No setup, no f
 
 But you *will* have to change something eventually, and when you do, you'll want to know what to look for. There's no need to know every detail in every config file, but you do have to know enough so that you can Google for help.
 
-Let's take a deeper look at the config files to make future googling easier. We're relying on Dan Abramov's `react-transform-boilerplate`, but many others exist with different levels of bells and whistles. I like Dan's because it's simple.
+Let's take a deeper look at the config files to make future Googling easier. We're relying on Dan Abramov's `react-transform-boilerplate`, but many others exist with different levels of bells and whistles. I like Dan's because it's simple.
 
 All modern boilerplates are going to include at least two bits:
 
@@ -259,9 +259,9 @@ Everything else is optional.
 
 ### Webpack config
 
-Wepback is where the real magic happens so this is the most important configuration file in your project. It's just a JavaScript file though so there's nothing to fear.
+Wepback is where the real magic happens, so this is the most important configuration file in your project. It's just a JavaScript file though, so there's nothing to fear.
 
-Most projects have two versions of this file: a dev version, and a prod version. The first is geared more towards what we need in development - a compile step that leaves our JavaScript easy to debug - while the second is geared towards what we need in production - compressed and uglified JavaScript that's quick to load.
+Most projects have two versions of this file: a dev version and a prod version. The first is geared more towards what we need in development – a compile step that leaves our JavaScript easy to debug – while the second is geared towards what we need in production – compressed and uglified JavaScript that's quick to load.
 
 Since both files are so similar, we're only going to look at the dev version.
 
@@ -278,7 +278,7 @@ It comes in four parts:
 
  - **Loaders**, which tells Webpack about the different file loaders we'd like to use.
 
-There's also the `devtool: 'eval'` option, which tells Webpack how to package our files so they're easier to debug. In this case our code will come inside `eval()` statements, which makes it hot loadable.
+There's also the `devtool: 'eval'` option, which tells Webpack how to package our files so they're easier to debug. In this case, our code will come inside `eval()` statements, which makes it hot loadable.
 
 Let's go through the four sections one by one.
 
@@ -375,7 +375,7 @@ I know I didn't explain much, but that's as deep as we can go at this point. You
 
 Babel works great out of the box. There's no need to configure anything if you just want to get started and don't care about optimizing the compilation process.
 
-But there are [a bunch of configuration options](http://babeljs.io/docs/usage/options/) if you want to play around. You can configure everything from enabling and disabling ES6 features to sourcemaps and basic code compacting and more. More importantly, you can define custom transforms for your code.
+But there are [a bunch of configuration options](http://babeljs.io/docs/usage/options/) if you want to play around. You can configure everything from enabling and disabling ES6 features to source maps and basic code compacting and more. More importantly, you can define custom transforms for your code.
 
 We don't need anything fancy for the purposes of our example project - just the hot module React transform. As you can guess, it enables that hot code loading magic we've mentioned a couple of times.
 
@@ -384,9 +384,9 @@ We don't need anything fancy for the purposes of our example project - just the 
 {linenos=off}
 <<[.babelrc config](code_samples/env/babelrc)
 
-I imagine this file is something most people copy paste from the internet, but the basic rundown is that for the `development` environment, we're loading the `react-transform` plugin and enabling two different transforms.
+I imagine this file is something most people copy-paste from the internet, but the basic rundown is that for the `development` environment, we're loading the `react-transform` plugin and enabling two different transforms.
 
-The first one, `react-transform-hmr`, enables hot loading. The second, `react-transform-catch-errors`, uses `redbox-react` to show us errors thrown by the compiler. This makes keeping an eye on the console less important. That gives us one less window with which to convern ourselves.
+The first one, `react-transform-hmr`, enables hot loading. The second, `react-transform-catch-errors`, uses `redbox-react` to show us errors thrown by the compiler. This makes keeping an eye on the console less important. That gives us one less window with which to concern ourselves.
 
 We don't want either of those in production, so we'll leave the `production` environment without config. Defaults are enough.
 
@@ -394,13 +394,13 @@ We don't want either of those in production, so we'll leave the `production` env
 
 Babel 6 came out recently, which changes an important detail: ES6 -> ES5 compilation has to be enabled manually.
 
-The easiest way to do that is to install `babel-preset-es2015`, and add `"es2015"` to the `plugins:` array inside `.babelrc`. This enables all the different transpiles, which now exist as independent projects.
+The easiest way to do that is to install `babel-preset-es2015` and add `"es2015"` to the `plugins:` array inside `.babelrc`. This enables all the different transpiles, which now exist as independent projects.
 
 As of late November 2015, `babel-plugin-react-transform`, which our boilerplate relies on, doesn't support Babel 6 yet. That's why we're using Babel 5 and why we don't have to add the `es2015` transform.
 
 ### Editor config
 
-A great deal has been written about tabs vs. spaces. It's one of the endless debates we programmers like to have. *Obviously* single quotes are better than double quotes ... unless  ... well ... it depends, really.
+A great deal has been written about tabs vs. spaces. It's one of the endless debates we programmers like to have. *Obviously* single quotes are better than double quotes… unless… well… it depends, really.
 
 I've been coding since I was a kid, and there's still no consensus. Most people wing it. Even nowadays when editors come with a built-in linter, people still wing it.
 
@@ -413,13 +413,13 @@ The `eslint` config that comes with Dan's boilerplate loads a React linter plugi
 {linenos=off}
 <<[.eslintrc for React code](code_samples/env/eslintrc)
 
-I haven't really had a chance to play around with linting configs like these. Emacs defaults have been good to me so far, but I think these types of configs are a great idea. The biggest problem in a team is syncing everyone's linter configs, but if you can  put a file like this in your Git project, then **BAM!**, everyone's always in sync.
+I haven't really had a chance to play around with linting configs like these. Emacs defaults have been good to me so far, but I think these types of configs are a great idea. The biggest problem in a team is syncing everyone's linter configs, but if you can put a file like this in your Git project, then **BAM!**, everyone's always in sync.
 
 You can find a semi-exhaustive list of options in [this helpful gist](https://gist.github.com/cletusw/e01a85e399ab563b1236).
 
 ## That's it. Time to play!
 
-By this point, you not only have a working environment in which to write your code, you also understand how it does what it does, at least from a high-level perspective. The details are far too intricate and, frankly, not that important to your project as a whole.
+By this point, you not only have a working environment in which to write your code, but you also understand how it does what it does, at least from a high-level perspective. The details are far too intricate and, frankly, not that important to your project as a whole.
 
 That's how environments usually are: a combination of cargo culting and rough understanding.
 
