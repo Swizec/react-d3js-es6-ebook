@@ -83,7 +83,7 @@ Marvelous.
 
 ## Drawing the loaded data
 
-Now that our data is loading, it’s time to start drawing.  We’ll start with a basic histogram, then add an axis, and then add an indicator for the mean value (also known as the "average").
+Now that our data is loading, it’s time to start drawing. We’ll start with a basic histogram, then add an axis, and then add an indicator for the mean value (also known as the "average").
 
 Create a new file in `src/` called `drawers.jsx`. We’ll put all our drawing logic here.
 

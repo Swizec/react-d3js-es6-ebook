@@ -244,7 +244,7 @@ In the rest of this chapter, we're going to take a deeper look into all the conf
 
 ## What's in the environment
 
-Boilerplate is great because it lets you get started right away.  No setup, no fuss, just `npm install` and away we go.
+Boilerplate is great because it lets you get started right away. No setup, no fuss, just `npm install` and away we go.
 
 But you *will* have to change something eventually, and when you do, you'll want to know what to look for. There's no need to know every detail in every config file, but you do have to know enough so that you can Google for help.
 
