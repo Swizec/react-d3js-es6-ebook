@@ -1,12 +1,12 @@
 ## Loading data
 
-Great, we’ve got something rendering. Now we need to load some data before we can draw a picture. If you still don't have `public/data/h1bs.csv`, now is the time to get it. You can find it on Github [here](https://github.com/Swizec/h1b-software-salaries), or in the stub project included with the book.
+Great, we’ve got something rendering. Now we need to load some data before we can draw a picture. If you still don't have `public/data/h1bs.csv`, now is the time to get it. You can find it on Github [here](https://github.com/Swizec/h1b-software-salaries) or in the stub project included with the book.
 
 We’re going to use d3.js’s built-in data-loading magic and hook it into React’s component lifecycle.
 
 We start by adding three short methods to `H1BGraph`:
 
-{crop-start-line=34,crop-end-line=49,linenos=off,lang=jsx}
+{crop-start-line=34,crop-end-line=49,linenos=off,lang=jsx}m
 <<[Base methods to load data](code_samples/main.jsx)
 
 React calls `componentWillMount` right before inserting the component into our document. It’s a great opportunity to make any last-minute preparations before rendering. In our case, it’s a good spot to start loading data.
@@ -15,7 +15,7 @@ I'm sure better spots exist, but loading a 12MB data file is always going to tak
 
 `getInitialState` is the React way to set up a default state; in our case, we get an empty `rawData` array.
 
-We’re going to put d3.js’s data loading magic in `loadRawData`.
+We’re going to put d3.js’s data-loading magic in `loadRawData`.
 
 We add a call to `d3.csv` because our data is in CSV format. D3.js is smart enough to change every row into an object using values from the title row (first row) as keys.
 
@@ -66,14 +66,14 @@ Into objects that look like this:
 			    "state": "ca"
 			}
 
-In our case we cleaned up the keys, parsed dates into `Date()` objects, and made sure numbers are numbers. If a row didn’t have a `base_salary`, we filtered it out by returning `null`.
+In our case, we cleaned up the keys, parsed dates into `Date()` objects, and made sure numbers are numbers. If a row didn’t have a `base_salary`, we filtered it out by returning `null`.
 
 Loading and parsing 81,000 data points takes some time. Let's tell users what they're waiting for by rendering some explainer text when there's no data.
 
 {crop-start-line=203,crop-end-line=221,linenos=off,lang=jsx}
 <<[Loading indicator](code_samples/main.jsx)
 
-The beauty of our approach is that the `render` method just returns different elements based on whether or not we’ve got some data. Notice that we access the data as `this.state.rawData` and rely on the re-render when the state updates.
+The beauty of our approach is that the `render` method returns different elements based on whether or not we’ve got some data. Notice that we access the data as `this.state.rawData` and rely on the re-render when the state updates.
 
 If you’ve kept `npm start` running in the background, you should see your browser flash the loading text before becoming blank.
 
@@ -96,9 +96,9 @@ We start with a blank component called `Histogram`.
 
 Once more, we required external libraries on top and started our component with a simple `render` function. On the bottom, we added it to the exports. This will allow other parts of the codebase to use it as `require(‘drawers.jsx’).Histogram`.
 
-In the `render` method, we created a grouping, `<g>`, element that will hold our histogram together. We used the `transform` property to move it into place. The reason we did some ugly string concatenation is that we can’t mix string and variable attribute values.
+In the `render` method, we created a grouping element, `<g>`, that will hold our histogram together. We used the `transform` property to move it into place. The reason we did some ugly string concatenation is that we can’t mix string and variable attribute values.
 
-However, we do want to get `topMargin` via properties given to our component. We access those with `this.props` and they make our components more flexible.
+However, we do want to get `topMargin` via properties given to our component. We access those with `this.props`, and they make our components more flexible.
 
 We're going to build our histogram with d3.js’s built-in histogram layout. It’s smart enough to do everything on its own. We just have to give it some data and some configuration.
 
@@ -137,7 +137,7 @@ Now that we’ve got our histogram in memory, it’s time to turn it into SVG el
 
 We added another grouping element to our `render` function, which holds all the bars. I’ll show you why we need two grouping elements later.
 
- Notice how we can just `.map()` through our histogram data in `this.state.bars`? That’s the magic of React - JavaScript and XML living together as one.
+Notice how we can just `.map()` through our histogram data in `this.state.bars`? That’s the magic of React - JavaScript and XML living together as one.
 
 We could have put the entire `makeBar` method in here, but I think the code looks cleaner when it’s separate. `makeBar` takes data about a single bar, constructs the properties object, and returns a `HistogramBar` component.
 
@@ -177,7 +177,7 @@ Then, we can add the histogram component to our `render` method.
 
 That’s it. You can render as many histograms as you want just by adding `<drawers.Histogram />` to your output and setting the properties.
 
-Let's add some styling to `src/style.less` to make the Histogram prettier:
+Let's add some styling to `src/style.less` to make the Histogram look a little better:
 
 {crop-start-line=5,crop-end-line=19,linenos=off,lang=less}
 <<[style.less](code_samples/style.less)
@@ -188,7 +188,7 @@ You should now see a histogram like this:
 
 ## Adding an axis
 
-Axes are one of my favourite feats of d3.js magic. You call a function, set some parameters, and **BAM**, you’ve got an axis.
+Axes are one of my favorite feats of d3.js magic. You call a function, set some parameters, and **BAM**, you’ve got an axis.
 
 The axis automatically adapts to your data, draws the ticks it needs, and labels them. Axes are even smart enough to work with different types of scales. You don’t have to do anything special to turn a linear axis into a logarithmic axis.
 
@@ -260,7 +260,7 @@ We’re going to make controls that let users filter data by year. In the full e
 
 ![Events flow up through callbacks](images/architecture_events.jpg)
 
-Our approach will follow the approach of having events flow up the hierarchy and having data updates flow down. When a user clicks a button, it calls a function on its parent. This in turn calls a function on its parent and so on until we hit `H1BGraph`, which is our holder of truth.
+Our approach will be similar to what we've already arranged: events will flow up the hierarchy, and data updates will flow down. When a user clicks a button, it calls a function on its parent. This in turn calls a function on its parent and so on until we hit `H1BGraph`, which is our holder of truth.
 
 We could also call functions directly on `H1BGraph` if we had a reference to them, but that would break the separation of concerns in our case.
 
@@ -270,7 +270,7 @@ Once `H1BGraph` updates its state, the changed data flows back down to the relev
 
 ### Creating user controls
 
-We're going to organise our controls into three components:
+We're going to organize our controls into three components:
 
 * `Controls`, which holds the controls together
 * `ControlRow`, which is a row of buttons
@@ -304,7 +304,7 @@ We’ll define the callback later. Let’s make the `ControlRow` component first
 {crop-start-line=51,crop-end-line=72,linenos=off,lang=jsx}
 <<[ControlRow component](code_samples/controls.jsx)
 
-There's nothing special going on here. We’ve got a `render` method that returns a Bootstrap row and fills it with a bunch of `Toggle` components. It does so by looping over the result of `this.props.getToggleNames`, which is the function we defined in `Controls.render`.
+There's nothing special going on here. We’ve got a `render` method that returns a Bootstrap row and fills it with a collection of `Toggle` components. It does so by looping over the result of `this.props.getToggleNames`, which is the function we defined in `Controls.render`.
 
 Normally, `onClick` is a click event handler. React gives us this sort of magic prop for every valid user event. It’s the same as jQuery’s `$('foo').on('click')`.
 
@@ -319,7 +319,7 @@ Let’s add the state handling.
 {crop-start-line=77,crop-end-line=100,linenos=off,lang=jsx}
 <<[Exclusive toggling](code_samples/controls.jsx)
 
-The `makePick` function is called when the user clicks on a `Toggle` element. It goes through the `toggleValues` dictionary and sets them to `false` if they aren't the one the user clicked on. The one they did click is set to `true`.
+The `makePick` function is called when the user clicks on a `Toggle` element. It goes through the `toggleValues` dictionary and sets them to `false` if they aren't the one the user clicked on. The one the user does click is set to `true`.
 
 Then it saves the dictionary with `this.setState`, which triggers a re-render and updates all the buttons.
 
@@ -382,7 +382,7 @@ React calls `componentDidUpdate` when we change the state. This gives us a great
 
 You’d think we could do all of this straight in the `updateYearFilter` function, but we don’t have access to the updated state yet. Because we might add more types of filters later, it’s better to rely on the already saved filters.
 
-Ok, we’ve just created an infinite loop. When `componentDidUpdate` is called we call something on the parent component. This potentially changes our `props`, which again triggers `componentDidUpdate`.
+Ok, we’ve just created an infinite loop. When `componentDidUpdate` is called, we call something on the parent component. This potentially changes our `props`, which again triggers `componentDidUpdate`.
 
 We have to make sure the component updates *only* when properties have actually changed. The easiest way to do that is using `shouldComponentUpdate`. If it returns `false`, the component doesn’t update.
 
@@ -408,7 +408,7 @@ Hooray! We have a histogram with user filtering.
 
 A lot of work went into that, and we’ve got plenty of moving parts. But remember, all it takes to add more filters is adding another `<ControlRow />` to `Controls`, writing a filter function, and making sure it’s included in `updateDataFilter`.
 
-That’s it. A minute of typing to let users filter by almost anything.
+That’s it. A single minute of typing to let users filter by almost anything.
 
 ## Adding some meta data
 
@@ -512,7 +512,7 @@ But the `getPreviousYearFragment` function is more complex:
         return fragment;
     },
 
-First, we get the list of years. If it’s empty or the current year is 2012 (the first in our dataset), we return an empty fragment.
+First, we get the list of years. If it’s empty or if the current year is 2012 (the first in our dataset), we return an empty fragment.
 
 In any other case, we get a look at last year’s data with `this.getAllDataByYear()`. We can then compare the number of entries with this year and return a fragment that’s either “X% **more** than the year before” or “X% **less** than the year before”.
 
@@ -523,7 +523,7 @@ Now we’ve just got to use these two fragments in the render method.
 
 We’ve crammed a bunch into that return statement, but it's not as hairy as it looks. We start the sentence with either “Since 2012” or “In Year”, then decide what tense to use for the verb “give”, followed by the count of H1Bs in the current data and “foreign nationals”.
 
-Right after that, with no space, we add the previous year fragment. Then we add a sentence describing the range that the majority of salaries fall into. To get the numbers, we used d3.js’s built-in standard deviation calculator and assumed the distribution is roughly normal. That means 68.2% of our data falls within a standard deviation to each side of the mean.
+Right after that, with no space, we add the previous year fragment. Then we add a sentence describing the range into which the majority of salaries fall. To get the numbers, we used d3.js’s built-in standard deviation calculator and assumed the distribution is roughly normal. That means 68.2% of our data falls within a standard deviation to each side of the mean.
 
 Yes, my statistics professor would be very angry, but it’s a good-enough approximation.
 

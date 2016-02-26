@@ -6,8 +6,6 @@ If you've only read through the book, that’s awesome, too. You know much more 
 
 You understand how the declarative nature of React works really well with d3.js and vice-versa. You know what it takes to write reusable components and how much easier they make your life once you’ve built them. And you know how to configure Webpack, Babel, and everything else to create an awesome environment to work with.
 
- {>>You'll still need to change the references to `grunt` and `browserify` up there.<<}
-
 In short, you know everything you need to start making your own visualization components. At the very least, you know whether React and d3.js are a good tech stack for you.
 
 And that’s awesome!
