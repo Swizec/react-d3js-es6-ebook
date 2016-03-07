@@ -175,7 +175,7 @@ Webpack can handle compiling LESS to CSS for us. We just have to install a coupl
 Let's start with the loaders:
 
 {linenos=off}
-    $ npm install --save style-loader less less-loader
+    $ npm install --save style-loader less less-loader css-loader
 
 Remember, `--save` adds `style-loader` and `less-loader` to package.json. The `style-loader` takes care of transforming `require()` calls into `<link rel="stylesheet"` definitions, and `less-loader` takes care of compiling LESS into CSS.
 
@@ -190,16 +190,22 @@ Our addition tells Webpack to load any files that end with `.less` using `style!
 
 If everything went well, we should now be able to use `require('./style.less')` to load style definitions. This is great because it allows us to have separate style files for each component, and that makes our code more reusable since every module comes with its own styles.
 
-## Change a few knickknacks
+## Serve static files in development
 
+<<<<<<< HEAD
 There are a few more things we have to change to make the rest of this book flow more smoothly.
+=======
+Our visualization is going to use Ajax to load data. That means the server we use in development can't just route everything to `index.html` - it needs to serve other static files as well.
+>>>>>>> Swizec/master
 
-The first and most important is to make sure we can load our data files while we're running the project through our local server. We have to add a line to `devServer.js`:
+We have to add a line to `devServer.js`:
 
 {crop-start-line=35,crop-end-line=41,linenos=off}
 <<[Enable static server on ./public](code_samples/env/devServer.js)
 
-Don't worry if you don't understand what this line does. We're going to look at this file in more detail later.
+This tells express.js, which is the framework our simple server uses, to route any URL starting with `/public` to local files by  matching paths.
+
+## Webpack nice-to-haves
 
 Now we'll add two nice-to-haves for `webpack.config.dev.js`. They aren't super important, but I like to add them to make my life a little easier.
 
@@ -217,7 +223,32 @@ Finally, I like to add a `resolve` config to Webpack. This lets me load files wi
 
 It's a list of file extensions that Webpack tries to guess when a path you use doesn't match any files.
 
-## Check that it works
+{#enable-es7}
+## Optionally enable ES7
+
+Examples in this book are written in ES6, also known as ECMAScript2015. If you're using the boilerplate approach, or the stub project that came with the book, all ES6 features work out of the box in any browser thanks to the Babel 6 compiler, which transpiles ES6 into ES5.
+
+The gap between ES5 (2009/2011) and ES6 (2015) has been long, but now the standard has once more started moving fast. In fact, ES7 is promised to be released some time in 2016.
+
+Even though ES7 hasn't been standardized yet, you can already use some of its features, if you enable `stage-0` support in Babel. Everything in `stage-0` is stable enough to use in production, but there is a small chance the feature/syntax will change when the new standard officially comes out.
+
+You don't need `stage-0` to follow the examples in this book, but I do use one or two syntax sugar features. When I do use something from ES7, I will explicitly mention the ES6 alternative.
+
+To enable `stage-0` you have to first install `babel-preset-stage-0`, like this:
+
+{linenos=off}
+    $ npm install --save-dev babel-preset-stage-0
+
+Then enable it in `.babelrc`:
+
+{crop-start-line=4,crop-end-line=11,linenos=off,lang=json}
+<<[Add stage-0 preset to .babelrc](code_samples/env/babelrc)
+
+That's it. You can now use fancy ES7 features in your code and Babel will transpile them into normal ES5 that all browsers support.
+
+Don't worry if you don't understand how `.babelrc` works. You can read more about the environment in the [Environment in depth](#env-in-depth) chapter.
+
+## Check that everything works
 
 Your environment should be ready to get started now. Let's try it out. First, start the dev server:
 
@@ -242,7 +273,8 @@ Done? Wonderful.
 
 In the rest of this chapter, we're going to take a deeper look into all the config files that came with our boilerplate. If you don't care about that right now, you should jump straight to [the meat](#the-meat-start).
 
-## What's in the environment
+{#env-in-depth}
+## The environment in depth
 
 Boilerplate is great because it lets you get started right away. No setup, no fuss, just `npm install` and away we go.
 
@@ -377,13 +409,14 @@ Babel works great out of the box. There's no need to configure anything if you j
 
 But there are [a bunch of configuration options](http://babeljs.io/docs/usage/options/) if you want to play around. You can configure everything from enabling and disabling ES6 features to source maps and basic code compacting and more. More importantly, you can define custom transforms for your code.
 
-We don't need anything fancy for the purposes of our example project - just the hot module React transform. As you can guess, it enables that hot code loading magic we've mentioned a couple of times.
+We don't need anything fancy for the purposes of our example project - just a few presets. A preset is a single package that enables a bunch of plugins and code transforms. We use them to make our lives easier, but you can drop into more specific config if you want to.
 
-`.babelrc` is a JSON file that looks like this:
+The best way to configure Babel is through the `.babelrc` file, which looks like this:
 
-{linenos=off}
+{crop-start-line=21,crop-end-line=29,linenos=off}
 <<[.babelrc config](code_samples/env/babelrc)
 
+<<<<<<< HEAD
 I imagine this file is something most people copy-paste from the internet, but the basic rundown is that for the `development` environment, we're loading the `react-transform` plugin and enabling two different transforms.
 
 The first one, `react-transform-hmr`, enables hot loading. The second, `react-transform-catch-errors`, uses `redbox-react` to show us errors thrown by the compiler. This makes keeping an eye on the console less important. That gives us one less window with which to concern ourselves.
@@ -391,12 +424,21 @@ The first one, `react-transform-hmr`, enables hot loading. The second, `react-tr
 We don't want either of those in production, so we'll leave the `production` environment without config. Defaults are enough.
 
 #### A note on Babel 6
+=======
+I imagine this file is something most people copy paste from the internet, but here's what we're doing in our case:
+>>>>>>> Swizec/master
 
-Babel 6 came out recently, which changes an important detail: ES6 -> ES5 compilation has to be enabled manually.
+ - `react` enables all React and JSX plugins
+ - `es2015` enables transpiling ES6 into ES5, including all polyfills for semantic features
+ - `stage-0` enables the more experimental ES7 features
 
+<<<<<<< HEAD
 The easiest way to do that is to install `babel-preset-es2015` and add `"es2015"` to the `plugins:` array inside `.babelrc`. This enables all the different transpiles, which now exist as independent projects.
+=======
+Those are the default presets. For development, we also enable `react-hmre`, which gives us hot loading.
+>>>>>>> Swizec/master
 
-As of late November 2015, `babel-plugin-react-transform`, which our boilerplate relies on, doesn't support Babel 6 yet. That's why we're using Babel 5 and why we don't have to add the `es2015` transform.
+That's it. If you need more granular config, or you want to know what all those presets enable and use, I suggest googling for them. Be warned though, the `es2015` preset alone uses 20 different plugins.
 
 ### Editor config
 

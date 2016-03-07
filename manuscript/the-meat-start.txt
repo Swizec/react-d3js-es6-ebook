@@ -13,12 +13,13 @@ If you skipped the [environment setup section](#the-environment), make sure you�
 * React
 * Lodash
 
-You should also have some way of running a static file server. I like having a simple node.js server that enables hot loading via Webpack.
+You should also have some way of running a static file server, and a way to compile JSX into pure JavaScript. I like having a simple node.js server that enables hot loading via Webpack, and compiling with Babel.
 
 We’re going to put all of our code in a `src/` directory and serve the compiled version out of `static/`. A `public/data/` directory is going to hold our data.
 
 Before we begin, you should copy the dataset from the stub project that came with the book. It should be in the `public/data/` directory of your project.
 
+<<<<<<< HEAD
 ## JSX
 
 We’re going to write our code in JSX, a JavaScript syntax extension that lets us treat XML-like data as normal code. You can use React without JSX, but I feel that it makes React’s full power easier to use.
@@ -47,6 +48,9 @@ I'm not sure yet whether this is better than separate template files in Mustache
 If you skipped the setup section and don't have a JSX compilation system set up, you should do that now. You can also use the project stub you got with the book.
 
 ## The Basic Approach
+=======
+## The basic approach
+>>>>>>> Swizec/master
 
 Because SVG is an XML format that fits into the DOM, we can assemble it with React. To draw a `100px` by `200px` rectangle inside a grouping element moved to `(50, 20)` we can do something like this:
 
@@ -69,7 +73,11 @@ If the parent component puts this inside an `<svg>` element, the user will see a
       .attr("width", 100)
       .attr("height", 200);
 
+<<<<<<< HEAD
 The d3.js approach outputs SVG as if by magic. It also looks a bit cleaner because it's pure JavaScript. Truthfully, it’s a lot more typing and function calls for the same result.
+=======
+The d3.js approach outputs SVG as if by magic and looks cleaner because it's pure JavaScript. But it’s a lot more typing and function calls for the same result.
+>>>>>>> Swizec/master
 
 Well, actually, the pure d3.js example is 10 characters shorter. But trust me, React is way cooler.
 
@@ -126,29 +134,106 @@ The `<body>` tag creates a container and includes the JavaScript code. We didn�
 
 At the bottom, we load our compiled JavaScript from `static/bundle.js`. This is a virtual path created by our dev server, so it doesn't point to any actual files.
 
-## The Main Component
+## Structuring your React app
 
+As you can guess from the earlier chapter about architecture, we're going to structure your app into components. Deciding what to put into one component and what into another is one of the hardest problems in engineering.
+
+Whole books have been written about that so here's a rule of thumb that I like to use: If you have to use the word "and" to describe what your component does, then it should become two components.
+
+Once you have those two components, you can either make them child components of a bigger component, or you can make them separate. This depends on their re-usability.
+
+For instance, to build our H1B histogram visualization, we are going to build two top-level components:
+
+ - H1BGraph, which handles the whole UI
+ - Histogram, which is a passive component for rendering labeled histograms
+
+Histogram is going to be a child of H1BGraph in the final hierarchy, but we might use it somewhere else. That makes it a good candidate for a stand-alone component.
+
+Other components such as the mean value line, filter controls, and title/description meta components are very specific to this use-case, so we'll build them as child components of H1BGraph. We still want to build them as separate components, and not as top-level parts of H1BGraph, so that they are easier to reason about, reusable locally within H1BGraph, and easier to write tests for.
+
+We're not going to write tests here, though. That's a topic for another book. Right now we want to focus on React and d3.js.
+
+Each component will have its own folder inside `src/components/`, or its parent component, and at least an `index.jsx` file. Some will also have style definitions, child components, and other JavaScript files.
+
+In theory, each component should be accessible with `require('./MyComponent')`, and rendered with `<MyComponent {...params} />`. If a parent component has to know details about the implementation of a child component, something is going wrong.
+
+You can read more about these ideas, if you google for ["leaky abstractions"](https://en.wikipedia.org/wiki/Leaky_abstraction), ["single responsibility principle"](https://en.wikipedia.org/wiki/Single_responsibility_principle), ["separation of concerns"](https://en.wikipedia.org/wiki/Separation_of_concerns), and ["structured programming"](https://en.wikipedia.org/wiki/Structured_programming). Books from the late 90's and early 2000's when object oriented programming was The Future (tm) are the best source of [curated] info in my experience.
+
+## Bootstrap your app into place
+
+Let's start by bootstrapping our app into place. We're going to make a simple `src/index.jsx` file - we sat that to be our main entry file in the environment section - and an empty `H1BGraph` component that renders an SVG element.
+
+We start by importing `React`, `ReactDOM`, and `H1BGraph`.
+
+{crop-start-line=5,crop-end-line=9,linenos=off,lang=jsx}
+<<[Import main dependencies](code_samples/es6/index.jsx)
+
+`React` is, well, React. We need it for just about everything. `ReactDOM` is React's DOM renderer, which is new in v0.14. Rendering got split out of base React so that it's easier to build React apps for different render targets like canvas, WebGL, native mobile, etc. And `H1BGraph` is going to be our main component.
+
+We're using ES6 style imports instead of `require()` because it gives us greater flexibility to import just the parts we want and reads like a normal English sentence in most common use cases. You'll see this play out more in future examples.
+
+The second argument must be a string even if you're importing a library.
+
+The main entry point for the app is also a good place to define any convenience helper functions that should be available globally, but aren't big or important enough to make a new library for. We'll add `capitalize` and `decapitalize` to the `String` class. There are libraries out there that do this, but there's no need to add an entire string manipulation library to our codebase, if all we need are two functions.
+
+{crop-start-line=13,crop-end-line=27,linenos=off,lang=jsx}
+<<[Define two string helpers](code_samples/es6/index.jsx)
+
+Now we'll be able to capitalize and decapitalize any string in our codebase with a call like `"some thing".capitalize()`. We're going to use this in the `Title` and `Description` meta components. We define them here because they change the global String class and it would be odd if that happened deep down in a child component ... maybe we should've just avoided changing built-in classes.
+
+All we need now is to render `H1BGraph` into the page.
+
+{crop-start-line=41,crop-end-line=50,linenos=off,lang=jsx}
+<<[Render H1BGraph onto page](code_samples/es6/index.jsx)
+
+This tells React to take control of the HTML element with class `h1bgraph` - a `<div>` inside the main container in our case - and render the `H1BGraph` component. We used `ReactDOM.render` because we're rendering for and in a browser. Other renderers exist, but they're not important for us right now.
+
+You can think of this function call as a *"Give me a Thing That Does Stuff"*. It doesn't have to stand on its own. You could wrap it in a jQuery plugin, use it inside a Backbone or Angular view, or really in whatever you're already using. That's how you can make a gradual transition towards React that doesn't force you to throw existing code away.
+
+If you've kept `npm start` running in the background, it should now complain that `components/H1BGraph` doesn't exist. Let's fix that and get an empty `<svg>` element rendering.
+
+## Start with a basic component
+
+All of our components are going to start the same way - some imports, a class with a `render()` method, and a default module export. That's the minimum we need in `<component>/index.jsx` to define a component that doesn't break our build.
+
+Our build is breaking right now. The main entry file tries to import and render `H1BGraph`, but it doesn't exist. Let's start a new file in `src/components/H1BGraph/index.jsx`.
+
+{crop-start-line=5,crop-end-line=7,linenos=off,lang=jsx}
+<<[Basic imports](code_samples/es6/H1BGraph/index.jsx)
+
+We import React, and a base `Component` class. We have to import `React` even if we don't use it explicitly because we'll get a "React not defined" error otherwise. We'll use the `Component` class to build our own components off of.
+
+We also import `d3` because we'll use it to load data later. 
+
+{crop-start-line=13,crop-end-line=25,linenos=off,lang=jsx}
+<<[Empty H1BGraph component](code_samples/es6/H1BGraph/index.jsx)
+
+<<<<<<< HEAD
 As [mentioned before](#the-architecture), we're going to build everything off a central repository of truth - The Main Component. We'll call this component `H1BGraph` because it draws a graph of H1B data.
+=======
+Then we define a component that renders an empty `<svg>` tag inside a `<div>`. A component must have at least a `render()` function, otherwise React throws an error when it tries to render.
+>>>>>>> Swizec/master
 
-Very imaginative, I know.
+We're using ES6's concept of classes and class inheritance to extend React's basic `Component`, which we imported earlier. This is widely accepted as more readable than JavaScript's old/standard prototypical inheritance.
 
-This code is going to live in `src/index.jsx` and start by requiring React, Lodash, and d3.js:
+You can still use `React.createClass` if you want. It works just fine and is equivalent to `class X extends Component`.
 
-{crop-start-line=5,crop-end-line=8,linenos=off,lang=jsx}
-<<[Require the libraries](code_samples/main.jsx)
+{crop-start-line=39,crop-end-line=46,linenos=off,lang=jsx}
+<<[Export H1BGraph](code_samples/es6/H1BGraph/index.jsx)
 
-We’re going to add more imports later.
+In the end, we export `H1BGraph` so other parts of the codebase can import it. We define it as the `default` export because this particular file only exports a single class.
 
-We also need a basic React component called `H1BGraph`. It should look like this:
+If we had multiple things to export, we'd use named exports. They look like this: `export Thing`. You can also define the Thing anonymously when exporting, like this: `export function Thing () { // ... }`.
 
-{crop-start-line=10,crop-end-line=23,linenos=off,lang=jsx}
-<<[Blank component](code_samples/main.jsx)
+Using default exports makes our components easier to import. You just have to write a simple import like we saw earlier: `import Thing from 'file'`. To import named exports, you have to specify them inside curly braces: `import { Thing1, Thing2 } from 'file'`.
 
-This creates a Bootstrap row with an `<svg>` element.
+Hot reloading and continuous compilation should have done their magic now, and you should see an empty `<svg>` element in your page. You have to keep `npm start` running and a browser window pointing to `localhost:3000` for that.
 
-We also have to render our component into the page like this:
+Congratz! You just made your first React component with ES6 classes. Or at least the first in this book. You're awesome!
 
-{crop-start-line=25,crop-end-line=29,linenos=off,lang=jsx}
-<<[Render our component](code_samples/main.jsx)
+Here's what happens next:
 
-If all went well, your browser’s document inspector will show a blank SVG wrapped in some divs. Don't forget to keep `npm start` running in the background.
+1. We'll make `H1BGraph` load our dataset
+2. Build a Histogram component
+3. Add dynamic meta text descriptions
+4. Add some data filtering

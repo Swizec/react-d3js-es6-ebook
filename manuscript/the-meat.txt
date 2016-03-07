@@ -1,37 +1,56 @@
-## Loading data
+## Asynchronously loading data
 
+<<<<<<< HEAD
 Great, we’ve got something rendering. Now we need to load some data before we can draw a picture. If you still don't have `public/data/h1bs.csv`, now is the time to get it. You can find it on Github [here](https://github.com/Swizec/h1b-software-salaries) or in the stub project included with the book.
+=======
+Great, we’ve got a component rendering. Now we need to load some data before we can draw a picture. If you still don't have `public/data/h1bs.csv`, now is the time to get it. You can find it on Github [here](https://github.com/Swizec/h1b-software-salaries), or in the stub project included with the book.
+>>>>>>> Swizec/master
 
-We’re going to use d3.js’s built-in data-loading magic and hook it into React’s component lifecycle.
+We’re going to use d3.js’s built-in data-loading magic and hook it into React’s component lifecycle for a seamless integration. You could implement calls to a REST API in the same way.
 
-We start by adding three short methods to `H1BGraph`:
+We start by adding three methods to `H1BGraph` in `src/components/H1BGraph/index.jsx`:
 
+<<<<<<< HEAD
 {crop-start-line=34,crop-end-line=49,linenos=off,lang=jsx}m
 <<[Base methods to load data](code_samples/main.jsx)
+=======
+{crop-start-line=54,crop-end-line=72,linenos=off,lang=jsx}
+<<[Base methods to load data](code_samples/es6/H1BGraph/index.jsx)
+>>>>>>> Swizec/master
 
-React calls `componentWillMount` right before inserting the component into our document. It’s a great opportunity to make any last-minute preparations before rendering. In our case, it’s a good spot to start loading data.
+With ES6 classes we no longer use `getInitialState` to set the initial state of our component. That job is taken over by the constructor, which is a function that gets called every time our class is instantiated into an object. We always have to call `super()` first to call the parent's constructor. In our case that's React's `Component`.
 
-I'm sure better spots exist, but loading a 12MB data file is always going to take a couple of seconds. You should try to avoid loading data you never intend to render.
+After calling `super()`, we can use `this.state` as a dictionary that hold's our component's current state. We'll want to avoid using component state as much as possible and rely instead on props fed into the component at render time. 
 
-`getInitialState` is the React way to set up a default state; in our case, we get an empty `rawData` array.
+Next we have `componentWillMount`, which is a component lifecycle function that React calls just before mounting, also known as rendering, our component into the page. This is where you'd want to fit any last minute preparations before rendering.
 
+<<<<<<< HEAD
 We’re going to put d3.js’s data-loading magic in `loadRawData`.
+=======
+It's also a great moment to start loading data. Especially when you have 12MB of data like we do. Wouldn't want to load that unless you know for sure, the component is getting rendered.
+>>>>>>> Swizec/master
 
-We add a call to `d3.csv` because our data is in CSV format. D3.js is smart enough to change every row into an object using values from the title row (first row) as keys.
+We’re going to put d3.js’s data loading magic in `loadRawData`. The reason we have a separate function and don't stick everything into `componentWillMount` is flexibility - we can call the function whenever we want without messing with React's built-in functions.
 
-{crop-start-line=74,crop-end-line=86,linenos=off,lang=jsx}
-<<[Load data with d3.csv](code_samples/main.jsx)
+We use `d3.csv` to load our dataset because it's in CSV format. `d3.csv` understands CSV well enough to turn it into an array of dictionaries, using the first row as keys. If our data was JSON, we'd use `d3.json`, `d3.html` for HTML, etc. You can find the full list of data loaders in d3's documentation.
 
-This will asynchronously load a CSV file, parse it, and return the result in the `rows` argument to the callback. We then use `this.setState()` to save the data in our component.
+{crop-start-line=103,crop-end-line=115,linenos=off,lang=jsx}
+<<[Load data with d3.csv](code_samples/es6/H1BGraph/index.jsx)
 
-Using `setState()` triggers a re-render and should generally be avoided because relying on state can cause inconsistencies in your UI. It’s very appropriate to store 12MB of raw data as state, though.
+This asynchronously loads a CSV file, parses it, and returns the result in the `rows` argument to the callback. The callback is an ES6 fat arrow, which is syntax sugar for `function () { // .. }.bind(this)` - a function bound to current scope. We're going to use these a lot.
 
-The data we’ve got now has keys with spaces like `submit date` and `job title`, and everything is a string. This is not very nice to work with.
+Inside the callback we check for errors, and if everything went well, use `this.setState()` to save the loaded data in our component's state. Calling `setState()` triggers a re-render and should generally be avoided because relying on state can lead to inconsistencies in your UI. It’s very appropriate to store 12MB of raw data as state, though.
+
+We're now going to be able to access our data with `this.state.rawData`. Hooray!
+
+### Data cleanup
+
+Datasets are often messy or at least annoying to work with. After a naive load like that, our data uses keys with spaces in them and everything is a string. Not nice to work with at all.
 
 We can add some cleanup in one fell swoop:
 
-{crop-start-line=113,crop-end-line=143,linenos=off,lang=jsx}
-<<[Data cleanup](code_samples/main.jsx)
+{crop-start-line=148,crop-end-line=172,linenos=off,lang=jsx}
+<<[Data cleanup](code_samples/es6/H1BGraph/index.jsx)
 
 Using `.row()`, we’ve given a callback to `d3.csv` that tells it how to change every row that it reads. Each row is fed into the function as a raw object, and whatever the function returns is added to the final result.
 
@@ -66,478 +85,883 @@ Into objects that look like this:
 			    "state": "ca"
 			}
 
+<<<<<<< HEAD
 In our case, we cleaned up the keys, parsed dates into `Date()` objects, and made sure numbers are numbers. If a row didn’t have a `base_salary`, we filtered it out by returning `null`.
+=======
+In our case we cleaned up the keys, parsed dates into `Date()` objects using d3's built-in date formatters, and made sure numbers are numbers. If a row didn’t have a `base_salary`, we filtered it out by returning `null`.
+
+### Add visual feedback that loading is happening
+>>>>>>> Swizec/master
 
 Loading and parsing 81,000 data points takes some time. Let's tell users what they're waiting for by rendering some explainer text when there's no data.
 
-{crop-start-line=203,crop-end-line=221,linenos=off,lang=jsx}
-<<[Loading indicator](code_samples/main.jsx)
+{crop-start-line=244,crop-end-line=253,linenos=off,lang=jsx}
+<<[Loading indicator](code_samples/es6/H1BGraph/index.jsx)
 
+<<<<<<< HEAD
 The beauty of our approach is that the `render` method returns different elements based on whether or not we’ve got some data. Notice that we access the data as `this.state.rawData` and rely on the re-render when the state updates.
+=======
+The beauty of our approach is that the `render` method returns different elements based on whether or not we’ve got some data. Notice that we access the data as `this.state.rawData` and rely on the re-render triggered by `this.setState` to get rid of the loading notice.
+>>>>>>> Swizec/master
 
-If you’ve kept `npm start` running in the background, you should see your browser flash the loading text before becoming blank.
+If you’ve kept `npm start` running in the background, your browser should flash the loading text before becoming blank.
 
 ![Loading message](images/loading_message.png)
 
 Marvelous.
 
-## Drawing the loaded data
+## Making your first dataviz component - a Histogram
 
 Now that our data is loading, it’s time to start drawing. We’ll start with a basic histogram, then add an axis, and then add an indicator for the mean value (also known as the "average").
 
-Create a new file in `src/` called `drawers.jsx`. We’ll put all our drawing logic here.
+A histogram component isn't unique to our project, so we're going to build it as a standalone component. Create a new directory `src/components/Histogram/`, with an empty `index.jsx` file.
 
-### Using d3.js for calculations
+We use `index.jsx` as a convenience to make our component easier to import so we won't put any logic in here. The whole file looks like this:
 
-We start with a blank component called `Histogram`.
+{linenos=off,lang=jsx}
+<<[src/components/Histogram/index.jsx](code_samples/es6/Histogram/index.jsx)
 
-{crop-start-line=5,crop-end-line=21,linenos=off,lang=jsx}
-<<[Empty histogram](code_samples/drawers.jsx)
+It just imports and exports `Histogram`. Now the rest of our project can use `import Histogram from '../Histogram'` without understanding the internal file structure of our component. Users of your components should never have to know how you organized your component internally.
 
-Once more, we required external libraries on top and started our component with a simple `render` function. On the bottom, we added it to the exports. This will allow other parts of the codebase to use it as `require(‘drawers.jsx’).Histogram`.
+### A blank Histogram component
 
+We start with a blank `Histogram` component in `src/components/Histogram/Histogram.jsx`, like this:
+
+{crop-start-line=4,crop-end-line=19,linenos=off,lang=jsx}
+<<[Empty histogram](code_samples/es6/Histogram/Histogram.jsx)
+
+Just like in `H1BGraph`, we first required some external libraries - React and d3, created a class with a `render()` function, and added it to our exports. This lets other parts of the codebase use it by calling `import Histogram from './Histogram'`.
+
+Right now the `render()` method contains only an empty grouping, `<g>`, element. These are much like divs in HTML, they hold elements together to make them easier to reference. Unlike divs, however, they don't come with any concept of formatting or sizing.
+
+The grouping element has a class `histogram`, which we'll use later for styling, and uses the `transform` attribute to move into position via the `translate` property.
+
+<<<<<<< HEAD
 In the `render` method, we created a grouping element, `<g>`, that will hold our histogram together. We used the `transform` property to move it into place. The reason we did some ugly string concatenation is that we can’t mix string and variable attribute values.
 
 However, we do want to get `topMargin` via properties given to our component. We access those with `this.props`, and they make our components more flexible.
+=======
+SVG transforms are a powerful tool in SVG drawing, but teaching you all about them goes beyond the scope of this book. We're only going to use the `translate()` property, which specifies a new `x, y` position for the given element.
 
-We're going to build our histogram with d3.js’s built-in histogram layout. It’s smart enough to do everything on its own. We just have to give it some data and some configuration.
+We used ES6's string templates to create `transform`'s value. These are denoted with backticks and evaluate any JavaScript you put into `${}`. It's a great alternative to concatenating strings, but don't go crazy with these lest you won't understand what your code is doing six months from now when you have to fix a bug.
+>>>>>>> Swizec/master
+
+In this case, we're using this SVG transformation to give our Histogram some room to breathe. Exactly how much room comes from `this.props.topMargin` - a component property specified by whomever renders our `Histogram` component.
+
+### d3.js for \[dataviz\] calculations
+
+We're going to build our histogram with d3.js’s built-in histogram layout. It’s smart enough to do everything on its own. Data binning, calculating positions and dimension of histogram bars, and a few other useful tidbits. We just have to give it some data and some configuration.
 
 We add three methods to our `Histogram` component to manage d3.js:
 
-{crop-start-line=26,crop-end-line=45,linenos=off,lang=jsx}
-<<[D3.js management functions](code_samples/drawers.jsx)
+{crop-start-line=27,crop-end-line=47,linenos=off,lang=jsx}
+<<[D3.js management functions](code_samples/es6/Histogram/Histogram.jsx)
+
+In `constructor()` we create the d3 objects we need and give them any defaults we know about, in `componentWillReceiveProps()` we make sure to call `this.update_d3`, and `update_d3()` is the function that does our heavy lifting. It updates d3 objects with any new properties our component gets from above.
 
 This is the cleanest approach I’ve found to make d3.js and React work together. We’ll use it for all of our d3.js-enabled components.
 
-The problem we're facing is that the way d3.js achieves its declarative nature is through objects. When you call a d3.js function, it's usually going to have some internal state.
+The problem we're facing is that d3.js achieves its declarative nature through objects. When you call a d3.js function, it's usually got some internal state.
 
-This is great when you want to change how d3.js behaves by daisy-chaining getters and setters, but that approach causes problems with React. It means we have to make sure the internal state is always up-to-date.
+This is great when you want to change how d3.js behaves by daisy-chaining getters and setters, but it causes problems with React. We have to make sure to keep that internal state up-to-date.
 
-We'll use `componentWillMount` to set the defaults, and then `componentWillRecieveProps` to update them when necessary.
+We *could* create new objects on every `render()`, but that feels wasteful. Maybe I'm just old fashioned.
 
-Each time, we call `this.update_d3` to do the heavy lifting.
+This time `update_d3()` does its heavy lifting like this:
 
-{crop-start-line=71,crop-end-line=90,linenos=off,lang=jsx}
-<<[update_d3 function body](code_samples/drawers.jsx)
+{crop-start-line=81,crop-end-line=98,linenos=off,lang=jsx}
+<<[update_d3 function body](code_samples/es6/Histogram/Histogram.jsx)
 
-If you’re used to d3.js, this code should look familiar. We updated the number of bins in the histogram with `.bins()` and gave it a new value accessor with `.value()`. This tells the layout how to get the interesting datapoint from our data objects.
+If you’re used to d3.js, this code should look familiar. We updated the number of bins in our histogram with `.bins()` and gave it a new value accessor with `.value()`. This tells the layout how to get the interesting datapoint from our data objects.
 
+{# this is a weird sentence #}
 We’re doing one better by just passing in the function from our properties. This makes the `Histogram` component more reusable. The less we assume about what we’re doing, the better.
 
-Then, we called `this.histogram()` to group our data into bins and saved it to our component’s state with `this.setState()`.
+Then, we called `this.histogram()` to ask d3's histogram layout to do its magic. If you print the result in `bars`, you'll see it's an array of arrays that have some properties.
 
-Finally, we updated our scales. You can think of them as simple mathematical functions that map a domain to a range. Domain tells them the extent of our data; range tells them the extent of our drawing area.
+{title="Histogram printout",linenos=off}
+	 // console.log(bars) in update_d3()
+   [Array[26209], Array[48755], // ...]
+    0: Array[26209]
+       [0 … 9999]
+       [10000 … 19999]
+       [20000 … 26208]
+       dx: 69999.273
+       length: 26209
+       x: 14.54
+       y: 26209
 
-### Outputting the result
+Each array holds:
+  - data for its respective histogram bin
+  - a `dx` property for bar thickness
+  - a `length`, which is the number of items in this bin
+  - an `x` coordinate
+  - a `y` coordinate
 
-Now that we’ve got our histogram in memory, it’s time to turn it into SVG elements.
+We'll use these to draw our histogram bars.
 
-{crop-start-line=137,crop-end-line=166,linenos=off,lang=jsx}
-<<[Draw the histogram bars](code_samples/drawers.jsx)
+But before we can do that, we have to update our scales. You can think of scales as mathematical functions that map a domain to a range. Domain tells them the extent of our data; range tells them the extent of our drawing area. So if you have a linear scale with a domain `[0, 1]` and a range `[1, 2]` and you call `scale(0.5)`, you will get `1.5`.
 
-We added another grouping element to our `render` function, which holds all the bars. I’ll show you why we need two grouping elements later.
+To define the correct domains, we first got the `counts` of elements in each bin, then used `min`/`max` helpers to find smallest and largest values. In case of height, we had to add each bar's thickness to its position to find the max.
 
+To define the ranges, we relied on chart dimension properties.
+
+Notice how we use the `x` position to define the domain for our `yScale`? That's because our histogram is going to be horizontal.
+
+We can do that so simply because scales don't care about anything, they just map a domain to a range. How you use that is up to you.
+
+Scales are my favorite. You'll see why when we start drawing.
+
+### React for the SVG output
+
+Great, our scales are ready to help us draw, so let's add the drawing bit to `render()`.
+
+{crop-start-line=151,crop-end-line=166,linenos=off,lang=jsx}
+<<[Add histogram bars to SVG](code_samples/es6/Histogram/Histogram.jsx)
+
+<<<<<<< HEAD
 Notice how we can just `.map()` through our histogram data in `this.state.bars`? That’s the magic of React - JavaScript and XML living together as one.
+=======
+Even though we already calculated our histogram data in `update_d3()`, we calculate it again in `render()`. This lets us avoid using state and triggering unnecessary re-renders. It seems wasteful at first, but think about it: Which is quicker? Re-rendering twice on every prop change, or running a d3 function twice?
+>>>>>>> Swizec/master
 
-We could have put the entire `makeBar` method in here, but I think the code looks cleaner when it’s separate. `makeBar` takes data about a single bar, constructs the properties object, and returns a `HistogramBar` component.
+Ok, it's not immediately obvious which one uses less processing power, but we prefer avoiding state because it saves *our* brain cycles. Those are almost always more expensive than computer cycles.
 
-We could have returned the whole lump of SVG code right here, but using a subcomponent is better aligned with React principles.
+We also added a new grouping element for the histogram bars. You'll see why we need a group inside a group later.
 
-Also, notice how we can pass the entire `props` object with `{...props}`. That’s an ES6 trick for passing around complex attributes. React translates it into something like `percent={percent} x={this.props.axisMargin} y={this.yScale(bar.x)} …`.
+The more important bit is that we could just `.map()` through our histogram data even though we're technically inside XML. That's the magic of JSX - JavaScript and XML living together as one.
+
+We could even have put the entire `makeBar` function in here, but that makes our code harder to read.
+
+One last trick was using ES7's double-colon operator. This is syntax sugar for `this.makeBar.bind(this)`. Remember, we have to manually bind methods to `this` scope because we're using ES6 classes.
+
+You can use this syntax sugar, if you [enabled `stage-0`](#enable-es7) in the chapter about your dev environment.
+
+Now we need the `makeBar` method, it looks like this:
+
+{crop-start-line=209,crop-end-line=227,linenos=off,lang=jsx}
+<<[The makeBar helper method](code_samples/es6/Histogram/Histogram.jsx)
+
+This code uses `Histogram`'s properties and scales to calculate attributes for each bar, then passes the `props` object to a subcomponent called `HistogramBar` using a spread - `{...props}`. React's implementation of the spread operator - `...` - is more powerful than the base ES6 spread because it supports objects, not just arrays and function arguments.
+
+You can think of it as shorthand for writing `percent={percent} x={this.props.axisMargin} y={this.yScale(bar.x)} …`.
+
+We could have generated the SVG for a bar with a label right here, but it's going to involve some logic so I think it makes more sense as a subcomponent.
 
 Let’s add the `HistogramBar` component.
 
-{crop-start-line=172,crop-end-line=192,linenos=off,lang=jsx}
-<<[HistogramBar component](code_samples/drawers.jsx)
+{crop-start-line=247,crop-end-line=278,linenos=off,lang=jsx}
+<<[HistogramBar component](code_samples/es6/Histogram/Histogram.jsx)
 
-As you can see, nothing special is happening here. We take some properties and return a grouping element containing a rectangle and a text label.
+There's nothing too special going here. Take some properties and return a grouping element with a rectangle and a text label.
 
-We’ve made the rectangle a bit smaller than `this.props.height` to give it breathing room, and we positioned the `text` element at the end of the bar. This will make the histogram easier to read because every bar will have its percentage rendered at the top.
+Once more we used an ES6 string template to build the `transform` property, and we added some ad-hoc vertical padding to the bar to make it look better. We also used some ad-hoc calculations to place the `text` element at the end of the bar. This will make our histogram easier to read because every bar will have its percentage rendered on the crucial right edge.
 
-You'll notice that some bars are going to be very small. It’s a good idea to avoid rendering the label in those cases.
+Some bars are going to be too small to fit the whole label. Let's avoid rendering the label in those cases.
 
-{crop-start-line=196,crop-end-line=213,linenos=off,lang=jsx}
-<<[Adjust label for small bars](code_samples/drawers.jsx)
+{crop-start-line=274,crop-end-line=290,linenos=off,lang=jsx}
+<<[Adjust label for small bars](code_samples/es6/Histogram/Histogram.jsx)
 
-This is simple stuff. We add some decimal points if we’re showing small numbers, and we completely remove the label when there isn't enough room.
+We add some decimal points if we’re showing small numbers, and completely remove the label when there isn't enough room.
 
 ### Adding Histogram to the main component
 
-Despite having a great `Histogram` component, our page is still blank. We have to go back to `main.jsx` and tell `H1BGraph` to render the component we've just made.
+Despite our magnificent `Histogram` component, the page is still blank. We have to go back to `H1BGraph/index.jsx` and tell `H1BGraph` to render the component we've just made.
 
-First, we have to add `drawers.jsx` to our requires.
+First we have to import our `Histogram` component at the top of `H1Bgraph/index.jsx`. Like this:
 
-{crop-start-line=227,crop-end-line=234,linenos=off,lang=jsx}
-<<[Require drawers.jsx](code_samples/main.jsx)
+{crop-start-line=268,crop-end-line=274,linenos=off,lang=jsx}
+<<[Require Histogram](code_samples/es6/H1BGraph/index.jsx)
+
+The reason this works so well is that `Histogram/index.jsx` file we created, which lets us `import` a directory instead of worrying about specific files inside it.
 
 Then, we can add the histogram component to our `render` method.
 
-{crop-start-line=271,crop-end-line=302,linenos=off,lang=jsx}
-<<[Render the histogram component](code_samples/main.jsx)
+{crop-start-line=317,crop-end-line=347,linenos=off,lang=jsx}
+<<[Render the histogram component](code_samples/es6/H1BGraph/index.jsx)
 
-That’s it. You can render as many histograms as you want just by adding `<drawers.Histogram />` to your output and setting the properties.
+We use a `params` dictionary with our dimensions attributes, number of bins in the histogram, and the value accessor function. This makes our code cleaner and thus easier to read.
 
+Inside the `return` statement, we made sure our `<svg>` element has a width and a height, and added the `<Histogram .. />` component. Once more we used the spread trick to feed it many `params` at once. We kept `data` as a separate attribute to make it more apparent that this component uses data.
+
+<<<<<<< HEAD
 Let's add some styling to `src/style.less` to make the Histogram look a little better:
+=======
+If you kept `npm start` running, your browser should show something like this:
+
+![Unstyled Histogram](images/unstyled_histogram.png)
+
+So much effort to render those labels and you can't even see them. Let's add some styling to `src/components/Histogram/style.less` to make the Histogram prettier:
+>>>>>>> Swizec/master
 
 {crop-start-line=5,crop-end-line=19,linenos=off,lang=less}
 <<[style.less](code_samples/style.less)
+
+And make sure we `require` the styles in `H1Bgraph/index.jsx`:
+
+{crop-start-line=360,crop-end-line=365,linenos=off,lang=jsx}
+<<[Require style.less](code_samples/es6/H1BGraph/index.jsx)
 
 You should now see a histogram like this:
 
 ![Basic Histogram](images/base_histogram.png)
 
-## Adding an axis
+## Wrapping a pure-d3 element in React - an Axis
 
+Axes are my favourite feat of d3.js magic right after scales.  You call a function, set some parameters, and **BAM**, you’ve got an axis.
+
+<<<<<<< HEAD
 Axes are one of my favorite feats of d3.js magic. You call a function, set some parameters, and **BAM**, you’ve got an axis.
+=======
+The axis automatically adapts to your data, draws the ticks, and labels them. Axes achieve this behaviour by using scales for all computation. The nice consequence of this is that you can turn a linear axis into a logarithmic axis by just changing the scale it uses.
+>>>>>>> Swizec/master
 
-The axis automatically adapts to your data, draws the ticks it needs, and labels them. Axes are even smart enough to work with different types of scales. You don’t have to do anything special to turn a linear axis into a logarithmic axis.
+Despite how easy axes are to use, they're pretty complex to build from scratch. Rather than recreate them in React, we're going to use a dirty little trick - give d3.js control of the DOM. Just this once.
 
-These are complex objects, and recreating them in React would be silly. We’re going to use a dirty trick and give d3.js control of the DOM just this once.
+The same approach works for wrapping any d3.js visualization in a React component.
 
-Let’s start with a blank component that’s got function stubs for d3.js integration. Put it in `src/drawers.jsx`.
+Let's start with a blank component for the axis. It goes in `src/components/Histogram/Axis.jsx`. But it's a pretty good candidate for a general component as well.
 
-{crop-start-line=232,crop-end-line=252,linenos=off,lang=jsx}
-<<[Axis component with function stubs](code_samples/drawers.jsx)
+{crop-start-line=4,crop-end-line=18,linenos=off,lang=jsx}
+<<[Base axis component](code_samples/es6/Histogram/Axis.jsx)
 
-Even though we’re going to let d3.js handle DOM changes, we still have to return *something* in `render`. A grouping element that moves the resulting axis into position is the perfect candidate.
+As always we started with the imports, then defined a class - `Axis` - and exported it. We added `ReactDOM` to the usual `d3` and `React` imports because we'll need it to give d3.js a reference to our DOM node so it can take over.
 
-Now, let’s set some axis defaults in `componentWillMount`:
+Inside the `Axis` component itself, we defined a `render` method which returns an empty grouping element and uses an SVG transform to emulate margins and padding. We have to do this so d3 has something to play with when it's rendering the axis.
 
-{crop-start-line=257,crop-end-line=270,linenos=off,lang=jsx}
-<<[Axis default properties](code_samples/drawers.jsx)
+Just like in the `Histogram` component, we integrate d3 into our component using the `constructor`, `componentWillReceiveProps`, and `update_d3` methods.
 
-We created a scale and an axis. The axis will use our linear scale, will be oriented to the left, and is going to prepend a dollar sign to the scale’s default tick formatter.
+{crop-start-line=27,crop-end-line=49,linenos=off,lang=jsx}
+<<[Axis default properties](code_samples/es6/Histogram/Axis.jsx)
 
-Yes, scales have tick formatters. It’s awesome.
+In the `constructor` we defined a new linear axis for the y coordinate, and defined a bunch of default properties for the axis:
 
-In `update_d3`, we have to make sure things stay up-to-date:
+- it uses the linear scale
+- renders labels on the left
+- prepends the scale's tickFormat with a `$` sign
 
-{crop-start-line=309,crop-end-line=324,linenos=off,lang=jsx}
-<<[Update axis state](code_samples/drawers.jsx)
+Yes, scales have tick formatters. They take care of rendering numbers nicely. It's awesome.
 
-Just like the previous section, we had to tell `yScale` the extent of our data and drawing area. Conversely, we didn’t have to tell any of this to the axis. It already knows because we updated the scale.
+Then we let `update_d3` take care of the rest. We do the same delegation in the `componentWillReceiveProps` lifecycle method. The combination of these two methods calling `update_d3` ensures our d3 objects are always up to date.
 
-We *did* have to get around a great deal of the axis’s smartness. We gave it the exact number of ticks we want and the exact values they should show. This is because we wanted every bar in the histogram to have a corresponding label on the axis.
+The logic in `update_d3` looks like this:
 
-Finally, here comes the dirty trick:
+{crop-start-line=84,crop-end-line=98,linenos=off,lang=jsx}
+<<[Update axis state](code_samples/es6/Histogram/Axis.jsx)
 
-{crop-start-line=369,crop-end-line=381,linenos=off,lang=jsx}
-<<[The dirty trick](code_samples/drawers.jsx)
+Just like the previous section, we had to tell `yScale` the extent of our data and drawing area. But we didn't have to tell the axis, it already knows because the scale knows. Isn't that neat? I think it's neat.
 
-I’m sure this goes against everything React designers fought for, but it works. We hook into the `componentDidUpdate` and `componentDidMount` callbacks with a `renderAxis` method. Then, we use `this.getDOMNode()` to get a reference to the rendered element, feed it into `d3.select()`, and `.call()` the axis on it.
+We *did* have to get around a lot of the axis's smartness though. By default, an axis only renders a couple of ticks and labels to keep the visualization less cluttered. That would make our histogram look weird.
 
-What we’re doing is basically throwing away the whole element and creating it from scratch on every render. It's rather inefficient, but it’s okay when used sparingly.
+So we asked for the same number of ticks as there are bars, and gave a list of specific values. The axis tries to find "reasonable" label values otherwise.
 
-Now we have to add some styling and make sure the axis is included somewhere.
+Ok, we have our axis in memory. Now here's the dirty trick:
 
-The styling goes into `src/style.less`:
+{crop-start-line=162,crop-end-line=174,linenos=off,lang=jsx}
+<<[The dirty trick for embedding d3 renders](code_samples/drawers.jsx)
+
+I’m sure this goes against everything React designers fought for, but it works. We hook into the `componentDidUpdate` and `componentDidMount` callbacks with a `renderAxis` method. This ensures `renderAxis` gets called every time our component has to re-render.
+
+In `renderAxis` we use `ReactDOM.findDOMNode()` to find this component's DOM node. We feed the node into `d3.select()`, which is how node selection is done in d3 land, then `.call()` the axis. This lets axis do its thing and add a bunch of SVG elements inside our node in the shape of an axis.
+
+As a result, we re-render the axis from scratch on every update. This is inefficient because it goes around React's fancy tree diffing algorithms, but it works great.
+
+Before we add our new `Axis` component to the Histogram, we need some styling in `src/components/H1BGraph/style.less`:
 
 {crop-start-line=23,crop-end-line=46,linenos=off,lang=less}
 <<[Styling the axis](code_samples/style.less)
 
-And it makes to render our axis in `Histogram.render`:
+Great. Now we head back to the Histogram file (src/components/Histogram/Histogram.jsx) and first add Axis to the imports, then add it to the render method.
 
-{crop-start-line=446,crop-end-line=459,linenos=off,lang=jsx}
+{crop-start-line=312,crop-end-line=318,linenos=off,lang=jsx}
+<<[Add Axis to Histogram imports](code_samples/es6/Histogram/Histogram.jsx)
+
+{crop-start-line=402,crop-end-line=411,linenos=off,lang=jsx}
 <<[Add Axis to Histogram.render](code_samples/drawers.jsx)
 
 That’s it. Your histogram should look like this:
 
 ![Histogram with axis](images/axis_histogram.png)
 
-## Reacting to data changes
+If it doesn't, you should send me an email and I'll try to help.
+
+Next up: making the Histogram interactive.
+
+## Interacting with the user
 
 We’ve got a histogram with an axis and the building blocks to make as many as we want. Awesome!
 
 But our histogram looks weird. Most of our data falls into the first three bars and a lone outlier stretches the data range far too much.
 
-Sure, we could take care of this by removing the outlier, but let's be honest: statisticians should worry about statistical anomalies. We’re here to draw pictures.
+We could take care of this by removing the outlier, but let's be honest: statisticians should worry about statistical anomalies. We’re here to draw pretty pictures.
 
-The next best thing is letting users filter data and take a closer look. This solves our problem of finding outliers, and it gives users more freedom. And maybe, just maybe, they’re going to spend more time on our site.
+It's better to give users some filters, so they can look only at the parts they care about. This solves our problem of finding outliers, and gives users more freedom. And maybe, just maybe, they’re going to spend more time on our site.
 
 Win-win-win.
 
-We’re going to make controls that let users filter data by year. In the full example, I added filtering by state and job title as well, but they follow the same principles and talking about them here would take too long.
+We're going to make controls that let users filter data by year. Then just to show you how reusable React components are, we're going to add filtering by state as well. In the full example, I also added filtering by job title, but that would take too long to explain because the dataset is messy.
 
 ![Events flow up through callbacks](images/architecture_events.jpg)
 
+<<<<<<< HEAD
 Our approach will be similar to what we've already arranged: events will flow up the hierarchy, and data updates will flow down. When a user clicks a button, it calls a function on its parent. This in turn calls a function on its parent and so on until we hit `H1BGraph`, which is our holder of truth.
 
 We could also call functions directly on `H1BGraph` if we had a reference to them, but that would break the separation of concerns in our case.
+=======
+Remember, we talked about using a flux-like approach in our [architecture](#the-architecture). That means:
+>>>>>>> Swizec/master
 
-Once `H1BGraph` updates its state, the changed data flows back down to the relevant components via `props`.
+- user events are going to flow up the component hierarchy via callbacks
+- the main component will change its data state
+- React will propagate data changes back down through component props
 
 ![Updated data flows back down](images/architecture_updates.jpg)
 
-### Creating user controls
+The only difference between this bi-directional data-flow and a true Flux architecture is that in a true Flux architecture, the data store is separate from the main component. As a result, everyone has a way to affect changes directly on the data store, which means we don't have to mess about with callbacks.
 
+That turns out to be easier to manage when you have a lot of interacting components. Because our example is so simple using Flux isn't really worth the extra code. 
+
+To get a better idea of Flux's pros and cons, you can read this side-by-side comparison of React+Flux (130 lines) and pure jQuery (10 lines) [I wrote in October 2015](http://swizec.com/blog/reactflux-can-do-in-just-137-lines-what-jquery-can-do-in-10/swizec/6740). It's based on a simple form example.
+
+### Adding user controls
+
+Our controls are going to look like rows of togglable buttons. Each row represents a filter - year and state - and each button represents a value. When the button is "on", our histogram shows only the entries that have that value. Each row can have only one active value.
+
+The end result will be something like this:
+
+![Histogram with buttons](images/buttons_histogram.png)
+
+<<<<<<< HEAD
 We're going to organize our controls into three components:
+=======
+We'll build the controls out of three components:
+>>>>>>> Swizec/master
 
 * `Controls`, which holds the controls together
 * `ControlRow`, which is a row of buttons
 * `Toggle`, which is a toggle-able button
 
-Let’s start a new file called `src/controls.jsx` with a `Controls` component stub:
+These components are going to live in a `Controls` subdirectory of `H1BGraph` - `src/components/H1BGraph/Controls`. We could build controls as a standalone component, and in a way we will, but for now it's easier to assume they're a specific solution to a specific problem.
 
-{crop-start-line=5,crop-end-line=19,linenos=off,lang=jsx}
-<<[Controls component stub](code_samples/controls.jsx)
+Before diving in, let's render `Controls` in `H1BGraph.render`. It's going to break the build, but you'll see things added to the page in real-time as you code. I love it when that happens.
 
-We’re going to need React and Lodash in this file, and Controls is the only component we’ll expose to the outside.
+{crop-start-line=441,crop-end-line=447,linenos=off,lang=jsx}
+<<[Add Controls to H1BGraph.render](code_samples/es6/H1BGraph/index.jsx)
 
-Let’s add all of this to the main `H1BGraph` component. It’s just three lines inside `render`:
+Notice we added `Controls` outside the `<svg>` element. That's because they aren't a part of the visualization. Not of the graphical part at least.
 
-{crop-start-line=366,crop-end-line=381,linenos=off,lang=jsx}
-<<[Add Controls to H1BGraph.render](code_samples/main.jsx)
+We used props to give our `Controls` component some data, which it will use to generate the buttons, and a filter update callback. This function doesn't do anything yet. We'll add that in a bit when we talk about propagating events back up the chain. For now it's here so that we have something to call without throwing an exception.
 
-We had to wrap everything in another `<div>` because React throws a hissy fit if we try to return multiple elements side-by-side. We used props to give the `Controls` component some data and the filter update callback.
+Don't forget to import controls at the top of the file.
 
-Don’t forget to add `Controls = require('./controls.jsx')` somewhere near the top of the file.
+{crop-start-line=372,crop-end-line=377,linenos=off,lang=jsx}
+<<[Import Controls](code_samples/es6/H1BGraph/index.jsx)
 
-You should have some empty components showing up on the screen. Let’s add the row of buttons to the `Controls.render` method:
+Great. If you've kept `npm start` running in the background, your browser should start panicking right now. That's because `Controls/index.jsx` doesn't exist.
 
-{crop-start-line=24,crop-end-line=47,linenos=off,lang=jsx}
-<<[Render a ControlRow](code_samples/controls.jsx)
+As always, we start with imports, a class, a render method, and exports. Like this:
 
-This will break in your browser because we don’t have a `ControlRow` component yet. The idea is to have a component that takes data, a function that generates the button labels, and an `updateDataFilter` callback.
+{crop-start-line=4,crop-end-line=17,linenos=off,lang=jsx}
+<<[Controls component stub](code_samples/es6/H1BGraph/Controls/index.jsx)
 
-We’ll define the callback later. Let’s make the `ControlRow` component first.
+Your browser should stop panicking now. Instead, it shows a blank `<div>` under your histogram.
 
-{crop-start-line=51,crop-end-line=72,linenos=off,lang=jsx}
-<<[ControlRow component](code_samples/controls.jsx)
+Now we're going to add the first `ControlRow` and break the page all over again.
 
+<<<<<<< HEAD
 There's nothing special going on here. We’ve got a `render` method that returns a Bootstrap row and fills it with a collection of `Toggle` components. It does so by looping over the result of `this.props.getToggleNames`, which is the function we defined in `Controls.render`.
+=======
+{crop-start-line=31,crop-end-line=49,linenos=off,lang=jsx}
+<<[Year ControlRow in Controls](code_samples/es6/H1BGraph/Controls/index.jsx)
+>>>>>>> Swizec/master
 
-Normally, `onClick` is a click event handler. React gives us this sort of magic prop for every valid user event. It’s the same as jQuery’s `$('foo').on('click')`.
+We defined a function called `getYears` that can go through our dataset and find all year values. The `groupBy` creates a dictionary with years as keys, `keys` returns the dictionary's keys, and `map(Number)` makes sure they're all numbers so we won't have to worry about that later.
 
-They only work on HTML elements, not React components, so this one is just a function callback that we’ll use manually.
+Then we added a `ControlRow` component to the return statement. As props we gave it our dataset, the `getYears` function so it can decide which buttons to render, and a dummy update filter callback.
 
-We had to define the `key` property to help React identify specific elements. I assume it uses these to identify which elements to re-render if they’re created in a loop.
+We'll define the filter when we look at propagating events back up the chain.
 
-We've also got a `value` property that comes out of `this.state.toggleValues`. It tells our toggles whether to render as turned on or off. We track this state in `ControlRow` instead of just the `Toggle` itself, so we can make sure only one turns on at the time.
+And of course, don't forget to import `ControlRow`.
 
-Let’s add the state handling.
+{crop-start-line=24,crop-end-line=28,linenos=off,lang=jsx}
+<<[Import ControlRow](code_samples/es6/H1BGraph/Controls/index.jsx)
 
-{crop-start-line=77,crop-end-line=100,linenos=off,lang=jsx}
-<<[Exclusive toggling](code_samples/controls.jsx)
+Perfect. Your browser should start panicking again.
 
+<<<<<<< HEAD
 The `makePick` function is called when the user clicks on a `Toggle` element. It goes through the `toggleValues` dictionary and sets them to `false` if they aren't the one the user clicked on. The one the user does click is set to `true`.
+=======
+Let's calm down your browser and create `src/components/H1BGraph/Controls/ControlRow.jsx`.
+>>>>>>> Swizec/master
 
-Then it saves the dictionary with `this.setState`, which triggers a re-render and updates all the buttons.
+{crop-start-line=5,crop-end-line=22,linenos=off,lang=jsx}
+<<[Stubbed ControlRow component](code_samples/es6/H1BGraph/Controls/ControlRow.jsx)
 
-We used the trusty `getInitialState` to create the `toggleValues` dictionary with everything set to `false`.
+Start with imports, define a class, render some empty divs, export class. The usual.
 
-Now we need the `Toggle` component.
+Before your browser stops panicking, we also need the Toggle component in `src/components/H1BGraph/Controls/Toggle.jsx`.
 
-{crop-start-line=124,crop-end-line=146,linenos=off,lang=jsx}
-<<[Toggle component](code_samples/controls.jsx)
+{crop-start-line=5,crop-end-line=13,linenos=off,lang=jsx}
+<<[Stubbed Toggle component](code_samples/es6/H1BGraph/Controls/Toggle.jsx)
 
-Toggle renders a button. If `this.state.value` is `true`, then the button is highlighted. We set it to off by default and update it when `componentWillReceiveProps` triggers. That happens when the component’s properties change from above.
+Okay, your browser should stop panicking now and there should be some divs within divs under the histogram.
 
-Now your page shows three buttons under the histogram:
+To make stuff show up, we first have to add toggles to ControlRow, then make sure the Toggle component returns a visible button.
 
-![Histogram with buttons](images/buttons_histogram.png)
+#### A row of buttons
 
-But clicking on a button will throw an error.
+Adding buttons to `ControlRow` isn't too hard. 
 
-### Propagating events up the hierarchy
+The `getToggleNames` function in our props gives us a list of button names, and the `Toggle` component renders a button. All we need is a loop that places the buttons.
 
-To make the buttons work, we have to implement the click event handler - `this.handleClick`. Then we have to call every callback up the chain until we get to the histogram component, which is our holder of truth.
+Let's go back to `src/components/H1BGraph/Controls/ControlRow.jsx` and add it.
 
-Let’s start by adding a click handler to the `Toggle` component:
+{crop-start-line=53,crop-end-line=65,linenos=off,lang=jsx}
+<<[Loop through toggle names](code_samples/es6/H1BGraph/Controls/ControlRow.jsx)
 
-{crop-start-line=151,crop-end-line=163,linenos=off,lang=jsx}
-<<[Toggle click handler](code_samples/controls.jsx)
+This code calls `getToggleNames` with the data in our props, and calls `this._addToggle` on every value. Here you can once more see the power of JSX - we could embed a JavaScript incantation right in what looks like HTML code.
 
-It's a simple function. All it cares about is toggling the `value` state and calling the `this.props.onClick` callback.
+Now we need to define the `_addToggle` function, which returns a Toggle component. We do this in a function call so the code is easier to read.
 
-The reason we’re using state to highlight the button is that making this change optimistically instead of waiting for propagation looks better to the user. It’s a tiny bit more instant, which makes our app feel faster.
+{crop-start-line=33,crop-end-line=53,linenos=off,lang=jsx}
+<<[Create a Toggle](code_samples/es6/H1BGraph/Controls/ControlRow.jsx)
 
-We still override the `value` in `componentWillReceiveProps`, if the parent component wants us to.
+We return a `<Toggle>` component with some properties:
 
-If you click around now, the buttons are going to toggle on and off. `ControlRow` will continue making sure you can only choose one at a time.
+ - `label` for the visible label
+ - `name` for the button's name property
+ - `key` is something React needs to tell similar components apart; it has to be unique
+ - `value` for the button's initial value state
+ - `onClick` for the click callback
 
-![2013 toggled on](images/togglable_buttons.png)
+These follow the common convention for form elements because it's the standard I got used to. It's a decent convention and there's no need to re-invent the wheel.
 
-To make these changes propagate further than `ControlRow`, we have to call `ControlRow`'s callback in the `makePick` method:
+We also capitalize the first letter of the label, if that flag is set in our props. This is where those `String` class helper functions we defined earlier come into play.
 
-{crop-start-line=185,crop-end-line=200,linenos=off,lang=jsx}
-<<[Callback in ControlRow.makePick](code_samples/controls.jsx)
+Now that we defined that `onClick` callback, we have to at least stub the function to keep the build working. And we have to define initial state because we used `this.state.toggleValues`. It's easier than checking if the variable exists every time.
 
-Nothing fancy, just a call to `this.props.updateDataFilter` with information on what was picked and whether we want to reset the filter or not. The reset is used when the user clicks on a button that’s already turned on.
+{crop-start-line=79,crop-end-line=94,linenos=off,lang=jsx}
+<<[makePick and default state](code_samples/es6/H1BGraph/Controls/ControlRow.jsx)
 
-Now comes the fun part. We get to construct the data filter in our `Controls` component, then tell the main `H1BGraph` component.
+We keep `makePick` empty for now because we'll define it later when we look at propagating events. It's there just to keep things working.
 
-We gave `this.updateYearFilter` as the update callback to `ControlRow`. It’s a simple function that creates a filter function based on the chosen year and saves it with `setState()` like this:
+Using `componentWillMount` to define default state is an exception. You're supposed to set default state in the class constructor, but we don't have access to props there. You can't populate an object property before the property exists. Remember, constructors are called while an object is being created.
 
-{crop-start-line=255,crop-end-line=274,linenos=off,lang=jsx}
-<<[Controls.updateYearFilter function](code_samples/controls.jsx)
+If you're not used to lodash's functional approach, the code in `componentWillMount` might look strange. It loops through the values returned by `getToggleNames` and builds a dictionary - or object - with those names as keys, and `false` as the value.
 
-We also added the `getInitialState` function to make sure the filter is set to an "accept everything" version by default.
+We're later going to use `this.state.toggleValues` in combination with the `makePick` callback to ensure users can only select one value per row of toggles.
 
-Our next step is to tell the parent component about our new filter.
+#### Toggle-able buttons
 
-{crop-start-line=348,crop-end-line=368,linenos=off,lang=jsx}
-<<[Propagating filter up the chain](code_samples/controls.jsx)
+After all that, we still don't have anything to show to the user. `ControlRow` tries to render a bunch of buttons, but our `Toggle` component returns `null` every time.
 
-React calls `componentDidUpdate` when we change the state. This gives us a great opportunity to call our filter callback - `this.props.updateDataFilter`. We feed it a new filter function that combines all of the potential filters in our state. In our trimmed-down example, our only filter is `yearFilter`.
+Let's go back to `src/components/H1BGraph/Controls/Toggle.jsx` and make it work. Here's what we need:
 
-You’d think we could do all of this straight in the `updateYearFilter` function, but we don’t have access to the updated state yet. Because we might add more types of filters later, it’s better to rely on the already saved filters.
+ - render a button
+ - define its class based on toggle-ness
+ - handle click events
+ - eagerly update toggle-ness on clicks
 
+<<<<<<< HEAD
 Ok, we’ve just created an infinite loop. When `componentDidUpdate` is called, we call something on the parent component. This potentially changes our `props`, which again triggers `componentDidUpdate`.
+=======
+Handling toggle-ness is going to be the tricky part. We want the buttons to feel fast, but also respond to upstream data changes.  
+>>>>>>> Swizec/master
 
-We have to make sure the component updates *only* when properties have actually changed. The easiest way to do that is using `shouldComponentUpdate`. If it returns `false`, the component doesn’t update.
+First, let's render the button. We add a few lines to the `render` method:
 
-Anyway, it’s time to add the filtering functionality to `H1BGraph`.
+{crop-start-line=21,crop-end-line=40,linenos=off,lang=jsx}
+<<[Toggle renders a button](code_samples/es6/H1BGraph/Controls/Toggle.jsx)
 
-{crop-start-line=422,crop-end-line=435,linenos=off,lang=jsx}
-<<[Filter update callback in H1BGraph](code_samples/main.jsx)
+We're using a basic HTML `<button>` element and giving it some React magic properties. `className` is an alias for the DOM `class` attribute. This is necessary because `class` is a reserved symbol in JavaScript. `onClick` defines a click event handler similar to using `$('selector').click(do_thing)`.
 
-Nothing fancy. We initially set the `dataFilter` to accept everything and update it when something calls `updateDataFilter` with a new filter function.
+React gives us all the important event handlers in its `onSomething` magic properties. They might look like the DOM Level 2 event handlers from the early 2000's, but their implementation is cleaner. Don't worry if everyone has been telling you for the past 10 years not to use `onclick`. This usage is okay and has all the merits of using the newer *"find element, attach listener"* approach, I promise.
 
-The last step is filtering the data in our `H1BGraph.render` method.
+As you can see on line 8 of that example, we change the button's color based on `this.state.value`. (btn-primary is the Bootstrap class that makes buttons blue)
 
-{crop-start-line=530,crop-end-line=552,linenos=off,lang=jsx}
-<<[Filter data in H1BGraph.render](code_samples/main.jsx)
+{crop-start-line=29,crop-end-line=31,linenos=off,lang=jsx}
+<<[Toggle color switch](code_samples/es6/H1BGraph/Controls/Toggle.jsx)
 
-As you can see, we didn’t have to do much. We passed the `rawData` through our filter before feeding it to the `Histogram`.
+We only check `this.state.value` and don't worry about props vs. state issues in the `render` method. That comes next.
 
-You should now see a histogram like this:
+We need three different functions to make this work smoothly:
 
-![Histogram with only 2014 salaries](images/2014_histogram.png)
+- `constructor`, which sets default state
+- `componentWillReceiveProps`, which updates internal state when props update
+- `handleClick`, which is the click event callback
 
-Hooray! We have a histogram with user filtering.
+{crop-start-line=50,crop-end-line=68,linenos=off,lang=jsx}
+<<[State and click handling in Toggle](code_samples/es6/H1BGraph/Controls/Toggle.jsx)
 
-A lot of work went into that, and we’ve got plenty of moving parts. But remember, all it takes to add more filters is adding another `<ControlRow />` to `Controls`, writing a filter function, and making sure it’s included in `updateDataFilter`.
+You know the drill by now: `constructor` sets initial state dictionary to `{value: false}`, `componentWillReceiveProps` updates it when a new value comes down from above. This lets us both have internal state, and defer to global application state when needed.
 
+The `handleClick` function toggles that same internal state. If it's `true` it becomes `false and vice-versa. Calling `setState` triggers a re-render and our button changes color.
+
+Magic.
+
+Using both state and props lets us change buttons the moment a user clicks them without waiting for the rest of the page to react. This makes user interactions feel snappier.
+
+You should see a row of buttons under your histogram. Each can be toggled on and off, but nothing else happens yet. 
+
+### Propagating events through the hierarchy
+
+If we want the histogram to change when buttons are toggled, we have to propagate those click events through the hierarchy. The information being propagated is going to change each step of the way. This will reflect semantic changes in its meaning.
+
+Toggles say something happened.
+
+ControlRow says what happened.
+
+Controls explains how to filter.
+
+H1BGraph filters.
+
+Our `Toggle` component is pretty much wired up already. It responds to user events in the `handleClick` method. Telling `ControlRow` that something happened is as easy as adding a function call.
+
+{crop-start-line=102,crop-end-line=108,linenos=off,lang=jsx}
+<<[Call event callback in handleClick](code_samples/es6/H1Bgraph/Controls/Toggle.jsx)
+
+Notice how we can just call functions given in props? I love that. It's the simplest approach to inter-component interaction that I've ever seen.
+
+And yes, I know, we have a leaky abstraction right here. The parent component gives us a callback via props, and the first argument is also a prop. Why does the toggle have to tell its name to the callback, when the callback comes from the same place that the name does?
+  
+Because it makes our code simpler. 
+
+Let me show you. We implement the `makePick` function back in `src/components/H1BGraph/Controls/ControlRow.jsx`.
+
+{crop-start-line=135,crop-end-line=148,linenos=off,lang=jsx}
+<<[makePick function in ControlRow component](code_samples/es6/H1BGraph/Controls/ControlRow.jsx)
+
+Two things happen here:
+
+1. We make sure only one value can be turned on at a time
+2. We call `updateDataFilter` with the new value
+
+For both of these we need the clicked toggle's name. When we use `_.mapValues` to reconstruct the `toggleValues` dictionary the name tells us which field should be set to `true`. When we call `updateDataFilter` it tells us the value we're filtering by.
+
+Remember, we collected toggle names out of possible values for each filter. In the case of filtering by year, each year value became a toggle button.
+
+If you click on a button now, you'll see it disables all the others. When `this.state.toggleValues` changes, it triggers a re-render, which pushes new props down to `Toggle` components, which then re-render themselves with the new `className`.
+
+Neat.
+
+---
+
+Now we can go back to `src/components/H1BGraph/Controls/index.jsx` and implement that `updateDataFilter` callback we stubbed earlier.
+
+We have to change the callback definition in `render`.
+
+{crop-start-line=94,crop-end-line=105,linenos=off,lang=jsx}
+<<[Change ControlRow callback](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+Same sort of code as always. If you don't like the `::` syntax sugar from ES7, you can use `this.updateDataFilter.bind(this)` instead.
+
+<<<<<<< HEAD
 That’s it. A single minute of typing to let users filter by almost anything.
+=======
+Now here's the interesting part: We'll have to hold the current year filter function and value in memory, the component's state.  We have to do this so that we can build complex filters on multiple properties.
+  
+Each time a user clicks a toggle button, we only know the current selection and property. But we don't want to delete the filtering on, say, US state.
+>>>>>>> Swizec/master
 
-## Adding some meta data
+We have to define some default state in the constructor.
 
-If you’ve followed along this far, you’ve got a nice histogram of H1B salaries in the software industry. It renders fully on the front-end and changes when the user picks a specific year. You’ve even got a couple of building blocks to make it better.
+{crop-start-line=63,crop-end-line=72,linenos=off,lang=jsx}
+<<[Default filter state](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+`yearFilter` is a dummy function, and `year` is an asterisk. It could be anything, but a few months from now, you will still recognize an asterisk as an anything goes value.
+
+With that done, we need the `updateYearFilter` function itself. It looks like this:
+
+{crop-start-line=74,crop-end-line=87,linenos=off,lang=jsx}
+<<[updateYearFilter function](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+Our filter is a function that checks for equality between the year in a datum and the year argument to `updateYearFilter` function itself. This works because of JavaScript's wonderful scoping, which means that functions carry their entire scope around. No matter where we pass the filter function to, the local variables that existed where it was defined, are always going to be there.
+
+This might lead to memory leaks. Which is probably why Chrome takes some 10 gigabytes of memory on my laptop.
+
+If the year is not defined, or reset is explicitly set to true, we reset the filter back to defaults.
+
+Almost there! We are handling the in-state representation of the year filter. Now we have to tell the parent component, `H1BGraph`.
+
+We do that in the `componentDidUpdate` lifecycle method. As you can guess, it gets called on every re-render, which is triggered every time we use `this.setState`.
+
+{crop-start-line=141,crop-end-line=149,linenos=off,lang=jsx}
+<<[Propagate filter changes up the hierarchy](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+For every update, we call `this.props.updateDataFilter`, which is the change callback defined by `H1BGraph` when it rends `Controls`. As the sole argument, we give it our filter wrapped in another function.
+
+This looks far too complicated and it is. It will make more sense when we add another filter. Hint: this is where we combine multiple filters into a single function.
+
+But whatever you do, *DON'T* click a button yet. Your code will go into an infinite loop and crash your browser tab.
+
+That's because when React decides whether to update your component or not, it only performs a shallow state and props comparison. Because we rely on function changes, we need a better comparison.
+
+{crop-start-line=151,crop-end-line=156,linenos=off,lang=jsx}
+<<[Prevent infinite loops](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+With `shouldComponentUpdate` we can define a custom comparison function. In our case, using Lodash's `isEqual` between current and future state is good enough.
+
+Crisis averted! You can click the buttons.
+
+Just one thing left to do before the graph starts changing for every click: Use the new filters to filter data before rendering.
+
+Go to `src/components/H1BGraph/index.jsx` and add this function:
+
+{crop-start-line=508,crop-end-line=515,linenos=off,lang=jsx}
+<<[Filter update callback](code_samples/es6/H1BGraph/index.jsx)
+
+Guess what it does? Stores the new filter in `this.state`. 
+
+Of course, this means we have to add a default filter in the constructor as well.
+
+{crop-start-line=463,crop-end-line=473,linenos=off,lang=jsx}
+<<[Default dataFilter](code_samples/es6/H1BGraph/index.jsx)
+
+The default is a function that always says *"Yup, leave it in."*.
+
+Now let's add all the heavy lifting to the `render` method. It looks like this:
+
+{crop-start-line=531,crop-end-line=556,linenos=off,lang=jsx}
+<<[Rendering filter data](code_samples/es6/H1BGraph/index.jsx)
+
+A few things happened:
+
+1. We passed our data through a filter
+2. We feed filtered data into the `Histogram`
+3. We gave `Controls` the correct callback
+
+Yes, this means we filter the data from scratch every time the page re-renders for whatever reason. Turns out this is pretty fast and works well enough. Even with tens of thousands of data points.
+
+And there you go. You have a histogram that changes its shape when you click a button.
+
+Amazing.
+
+Now let me show you just how reusable React components can be.
+
+## Component reusability
+
+All right, we have a filter for years. It looks like a row of buttons and users can select a specific year to focus the histogram.
+
+Let's look at how reusable we've made the `ControlRow` component by adding another filter - US states.
+
+Here's a quick rundown of what we're going to do:
+
+1. Add another `ControlRow` to `Controls`
+2. Build a list of US states from the data
+3. Add an `udpateStateFilter` function to `Controls`
+4. Add `stateFilter` to component state
+5. Include `stateFilter` in `componentDidUpdate`
+
+That's all we need. A few lines of copypasted code in `src/components/H1BGraph/Controls/index.jsx`. No changes necessary to either `ControlRow` or `Toggle`. No changes to anything to do with the graph itself either.
+
+Adding a new ControlRow and building a list of US states, probably looks familiar by now.
+
+{crop-start-line=236,crop-end-line=260,linenos=off,lang=jsx}
+<<[Add another ControlRow](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+This adds a new `ControlRow` to render, gives it a function that extracts US states from the data, and a new update callback, which we'll define next.
+
+{crop-start-line=209,crop-end-line=224,linenos=off,lang=jsx}
+<<[Add a US state filter update](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+The new update filter callback is a copypaste of `updateYearFilter` with a few keywords changed. We *could* have been clever about it and implemented dynamic magic that would let us get away with a single function, but it's unnecessary. And it makes the code both harder to explain and to understand a few months down the line.
+
+Now let's add the new US state filter to the main filter callback in `componentDidUpdate`.
+
+{crop-start-line=224,crop-end-line=233,linenos=off,lang=jsx}
+<<[Include the new filter in the main callback](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+See, this is why we went through the trouble of wrapping filters in another function. It lets us compose different filters into a single expression.
+
+Finally, we need to define a default state for the US state filter. We do that in the class constructor.
+
+{crop-start-line=185,crop-end-line=196,linenos=off,lang=jsx}
+<<[Add default value for US state filter](code_samples/es6/H1BGraph/Controls/index.jsx)
+
+Same as the year filter, different keynames.
+
+If all went well, you should have a histogram with two rows of filters underneath. Users can choose a year *and* a US state to filter by.
+
+![Histogram with two filters](images/more_buttons_histogram.png)
+
+## Making disparate components act together
+
+If you came this far, you have a nice histogram of H1B salaries in the software industry. It's blue and there's an axis. Everything renders on the front-end and changes when the user picks a specific year or US state. 
 
 But a good visualization needs a title and a description. The title tells users what they’re looking at, and the description gives them the story.
 
 As great as people are at understanding pictures, it goes much better when you flat-out *tell* them what they’re looking at.
 
-We start with a stubbed out `src/meta.jsx` file:
+The key to making disparate components act together is the data flow-down architecture. Because there is only one repository of truth and because every component renders from props, we can make every component on the page change when data changes.
 
-{crop-start-line=5,crop-end-line=32,linenos=off,lang=jsx}
-<<[Stubbed meta.jsx file](code_samples/meta.jsx)
+This enables us to change the title and description together with the histogram, which in turn means that they can always be accurate and specific to what the user is currently looking at. They never have to think hard about the story behind the data, we can just tell them.
 
-We’re going to make a mixin called `MetaMixin` because both the `Title` and `Description` components are going to use some of the same functions. It will have a function to get a list of years out of the data, a function to give us a label formatter, and a function to give us data filtered by a specific year.
+Marvelous.
 
-Let’s add them.
+----
 
-{crop-start-line=37,crop-end-line=63,linenos=off,lang=jsx}
-<<[MetaMixin functions](code_samples/meta.jsx)
+We're going to build two components - a Title and a Description. They're going to share some common methods, which we'll put in a base component.
 
-There’s nothing special going on here. `getYears` uses `_.groupBy` to group the data by year, then returns the keys of the array. We could make this more efficient, but it works well enough and is easy to read.
+Let's start with the base component. It goes in `src/components/H1BGraph/Meta/BaseComponent.jsx`.
 
-`getFormatter` relies on the fact that d3.js scales have formatters. It creates a linear scale with a domain and returns the `tickFormat()` function. Formatters don't work well without a defined domain.
+{crop-start-line=5,crop-end-line=21,linenos=off,lang=jsx}
+<<[Stubbed base component](code_samples/es6/H1BGraph/Meta/BaseComponent.jsx)
 
-`getAllDataByYear` is a simple filter function. We’ll use it to access data for specific years when making the description.
+The `BaseComponent` exports a `Meta` class which is all about common getters that both `Title` and `Description` are going to use. Extending from `Meta` will put functions from here into local scope so we can do stuff like `this.getYears()` and it calls the function from `Meta`.
 
-To keep our meta data code clean, we've also got a file that maps state abbreviations to names. It's called `src/states.jsx` and exports an object that looks like this:
+Neat, huh? I think it is.
 
-{linenos=no}
-   module.exports = {
-      "AL": "Alabama",
-      "AK": "Alaska",
-      // ...
+The function bodies themselves aren't too difficult. They go through the dataset and return lists of values. `getYears` returns all year values, `getUSStates` returns all states, and `getFormatter` returns a salary value formatter.
 
-You can build your own, or you can [get it from Github](https://github.com/Swizec/h1b-software-salaries/blob/master/src/states.js).
+{crop-start-line=30,crop-end-line=61,linenos=off,lang=jsx}
+<<[The entire Meta base component](code_samples/es6/H1BGraph/Meta/BaseComponent.jsx)
 
-Let’s start with the title.
+See, nothing we haven't done before. Sprinkle some lodash functions for traversals and groupings, and use some d3 linear scale magic for the formatter.
+
+Now let's stub out the `Title` and `Description` components real quick. That way we can add them to `H1BGraph` and let hot loading do its magic so we can see what we're adding in real time.
+
+`Title` goes in `src/components/H1BGraph/Meta/Title.jsx`.
+
+{crop-start-line=5,crop-end-line=20,linenos=off,lang=jsx}
+<<[Stubbed Title component](code_samples/es6/H1BGraph/Meta/Title.jsx)
+
+For now we return a dummy title just so we get something rendering. Notice that we extended from `Meta`, not `Component` like usual.
+
+`Description` goes in `src/components/H1BGraph/Meta/Description.jsx`.
+
+{crop-start-line=5,crop-end-line=20,linenos=off,lang=jsx}
+<<[Stubbed Description component](code_samples/es6/H1BGraph/Meta/Description.jsx)
+
+Same as before - dummy description and a few basic imports.
+
+Both of those files imported a `StatesMap` file alongside `BaseComponent`. That's a mapping of US state shortcodes to full names.
+
+You can get it from my github, [here](https://github.com/Swizec/h1b-software-salaries/blob/e032f5b131af4659c5f9a0981b9d85054d2b5a17/src/components/H1BGraph/Meta/StatesMap.jsx). It was a pain in the ass to make so I don't suggest doing it yourself. Put it in `src/components/H1BGraph/Meta/StatesMap.jsx`. If you're using the stub project, it's already there.
+
+One last bit we need is a `src/components/H1BGraph/Meta/index.jsx` file to make importing easier.
+
+{crop-start-line=2,crop-end-line=6,linenos=off,lang=jsx}
+<<[Meta/index.jsx](code_samples/es6/H1BGraph/Meta/index.jsx)
+
+This looks weird. We have to do some roundabout hand waving so that we can both import and export classes with the same name. So called pass-through imports.
+
+I don't know if that's the best way to do it, but it's what I came to after hours of banging my head against a wall. You can read the background behind these four lines of code [on my blog](http://swizec.com/blog/theres-a-bug-in-es6-modules/swizec/6753).
+
+### Add Title and Description to the main view
+
+Now that everything's stubbed out, adding the Title and Description components to the main view doesn't take much. We have to add three lines of code.
+
+The import:
+
+{crop-start-line=569,crop-end-line=574,linenos=off,lang=jsx}
+<<[Import Title and Description](code_samples/es6/H1BGraph/index.jsx)
+
+The render:
+
+{crop-start-line=643,crop-end-line=656,linenos=off,lang=jsx}
+<<[Add Title and Description to render method](code_samples/es6/H1BGraph/index.jsx)
+
+That's it. If you have `npm start` running in the background, you should see something like this now:
+
+![Histogram with dummy title and description](images/dummy_title_description.png)
 
 ### The title
 
-Our titles are going to follow a formula like: “H1B workers in the software industry made $x/year in <year>”.
+Our titles are going to follow a formula like: “In <US state>, H1B workers in the software industry made $x/year in <year>”.
 
 We start with the year fragment:
 
-{crop-start-line=68,crop-end-line=83,linenos=off,lang=jsx}
-<<[getYearsFragment function](code_samples/meta.jsx)
+{crop-start-line=32,crop-end-line=45,linenos=off,lang=jsx}
+<<[getYearsFragment function](code_samples/es6/H1BGraph/Meta/Title.jsx)
 
-We get the list of years in the current data and return either an empty string or `in Year`. If there’s only one year in the data, we assume it’s been filtered by year.
+We get the list of years in the current data and return either an empty string or `in Year`. If there’s only one year, we assume it’s been filtered by year.
 
-The `render` function is going to be simple as well:
+We make the same sort of assumptions for the US state fragment.
 
-{crop-start-line=110,crop-end-line=129,linenos=off,lang=jsx}
-<<[Title.render function](code_samples/meta.jsx)
+{crop-start-line=47,crop-end-line=62,linenos=off,lang=jsx}
+<<[getUSStateFragment function](code_samples/es6/H1BGraph/Meta/Title.jsx)
 
-We’re returning an `<h2>` element with a title that includes some dynamic tags. We change `made` to `make` based on whether or not we’re adding `in years`, and we used `d3.mean` to get the average.
+Great, we've got the two dynamic pieces we need. Now let's put them together in the `render` method.
 
-Now we can add the title into H1BGraph’s render method. You can use as many as you want, wherever you want, but I think putting it above the graph works best.
+{crop-start-line=111,crop-end-line=136,linenos=off,lang=jsx}
+<<[Title render method](code_samples/es6/H1BGraph/Meta/Title.jsx)
 
-{crop-start-line=622,crop-end-line=636,linenos=off,lang=jsx}
-<<[Add title to H1BGraph.render](code_samples/main.jsx)
+Plenty going on here, but the gist of it is that big `if` statement:
 
-Don’t forget to add a `meta = require(‘./meta.jsx’);` at the top of the `src/main.jsx`.
+- if both the years and US state fragments have content, our title is "In <State>, blahblah made $X/year in <Year>"
+- if one or neither have content, our title is "Blahblah <made/make> $X/year <in State / in Year>"
 
-Your histogram should now look like this:
+The `$X/year` comes from combining the average salary in our dataset, calculated with `d3.mean`, and the number formatter. The rest is just about plugging both fragments in the right parts of the string.
+
+Note that in the second case we still have to render both fragments because we don't know which one has content. They're syntactically interchangeable at this point. The sentence works the same if it ends "in California" or "in 2014".
+
+Your histogram should look like this:
 
 ![Histogram with title](images/titled_histogram.png)
 
-Now let’s add a paragraph of description to make the story clearer.
+Now let's fix that description.
 
 ### The description
 
 Our descriptions won’t be much more complicated than the titles. We'll need a sentence or two explaining what the histogram is showing and comparing it to the previous year.
 
-First, we add the `getYearFragment` function:
+We need two helper functions to get all data for a specific year or US state. This will help us do the last year look backs.
 
-{crop-start-line=134,crop-end-line=150,linenos=off,lang=jsx}
-<<[Description.getYearFragment function](code_samples/meta.jsx)
+{crop-start-line=32,crop-end-line=47,linenos=off,lang=jsx}
+<<[Description's getAllData functions](code_samples/es6/H1BGraph/Meta/Description.jsx)
 
-It's the same as in `Title`, but with a capital first letter. Yes, this might fit better in `MetaMixin`.
+Not much happens here. They're just filter functions.
 
-But the `getPreviousYearFragment` function is more complex:
+The `getPreviousYearFragment` function is more interesting.
 
-{title="Description.getPreviousYearFragment",linenos=off,lang=jsx}
-    getPreviousYearFragment: function () {
-        var years = this.getYears().map(Number),
-            fragment;
+{crop-start-line=79,crop-end-line=114,linenos=off,lang=jsx}
+<<[Description getPreviousYearFragment function](code_samples/es6/Meta/Description.jsx)
 
-        if (years.length > 1) {
-            fragment = "";
-        }else if (years[0] == 2012) {
-            fragment = "";
-        }else{
-            var year = years[0],
-                lastYear = this.getAllDataByYear(year-1),
-                percent = ((1-lastYear.length/this.props.data.length)*100).toFixed();
+Whoa, so much going on. We first get all the years in filtered data, then:
 
-            fragment = ", "+Math.abs(percent)+"% "+(percent > 0 ? "more" : "less")+" than the year before";
-        }
+- if there's more than one, we stop
+- if it's the first year in our dataset, we stop
+- otherwise:
+	- we get all datapoints for last year
+	- get US states in filtered data
+	- filter `lastYear` by US state if user filtered by that as well
+	- if the factor between this and last year is big, return "X times more" fragment
+	- otherwise return "X% more/less" fragment
 
-        return fragment;
-    },
-
+<<<<<<< HEAD
 First, we get the list of years. If it’s empty or if the current year is 2012 (the first in our dataset), we return an empty fragment.
+=======
+That wasn't too bad, was it? I'm sure better ways exist to generate human text based on parameters, but there's no need to be fancy.
+>>>>>>> Swizec/master
 
-In any other case, we get a look at last year’s data with `this.getAllDataByYear()`. We can then compare the number of entries with this year and return a fragment that’s either “X% **more** than the year before” or “X% **less** than the year before”.
+Now we need the year and US state fragments, same as the title. Their functions look like this:
 
-Now we’ve just got to use these two fragments in the render method.
+{crop-start-line=178,crop-end-line=207,linenos=off,lang=jsx}
+<<[Year and US state fragment functions](code_samples/es6/Meta/Description.jsx)
 
-{crop-start-line=238,crop-end-line=256,linenos=off,lang=jsx}
-<<[Description.render function](code_samples/meta.jsx)
+See, nothing special. You already know all this code from the `Title` component. The only difference is in the strings produced. This is also why we can't throw these two functions into `BaseComponent`.
 
-We’ve crammed a bunch into that return statement, but it's not as hairy as it looks. We start the sentence with either “Since 2012” or “In Year”, then decide what tense to use for the verb “give”, followed by the count of H1Bs in the current data and “foreign nationals”.
+Ok, now that we have all the helper functions, it's time to put them together. We do that in the `render` method. Like this:
 
+<<<<<<< HEAD
 Right after that, with no space, we add the previous year fragment. Then we add a sentence describing the range into which the majority of salaries fall. To get the numbers, we used d3.js’s built-in standard deviation calculator and assumed the distribution is roughly normal. That means 68.2% of our data falls within a standard deviation to each side of the mean.
+=======
+{crop-start-line=298,crop-end-line=322,linenos=off,lang=jsx}
+<<[Description render function](code_samples/es6/Meta/Description.jsx)
+>>>>>>> Swizec/master
 
-Yes, my statistics professor would be very angry, but it’s a good-enough approximation.
+That is one beast of a return statement right there.
 
-Let’s put the description next to our title.
+But it's not too bad when you take a closer look. The description can start with either "Since 2012" or "In <Year>". Then it adds the selected US state, the correct tense of "to give", the number `N` of H1Bs in our dataset, and the previous year fragment. In the end it adds info about the one standard deviation spread of salaries for selected year and US state.
 
-{crop-start-line=707,crop-end-line=722,linenos=off,lang=jsx}
-<<[Add description to H1BGraph.render](code_samples/main.jsx)
+We got those numbers using d3's default math functions. Assuming salaries follow a normal distribution, 68% of them fall within this 1-standard-deviation range.
 
-Unlike the title, our description needs the full data just like the controls do. Without this, it wouldn't be able to get data for previous years.
+This is the sort of assumption that would make your and my statistics professors cry. But it's good enough, I think. Given enough datapoints, everything becomes normally distributed according to the [central limit theorem](https://en.wikipedia.org/wiki/Central_limit_theorem) anyway.
 
-Your histogram should now have a nice description:
+You should have a histogram with a nice description now:
 
 ![Histogram with description](images/description_histogram.png)
 
 Hooray, you’ve made a histogram of H1B salaries with a title and description that both change when the visualization changes. You’re awesome!
 
-Now you know how to make React and d3.js work together. Yay!
+Now you know how to make React and d3.js work together. Woohoo!
