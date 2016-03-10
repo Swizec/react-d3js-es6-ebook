@@ -192,11 +192,7 @@ If everything went well, we should now be able to use `require('./style.less')` 
 
 ## Serve static files in development
 
-<<<<<<< HEAD {>>What’s going on here?<<}
-There are a few more things we have to change to make the rest of this book flow more smoothly.
-=======
 Our visualization is going to use Ajax to load data. That means the server we use in development can't just route everything to `index.html` – it needs to serve other static files as well.
->>>>>>> Swizec/master {>>What’s going on here?<<}
 
 We have to add a line to `devServer.js`:
 
@@ -416,27 +412,13 @@ The best way to configure Babel is through the `.babelrc` file, which looks like
 {crop-start-line=21,crop-end-line=29,linenos=off}
 <<[.babelrc config](code_samples/env/babelrc)
 
-<<<<<<< HEAD {>>Here it is again.<<}
-I imagine this file is something most people copy-paste from the internet, but the basic rundown is that for the `development` environment, we're loading the `react-transform` plugin and enabling two different transforms.
-
-The first one, `react-transform-hmr`, enables hot loading. The second, `react-transform-catch-errors`, uses `redbox-react` to show us errors thrown by the compiler. This makes keeping an eye on the console less important. That gives us one less window with which to concern ourselves.
-
-We don't want either of those in production, so we'll leave the `production` environment without config. Defaults are enough.
-
-#### A note on Babel 6
-=======
 I imagine this file is something most people copy-paste from the internet, but here's what’s happening in our case:
->>>>>>> Swizec/master
 
  - `react` enables all React and JSX plugins;
  - `es2015` enables transpiling ES6 into ES5, including all polyfills for semantic features;
  - `stage-0` enables the more experimental ES7 features.
 
-<<<<<<< HEAD
-The easiest way to do that is to install `babel-preset-es2015` and add `"es2015"` to the `plugins:` array inside `.babelrc`. This enables all the different transpiles, which now exist as independent projects.
-=======
 Those are the default presets. For development, we also enable `react-hmre`, which gives us hot loading.
->>>>>>> Swizec/master
 
 That's it. If you need more granular config, or you want to know what all those presets enable and use, I suggest Googling for them. Be warned, though; the `es2015` preset alone uses 20 different plugins.
 
