@@ -19,38 +19,7 @@ We’re going to put all of our code in a `src/` directory and serve the compile
 
 Before we begin, you should copy the dataset from the stub project that came with the book. It should be in the `public/data/` directory of your project.
 
-<<<<<<< HEAD
-## JSX
-
-We’re going to write our code in JSX, a JavaScript syntax extension that lets us treat XML-like data as normal code. You can use React without JSX, but I feel that it makes React’s full power easier to use.
-
-The gist of JSX is that we can use any XML-like string just like it is part of JavaScript. There's no Mustache or messy string concatenation necessary. Your functions can return straight-up HTML, SVG, or XML.
-
-For instance, the code that renders our whole application is going to look like this:
-
-{crop-start-line=399,crop-end-line=402,linenos=off,lang=jsx}
-<<[A basic Render](code_samples/old/main.jsx)
-
-Which compiles to:
-
-{title="JSX compile result", linenos=off, lang=js}
-    React.render(
-        React.createElement(H1BGraph, {url: “data/h1bs.csv”}),
-        document.querySelectorAll(‘.h1bgraph’)[0]
-    );
-
-As you can see, HTML code translates to `React.createElement` calls with attributes translated into a property dictionary. The beauty of this approach is two-pronged: you can use React components as if they were HTML tags, and HTML attributes can be anything.
-
-You’ll see that anything from a simple value to a function or an object works equally well.
-
-I'm not sure yet whether this is better than separate template files in Mustache or whatever. There are benefits to both approaches. I mean, would you let a designer write the HTML inside your JavaScript files? I wouldn't, but it's definitely better than manually `+`-ing strings or Angular's approach of putting everything into HTML. Considerably better.
-
-If you skipped the setup section and don't have a JSX compilation system set up, you should do that now. You can also use the project stub you got with the book.
-
-## The Basic Approach
-=======
 ## The basic approach
->>>>>>> Swizec/master
 
 Because SVG is an XML format that fits into the DOM, we can assemble it with React. To draw a `100px` by `200px` rectangle inside a grouping element moved to `(50, 20)` we can do something like this:
 
@@ -73,11 +42,7 @@ If the parent component puts this inside an `<svg>` element, the user will see a
       .attr("width", 100)
       .attr("height", 200);
 
-<<<<<<< HEAD
-The d3.js approach outputs SVG as if by magic. It also looks a bit cleaner because it's pure JavaScript. Truthfully, it’s a lot more typing and function calls for the same result.
-=======
 The d3.js approach outputs SVG as if by magic and looks cleaner because it's pure JavaScript. But it’s a lot more typing and function calls for the same result.
->>>>>>> Swizec/master
 
 Well, actually, the pure d3.js example is 10 characters shorter. But trust me, React is way cooler.
 
@@ -208,11 +173,7 @@ We also import `d3` because we'll use it to load data later.
 {crop-start-line=13,crop-end-line=25,linenos=off,lang=jsx}
 <<[Empty H1BGraph component](code_samples/es6/H1BGraph/index.jsx)
 
-<<<<<<< HEAD
-As [mentioned before](#the-architecture), we're going to build everything off a central repository of truth - The Main Component. We'll call this component `H1BGraph` because it draws a graph of H1B data.
-=======
 Then we define a component that renders an empty `<svg>` tag inside a `<div>`. A component must have at least a `render()` function, otherwise React throws an error when it tries to render.
->>>>>>> Swizec/master
 
 We're using ES6's concept of classes and class inheritance to extend React's basic `Component`, which we imported earlier. This is widely accepted as more readable than JavaScript's old/standard prototypical inheritance.
 

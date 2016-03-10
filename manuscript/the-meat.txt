@@ -1,22 +1,13 @@
 ## Asynchronously loading data
 
-<<<<<<< HEAD
-Great, we’ve got something rendering. Now we need to load some data before we can draw a picture. If you still don't have `public/data/h1bs.csv`, now is the time to get it. You can find it on Github [here](https://github.com/Swizec/h1b-software-salaries) or in the stub project included with the book.
-=======
 Great, we’ve got a component rendering. Now we need to load some data before we can draw a picture. If you still don't have `public/data/h1bs.csv`, now is the time to get it. You can find it on Github [here](https://github.com/Swizec/h1b-software-salaries), or in the stub project included with the book.
->>>>>>> Swizec/master
 
 We’re going to use d3.js’s built-in data-loading magic and hook it into React’s component lifecycle for a seamless integration. You could implement calls to a REST API in the same way.
 
 We start by adding three methods to `H1BGraph` in `src/components/H1BGraph/index.jsx`:
 
-<<<<<<< HEAD
-{crop-start-line=34,crop-end-line=49,linenos=off,lang=jsx}m
-<<[Base methods to load data](code_samples/main.jsx)
-=======
 {crop-start-line=54,crop-end-line=72,linenos=off,lang=jsx}
 <<[Base methods to load data](code_samples/es6/H1BGraph/index.jsx)
->>>>>>> Swizec/master
 
 With ES6 classes we no longer use `getInitialState` to set the initial state of our component. That job is taken over by the constructor, which is a function that gets called every time our class is instantiated into an object. We always have to call `super()` first to call the parent's constructor. In our case that's React's `Component`.
 
@@ -24,11 +15,7 @@ After calling `super()`, we can use `this.state` as a dictionary that hold's our
 
 Next we have `componentWillMount`, which is a component lifecycle function that React calls just before mounting, also known as rendering, our component into the page. This is where you'd want to fit any last minute preparations before rendering.
 
-<<<<<<< HEAD
-We’re going to put d3.js’s data-loading magic in `loadRawData`.
-=======
 It's also a great moment to start loading data. Especially when you have 12MB of data like we do. Wouldn't want to load that unless you know for sure, the component is getting rendered.
->>>>>>> Swizec/master
 
 We’re going to put d3.js’s data loading magic in `loadRawData`. The reason we have a separate function and don't stick everything into `componentWillMount` is flexibility - we can call the function whenever we want without messing with React's built-in functions.
 
@@ -85,24 +72,16 @@ Into objects that look like this:
 			    "state": "ca"
 			}
 
-<<<<<<< HEAD
-In our case, we cleaned up the keys, parsed dates into `Date()` objects, and made sure numbers are numbers. If a row didn’t have a `base_salary`, we filtered it out by returning `null`.
-=======
 In our case we cleaned up the keys, parsed dates into `Date()` objects using d3's built-in date formatters, and made sure numbers are numbers. If a row didn’t have a `base_salary`, we filtered it out by returning `null`.
 
 ### Add visual feedback that loading is happening
->>>>>>> Swizec/master
 
 Loading and parsing 81,000 data points takes some time. Let's tell users what they're waiting for by rendering some explainer text when there's no data.
 
 {crop-start-line=244,crop-end-line=253,linenos=off,lang=jsx}
 <<[Loading indicator](code_samples/es6/H1BGraph/index.jsx)
 
-<<<<<<< HEAD
-The beauty of our approach is that the `render` method returns different elements based on whether or not we’ve got some data. Notice that we access the data as `this.state.rawData` and rely on the re-render when the state updates.
-=======
 The beauty of our approach is that the `render` method returns different elements based on whether or not we’ve got some data. Notice that we access the data as `this.state.rawData` and rely on the re-render triggered by `this.setState` to get rid of the loading notice.
->>>>>>> Swizec/master
 
 If you’ve kept `npm start` running in the background, your browser should flash the loading text before becoming blank.
 
@@ -136,15 +115,9 @@ Right now the `render()` method contains only an empty grouping, `<g>`, element.
 
 The grouping element has a class `histogram`, which we'll use later for styling, and uses the `transform` attribute to move into position via the `translate` property.
 
-<<<<<<< HEAD
-In the `render` method, we created a grouping element, `<g>`, that will hold our histogram together. We used the `transform` property to move it into place. The reason we did some ugly string concatenation is that we can’t mix string and variable attribute values.
-
-However, we do want to get `topMargin` via properties given to our component. We access those with `this.props`, and they make our components more flexible.
-=======
 SVG transforms are a powerful tool in SVG drawing, but teaching you all about them goes beyond the scope of this book. We're only going to use the `translate()` property, which specifies a new `x, y` position for the given element.
 
 We used ES6's string templates to create `transform`'s value. These are denoted with backticks and evaluate any JavaScript you put into `${}`. It's a great alternative to concatenating strings, but don't go crazy with these lest you won't understand what your code is doing six months from now when you have to fix a bug.
->>>>>>> Swizec/master
 
 In this case, we're using this SVG transformation to give our Histogram some room to breathe. Exactly how much room comes from `this.props.topMargin` - a component property specified by whomever renders our `Histogram` component.
 
@@ -219,11 +192,7 @@ Great, our scales are ready to help us draw, so let's add the drawing bit to `re
 {crop-start-line=151,crop-end-line=166,linenos=off,lang=jsx}
 <<[Add histogram bars to SVG](code_samples/es6/Histogram/Histogram.jsx)
 
-<<<<<<< HEAD
-Notice how we can just `.map()` through our histogram data in `this.state.bars`? That’s the magic of React - JavaScript and XML living together as one.
-=======
 Even though we already calculated our histogram data in `update_d3()`, we calculate it again in `render()`. This lets us avoid using state and triggering unnecessary re-renders. It seems wasteful at first, but think about it: Which is quicker? Re-rendering twice on every prop change, or running a d3 function twice?
->>>>>>> Swizec/master
 
 Ok, it's not immediately obvious which one uses less processing power, but we prefer avoiding state because it saves *our* brain cycles. Those are almost always more expensive than computer cycles.
 
@@ -284,15 +253,11 @@ We use a `params` dictionary with our dimensions attributes, number of bins in t
 
 Inside the `return` statement, we made sure our `<svg>` element has a width and a height, and added the `<Histogram .. />` component. Once more we used the spread trick to feed it many `params` at once. We kept `data` as a separate attribute to make it more apparent that this component uses data.
 
-<<<<<<< HEAD
-Let's add some styling to `src/style.less` to make the Histogram look a little better:
-=======
 If you kept `npm start` running, your browser should show something like this:
 
 ![Unstyled Histogram](images/unstyled_histogram.png)
 
 So much effort to render those labels and you can't even see them. Let's add some styling to `src/components/Histogram/style.less` to make the Histogram prettier:
->>>>>>> Swizec/master
 
 {crop-start-line=5,crop-end-line=19,linenos=off,lang=less}
 <<[style.less](code_samples/style.less)
@@ -310,11 +275,7 @@ You should now see a histogram like this:
 
 Axes are my favourite feat of d3.js magic right after scales.  You call a function, set some parameters, and **BAM**, you’ve got an axis.
 
-<<<<<<< HEAD
-Axes are one of my favorite feats of d3.js magic. You call a function, set some parameters, and **BAM**, you’ve got an axis.
-=======
 The axis automatically adapts to your data, draws the ticks, and labels them. Axes achieve this behaviour by using scales for all computation. The nice consequence of this is that you can turn a linear axis into a logarithmic axis by just changing the scale it uses.
->>>>>>> Swizec/master
 
 Despite how easy axes are to use, they're pretty complex to build from scratch. Rather than recreate them in React, we're going to use a dirty little trick - give d3.js control of the DOM. Just this once.
 
@@ -403,13 +364,7 @@ We're going to make controls that let users filter data by year. Then just to sh
 
 ![Events flow up through callbacks](images/architecture_events.jpg)
 
-<<<<<<< HEAD
-Our approach will be similar to what we've already arranged: events will flow up the hierarchy, and data updates will flow down. When a user clicks a button, it calls a function on its parent. This in turn calls a function on its parent and so on until we hit `H1BGraph`, which is our holder of truth.
-
-We could also call functions directly on `H1BGraph` if we had a reference to them, but that would break the separation of concerns in our case.
-=======
 Remember, we talked about using a flux-like approach in our [architecture](#the-architecture). That means:
->>>>>>> Swizec/master
 
 - user events are going to flow up the component hierarchy via callbacks
 - the main component will change its data state
@@ -431,11 +386,7 @@ The end result will be something like this:
 
 ![Histogram with buttons](images/buttons_histogram.png)
 
-<<<<<<< HEAD
-We're going to organize our controls into three components:
-=======
 We'll build the controls out of three components:
->>>>>>> Swizec/master
 
 * `Controls`, which holds the controls together
 * `ControlRow`, which is a row of buttons
@@ -468,12 +419,8 @@ Your browser should stop panicking now. Instead, it shows a blank `<div>` under 
 
 Now we're going to add the first `ControlRow` and break the page all over again.
 
-<<<<<<< HEAD
-There's nothing special going on here. We’ve got a `render` method that returns a Bootstrap row and fills it with a collection of `Toggle` components. It does so by looping over the result of `this.props.getToggleNames`, which is the function we defined in `Controls.render`.
-=======
 {crop-start-line=31,crop-end-line=49,linenos=off,lang=jsx}
 <<[Year ControlRow in Controls](code_samples/es6/H1BGraph/Controls/index.jsx)
->>>>>>> Swizec/master
 
 We defined a function called `getYears` that can go through our dataset and find all year values. The `groupBy` creates a dictionary with years as keys, `keys` returns the dictionary's keys, and `map(Number)` makes sure they're all numbers so we won't have to worry about that later.
 
@@ -488,11 +435,7 @@ And of course, don't forget to import `ControlRow`.
 
 Perfect. Your browser should start panicking again.
 
-<<<<<<< HEAD
-The `makePick` function is called when the user clicks on a `Toggle` element. It goes through the `toggleValues` dictionary and sets them to `false` if they aren't the one the user clicked on. The one the user does click is set to `true`.
-=======
 Let's calm down your browser and create `src/components/H1BGraph/Controls/ControlRow.jsx`.
->>>>>>> Swizec/master
 
 {crop-start-line=5,crop-end-line=22,linenos=off,lang=jsx}
 <<[Stubbed ControlRow component](code_samples/es6/H1BGraph/Controls/ControlRow.jsx)
@@ -562,11 +505,7 @@ Let's go back to `src/components/H1BGraph/Controls/Toggle.jsx` and make it work.
  - handle click events
  - eagerly update toggle-ness on clicks
 
-<<<<<<< HEAD
-Ok, we’ve just created an infinite loop. When `componentDidUpdate` is called, we call something on the parent component. This potentially changes our `props`, which again triggers `componentDidUpdate`.
-=======
 Handling toggle-ness is going to be the tricky part. We want the buttons to feel fast, but also respond to upstream data changes.  
->>>>>>> Swizec/master
 
 First, let's render the button. We add a few lines to the `render` method:
 
@@ -655,13 +594,9 @@ We have to change the callback definition in `render`.
 
 Same sort of code as always. If you don't like the `::` syntax sugar from ES7, you can use `this.updateDataFilter.bind(this)` instead.
 
-<<<<<<< HEAD
-That’s it. A single minute of typing to let users filter by almost anything.
-=======
 Now here's the interesting part: We'll have to hold the current year filter function and value in memory, the component's state.  We have to do this so that we can build complex filters on multiple properties.
   
 Each time a user clicks a toggle button, we only know the current selection and property. But we don't want to delete the filtering on, say, US state.
->>>>>>> Swizec/master
 
 We have to define some default state in the constructor.
 
@@ -928,11 +863,7 @@ Whoa, so much going on. We first get all the years in filtered data, then:
 	- if the factor between this and last year is big, return "X times more" fragment
 	- otherwise return "X% more/less" fragment
 
-<<<<<<< HEAD
-First, we get the list of years. If it’s empty or if the current year is 2012 (the first in our dataset), we return an empty fragment.
-=======
 That wasn't too bad, was it? I'm sure better ways exist to generate human text based on parameters, but there's no need to be fancy.
->>>>>>> Swizec/master
 
 Now we need the year and US state fragments, same as the title. Their functions look like this:
 
@@ -943,12 +874,8 @@ See, nothing special. You already know all this code from the `Title` component.
 
 Ok, now that we have all the helper functions, it's time to put them together. We do that in the `render` method. Like this:
 
-<<<<<<< HEAD
-Right after that, with no space, we add the previous year fragment. Then we add a sentence describing the range into which the majority of salaries fall. To get the numbers, we used d3.js’s built-in standard deviation calculator and assumed the distribution is roughly normal. That means 68.2% of our data falls within a standard deviation to each side of the mean.
-=======
 {crop-start-line=298,crop-end-line=322,linenos=off,lang=jsx}
 <<[Description render function](code_samples/es6/Meta/Description.jsx)
->>>>>>> Swizec/master
 
 That is one beast of a return statement right there.
 
