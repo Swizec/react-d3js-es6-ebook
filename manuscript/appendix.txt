@@ -1,15 +1,15 @@
 {#appendix}
 # Appendix
 
-When I first wrote this book in Spring of 2015, I came up with a build and run system based on Grunt and Browserify. I also suggested using Bower for client-side dependencies.
+When I first wrote this book in the spring of 2015, I came up with a build-and-run system based on Grunt and Browserify. I also suggested using Bower for client-side dependencies.
 
-I now consider that to have been a mistake, and Webpack to be a much better option. I also suggest using one of the numerous boilerplate projects to get started quickly.
+I now consider that to have been a mistake, and I think Webpack is a much better option. I also suggest using one of the numerous boilerplate projects to get started quickly.
 
 I'm leaving the old chapter here as a curiosity, and to help those stuck in legacy systems. With a bit of tweaking, you *can* use Grunt with Webpack, and Webpack *can* support Bower as a package manager.
 
 ## NPM for server-side tools
 
-NPM is node.js’s default package manager. Originally developed as a dependency management tool for node.js projects, it's since taken hold of the JavaScript world as a way to manage the tool belt.
+NPM is node.js’s default package manager. Originally developed as a dependency management tool for node.js projects, it's since taken hold of the JavaScript world as a way to manage the toolbelt.
 
 We’ll use NPM to install the other tools we need.
 
@@ -20,15 +20,15 @@ Once you’ve got it, create a working directory, navigate to it, and run:
 {linenos=off}
     $ npm init .
 
-This will ask you a few questions and create `package.json` file. It contains some meta data about the project and more importantly, the list of dependencies. This is useful when you return to a project months or years later, and can’t remember how to get it running.
+This will ask you a few questions and create `package.json` file. It contains some meta data about the project, and more importantly, it has the list of dependencies. This is useful when you return to a project months or years later and can’t remember how to get it running.
 
-Also great, if you want to share the code with others.
+It's also great if you want to share the code with others.
 
-And remember, the stub project included with the book already has all this set up.
+And remember, the stub project included with the book already has all of this set up.
 
 ## The development server
 
-Production servers are beyond the scope of this book, but we do need a server running locally. You could work on a static website without one, but we’re loading data into the visualization dynamically and that makes browser security models panic. 
+Production servers are beyond the scope of this book, but we do need a server running locally. You could work on a static website without one, but we’re loading data into the visualization dynamically and that makes browser security models panic.
 
 We’re going to use `live-server`, which is a great static server written in JavaScript. Its biggest advantage is that the page refreshes automatically when CSS, HTML, or JavaScript files in the current directory change.
 
@@ -41,7 +41,7 @@ If all went well, you should be able to start a server by running `live-server` 
 
 ## Compiling our code with Grunt
 
-Strictly speaking, we’re writing JavaScript and some CSS. We don’t *really* have to compile our code, but it’s easier to work with, if we do.
+Strictly speaking, we’re writing JavaScript and some CSS. We don’t *really* have to compile our code, but it’s easier to work with our code if we do.
 
 Our compilation process is going to do three things:
 
@@ -49,18 +49,18 @@ Our compilation process is going to do three things:
 * compile JSX to pure JavaScript
 * concatenate source files
 
-We have to compile Less because browsers don’t support it natively. We’re not going to use it for anything super fancy, but I prefer having some extra power in my stylesheets. Makes them easier to write.
+We have to compile Less because browsers don’t support it natively. We’re not going to use it for anything super fancy, but I prefer having some extra power in my stylesheets. It makes them easier to write.
 
 You can use whatever you want for styling, even plain CSS, but the samples in this book will assume you're using Less.
 
-Compiling JSX is far more important. 
+Compiling JSX is far more important.
 
 JSX is React’s new file format that lets us embed HTML snippets straight in our JavaScript code. You’ll often see render methods doing something like this:
 
 {crop-start-line=399,crop-end-line=402,linenos=off,lang=jsx}
 <<[A basic Render](code_samples/old/main.jsx)
 
-See, we’re treating HTML - in this case an H1BGraph component - just like a normal part of our code. I haven’t decided yet if this is cleaner than other templating approaches like Mustache, but it’s definitely much better than manually concatenating strings.
+See, we’re treating HTML - in this case, an H1BGraph component - just like a normal part of our code. I haven’t decided yet if this is cleaner than other templating approaches like Mustache, but it’s definitely much better than manually concatenating strings.
 
 As you’ll see later, it’s also very powerful.
 
@@ -72,9 +72,9 @@ But browsers don’t support this format, so we have to compile it into pure Jav
         document.querySelectorAll(‘.h1bgraph’)[0]
     );
 
-We could avoid this compilation step by using `JSXTransform`. It can compile JSX to JavaScript in the browser, but makes our site slower. React will also throw a warning and ask you never to use `JSXTransform` in production.
+We could avoid this compilation step by using `JSXTransform`. It can compile JSX to JavaScript in the browser, but it makes our site slower. React will also throw a warning and ask you never to use `JSXTransform` in production.
 
-Finally, we concatenate all our code into a single file because that makes it quicker to download. Instead of starting a gazillion requests for each and every file, the client only makes a single request.
+Finally, we concatenate all of our code into a single file because that makes it quicker to download. Instead of starting a gazillion requests for each and every file, the client only makes a single request.
 
 ### Install Grunt
 
@@ -91,13 +91,13 @@ To install Grunt and the plugins we need, run:
     $ npm install --save-dev jit-grunt
     $ npm install --save-dev reactify
 
-[Browserify](http://browserify.org) will allow us to write our code in modules that we can use with `require(‘foo.js’)`. Just like we would in node.js. It’s also going to concatenate the resulting module hierarchy into a single file.
+[Browserify](http://browserify.org) will allow us to write our code in modules that we can use with `require(‘foo.js’)`, just like we would in node.js. It’s also going to concatenate the resulting module hierarchy into a single file.
 
-Some test readers have suggested using [Webpack](http://webpack.github.io/) instead, but I haven't tried it yet. Apparently it's the best thing since bacon because it can even `require()` images.
+Some people have suggested using [Webpack](http://webpack.github.io/) instead, but I haven't tried it yet. Apparently it's the best thing since bacon because it can even `require()` images.
 
 [Reactify](https://github.com/andreypopp/reactify) will take care of making our JSX files work with Browserify.
 
-[Less](https://github.com/gruntjs/grunt-contrib-less) will compile Less files to CSS, `watch` will automatically run our tasks when files change, and `jit-grunt` loads Grunt plugins automatically so we don't have to deal with that.
+[Less](https://github.com/gruntjs/grunt-contrib-less) will compile Less files to CSS, `watch` will automatically run our tasks when files change, and `jit-grunt` will load Grunt plugins automatically so we don't have to deal with that.
 
 ### Grunt Config
 
@@ -114,10 +114,10 @@ The basic file with no configs should look like this:
 {title="Base Gruntconfig.js",linenos=off,lang=js}
     module.exports = function (grunt) {
         require('jit-grunt')(grunt);
-        
+
         grunt.initConfig({ /* ... */ });
-  
-        grunt.registerTask('default', 
+
+        grunt.registerTask('default',
                            ['less', 'browserify:dev', 'watch']);
     );
 
@@ -138,17 +138,17 @@ I’m going to explain `debowerify` when we talk about client-side package manag
 {linenos=off,lang=js,crop-start-line=39,crop-end-line=52}
 <<[Watch task config](code_samples/old/Gruntfile.js)
 
-This tells `watch`, which files it needs to watch for changes, and what to do with them.
+This tells `watch` which files it needs to watch for changes and what to do with them.
 
-You should now be able to start compiling your code by running `grunt` in the command line. If you didn't start with the stub project, it will complain about missing files. Just create empty files with the names it complains about. 
+You should now be able to start compiling your code by running `grunt` in the command line. If you didn't start with the stub project, it will complain about missing files. Just create empty files with the names it complains about.
 
 ## Managing client-side dependencies with Bower
 
 Client-side dependency management is the final piece in the puzzle.
 
-Traditionally this is done by dumping all JavaScript plugins into some sort of `vendor/` directory. Or having a `plugins.js` file and manually copy-pasting code in there.
+Traditionally, this is done by dumping all of our JavaScript plugins into some sort of `vendor/` directory or by having a `plugins.js` file and manually copy-pasting code in there.
 
-That approach works fine right until the day you want to update one of the plugins. Then you can’t remember exactly which of the ten plugins with a similar name and purpose you used, or you can no longer find the Github repository.
+That approach works fine up until the day you want to update one of the plugins. Then you can’t remember exactly which of the ten plugins with a similar name and purpose you used, or you can no longer find the Github repository.
 
 It's even worse if the plugin’s got some dependencies that also need to be updated. Then you're in for a ride.
 
@@ -157,7 +157,7 @@ This is where Bower comes in. Instead of worrying about any of that, you can jus
 {linenos=off}
     $ bower install <something>
 
-You could use NPM for this, but Bower can play with any source anywhere. It understands several package repositories, and can even download code straight from Github.
+You could use NPM for this, but Bower can play with any source anywhere. It understands several package repositories, and it can even download code straight from Github.
 
 To begin using Bower, install it and init the project:
 
@@ -175,11 +175,11 @@ When that’s done, install the four dependencies we need:
     $ bower install -S bootstrap
     $ bower install -S lodash
 
-We’re going to rely heavily on d3 and React. Bootstrap is there to give us some basic styling, and lodash will make it easier to  play around with the data.
+We’re going to rely heavily on d3 and React. Bootstrap is there to give us some basic styling, and lodash will make it easier to play around with the data.
 
 All of these were installed in the `bower_components/` directory.
 
-Which is awesome, but creates a small problem. If you want to use Browserify to include d3, you have to write something like `require(‘../bower_components/d3/d3.js’);`, which not only looks ugly, but means you have to understand the internal structure of every package.
+This is awesome, but it creates a small problem. If you want to use Browserify to include d3, you have to write something like `require(‘../bower_components/d3/d3.js’);`, which not only looks ugly but also means you have to understand the internal structure of every package.
 
 We can solve this with `debowerify`, which knows how to translate `require()` statements into their full path within `bower_components/`.
 
