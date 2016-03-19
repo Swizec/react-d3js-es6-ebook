@@ -1,0 +1,4 @@
+{#animating-react-redux}
+# Animating with React, Redux, and d3
+
+The article goes here.
