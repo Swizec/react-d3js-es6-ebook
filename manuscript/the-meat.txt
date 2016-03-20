@@ -1,6 +1,6 @@
 ## Asynchronously loading data
 
-Great, we’ve got a component rendering. Now we need to load some data before we can draw a picture. If you still don't have `public/data/h1bs.csv`, now is the time to get it. You can find it on Github [here](https://github.com/Swizec/h1b-software-salaries) or in the stub project included with the book.
+Great, we’ve got a rendering component. Now we need to load some data so we can make a visualization. If you still don't have `public/data/h1bs.csv`, now is the time to get it. You can find it on Github [here](https://github.com/Swizec/h1b-software-salaries) or in the stub project included with the book.
 
 We’re going to use d3.js’s built-in data-loading magic and hook it into React’s component lifecycle for a seamless integration. You could implement calls to a REST API in the same way.
 
@@ -9,9 +9,9 @@ We start by adding three methods to `H1BGraph` in `src/components/H1BGraph/index
 {crop-start-line=54,crop-end-line=72,linenos=off,lang=jsx}
 <<[Base methods to load data](code_samples/es6/H1BGraph/index.jsx)
 
-With ES6 classes, we no longer use `getInitialState` to set the initial state of our component. That job is taken over by the constructor, which is a function that gets called every time our class is instantiated into an object. We always have to call `super()` first to call the parent's constructor. In our case, that's React's `Component`.
+With ES6 classes, we no longer use `getInitialState` to set the initial state of our component. That job goes to the constructor - a function that's called every time our class is instantiated into an object. We use `super()` first to call the parent's constructor. React's `Component` constructor in this case.
 
-After calling `super()`, we can use `this.state` as a dictionary that holds our component's current state. We'll want to avoid using component state as much as possible and rely instead on props fed into the component at render time. 
+After calling `super()`, we can use `this.state` as a dictionary that holds our component's current state. It's best to avoid using state as much as possible and rely on props instead.
 
 Next we have `componentWillMount`, which is a component lifecycle function that React calls just before mounting (also known as rendering) our component into the page. This is where you'd want to fit any last minute preparations before rendering.
 
@@ -26,20 +26,20 @@ We use `d3.csv` to load our dataset because it's in CSV format. `d3.csv` underst
 
 This asynchronously loads a CSV file, parses it, and returns the result in the `rows` argument to the callback. The callback is an ES6 fat arrow, which is syntax sugar for `function () { // .. }.bind(this)` – a function bound to current scope. We're going to use these often.
 
-Inside the callback, we check for errors, and if everything went well, we use `this.setState()` to save the loaded data in our component's state. Calling `setState()` triggers a re-render and should generally be avoided because relying on state can lead to inconsistencies in your UI. It’s very appropriate to store 12MB of raw data as state, though.
+Inside the callback, we check for errors, and if everything went well, we use `this.setState()` to save the loaded data into our component's state. Calling `setState()` triggers a re-render and should generally be avoided because relying on state can lead to inconsistencies in your UI. It’s very appropriate to store 12MB of raw data as state, though.
 
 We're now going to be able to access our data with `this.state.rawData`. Hooray!
 
 ### Data cleanup
 
-Datasets are often messy or annoying to work with. After a naive load like that, our data uses keys with spaces in them and everything is a string. That’s not so nice to work with.
+Datasets are often messy and annoying to work with. After a naive load like that, our data uses keys with spaces in them and everything is a string.
 
 We can add some cleanup in one fell swoop:
 
 {crop-start-line=148,crop-end-line=172,linenos=off,lang=jsx}
 <<[Data cleanup](code_samples/es6/H1BGraph/index.jsx)
 
-Using `.row()`, we’ve given a callback to `d3.csv` that tells it how to change every row that it reads. Each row is fed into the function as a raw object, and whatever the function returns is added to the final result.
+Using `.row()`, we’ve given a callback to `d3.csv` that tells it how to change every row that it reads. Each row is fed into the function as a raw object, and whatever the function returns goes into the final result.
 
 We're changing objects that look like this:
 
@@ -61,8 +61,8 @@ Into objects that look like this:
 {title="Cleaned CSV rows",linenos=off,lang=js}
 			{
 			    "employer": "american legalnet inc",
-			    "submit_date": "2013-07-09T22:00:00.000Z",
-			    "start_date": "2013-07-31T22:00:00.000Z",
+			    "submit_date": Date("2013-07-09T22:00:00.000Z"),
+			    "start_date": Date("2013-07-31T22:00:00.000Z"),
 			    "case_status": "certified",
 			    "job_title": "software",
 			    "clean_job_title": "other",
@@ -72,18 +72,18 @@ Into objects that look like this:
 			    "state": "ca"
 			}
 
-In our case, we cleaned up the keys, parsed dates into `Date()` objects using d3's built-in date formatters, and made sure numbers are numbers. If a row didn’t have a `base_salary`, we filtered it out by returning `null`.
+We cleaned up the keys, parsed dates into `Date()` objects using d3's built-in date formatters, and made sure numbers are numbers. If a row didn’t have a `base_salary`, we filtered it out by returning `null`.
 
 ### Add visual feedback that loading is happening
 
-Loading and parsing 81,000 data points takes some time. Let's tell users what they're waiting for by rendering some explainer text when there's no data.
+Loading and parsing 81,000 data points takes some time. Let's tell users what they're waiting for with some explainer text when.
 
 {crop-start-line=244,crop-end-line=253,linenos=off,lang=jsx}
 <<[Loading indicator](code_samples/es6/H1BGraph/index.jsx)
 
-The beauty of our approach is that the `render` method returns different elements based on whether or not we’ve got some data. Notice that we access the data as `this.state.rawData` and rely on the re-render triggered by `this.setState` to get rid of the loading notice.
+The `render` method returns different elements based on whether or not we’ve got some data. We access the data as `this.state.rawData` and rely on the re-render triggered by `this.setState` to get rid of the loading notice.
 
-If you’ve kept `npm start` running in the background, your browser should flash the loading text before becoming blank.
+If you’ve kept `npm start` running in the background, your browser should flash the loading text then go blank.
 
 ![Loading message](images/loading_message.png)
 
@@ -91,16 +91,16 @@ Marvelous.
 
 ## Making your first dataviz component – a Histogram
 
-Now that our data is loading, it’s time to start drawing. We’ll start with a basic histogram, then add an axis, and then add an indicator for the mean value (also known as the "average").
+Now that our data is loading, it’s time to start drawing. We’ll start with a basic histogram, then add an axis, and an indicator for the mean value (also known as the "average").
 
 A histogram component isn't unique to our project, so we're going to build it as a standalone component. Create a new directory `src/components/Histogram/` with an empty `index.jsx` file.
 
-We use `index.jsx` as a convenience to make our component easier to import, so we won't put any logic in here. The whole file looks like this:
+We use `index.jsx` as a convenience to make our component easier to import, so we won't put any logic in here. The file looks like this:
 
 {linenos=off,lang=jsx}
 <<[src/components/Histogram/index.jsx](code_samples/es6/Histogram/index.jsx)
 
-It just imports and exports `Histogram`. Now the rest of our project can use `import Histogram from '../Histogram'` without understanding the internal file structure of our component. Users of your components should never have to know how you organized your component internally.
+It imports and exports `Histogram`. Now the rest of our project can use `import Histogram from '../Histogram'` without understanding the internal file structure of our component. Users of your components should never have to know how you organized your component internally.
 
 ### A blank Histogram component
 
@@ -109,45 +109,47 @@ We start with a blank `Histogram` component in `src/components/Histogram/Histogr
 {crop-start-line=4,crop-end-line=19,linenos=off,lang=jsx}
 <<[Empty histogram](code_samples/es6/Histogram/Histogram.jsx)
 
-Just like in `H1BGraph`, we first required some external libraries - React and d3, created a class with a `render()` function, and added it to our exports. This lets other parts of the codebase use it by calling `import Histogram from './Histogram'`.
+Just like in `H1BGraph`, we first required some external libraries - React and d3, created a class with a `render()` method, and added it to our exports. This lets other parts of the codebase use it by calling `import Histogram from './Histogram'`.
 
 Right now, the `render()` method contains only an empty grouping, `<g>`, element. These are much like divs in HTML; they hold elements together to make them easier to reference. Unlike divs, however, they don't come with any concept of formatting or sizing.
 
 The grouping element has a class `histogram` (which we'll use later for styling) and uses the `transform` attribute to move into position via the `translate` property.
 
-SVG transforms are a powerful tool in SVG drawing, but teaching you all about them goes beyond the scope of this book. We're only going to use the `translate()` property, which specifies a new `x, y` position for the given element.
+SVG transforms are a powerful tool, but teaching you all about them goes beyond the scope of this book. We're only going to use the `translate()` property, which specifies a new `x, y` position for the given element.
 
 We used ES6's string templates to create `transform`'s value. These are denoted with backticks and evaluate any JavaScript you put into `${}`. It's a great alternative to concatenating strings, but don't go crazy with these, lest you won't understand what your code is doing six months from now when you have to fix a bug.
 
-In this case, we're using this SVG transformation to give our Histogram some room to breathe. Exactly how much room comes from `this.props.topMargin` – a component property specified by whomever renders our `Histogram` component.
+In this case, we're using this SVG transformation to give our Histogram some room to breathe. Exactly how much room comes from `this.props.topMargin` – a property specified by whomever renders our `Histogram` component. Something like this: `<Histogram topMargin={100} />`.
 
 ### d3.js for \[dataviz\] calculations
 
-We're going to build our histogram with d3.js’s built-in histogram layout. It’s smart enough to do everything on its own: data binning, calculating positions and dimension of histogram bars, and a few other useful tidbits. We just have to give it some data and some configuration.
+We're going to build our histogram with d3.js’s built-in histogram layout. It’s smart enough to do everything on its own: data binning, calculating positions and dimension of histogram bars, and a few other tidbits. We just have to give it some data and some configuration.
 
-We add three methods to our `Histogram` component to manage d3.js:
+The issue is that d3.js achieves this magic through state. Almost any time you use a d3 function or layout, it has some internal state that it uses to reduce boilerplate. 
+
+For instance, all d3 layouts let you define a value accessor. You do it by calling the `.value()` method like this: `.value((d) => d.some.deep.value)`. After that, the layout will always know how to get the correct value from your data.
+
+This is great when you're using d3 alone. It means there's less code to write.
+
+It's less great when you're using React and want to avoid state. The best approach I've found to mitigate this, is to rely on three methods: `constructor`, `componentWillReceiveProps`, and `update_d3`. Like this:
 
 {crop-start-line=27,crop-end-line=47,linenos=off,lang=jsx}
 <<[D3.js management functions](code_samples/es6/Histogram/Histogram.jsx)
 
-In `constructor()`, we create the d3 objects we need and give them any defaults we know about. In `componentWillReceiveProps()`, we make sure to call `this.update_d3`. `update_d3()` is the function that does our heavy lifting. It updates d3 objects with any new properties our component gets from above.
+In `constructor()`, we create the d3 objects and give them any defaults we know about. Then call `this.update_d3`. In `componentWillReceiveProps()`, we call `this.update_d3` every time props change. `update_d3()` does the heavy lifting - it updates d3 objects using current component properties.
 
-This is the cleanest approach I’ve found to make d3.js and React work together. We’ll use it for all of our d3.js-enabled components.
+The other approach to this state problem would be to create new objects on every `render()`, but that feels wasteful. Maybe I'm just old fashioned.
 
-The problem we're facing is that d3.js achieves its declarative nature through objects. When you call a d3.js function, it's usually got some internal state.
-
-This is great when you want to change how d3.js behaves by daisy-chaining getters and setters, but it causes problems with React. We have to make sure to keep that internal state up-to-date.
-
-We *could* create new objects on every `render()`, but that feels wasteful. Maybe I'm just old fashioned.
+We're going to use the same pattern for all our components that touch d3.js heavily.
 
 This time `update_d3()` does its heavy lifting like this:
 
 {crop-start-line=81,crop-end-line=98,linenos=off,lang=jsx}
 <<[update_d3 function body](code_samples/es6/Histogram/Histogram.jsx)
 
-If you’re used to d3.js, this code should look familiar. We updated the number of bins in our histogram with `.bins()` and gave it a new value accessor with `.value()`. This tells the layout how to get the interesting datapoint from our data objects.
+If you’re used to d3.js, this code should look familiar. We updated the number of bins in our histogram with `.bins()` and gave it a new value accessor with `.value()`. It tells the layout how to get the datapoint from each data object.
 
-We’re making our `Histogram` component more reusable by passing in the function from our properties. The less we assume about what we’re doing, the better.
+We’re making our `Histogram` component more reusable by passing in the value function from our properties. The less we assume about what we’re doing, the better.
 
 Then, we called `this.histogram()` to ask d3's histogram layout to do its magic. If you print the result in `bars`, you'll see it's an array of arrays that have some properties.
 
@@ -174,13 +176,13 @@ We'll use these to draw our histogram bars.
 
 Before we can do that, we have to update our scales. You can think of scales as mathematical functions that map a domain to a range. Domain tells them the extent of our data; range tells them the extent of our drawing area. If you have a linear scale with a domain `[0, 1]` and a range `[1, 2]` and you call `scale(0.5)`, you will get `1.5`.
 
-To define the correct domains, we first got the `counts` of elements in each bin. Then we used `min`/`max` helpers to find smallest and largest values. In case of height, we had to add each bar's thickness to its position to find the max.
+To define the correct domains, we first get the `counts` of elements in each bin. Then we use `min`/`max` helpers to find the smallest and largest values. In case of height, we had to add each bar's thickness to its position to find the max.
 
 To define the ranges, we relied on chart dimension properties.
 
 Notice how we use the `x` position to define the domain for our `yScale`? That's because our histogram is going to be horizontal.
 
-We can do that simply because scales don't care about anything. They map a domain to a range; how you use that is up to you.
+We can do that so simply because scales don't care about anything. They map a domain to a range; how you use that is up to you.
 
 Scales are my favorite. You'll see why when we start drawing.
 
@@ -195,7 +197,7 @@ Even though we’ve already calculated our histogram data in `update_d3()`, we c
 
 It's not immediately obvious which one uses less processing power, but we prefer avoiding state because it saves *our* brain cycles. Those are almost always more expensive than computer cycles.
 
-We also added a new grouping element for the histogram bars. You'll see why we need a group inside a group later.
+We also added a new grouping element for the histogram bars. You'll see why we needed a group inside a group later.
 
 The more important bit is that we could just `.map()` through our histogram data even though we're technically inside XML. That's the magic of JSX – JavaScript and XML living together as one.
 

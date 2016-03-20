@@ -114,6 +114,8 @@ We're going to use a lot of buzzwords in this book. Hell, we've used some alread
 - **H1B**, a popular type of work visa in the United States
 - **fat arrows**, a new way to define functions in ES6 (`=>`)
 - **Mustache**, a popular way to write HTML templates for JavaScript code. Uses `{{ ... }}` syntax.
+- **props**, component properties set when rendering
+- **state**, a local dictionary of values available in most components
 
 [anything more that looks buzzwordy?]
 [can we order those alphabetically please?]
