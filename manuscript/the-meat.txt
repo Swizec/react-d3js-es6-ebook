@@ -352,21 +352,21 @@ We’ve got a histogram with an axis and the building blocks to make as many as 
 
 But our histogram looks weird. Most of our data falls into the first three bars, and a lone outlier stretches the data range too far.
 
-We could take care of this by removing the outlier, but let's be honest: statisticians should worry about statistical anomalies; we’re here to draw pretty pictures.
+We could remove the outlier, but let's be honest: statisticians should worry about statistical anomalies; we’re here to draw pretty pictures.
 
-It's better to give users some filters, so they can limit their view to the parts they care about. This solves our problem of finding outliers and gives users more freedom. Now maybe, just maybe, they’re going to spend more time on our site.
+It's better to let users explore the dataset themselves -> filters! Let users limit their view to just the parts they care about. This solves our problem of finding outliers and gives users more freedom. And they might even spend more time on our site!
 
 Win-win-win.
 
-We're going to make controls that let users filter data by year. Then, in order to show you how reusable React components are, we're going to add filtering by state as well. In the full example, I also added filtering by job title, but that would take too long to explain because the dataset is messy.
+We're going to make controls that let users filter data by year. Then, in order to show you how reusable React components are, we're going to add filtering by US state as well. In the full example, I also added filtering by job title, but that would take too long to explain here. The code is easy, but the dataset is a mess.
 
 ![Events flow up through callbacks](images/architecture_events.jpg)
 
 Remember, we talked about using a Flux-like approach in our [architecture](#the-architecture). That means:
 
-- user events are going to flow up the component hierarchy via callbacks
-- the main component will change its data state
-- React will propagate data changes back down through component props
+- user events flow up the component hierarchy via callbacks
+- the main component changes its data state
+- React propagates data changes back down through component props
 
 ![Updated data flows back down](images/architecture_updates.jpg)
 
@@ -378,7 +378,7 @@ To get a better idea of Flux's pros and cons, you can read this side-by-side com
 
 ### Adding user controls
 
-Our controls are going to look like rows of togglable buttons. Each row represents a filter – year and state – and each button represents a value. When the button is "on", our histogram shows only the entries that have that value. Each row can have only one active value.
+Our controls are going to look like rows of toggleable buttons. Each row represents a filter – year and US state – and each button represents a value. When the button is "on", our histogram shows only the entries that have that value. Each row can have only one active value.
 
 The end result will be something like this:
 
@@ -390,7 +390,7 @@ We'll build the controls out of three components:
 * `ControlRow`, which is a row of buttons
 * `Toggle`, which is a toggle-able button
 
-These components are going to live in a `Controls` subdirectory of `H1BGraph` – `src/components/H1BGraph/Controls`. We could build controls as a standalone component, and in a way we will, but for now it's easier to assume they're a specific solution to a specific problem.
+These components live in a `Controls` subdirectory of `H1BGraph` – `src/components/H1BGraph/Controls`. We could build controls as a standalone component, and in a way we will, but for now it's easier to assume they're a specific solution to a specific problem.
 
 Before diving in, let's render `Controls` in `H1BGraph.render`. It's going to break the build, but you'll see things added to the page in real-time as you code. I love it when that happens.
 
@@ -408,21 +408,21 @@ Don't forget to import controls at the top of the file.
 
 Great. If you've kept `npm start` running in the background, your browser should start panicking right now. That's because `Controls/index.jsx` doesn't exist.
 
-As always, we start with imports, a class, a render method, and exports like this:
+Let's make it: start with imports, a class, a render method, and exports. Like this:
 
 {crop-start-line=4,crop-end-line=17,linenos=off,lang=jsx}
 <<[Controls component stub](code_samples/es6/H1BGraph/Controls/index.jsx)
 
 Your browser should stop panicking now. Instead, it shows a blank `<div>` under your histogram.
 
-Now we're going to add the first `ControlRow` and break the page all over again.
+Now we add the first `ControlRow` and break the page all over again.
 
 {crop-start-line=31,crop-end-line=49,linenos=off,lang=jsx}
 <<[Year ControlRow in Controls](code_samples/es6/H1BGraph/Controls/index.jsx)
 
-We defined a function called `getYears` that can go through our dataset and find all of the year values. The `groupBy` creates a dictionary with years as keys, `keys` returns the dictionary's keys, and `map(Number)` makes sure they're all numbers so we won't have to worry about that later.
+We define a function called `getYears` that can go through our dataset and find all of the year values. The `groupBy` creates a dictionary with years as keys, `keys` returns the dictionary's keys, and `map(Number)` makes sure they're all numbers so we won't have to worry about that later.
 
-Then we added a `ControlRow` component to the return statement. As props, we gave it our dataset, the `getYears` function so it can decide which buttons to render, and a dummy update filter callback.
+Then we add a `ControlRow` component to the return statement. As props, we gave it our dataset, the `getYears` function so it can decide which buttons to render, and a dummy update filter callback.
 
 We'll define the filter when we look at propagating events back up the chain.
 
@@ -447,7 +447,7 @@ Before your browser stops panicking, we also need the Toggle component in `src/c
 
 Your browser should stop panicking now, and there should be some divs within divs under the histogram.
 
-To make stuff show up, we first have to add toggles to `ControlRow`, then make sure the Toggle component returns a visible button.
+To make controls show up, we first have to add toggles to `ControlRow`, then make sure the Toggle component returns a visible button.
 
 #### A row of buttons
 
@@ -460,7 +460,7 @@ Let's go back to `src/components/H1BGraph/Controls/ControlRow.jsx` and add it.
 {crop-start-line=53,crop-end-line=65,linenos=off,lang=jsx}
 <<[Loop through toggle names](code_samples/es6/H1BGraph/Controls/ControlRow.jsx)
 
-This code calls `getToggleNames` with the data in our props, and it calls `this._addToggle` on every value. Once again, notice the power of JSX – we could embed a JavaScript incantation right in what looks like HTML code.
+This code calls `getToggleNames` with the data in our props, and it calls `this._addToggle` on every value. Once again, notice the power of JSX – we can embed a JavaScript incantation right inside what looks like HTML code.
 
 Now we need to define the `_addToggle` function, which returns a Toggle component. We do this in a function call so the code is easier to read.
 
