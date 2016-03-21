@@ -127,11 +127,11 @@ We're going to build our histogram with d3.js’s built-in histogram layout. It�
 
 The issue is that d3.js achieves this magic through state. Almost any time you use a d3 function or layout, it has some internal state that it uses to reduce boilerplate. 
 
-For instance, all d3 layouts let you define a value accessor. You do it by calling the `.value()` method like this: `.value((d) => d.some.deep.value)`. After that, the layout will always know how to get the correct value from your data.
+For instance, all d3 layouts let you define a value accessor. You define it by calling the `.value()` method like this: `.value((d) => d.some.deep.value)`. After that, the layout always knows how to get the correct value from your data.
 
 This is great when you're using d3 alone. It means there's less code to write.
 
-It's less great when you're using React and want to avoid state. The best approach I've found to mitigate this, is to rely on three methods: `constructor`, `componentWillReceiveProps`, and `update_d3`. Like this:
+It's less great when you're using React and want to avoid state. The best approach I've found to mitigate this issue, is to rely on three methods: `constructor`, `componentWillReceiveProps`, and `update_d3`. Like this:
 
 {crop-start-line=27,crop-end-line=47,linenos=off,lang=jsx}
 <<[D3.js management functions](code_samples/es6/Histogram/Histogram.jsx)
@@ -142,16 +142,16 @@ The other approach to this state problem would be to create new objects on every
 
 We're going to use the same pattern for all our components that touch d3.js heavily.
 
-This time `update_d3()` does its heavy lifting like this:
+This time, `update_d3()` does its heavy lifting like this:
 
 {crop-start-line=81,crop-end-line=98,linenos=off,lang=jsx}
 <<[update_d3 function body](code_samples/es6/Histogram/Histogram.jsx)
 
-If you’re used to d3.js, this code should look familiar. We updated the number of bins in our histogram with `.bins()` and gave it a new value accessor with `.value()`. It tells the layout how to get the datapoint from each data object.
+If you’re used to d3.js, this code should look familiar. We update the number of bins in our histogram with `.bins()` and give it a new value accessor with `.value()`. It tells the layout how to get the datapoint from each data object.
 
 We’re making our `Histogram` component more reusable by passing in the value function from our properties. The less we assume about what we’re doing, the better.
 
-Then, we called `this.histogram()` to ask d3's histogram layout to do its magic. If you print the result in `bars`, you'll see it's an array of arrays that have some properties.
+Then, we call `this.histogram()` to ask d3's histogram layout to do its magic. If you print the result in `bars`, you'll see it's an array of arrays that have some properties.
 
 {title="Histogram printout",linenos=off}
 	 // console.log(bars) in update_d3()
@@ -197,13 +197,13 @@ Even though we’ve already calculated our histogram data in `update_d3()`, we c
 
 It's not immediately obvious which one uses less processing power, but we prefer avoiding state because it saves *our* brain cycles. Those are almost always more expensive than computer cycles.
 
-We also added a new grouping element for the histogram bars. You'll see why we needed a group inside a group later.
+We also add a new grouping element for the histogram bars. You'll see why we need a group inside a group later.
 
-The more important bit is that we could just `.map()` through our histogram data even though we're technically inside XML. That's the magic of JSX – JavaScript and XML living together as one.
+The coolest part is that we can `.map()` through our histogram data even though we're inside XML. That's the magic of JSX – JavaScript and XML living together as one.
 
-We could even have put the entire `makeBar` function in here, but that would make our code harder to read.
+We could have put the entire `makeBar` function in here, but that would make our code hard to read.
 
-One last trick was using ES7's double-colon operator. This is syntax sugar for `this.makeBar.bind(this)`. Remember, we have to manually bind methods to `this` scope because we're using ES6 classes.
+One last trick is using ES7's double-colon operator. It's syntax sugar for `this.makeBar.bind(this)`. Remember, even though we're using ES6 classes, we still have to bind callbacks to `this` scope manually.
 
 You can use this syntax sugar if you [enabled `stage-0`](#enable-es7) in the chapter about your dev environment.
 
@@ -212,63 +212,63 @@ Now we need the `makeBar` method. It looks like this:
 {crop-start-line=209,crop-end-line=227,linenos=off,lang=jsx}
 <<[The makeBar helper method](code_samples/es6/Histogram/Histogram.jsx)
 
-This code uses `Histogram`'s properties and scales to calculate attributes for each bar, then passes the `props` object to a subcomponent called `HistogramBar` using a spread - `{...props}`. React's implementation of the spread operator – `...` – is more powerful than the base ES6 spread because it supports objects, not just arrays and function arguments.
+This code uses `Histogram`'s properties and scales to calculate attributes for each bar, then passes the `props` object to a subcomponent called `HistogramBar` using a spread - `{...props}`. You can think of it as shorthand for writing `percent={percent} x={this.props.axisMargin} y={this.yScale(bar.x)} …`. 
 
-You can think of it as shorthand for writing `percent={percent} x={this.props.axisMargin} y={this.yScale(bar.x)} …`.
+Similar to ES6 spreads, but better because it supports objects as well as arrays and function arguments.
 
-We could have generated the SVG for a bar with a label right here, but it's going to involve some logic, so I think it makes more sense as a subcomponent.
-
-Let’s add the `HistogramBar` component.
+Now, let’s add the `HistogramBar` subcomponent.
 
 {crop-start-line=247,crop-end-line=278,linenos=off,lang=jsx}
 <<[HistogramBar component](code_samples/es6/Histogram/Histogram.jsx)
 
-There's nothing too special going on here: take some properties and return a grouping element with a rectangle and a text label.
+There's nothing special here: we take some properties and return a grouping element with a rectangle and a text label. Components like these are great candidates to for functional stateless components - components defined as functions which render something and don't think too much.
 
-Once more, we used an ES6 string template to build the `transform` property, and we added some ad-hoc vertical padding to the bar to make it look better. We also used some ad-hoc calculations to place the `text` element at the end of the bar. This will make our histogram easier to read because every bar will have its percentage rendered on the crucial right edge.
+To do that, we would replace `class Foo extends Component { ... render() { return (<Stuff />) } }` with `const Foo () => <Stuff />`. Left as an exercise for the reader :)
 
-Some bars are going to be too small to fit the entire label. Let's avoid rendering the label in those cases.
+Anyway, in `HistogramBar`, we used an ES6 string template to build the `transform` property, and we added some ad-hoc vertical padding to the bar to make it look better. We also used some ad-hoc calculations to place the `text` element at the end of the bar. This makes our histogram easier to read because every bar has its percentage rendered on the crucial right edge.
+
+Some bars are going to be too small to fit the entire label. Let's avoid rendering it in those cases.
 
 {crop-start-line=274,crop-end-line=290,linenos=off,lang=jsx}
 <<[Adjust label for small bars](code_samples/es6/Histogram/Histogram.jsx)
 
-We add some decimal points if we’re showing small numbers, and we completely remove the label when there isn't enough room.
+We add some decimal points if we’re showing small numbers, and we remove the label when there isn't enough room. Perfect.
 
 ### Adding Histogram to the main component
 
 Despite our magnificent `Histogram` component, the page is still blank. We have to go back to `H1BGraph/index.jsx` and tell `H1BGraph` to render the component we've just made.
 
-First, we have to import our `Histogram` component at the top of `H1Bgraph/index.jsx` like this:
+First, we have to import our `Histogram` at the top of `H1Bgraph/index.jsx` like this:
 
 {crop-start-line=268,crop-end-line=274,linenos=off,lang=jsx}
 <<[Require Histogram](code_samples/es6/H1BGraph/index.jsx)
 
-The reason this works so well is because of the `Histogram/index.jsx` file we created, which lets us `import` a directory instead of worrying about specific files inside it.
+This works so well because of the `Histogram/index.jsx` file we created, which lets us `import` a directory instead of worrying about the specific files inside.
 
 Then, we can add the histogram component to our `render` method.
 
 {crop-start-line=317,crop-end-line=347,linenos=off,lang=jsx}
 <<[Render the histogram component](code_samples/es6/H1BGraph/index.jsx)
 
-We use a `params` dictionary with our dimensions attributes, the number of bins in the histogram, and the value accessor function. This makes our code cleaner and easier to read.
+We put all our props in a `params` dictionary: dimensions, number of bins, value accessor. It makes our code easier to read.
 
-Inside the `return` statement, we made sure our `<svg>` element has a width and a height, and we added the `<Histogram .. />` component. Once more we used the spread trick to feed it many `params` at once. We kept `data` as a separate attribute to make it more apparent that this component uses data.
+Inside the `return` statement, we make sure our `<svg>` element has a width and a height, and we add the `<Histogram .. />` component. Once more we use the spread trick to pass many `params` at once. We keep `data` as a separate attribute to make it more apparent that this component uses data.
 
 If you kept `npm start` running, your browser should show something like this:
 
 ![Unstyled Histogram](images/unstyled_histogram.png)
 
-So much effort to render those labels, and you can't even see them. Let's add some styling to `src/components/Histogram/style.less` to make the Histogram prettier:
+Wow, so much effort went into those labels, and you can't even see them. Let's add some styling to `src/components/Histogram/style.less` to make the Histogram prettier:
 
 {crop-start-line=5,crop-end-line=19,linenos=off,lang=less}
 <<[style.less](code_samples/style.less)
 
-Make sure we `require` the styles in `H1Bgraph/index.jsx`:
+Make sure to `require` the styles in `H1Bgraph/index.jsx`:
 
 {crop-start-line=360,crop-end-line=365,linenos=off,lang=jsx}
 <<[Require style.less](code_samples/es6/H1BGraph/index.jsx)
 
-You should now see a histogram like this:
+Now you should see a histogram like this:
 
 ![Basic Histogram](images/base_histogram.png)
 
@@ -276,27 +276,27 @@ You should now see a histogram like this:
 
 Axes are my favorite feat of d3.js magic right after scales. You call a function, set some parameters, and **BAM**, you’ve got an axis.
 
-The axis automatically adapts to your data, draws the ticks, and labels them. Axes achieve this behavior by using scales for all computation. The positive consequence of this is that you can turn a linear axis into a logarithmic axis by changing the scale it uses.
+The axis automatically adapts to your data, draws the ticks, and labels them. Axes achieve this by using scales for all computation. The nice consequence of this is that you can turn a linear axis into a logarithmic axis by changing the scale it uses.
 
-Despite how easy axes are to use, they're pretty complex to build from scratch. Rather than recreate them in React, we're going to use a dirty little trick – give d3.js control of the DOM. Just this once.
+Despite how easy axes are to use, they're pretty complex to build from scratch. So we're not going to bother and use a dirty little trick instead – give d3.js control of the DOM. Just this once.
 
 The same approach works for wrapping any d3.js visualization in a React component.
 
-Let's start with a blank component for the axis. It goes in `src/components/Histogram/Axis.jsx`. It's a pretty good candidate for a general component as well.
+Let's start with a blank component for the axis in `src/components/Histogram/Axis.jsx`. It's a good candidate for a general component as well.
 
 {crop-start-line=4,crop-end-line=18,linenos=off,lang=jsx}
 <<[Base axis component](code_samples/es6/Histogram/Axis.jsx)
 
-As always, we started with the imports, then defined a class - `Axis` – and exported it. We added `ReactDOM` to the usual `d3` and `React` imports because we'll need it to give d3.js a reference to our DOM node so it can take over.
+As always, we start with the imports, then define a class - `Axis` – and export it. We add `ReactDOM` to the usual `d3` and `React` imports because we'll need it to give d3.js a reference to our DOM node. It can't take over without a DOM node.
 
-Inside the `Axis` component itself, we defined a `render` method which returns an empty grouping element and uses an SVG transform to emulate margins and padding. We have to do this so d3 has something to play with when it's rendering the axis.
+Inside the `Axis` component, we define a `render` method which returns an empty grouping element and uses an SVG transform to emulate margins and padding. We have to do this so d3 has something to play with when it's rendering the axis.
 
 Just like in the `Histogram` component, we integrate d3 into our component using the `constructor`, `componentWillReceiveProps`, and `update_d3` methods.
 
 {crop-start-line=27,crop-end-line=49,linenos=off,lang=jsx}
 <<[Axis default properties](code_samples/es6/Histogram/Axis.jsx)
 
-In the `constructor`, we defined a new linear axis for the `y` coordinate, and defined some default properties for the axis:
+In the `constructor`, we define a new linear axis for the `y` coordinate, and some default properties for the axis:
 
 - it uses the linear scale
 - renders labels on the left
@@ -304,18 +304,18 @@ In the `constructor`, we defined a new linear axis for the `y` coordinate, and d
 
 Yes, scales have tick formatters. They take care of rendering numbers nicely. It's awesome.
 
-We let `update_d3` take care of the rest. We do the same delegation in the `componentWillReceiveProps` lifecycle method. The combination of these two methods calling `update_d3` ensures our d3 objects are always up to date.
+We let `update_d3` take care of the rest. The same delegation happens in the `componentWillReceiveProps` lifecycle method. The combination of these two methods calling `update_d3` ensures our d3 objects stay up to date.
 
 The logic in `update_d3` looks like this:
 
 {crop-start-line=84,crop-end-line=98,linenos=off,lang=jsx}
 <<[Update axis state](code_samples/es6/Histogram/Axis.jsx)
 
-Just like the previous section, we had to tell `yScale` the extent of our data and drawing area. We didn't have to tell the axis; it already knows because the scale knows. Isn't that neat? I think it's neat.
+Just like the previous section, we have to tell `yScale` the extent of our data and drawing area. We don't have to tell the axis; it knows because the scale knows. Isn't that neat? I think it's neat.
 
-We *did* have to get around some of the axis's smartness though. By default, an axis only renders a couple of ticks and labels to keep the visualization less cluttered. That would make our histogram look weird.
+We *do* have to get around some of the axis's smartness though. By default, an axis only renders a couple of ticks and labels to keep the visualization less cluttered. That would make our histogram look weird.
 
-So we asked for the same number of ticks as there are bars, and we gave a list of specific values. The axis tries to find "reasonable" label values otherwise.
+So we ask for the same number of ticks as there are bars, and we give a list of specific values. The axis tries to find "reasonable" label values otherwise.
 
 Ok, we have our axis in memory. Now here's the dirty trick:
 
@@ -324,9 +324,9 @@ Ok, we have our axis in memory. Now here's the dirty trick:
 
 I’m sure this goes against everything React designers fought for, but it works. We hook into the `componentDidUpdate` and `componentDidMount` callbacks with a `renderAxis` method. This ensures `renderAxis` gets called every time our component has to re-render.
 
-In `renderAxis`, we use `ReactDOM.findDOMNode()` to find this component's DOM node. We feed the node into `d3.select()`, which is how node selection is done in d3 land, then `.call()` the axis. This lets axis do its thing and add a bunch of SVG elements inside our node in the shape of an axis.
+In `renderAxis`, we use `ReactDOM.findDOMNode()` to find this component's DOM node. We feed the node into `d3.select()`, which is how node selection is done in d3 land, then `.call()` the axis. The axis then adds a bunch of SVG elements inside our node.
 
-As a result, we re-render the axis from scratch on every update. This is inefficient because it goes around React's fancy tree diffing algorithms, but it works great.
+As a result, we re-render the axis from scratch on every update. This is inefficient because it goes around React's fancy tree diffing algorithms, but it works well enough.
 
 Before we add our new `Axis` component to the Histogram, we need some styling in `src/components/H1BGraph/style.less`:
 
@@ -337,9 +337,6 @@ Great. Now we head back to the Histogram file (`src/components/Histogram/Histogr
 
 {crop-start-line=312,crop-end-line=318,linenos=off,lang=jsx}
 <<[Add Axis to Histogram imports](code_samples/es6/Histogram/Histogram.jsx)
-
-{crop-start-line=402,crop-end-line=411,linenos=off,lang=jsx}
-<<[Add Axis to Histogram.render](code_samples/drawers.jsx)
 
 That’s it. Your histogram should look like this:
 
