@@ -399,7 +399,7 @@ Before diving in, let's render `Controls` in `H1BGraph.render`. It's going to br
 
 Notice we added `Controls` outside the `<svg>` element. That's because they aren't a part of the visualization. Not of the graphical part at least.
 
-We used props to give our `Controls` component some data (which it will use to generate the buttons) and a filter update callback. This function doesn't do anything yet. We'll add that in a bit when we talk about propagating events back up the chain. For now, it's here so that we have something to call without throwing an exception.
+We used props to give our `Controls` component some data (which it will use to generate the buttons) and a filter update callback. This function doesn't do anything yet. We'll add that in a bit when we talk about [propagating events](#propagating-events) back up the chain. For now, it's here so that we have something to call without throwing an exception.
 
 Don't forget to import controls at the top of the file.
 
@@ -424,7 +424,7 @@ We define a function called `getYears` that can go through our dataset and find 
 
 Then we add a `ControlRow` component to the return statement. As props, we gave it our dataset, the `getYears` function so it can decide which buttons to render, and a dummy update filter callback.
 
-We'll define the filter when we look at propagating events back up the chain.
+We'll define the filter when we look at [propagating events](#propagating-events) back up the chain.
 
 And, of course, don't forget to import `ControlRow`.
 
@@ -475,18 +475,20 @@ We return a `<Toggle>` component with some properties:
  - `value` for the button's initial value state
  - `onClick` for the click callback
 
-These follow the common convention for form elements because it's the standard I got used to. It's a decent convention, and there's no need to re-invent the wheel.
+These follow conventions for standard HTML form elements. It's the standard I got used to, and there's no need to re-invent the wheel.
 
-We also capitalize the first letter of the label if that flag is set in our props. This is where those `String` class helper functions we defined earlier come into play.
+We also capitalize the first letter of the label if that flag is set in our props. This is where those `String` class helpers we defined earlier help us out.
 
-Now that we’ve defined the `onClick` callback, we have to stub the function to keep the build working. We also have to define initial state because we used `this.state.toggleValues`. It's easier than checking if the variable exists every time.
+Now that we set an `onClick` callback, we have to stub the function lest we break the build. We also have to define some initial state because we used `this.state.toggleValues`. It's easier than checking if the variable exists every time.
 
 {crop-start-line=79,crop-end-line=94,linenos=off,lang=jsx}
 <<[makePick and default state](code_samples/es6/H1BGraph/Controls/ControlRow.jsx)
 
-We keep `makePick` empty for now because we'll define it later when we look at propagating events. It's there just to keep things working.
+We keep `makePick` empty for now because we'll define it later in the [propagating events section](#propagating-events). It's there just to keep things working.
 
-Using `componentWillMount` to define default state is an exception. You're supposed to set default state in the class constructor, but we don't have access to props there. You can't populate an object property before the property exists. Remember, constructors are called while an object is being created.
+Using `componentWillMount` to define the default state is an exception. You're supposed to define it in the class constructor, but we don't have access to props there. You can't populate an object property before the property exists. Remember, constructors are called while an object is still being created.
+
+Yes, this tells us we're doing something wrong. Didn't we say all state lies in the top component? We did. But we can create a smoother user experience, if we grit our teeth and make some compromises. User experience trumps perfect engineering.
 
 If you're not used to lodash's functional approach, the code in `componentWillMount` might look strange. It loops through the values returned by `getToggleNames` and builds a dictionary – or object – with those names as keys, and `false` as the value.
 
@@ -510,11 +512,11 @@ First, let's render the button. We add a few lines to the `render` method:
 {crop-start-line=21,crop-end-line=40,linenos=off,lang=jsx}
 <<[Toggle renders a button](code_samples/es6/H1BGraph/Controls/Toggle.jsx)
 
-We're using a basic HTML `<button>` element and giving it some React magic properties. `className` is an alias for the DOM `class` attribute. This is necessary because `class` is a reserved symbol in JavaScript. `onClick` defines a click event handler similar to using `$('selector').click(do_thing)`.
+We're using a basic HTML `<button>` element and giving it some React magic properties. `className` is an alias for the DOM `class` attribute. This naming is necessary because in JavaScript `class` is a reserved symbol. `onClick` defines a click event handler similar to using `$('selector').click(do_thing)`.
 
-React gives us the important event handlers in its `onSomething` magic properties. They might look like the DOM Level 2 event handlers from the early 2000's, but their implementation is cleaner. Don't worry if everyone has been telling you for the past 10 years not to use `onclick`. This usage is okay, and I promise it has all the merits of using the newer *"find element, attach listener"* approach.
+React gives us the important event handlers in its `onSomething` magic properties. They might look like DOM Level 2 event handlers from the early 2000's, but their implementation is cleaner. Don't worry if, like me, you've spent the past 10 years of your life avoiding `onclick`. It's back. It's good. It's okay. I promise it has all the merits of using the *"find element, attach listener"* approach.
 
-As you can see on line 8 of that example, we change the button's color based on `this.state.value`. (`btn-primary` is the Bootstrap class that makes buttons blue.)
+On line 8 of that example, we change the button's color based on `this.state.value`. (`btn-primary` is the Bootstrap class that makes buttons blue.)
 
 {crop-start-line=29,crop-end-line=31,linenos=off,lang=jsx}
 <<[Toggle color switch](code_samples/es6/H1BGraph/Controls/Toggle.jsx)
@@ -536,13 +538,14 @@ The `handleClick` function toggles that same internal state. If it's `true`, it 
 
 Magic.
 
-Using both state and props lets us change buttons the moment a user clicks them without waiting for the rest of the page to react. This makes user interactions feel snappier.
+Using both state and props lets us change buttons the moment a user clicks them without waiting for the rest of the page to react. This makes user interactions snappier. Snappier interactions make users happy.
 
 You should see a row of buttons under your histogram. Each can be toggled on and off, but nothing else happens yet. 
 
+{#propagating-events}
 ### Propagating events through the hierarchy
 
-If we want the histogram to change when buttons are toggled, we have to propagate those click events through the hierarchy. The information being propagated is going to change each step of the way. This will reflect semantic changes in its meaning.
+If we want the histogram to change when users toggle buttons, we have to propagate those click events through the hierarchy. The information being propagated is going to change each step of the way. This will reflect semantic changes in its meaning.
 
 Toggles say something happened.
 
@@ -563,12 +566,12 @@ I know we have a leaky abstraction right here. The parent component gives us a c
   
 Because it makes our code simpler. 
 
-Let me show you. We implement the `makePick` function back in `src/components/H1BGraph/Controls/ControlRow.jsx`.
+Let me show you. We implement the `makePick` function back in `src/components/H1BGraph/Controls/ControlRow.jsx`, like this:
 
 {crop-start-line=135,crop-end-line=148,linenos=off,lang=jsx}
 <<[makePick function in ControlRow component](code_samples/es6/H1BGraph/Controls/ControlRow.jsx)
 
-Two things happen here:
+Two things happen:
 
 1. We make sure only one value can be turned on at a time
 2. We call `updateDataFilter` with the new value
@@ -577,7 +580,7 @@ For both of these, we need the clicked toggle's name. When we use `_.mapValues` 
 
 Remember, we collected toggle names out of possible values for each filter. In the case of filtering by year, each year value became a toggle button.
 
-If you click on a button now, you'll see it disables all the others. When `this.state.toggleValues` changes, it triggers a re-render, which pushes new props down to `Toggle` components, which then re-render themselves with the new `className`.
+If you click on a button now, you'll see it disables the others. When `this.state.toggleValues` changes, it triggers a re-render, which pushes new props down to `Toggle` components, which then re-render themselves with the new `className`.
 
 Neat.
 
@@ -596,7 +599,7 @@ Now here's the interesting part: we'll have to hold the current year filter func
   
 Each time a user clicks a toggle button, we only know the current selection and property. We don't want to delete the filtering on, say, US state.
 
-We have to define some default state in the constructor.
+We need some default state in the constructor.
 
 {crop-start-line=63,crop-end-line=72,linenos=off,lang=jsx}
 <<[Default filter state](code_samples/es6/H1BGraph/Controls/index.jsx)
@@ -608,22 +611,22 @@ With that done, we need the `updateYearFilter` function itself. It looks like th
 {crop-start-line=74,crop-end-line=87,linenos=off,lang=jsx}
 <<[updateYearFilter function](code_samples/es6/H1BGraph/Controls/index.jsx)
 
-Our filter is a function that checks for equality between the year in a datum and the year argument to `updateYearFilter` function itself. This works because of JavaScript's wonderful scoping, which means that functions carry their entire scope around. No matter where we pass the filter function to, the local variables that existed where it was defined are always going to be there.
+Our filter is a function that checks for equality between the year in a datum and the year argument to `updateYearFilter` function itself. This works because of JavaScript's wonderful scoping, which means that functions carry their entire scope around. No matter where we pass the filter function to, the local variables that existed where it was defined are always there.
 
-This might lead to memory leaks. This may be why Chrome takes almost 10 gigabytes of memory on my laptop.
+This might lead to memory leaks. This may be why Chrome takes almost 10 gigabytes of memory on my laptop. Or maybe I keep too many tabs open. Who knows ...
 
-If the year is not defined, or reset is explicitly set to true, we reset the filter back to defaults.
+If the year is not defined, or reset is explicitly set to `true`, we reset the filter back to default values.
 
-We’re almost there! We are handling the in-state representation of the year filter. Now we have to tell the parent component, `H1BGraph`.
+Almost there! We're handling the in-state representation of the year filter. Now we have to tell the parent component, `H1BGraph`.
 
-We do that in the `componentDidUpdate` lifecycle method. As you can guess, it gets called on every re-render, which is triggered every time we use `this.setState`.
+We do that in the `componentDidUpdate` lifecycle method. As you can guess, React calls it on every re-render; triggered every time we use `this.setState`.
 
 {crop-start-line=141,crop-end-line=149,linenos=off,lang=jsx}
 <<[Propagate filter changes up the hierarchy](code_samples/es6/H1BGraph/Controls/index.jsx)
 
-For every update, we call `this.props.updateDataFilter`, which is the change callback defined by `H1BGraph` when it rends `Controls`. As the sole argument, we give it our filter wrapped in another function.
+For every update, we call `this.props.updateDataFilter`, which is the change callback defined by `H1BGraph` when it renders `Controls`. As the sole argument, we give it our filter wrapped in another function.
 
-This looks (and is) far too complicated. It will make more sense when we add another filter. Hint: this is where we combine multiple filters into a single function.
+This looks (and is) far too complicated. It makes more sense when we add another filter. Hint: this is where we combine multiple filters into a single function.
 
 Whatever you do, *DON'T* click a button yet. Your code will go into an infinite loop and crash your browser tab.
 
@@ -634,7 +637,7 @@ That's because when React decides whether to update your component or not, it on
 
 With `shouldComponentUpdate`, we can define a custom comparison function. In our case, using Lodash's `isEqual` between current and future state is good enough.
 
-Crisis averted! You can click the buttons. Click away.
+Crisis averted! Click away.
 
 Just one thing left to do before the graph starts changing for every click: use the new filters to filter data before rendering.
 
@@ -645,7 +648,7 @@ Go to `src/components/H1BGraph/index.jsx` and add this function:
 
 Guess what it does? It stores the new filter in `this.state`. 
 
-Of course, this means we have to add a default filter in the constructor as well.
+Of course, this means we need a default filter in the constructor as well.
 
 {crop-start-line=463,crop-end-line=473,linenos=off,lang=jsx}
 <<[Default dataFilter](code_samples/es6/H1BGraph/index.jsx)
@@ -657,15 +660,15 @@ Now let's add all the heavy lifting to the `render` method. It looks like this:
 {crop-start-line=531,crop-end-line=556,linenos=off,lang=jsx}
 <<[Rendering filter data](code_samples/es6/H1BGraph/index.jsx)
 
-A few things happened:
+A few things changed:
 
-1. We passed our data through a filter
+1. We pass our data through a filter
 2. We feed filtered data into the `Histogram`
-3. We gave `Controls` the correct callback
+3. We give `Controls` the correct callback
 
 Yes, this means we filter the data from scratch every time the page re-renders for whatever reason. It turns out this is pretty fast and works well enough, even with tens of thousands of data points.
 
-There you go. You have a histogram that changes its shape when you click a button.
+There you go. A histogram that changes its shape when you click a button.
 
 Amazing.
 
@@ -681,37 +684,39 @@ Here's a quick rundown of what we're going to do:
 
 1. Add another `ControlRow` to `Controls`
 2. Build a list of US states from the data
-3. Add an `udpateStateFilter` function to `Controls`
-4. Add `stateFilter` to component state
-5. Include `stateFilter` in `componentDidUpdate`
+3. Add an `updateUSStateFilter` function to `Controls`
+4. Add `USstateFilter` to component state
+5. Include `USstateFilter` in `componentDidUpdate`
 
-That's all we need: a few lines of copy-pasted code in `src/components/H1BGraph/Controls/index.jsx`. There are no changes necessary to either `ControlRow` or `Toggle`, nor are there changes to anything to do with the graph itself.
+That's all we need: a few lines of copy-pasted code in `src/components/H1BGraph/Controls/index.jsx`. There are no changes necessary to either `ControlRow` or `Toggle`, nor are there any changes for the graph itself.
 
-Adding a new `ControlRow` and building a list of US states probably looks familiar by now.
+Adding a new `ControlRow` and building a list of US states might look familiar by now.
 
 {crop-start-line=236,crop-end-line=260,linenos=off,lang=jsx}
 <<[Add another ControlRow](code_samples/es6/H1BGraph/Controls/index.jsx)
 
-This adds a new `ControlRow` to render, gives it a function that extracts US states from the data, and generates a new update callback, which we'll define next.
+We add a new `ControlRow` to render, give it a function that extracts US states from the data, and create a new update callback, which we'll define next.
 
 {crop-start-line=209,crop-end-line=224,linenos=off,lang=jsx}
 <<[Add a US state filter update](code_samples/es6/H1BGraph/Controls/index.jsx)
 
-The new update filter callback is a copy-paste of `updateYearFilter` with a few keywords changed. We *could* have been clever about it and implemented dynamic magic that would let us get away with a single function, but it's unnecessary. It also makes the code both harder to explain and to understand a few months down the line.
+The new update filter callback is a copy-paste of `updateYearFilter` with a few keywords changed. We *could* have been clever about it and implemented dynamic magic that would let us get away with a single function, but it's unnecessary. It also makes the code both harder to explain and harder to understand a few months later. 
 
-Now let's add the new US state filter to the main filter callback in `componentDidUpdate`.
+Avoid cleverness when you code. It's too hard to debug.
+
+Now let's add the new US state filter to the main callback in `componentDidUpdate`.
 
 {crop-start-line=224,crop-end-line=233,linenos=off,lang=jsx}
 <<[Include the new filter in the main callback](code_samples/es6/H1BGraph/Controls/index.jsx)
 
-This is why we went through the trouble of wrapping filters in another function. It lets us compose different filters into a single expression.
+See, all that trouble of wrapping filters in extra functions pays off. We can compose many filters into a single expression.
 
 Finally, we need to define a default state for the US state filter. We do that in the class constructor.
 
 {crop-start-line=185,crop-end-line=196,linenos=off,lang=jsx}
 <<[Add default value for US state filter](code_samples/es6/H1BGraph/Controls/index.jsx)
 
-Same as the year filter, different keynames.
+Same as the year filter, different key names.
 
 If all went well, you should have a histogram with two rows of filters underneath. Users can choose a year *and* a US state to filter by.
 
@@ -725,9 +730,9 @@ But we’re missing something. A good visualization needs a title and a descript
 
 As great as people are at understanding pictures, it goes much better when you flat-out *tell* them what they’re looking at.
 
-The key to making disparate components act together is the data flow-down architecture. Because there is only one repository of truth, and because every component renders from props, we can make every component on the page change when data changes.
+That data flow-down architecture we built is the key to making disparate components act together. Because there is only one repository of truth, and because every component renders from props, we can make every component on the page change when data changes.
 
-This enables us to change the title and description together with the histogram, which in turn means that both of them can always be accurate and specific to what the user is currently looking at. The user never has to think hard about the story behind the data; we can just tell them.
+We can make the title and description change together with the histogram, which means they're always accurate and specific to what users see. They never have to think hard about the story behind the data; we just tell them.
 
 Marvelous.
 
@@ -744,21 +749,21 @@ The `BaseComponent` exports a `Meta` class which is all about common getters tha
 
 Neat, huh? I think it is.
 
-The function bodies themselves aren't too difficult. They go through the dataset and return lists of values. `getYears` returns all year values, `getUSStates` returns all states, and `getFormatter` returns a salary value formatter.
+The function bodies themselves aren't too hard. They go through the dataset and return lists of values. `getYears` returns all year values, `getUSStates` returns all US states, and `getFormatter` returns a salary value formatter.
 
 {crop-start-line=30,crop-end-line=61,linenos=off,lang=jsx}
 <<[The entire Meta base component](code_samples/es6/H1BGraph/Meta/BaseComponent.jsx)
 
-This isn’t anything we haven't done before. Sprinkle in some lodash functions for traversals and groupings, and use some d3 linear scale magic for the formatter.
+This is nothign we haven't done before. Sprinkle some lodash functions for traversals and groupings, and use some d3 linear scale magic for the formatter.
 
-Let's stub out the `Title` and `Description` components quickly so we can add them to `H1BGraph` and let hot loading do its magic. We want to see what we're adding in real time.
+Let's stub out the `Title` and `Description` components so we can add them to `H1BGraph` and let hot loading do its magic. We want to see what we're doing in real time.
 
 `Title` goes in `src/components/H1BGraph/Meta/Title.jsx`.
 
 {crop-start-line=5,crop-end-line=20,linenos=off,lang=jsx}
 <<[Stubbed Title component](code_samples/es6/H1BGraph/Meta/Title.jsx)
 
-For now we return a dummy title so we get something rendering. Notice that we extended from `Meta` as opposed to `Component` like usual.
+For now we return a dummy title so we get something rendering. Notice that we extended from `Meta` instead of `Component` like before.
 
 `Description` goes in `src/components/H1BGraph/Meta/Description.jsx`.
 
@@ -809,12 +814,12 @@ We start with the year fragment:
 
 We get the list of years in the current data and return either an empty string or `in Year`. If there’s only one year, we assume it’s been filtered by year.
 
-We make the same sort of assumptions for the US state fragment.
+We make the same assumption for the US state fragment.
 
 {crop-start-line=47,crop-end-line=62,linenos=off,lang=jsx}
 <<[getUSStateFragment function](code_samples/es6/H1BGraph/Meta/Title.jsx)
 
-Great, we've got the two dynamic pieces we need. Let's put them together in the `render` method.
+Great, that's the two dynamic pieces we need. Let's put them together in the `render` method.
 
 {crop-start-line=111,crop-end-line=136,linenos=off,lang=jsx}
 <<[Title render method](code_samples/es6/H1BGraph/Meta/Title.jsx)
@@ -848,7 +853,7 @@ Not much happens here. They're just filter functions.
 The `getPreviousYearFragment` function is more interesting.
 
 {crop-start-line=79,crop-end-line=114,linenos=off,lang=jsx}
-<<[Description getPreviousYearFragment function](code_samples/es6/Meta/Description.jsx)
+<<[Description getPreviousYearFragment function](code_samples/es6/H1BGraph/Meta/Description.jsx)
 
 Whoa, there’s so much going on. First, we get all the years in filtered data, then:
 
@@ -861,19 +866,19 @@ Whoa, there’s so much going on. First, we get all the years in filtered data, 
 	- if the factor between this and last year is big, return "X times more" fragment
 	- otherwise return "X% more/less" fragment
 
-That wasn't too bad, was it? I'm sure better ways exist to generate human text based on parameters, but there's no need to be fancy.
+That wasn't too bad, was it? I'm sure better ways exist to generate human readable text based on parameters, but there's no need to be fancy.
 
-We need the year and US state fragments, same as the title. Their functions look like this:
+We also need the year and US state fragments, same as the title. Their functions look like this:
 
 {crop-start-line=178,crop-end-line=207,linenos=off,lang=jsx}
-<<[Year and US state fragment functions](code_samples/es6/Meta/Description.jsx)
+<<[Year and US state fragment functions](code_samples/es6/H1BGraph/Meta/Description.jsx)
 
-Nothing special. You already know all of this code from the `Title` component. The only difference is in the strings produced. This is also why we can't throw these two functions into `BaseComponent`.
+You already know this code from the `Title` component. The only difference is in the strings produced. This is also why we can't throw these two functions into `BaseComponent`.
 
-Now that we have all of the helper functions, it's time to put them together. We do that in the `render` method like this:
+Now that we have all of the helper functions, it's time to put them together. We do that in the `render` method, like this:
 
 {crop-start-line=298,crop-end-line=322,linenos=off,lang=jsx}
-<<[Description render function](code_samples/es6/Meta/Description.jsx)
+<<[Description render function](code_samples/es6/H1BGraph/Meta/Description.jsx)
 
 That is one beast of a return statement right there.
 
@@ -887,6 +892,6 @@ You should have a histogram with a nice description now:
 
 ![Histogram with description](images/description_histogram.png)
 
-Hooray, you’ve made a histogram of H1B salaries with a title and description that both change when the visualization changes. You’re awesome!
+Woohoo, you’ve made a histogram of H1B salaries with a title and description and everything changes when the visualization changes. You’re amazing!
 
-Now you know how to make React and d3.js work together. Woohoo!
+Now you know how to make React and d3.js work together. \o/
