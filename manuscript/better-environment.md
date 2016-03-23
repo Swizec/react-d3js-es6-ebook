@@ -12,7 +12,7 @@ When I first wrote this chapter in April 2015, I suggested a combination of Brow
 
 There were no sourcemaps, which meant your browser's error reporting was useless. There was no hot loading, which meant your code had to process a gigantic 80,000 datapoint file every time you made a change.
 
-It was a mess. I'm sorry I told you to use it. The old system is in included in [the appendix](#appendix), if you're curious.
+It was a mess. I'm sorry I told you to use it. The old system is included in [the appendix](#appendix) if you're curious.
 
 The new system is great. I promise. I use it all the time :)
 
@@ -35,7 +35,7 @@ Using Webpack allows us to solve two more annoyances — losing state when loadi
 
 Webpack can't do all this alone though – it needs a compiler.
 
-We're going to use Babel to compile our JSX and ES6 code into the kind of code all browsers understand: ES5. Don't worry, if you're not ready to learn ES6; you can read the ES5 version of React+d3.js.
+We're going to use Babel to compile our JSX and ES6 code into the kind of code all browsers understand: ES5. If you're not ready to learn ES6, don’t worry; you can read the ES5 version of React+d3.js.
 
 Babel isn't really a compiler because it produces JavaScript, not machine code. That being said, it's still important at this point. According to the JavaScript roadmap, browsers aren't expected to fully support ES6 until some time in 2017. That's a long time to wait, so the community came up with transpilers which let us use some ES6 features *right now*. Yay!
 
@@ -151,7 +151,7 @@ Our new project comes preconfigured for React and all the other tools and compil
 {linenos=off}
     $ npm install
 
-This installs a bunch of dependencies like React, a few Webpack extensions, and a JavaScript transpiler (Babel) with a few bells and whistles. Sometimes parts of the installation fail. If it happens to you, try re-running `npm install` for the libraries that threw an error. I don't know why this happens, but you're not alone. I've been seeing this behavior for years.
+This installs a bunch of dependencies like React, a few Webpack extensions, and a JavaScript transpiler (Babel) with a few bells and whistles. Sometimes, parts of the installation fail. If it happens to you, try re-running `npm install` for the libraries that threw an error. I don't know why this happens, but you're not alone. I've been seeing this behavior for years.
 
 Now that we have all the basic libraries and tools, we have to install two more libraries:
 
