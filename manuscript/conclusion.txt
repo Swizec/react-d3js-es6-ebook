@@ -14,4 +14,4 @@ And that’s awesome!
 
 If you have any questions, poke me on twitter. I’m [@Swizec](https://twitter.com/Swizec). Or send me an email at swizec@swizec.com.
 
-Got consulting time with your package? 
+Got consulting time with your package? Schedule a call and I'll help you fix whatever's going wrong.
