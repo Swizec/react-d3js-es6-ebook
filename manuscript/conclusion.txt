@@ -1,13 +1,17 @@
 # Conclusion
 
-If you've followed the examples, you've just created your first visualization with React and d3.js. You’re amazing!
+You finished the book. That makes you my favorite person!
 
-If you've only read through the book, that’s awesome, too. You know much more about making reusable visualizations than you did an hour ago.
+If you followed the examples, you've created your first two visualizations with React and d3.js - something useful, and something fun. You’re amazing!
 
-You understand how the declarative nature of React works well with d3.js and vice-versa. You know what it takes to write reusable components and how much easier they make your life once you’ve built them. You know how to configure Webpack and Babel to create an awesome environment to work with.
+If you only read through the book, that’s cool, too. You know much more about making reusable visualizations than you did an hour ago.
+
+You understand why the declarative nature of React works well with d3.js and vice-versa. You know what it takes to write reusable components and how much easier they make your life once you’ve built them. You know how to configure Webpack and Babel to create an awesome environment to work with. You understand when using Redux is better than doing yourself, and when it's not.
 
 In short, you know everything you need to start making your own visualization components. At the very least, you know whether React and d3.js are a good tech stack for you.
 
 And that’s awesome!
 
 If you have any questions, poke me on twitter. I’m [@Swizec](https://twitter.com/Swizec). Or send me an email at swizec@swizec.com.
+
+Got consulting time with your package? Schedule a call and I'll help you fix whatever's going wrong.

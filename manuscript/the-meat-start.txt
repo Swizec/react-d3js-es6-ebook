@@ -7,24 +7,24 @@ We're going to build a subset of the code I used to [visualize the salary distri
 
 ![H1B salary distribution for engineers in California](images/engineers-california.png)
 
-If you skipped the [environment setup section](#the-environment), make sure you’ve installed the following dependencies:
+If you skipped the [environment setup section](#the-environment), make sure you have the following dependencies:
 
 * d3.js
 * React
 * Lodash
 
-You should also have some way of running a static file server, and a way to compile JSX into pure JavaScript. I like having a simple node.js server that enables hot loading via Webpack, and I like to compile with Babel.
+You should also have some way of running a static file server, and a way to compile JSX into pure JavaScript. I like having a small node.js server that supports hot loading via Webpack, and I like to compile with Babel.
 
 We’re going to put all of our code in a `src/` directory and serve the compiled version out of `static/`. A `public/data/` directory is going to hold our data.
 
-Before we begin, you should copy the dataset from the stub project that came with the book. It should be in the `public/data/` directory of your project.
+Before we begin, you should copy our dataset from the stub project you got with the book. Put it in the `public/data/` directory of your project.
 
 ## The basic approach
 
 Because SVG is an XML format that fits into the DOM, we can assemble it with React. To draw a `100px` by `200px` rectangle inside a grouping element moved to `(50, 20)` we can do something like this:
 
 {title="A simple rectangle in React",linenos=off,lang=jsx}
-    render: function () {
+    render() {
         return (
             <g transform="translate(50, 20)">
                 <rect width="100" height="200" />
@@ -32,7 +32,7 @@ Because SVG is an XML format that fits into the DOM, we can assemble it with Rea
         );
     }
 
-If the parent component puts this inside an `<svg>` element, the user will see a rectangle. At first glance, this looks cumbersome compared to traditional d3.js. But look closely:
+If the parent component puts this inside an `<svg>` element, the user will see a rectangle. At first glance, it looks cumbersome compared to traditional d3.js. But look closely:
 
 {title="A simple rectangle in d3.js",linenos=off,lang=js}
     d3.select("svg")
@@ -46,23 +46,25 @@ The d3.js approach outputs SVG as if by magic, and it looks cleaner because it's
 
 Well, actually, the pure d3.js example is 10 characters shorter. But trust me, React is way cooler.
 
-My point is that dealing with the DOM is not d3.js’s strong suit, especially once you're drawing a few thousand elements and your visualization slows down to a leisurely stroll… if you’re careful.
+Despite appearances, dealing with the DOM is not d3.js’s strong suit. Especially once you're drawing a few thousand elements and your visualization slows down to a leisurely stroll… if you’re careful.
 
-You always have to keep an eye on how many elements you're updating. React gives you all of that for free. Its primary purpose in life is knowing exactly which elements to update when some data changes.
+Updating DOM with d3 takes a lot of work: you have to keep track of all the elements you're updating, the ones that are new, what to remove, everything. React does all that for you. Its purpose in life is knowing exactly which elements to update, and which to leave unchanged. Update it and forget it. Amazing. 
 
 We're going to follow this simple approach:
 
 * React owns the DOM
 * d3 calculates properties
 
-This way, we can leverage both React and d3.js for their best functions and not much else.
+That lets us leverage both React and d3.js for what they're best at.
 
 {#the-architecture}
 ## The Architecture
 
-To make our lives easier, we're going to use a flow-down architecture where the entire application state is stored in one place. The architecture itself inspired by Flux, but the way we're structuring it uses less code and is easier to explain. The downside is that our version doesn't scale as well as Flux would.
+To make our lives easier, we're going to use a flow-down architecture inspired by Flux. All state is stored in one place - the main component - and data flows down via component properties. Changes travel back up the hierarchy via callbacks.
 
-If you don't know about Flux, don't worry; the explanations are self-contained. I only mention Flux to make your Googling easier and to give you an idea of how this approach compares.
+Our approach differs from Flux (and Redux) in that it doesn't need any extra code, which makes it easier to explain. The downside is that our version doesn't scale as well as Flux would.
+
+If you don't know about Flux or Redux, don't worry; the explanations are self-contained. I only mention them here to make your Googling easier and to give you an idea of how this approach compares. I explain Redux in more detail in the [Animating with React, Redux, and d3 chapter](#animating-react-redux).
 
 ![The basic architecture](images/architecture.jpg)
 
@@ -70,15 +72,15 @@ The idea is this:
 
 * The Main Component is the repository of truth
 * Child components react to user events
-* They announce changes up the chain of parents via callbacks
+* They announce changes using callbacks
 * The Main Component updates its truth
 * The real changes flow back down the chain to update UI
 
-This might look roundabout, but I promise, it’s awesome. It's definitely better than worrying about parts of the UI going out of date with the rest of the app.
+This might look roundabout, but I promise, it’s awesome. It's better than worrying about parts of the UI going out of date with the rest of the app. I could talk your ear off with debugging horror stories, but I'm nice, so I won't.
 
 ![Data flows down](images/architecture_data.jpg)
 
-Having your components rely solely on their properties is like having functions that rely only on their arguments. This means that if given the same arguments, they *always* render the same output.
+Having your components rely just on their properties is like having functions that rely just on their arguments. Given the same arguments, they *always* render the same output.
 
 If you want to read about this in more detail, Google "isomorphic JavaScript". You could also search for "referential transparency" and "idempotent functions".
 
@@ -86,26 +88,26 @@ Either way, functional programming for HTML. Yay!
 
 ## The HTML skeleton
 
-We’re building the whole interface with React, but we still need to begin with some HTML. It's going to take care of including files and giving our UI a container.
+We’re building our interface with React, but we still need some HTML. It's going to take care of including files and giving our UI a container.
 
 Make an index.html file that looks like this:
 
 {linenos=off,lang=html}
 <<[HTML skeleton](code_samples/index.html)
 
-These 20 lines do everything we need. The `<head>` sets some meta properties that Bootstrap recommends and includes Bootstrap's stylesheet. This is a good approach for when you only need Bootstrap's default styles and don't want to change anything. We'll use `require()` statements to load our own stylesheets with Webpack.
+These 20 lines do everything we need. The `<head>` sets some Bootstrap-recommended meta properties and includes Bootstrap's stylesheet. This is a good approach for when you only need Bootstrap's default styles and don't want to change anything. We'll use `require()` statements to load our own stylesheets with Webpack.
 
-The `<body>` tag creates a container and includes the JavaScript code. We didn’t really need a `<div>` inside a `<div>` like that, but I like to avoid taking over the whole `.container` with React. This gives you more flexibility for adding dumb static content.
+The `<body>` tag creates a container and includes the JavaScript code. We didn’t really need a `<div>` inside a `<div>` like that, but I like to avoid taking over the whole `.container` with React. This gives you more flexibility to add static content.
 
 At the bottom, we load our compiled JavaScript from `static/bundle.js`. This is a virtual path created by our dev server, so it doesn't point to any actual files.
 
 ## Structuring your React app
 
-As you can guess from the earlier chapter about architecture, we're going to structure your app into components. Deciding what to put into one component and what into another is one of the hardest problems in engineering.
+As you can guess from the architecture chapter, we're going to structure our app into components. Deciding what to put into one component and what into another is one of the hardest problems in engineering.
 
 Entire books have been written on the topic, so here's a rule of thumb that I like to use: If you have to use the word "and" to describe what your component does, then it should become two components.
 
-Once you have those two components, you can either make them child components of a bigger component, or you can make them separate. This depends on their re-usability.
+Once you have those two components, you can either make them child components of a bigger component, or you can make them separate. The choice depends on their re-usability.
 
 For instance, to build our H1B histogram visualization, we are going to build two top-level components:
 
@@ -114,19 +116,19 @@ For instance, to build our H1B histogram visualization, we are going to build tw
 
 Histogram is going to be a child of H1BGraph in the final hierarchy, but we might use it somewhere else. That makes it a good candidate for a stand-alone component.
 
-Other components such as the mean value line, filter controls, and title/description meta components are very specific to this use-case, so we'll build them as child components of H1BGraph. We still want to build them as separate components, and not as top-level parts of H1BGraph, so that they are easier to reason about, reusable locally within H1BGraph, and easier to write tests for.
+Other components such as the mean value dotted line, filter controls, and title/description meta components are specific to this use-case. We'll build them as child components of H1BGraph. Building them as separate components makes them easier to reason about, reusable locally within H1BGraph, and easier to write tests for.
 
 We're not going to write tests here, though. That's a topic for another book. Right now, we’re going to focus on React and d3.js.
 
-Each component will have its own folder inside `src/components/`, or its parent component, and at least an `index.jsx` file. Some will also have style definitions, child components, and other JavaScript files.
+Each component will have its own folder inside `src/components/`, or its parent component, and at least an `index.jsx` file. Some will have style definitions, child components, and other JavaScript files as well.
 
-In theory, each component should be accessible with `require('./MyComponent')`, and rendered with `<MyComponent {...params} />`. If a parent component has to know details about the implementation of a child component, something is going wrong.
+In theory, each component should be accessible with `require('./MyComponent')`, and rendered with `<MyComponent {...params} />`. If a parent component has to know details about the implementation of a child component, something is wrong.
 
 You can read more about these ideas by Googling ["leaky abstractions"](https://en.wikipedia.org/wiki/Leaky_abstraction), ["single responsibility principle"](https://en.wikipedia.org/wiki/Single_responsibility_principle), ["separation of concerns"](https://en.wikipedia.org/wiki/Separation_of_concerns), and ["structured programming"](https://en.wikipedia.org/wiki/Structured_programming). Books from the late 90's and early 2000's (when object oriented programming was The Future (tm)) are the best source of [curated] info in my experience.
 
 ## Bootstrap your app into place
 
-Let's start by bootstrapping our app into place. We're going to make a simple `src/index.jsx` file – we set that to be our main entry file in the environment section – and an empty `H1BGraph` component that renders an SVG element.
+Let's start by bootstrapping our app into place. We're going to make a simple `src/index.jsx` file – we set that to be our main entry file in [the environment section](#the-environment) – and an empty `H1BGraph` component that renders an SVG element.
 
 We start by importing `React`, `ReactDOM`, and `H1BGraph`.
 
@@ -135,7 +137,7 @@ We start by importing `React`, `ReactDOM`, and `H1BGraph`.
 
 `React` is, well, React. We need it for just about everything. `ReactDOM` is React's DOM renderer, which is new in v0.14. Rendering got split out of base React so that it's easier to build React apps for different render targets like canvas, WebGL, native mobile, etc. `H1BGraph` is going to be our main component.
 
-We're using ES6-style imports instead of `require()` because it gives us greater flexibility to import only the parts we want and it reads like a normal English sentence in most common-use cases. You'll see this play out more in future examples.
+We're using ES6-style imports instead of `require()` because it gives us greater flexibility to import only the parts we want and it reads like a normal English sentence in most common-use cases. You'll see this play out in future examples.
 
 The second argument must be a string even if you're importing a library.
 
@@ -151,9 +153,9 @@ All we need now is to render `H1BGraph` into the page.
 {crop-start-line=41,crop-end-line=50,linenos=off,lang=jsx}
 <<[Render H1BGraph onto page](code_samples/es6/index.jsx)
 
-This tells React to take control of the HTML element with class `h1bgraph` – a `<div>` inside the main container in our case – and render the `H1BGraph` component. We used `ReactDOM.render` because we're rendering for and in a browser. Other renderers exist, but they're not important for us right now.
+This tells React to take control of the HTML element with class `h1bgraph` – a `<div>` inside the main container in our case – and render the `H1BGraph` component. We used `ReactDOM.render` because we're rendering for and in a browser. Other renderers exist, but they're not important right now.
 
-You can think of this function call as a *"Give me a Thing That Does Stuff"*. It doesn't have to stand on its own. You could wrap it in a jQuery plugin, use it inside a Backbone or Angular view, or in whatever you're already using if you wanted to. That's how you can make a gradual transition towards React that doesn't force you to throw existing code away.
+You can think of this function call as a *"Give me a Thing That Does Stuff"*. It doesn't have to stand on its own. You could wrap it in a jQuery plugin, use it inside a Backbone or Angular view, or in whatever else you're already used to. That's how you can make a gradual transition towards React that doesn't force you to throw existing code away.
 
 If you've kept `npm start` running in the background, it should now complain that `components/H1BGraph` doesn't exist. Let's fix that and get an empty `<svg>` element rendering.
 
@@ -161,19 +163,19 @@ If you've kept `npm start` running in the background, it should now complain tha
 
 All of our components are going to start the same way – some imports, a class with a `render()` method, and a default module export. That's the minimum we need in `<component>/index.jsx` to define a component that doesn't break our build.
 
-Our build is breaking right now. The main entry file tries to import and render `H1BGraph`, but it doesn't exist yet. Let's start a new file in `src/components/H1BGraph/index.jsx`.
+Right now, the main entry file tries to import and render `H1BGraph`, but it doesn't exist yet. Let's start a new file in `src/components/H1BGraph/index.jsx`.
 
 {crop-start-line=5,crop-end-line=7,linenos=off,lang=jsx}
 <<[Basic imports](code_samples/es6/H1BGraph/index.jsx)
 
-We import React and a base `Component` class. We have to import `React` even if we don't use it explicitly because we'll get a "React not defined" error otherwise. We'll use the `Component` class to build our own components off of.
+We import React and a base `Component` class. We have to import `React` even if we don't use it explicitly because Webpack throws a "React not defined" error otherwise. We'll use the `Component` class to build our own components off of.
 
 We also import `d3` because we'll use it to load data later. 
 
 {crop-start-line=13,crop-end-line=25,linenos=off,lang=jsx}
 <<[Empty H1BGraph component](code_samples/es6/H1BGraph/index.jsx)
 
-Then we define a component that renders an empty `<svg>` tag inside a `<div>`. A component must have at least a `render()` function; otherwise, React throws an error when it tries to render.
+Then we define a component that renders an empty `<svg>` tag inside a `<div>`. A component must have at least a `render()` function; otherwise, React throws an error when it tries to render. With v0.14 we also got stateless functional components, which are essentially just the `render()` function. They don't feature in this Histogram example, but you can see some in the animation chapter.
 
 We're using ES6's concept of classes and class inheritance to extend React's basic `Component`, which we imported earlier. This is widely accepted as more readable than JavaScript's old/standard prototypical inheritance.
 
@@ -184,11 +186,11 @@ You can still use `React.createClass` if you want. It works just fine and is equ
 
 In the end, we export `H1BGraph` so other parts of the codebase can import it. We define it as the `default` export because this particular file only exports a single class.
 
-If we had multiple things to export, we'd use named exports. They look like this: `export Thing`. You can also define the Thing anonymously when exporting, like this: `export function Thing () { // ... }`.
+If we had multiple things to export, we'd use named exports. They look like this: `export { Thing }`. You can also define the Thing anonymously when exporting, like this: `export function Thing () { // ... }`.
 
-Using default exports makes our components easier to import. You just have to write a simple import like we saw earlier: `import Thing from 'file'`. To import named exports, you have to specify them inside curly braces: `import { Thing1, Thing2 } from 'file'`.
+Using default exports makes our components easier to import - `import Thing from 'file'`. To import named exports, you have to specify them inside curly braces: `import { Thing1, Thing2 } from 'file'`.
 
-Hot reloading and continuous compilation should have done their magic now, and you should see an empty `<svg>` element in your page. You have to keep `npm start` running and a browser window pointing to `localhost:3000` for that.
+Hot reloading and continuous compilation should have done their magic by now, and you should see an empty `<svg>` element in your page. You have to keep `npm start` running and a browser window pointing to `localhost:3000` for that.
 
 Congratz! You just made your first React component with ES6 classes. Or at least the first in this book. You're awesome!
 

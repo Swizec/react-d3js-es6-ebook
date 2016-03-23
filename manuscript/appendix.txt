@@ -1,5 +1,5 @@
 {#appendix}
-# Appendix
+# Appendix - Browserify-based environment
 
 When I first wrote this book in the spring of 2015, I came up with a build-and-run system based on Grunt and Browserify. I also suggested using Bower for client-side dependencies.
 

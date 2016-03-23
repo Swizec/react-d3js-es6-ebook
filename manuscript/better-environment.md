@@ -1,43 +1,41 @@
 {#the-environment}
 # A good work environment
-If you already know how to set up the perfect development environment for modern JavaScript work, go ahead and skip this section. If you don't, there are a few things you should know.
+If you already know how to set up the perfect development environment for modern JavaScript, go ahead and skip this section. Otherwise, keep reading.
 
-In order to be most effective, we need a good work environment. We're after three things:
+A good work environment helps us get the most out of our time. We're after three things:
 
  * code should re-compile when we change a file
  * page should update automatically when the code changes
  * dependencies and modules should be simple to manage
 
-When I first wrote this chapter in April 2015, I suggested using a combination of Browserify, Grunt, NPM, and Bower. This was the wrong approach. It was complicated to set up, it wasn't very extensible, and it took a while to compile everything.
+When I first wrote this chapter in April 2015, I suggested a combination of Browserify, Grunt, NPM, and Bower. This was the wrong approach. It was complicated, it wasn't very extensible, and it was slow.
 
-The project on which this book is based takes almost 7 seconds to compile, and Grunt's file change detection isn't as smooth as it could be. On top of that, you also have to wait for `live-server` to detect the compiled files' changes.
+There were no sourcemaps, which meant your browser's error reporting was useless. There was no hot loading, which meant your code had to process a gigantic 80,000 datapoint file every time you made a change.
 
-When there's an error in your code, the browser has no idea where it happened because it only sees the compiled file.
+It was a mess. I'm sorry I told you to use it. The old system is in included in [the appendix](#appendix), if you're curious.
 
-To make matters worse, your page loses state every time it auto-reloads. That happens twice per file change – first when the server sees a file has changed, and again when Grunt compiles the code and changes the compiled file.
-
-It's a mess. I'm sorry I told you to use it. The old system is included in [the appendix](#appendix) for the curious and those stuck in legacy environments.
+The new system is great. I promise. I use it all the time :)
 
 ## Bundle with Webpack
-Instead of using the old setup, I think the best choice now is to use a combination of Webpack and Babel.
+Instead of using the old setup, I now think the best choice is to use a combination of Webpack and Babel.
 
 Webpack calls itself a *"flexible unbiased extensible module bundler"*, which sounds like buzzword soup. At its most basic, Webpack gives you the ability to organize code into modules and `require()` what you need, much like Browserify.
 
 Unlike Browserify however, Webpack comes with a sea of built-in features and a rich ecosystem of extensions called plugins. I can't hope to know even half of them, but some of the coolest I've used are plugins that let you `require()` Less files *with* magical Less-to-CSS compilation, plugins for `require`-ing images, and JavaScript minification.
 
-Webpack can also solve two more annoyances — losing state when loading new code and accurately reporting errors. So we can add two more requirements to our work environment checklist (for a total of five):
+Using Webpack allows us to solve two more annoyances — losing state when loading new code and accurately reporting errors. So we can add two more requirements to our work environment checklist (for a total of five):
 
   * code should re-compile when we change a file
   * page should update automatically when the code changes
   * dependencies and modules should be simple to manage
-  * page shouldn't lose state when loading new code
-  * browser should report errors accurately in the right source files
+  * page shouldn't lose state when loading new code (hot loading)
+  * browser should report errors accurately in the right source files (sourcemaps)
 
 ## Compile with Babel
 
 Webpack can't do all this alone though – it needs a compiler.
 
-We're going to use Babel to compile our JSX and ES6 code into the kind of code all browsers understand: ES5. Don't worry if you're not ready to learn ES6; you can read the ES5 version of React+d3.js.
+We're going to use Babel to compile our JSX and ES6 code into the kind of code all browsers understand: ES5. Don't worry, if you're not ready to learn ES6; you can read the ES5 version of React+d3.js.
 
 Babel isn't really a compiler because it produces JavaScript, not machine code. That being said, it's still important at this point. According to the JavaScript roadmap, browsers aren't expected to fully support ES6 until some time in 2017. That's a long time to wait, so the community came up with transpilers which let us use some ES6 features *right now*. Yay!
 
@@ -65,13 +63,13 @@ Babel developers have created a [playground that live-compiles](https://babeljs.
 
 The quickest way to set this up is to use Dan Abramov's [react-transform-boilerplate](https://github.com/gaearon/react-transform-boilerplate) project. It's what I use for new projects these days.
 
-If you know how to do this already, skip ahead to the [Visualizing Data with React.js](#the-meat-start) chapter. In the rest of this chapter, I'm going to show you how to get started with the boilerplate project. I'll also explain some of the moving parts that make it tick.
+If you know how to do this already, skip ahead to the [Visualizing Data with React.js](#the-meat-start) chapter. In the rest of this chapter, I'm going to show you how to get started with the boilerplate project. I'm also going to explain some of the moving parts that make it tick.
 
 ## NPM for dependencies and tools
 
-NPM is node.js’s default package manager. Originally developed as a dependency management tool for node.js projects, it's since taken hold of the JavaScript world as a way to manage the toolbelt, and with Webpack's growing popularity, a way to manage client-side dependencies as well.
+NPM is node.js’s default package manager. Originally developed as a dependency management tool for node.js projects, it's since taken hold of the JavaScript world as a way to manage the toolbelt. With Webpack's growing popularity and its ability to recognize NPM modules, NPM is fast becoming *the* way to manage client-side dependencies as well.
 
-That's because Webpack automatically recognizes NPM modules, which means we are going to use NPM to install both our toolbelt dependencies (like Webpack) and our client-side dependencies (like React and d3.js).
+We're going to use NPM to install both our toolbelt dependencies (like Webpack) and our client-side dependencies (like React and d3.js).
 
 You can get NPM by installing node.js from [nodejs.org](http://nodejs.org). Webpack and our dev server will run in node.
 
@@ -85,7 +83,7 @@ If that worked, you're ready to go. If it didn't, Google is your friend.
 At this point, there are two ways to proceed:
 
 * You can continue with the step-by-step instructions using a boilerplate.
-* If you bought the Engineer or Business package, you can use the included stub project that has everything you need.
+* You can use the stub project included with the book. It has everything ready to go.
 
 ## Step-by-step with boilerplate
 
@@ -100,7 +98,7 @@ Head to a directory of your choosing, and run:
 
 This makes a local copy of the boilerplate project. Now that we've got the base code, we should make it our own.
 
-Our first step is to rename the directory and remove Git's version history and ties to the original project. This will allow us to turn it into our own project.
+Our first step is to rename the directory and remove Git's version history and ties to the original project. This will let us turn it into our own project.
 
 {linenos=off}
     $ mv react-transform-boilerplate react-d3-example
@@ -111,7 +109,7 @@ We now have a directory called `react-d3-example` that contains some config file
 
 ### Make it your own
 
-To make it our own, we have to change some information inside `package.json`: the name, version, and description.
+To make the project our own, we have to change some information inside `package.json`: the name, version, and description.
 
 {linenos=off,lang=json}
 		{
@@ -146,31 +144,32 @@ If you want to use Git to manage source code versioning, now is a good time to s
     $ git add .
     $ git commit -a -m "Start project from boilerplate"
 
-Great. Now we have a project that we've signed.
+Great. Now we have a project signed in our name.
 
 Our new project comes preconfigured for React and all the other tools and compilers we need to run our code. Install them by running:
 
 {linenos=off}
     $ npm install
 
-This will install a bunch of dependencies like React, a few Webpack extensions, and a JavaScript transpiler (Babel) with a few bells and whistles. Sometimes, parts of the installation fail. If it happens to you, try re-running `npm install` for the libraries that threw an error. I don't know why this happens, but you're not alone. I've been seeing this behavior for years.
+This installs a bunch of dependencies like React, a few Webpack extensions, and a JavaScript transpiler (Babel) with a few bells and whistles. Sometimes parts of the installation fail. If it happens to you, try re-running `npm install` for the libraries that threw an error. I don't know why this happens, but you're not alone. I've been seeing this behavior for years.
 
-Now that we have all the basic libraries and tools we need to run our code, we have to install three more things:
+Now that we have all the basic libraries and tools, we have to install two more libraries:
 
 1. `d3` for drawing
 2. `lodash` for some utility functions
-3. `autobind-decorator`, which I will explain later.
 
 {linenos=off}
-    $ npm install --save d3 lodash autobind-decorator
+    $ npm install --save d3 lodash
 
 The `--save` option saves them to `package.json`.
 
 ## Add Less compiling
 
-Less is my favorite way to write stylesheets. It looks almost like traditional CSS, but it gives you the ability to use variables, nest definitions, and write mixins. We won't need much of this for the H1B graphs project, but nesting will make our style definitions nicer, and Less will make your life easier in bigger projects.
+Less is my favorite way to write stylesheets. It looks almost like traditional CSS, but it gives you the ability to use variables, nest definitions, and write mixins. We won't need much of this for the H1B graphs project, but nesting will make our style definitions nicer, and Less makes your life easier in bigger projects.
 
-Webpack can handle compiling Less to CSS for us. We just have to install a couple of Webpack loaders and add three lines to the config.
+Yes, there's a raging debate about stylesheets versus inline styling. I like stylesheets for now.
+
+Webpack can handle compiling Less to CSS for us. We need a couple of Webpack loaders and add three lines to the config.
 
 Let's start with the loaders:
 
@@ -179,7 +178,7 @@ Let's start with the loaders:
 
 Remember, `--save` adds `style-loader` and `less-loader` to package.json. The `style-loader` takes care of transforming `require()` calls into `<link rel="stylesheet"` definitions, and `less-loader` takes care of compiling LESS into CSS.
 
-To add them to our build step, we have to go into `webpack.config.dev.js`, find the `loaders: [` definition, and add a new object like this:
+To add them to our build step, we have to go into `webpack.config.dev.js`, find the `loaders: [` definition, and add a new object. Like this:
 
 {crop-start-line=4,crop-end-line=17,linenos=on,starting-line-number=19}
 <<[Add LESS loaders](code_samples/env/webpack.config.dev.js)
@@ -203,16 +202,16 @@ This tells express.js, which is the framework our simple server uses, to route a
 
 ## Webpack nice-to-haves
 
-Now we'll add two nice-to-haves for `webpack.config.dev.js`. They aren't super important, but I like to add them to make my life a little easier.
+Whenever I'm working with React, I like to add two nice-to-haves to `webpack.config.dev.js`. They're not super important, but they make my life a little easier.
 
-I like to add the `.jsx` extension to the list of files loaded with Babel. This lets me write React code in `.jsx` files. I know what you're thinking: writing files like that is no longer encouraged by the community, but hey, it makes my Emacs behave better.
+First, I add the `.jsx` extension to the list of files loaded with Babel. This lets me write React code in `.jsx` files. I know what you're thinking: writing files like that is no longer encouraged by the community, but hey, it makes my Emacs behave better.
 
 {crop-start-line=154,crop-end-line=169,linenos=off}
 <<[Add .jsx to Babel file extensions](code_samples/env/webpack.config.dev.js)
 
 We changed the `test` regex to add `.jsx`. You can read in more detail about how these configs work in later parts of this chapter.
 
-Finally, I like to add a `resolve` config to Webpack. This lets me load files without writing their extensions. It's a small detail, but it makes your code cleaner.
+Second, I like to add a `resolve` config to Webpack. This lets me load files without writing their extension. It's a small detail, but it makes your code cleaner.
 
 {crop-start-line=175,crop-end-line=182,linenos=off}
 <<[Add resolve to webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
@@ -222,15 +221,15 @@ It's a list of file extensions that Webpack tries to guess when a path you use d
 {#enable-es7}
 ## Optionally enable ES7
 
-Examples in this book are written in ES6, also known as ECMAScript2015. If you're using the boilerplate approach or the stub project that came with the book, all ES6 features work out of the box in any browser thanks to the Babel 6 compiler, which transpiles ES6 into ES5.
+Examples in this book are written in ES6, also known as ECMAScript2015. If you're using the boilerplate approach or the stub project you got with the book, all ES6 features work in any browser. The Babel 6 compiler makes sure of that by transpiling ES6 into ES5.
 
 The gap between ES5 (2009/2011) and ES6 (2015) has been long, but now the standard has started moving fast once again. In fact, ES7 is promised to be released some time in 2016.
 
-Even though ES7 hasn't been standardized yet, you can already use some of its features if you enable `stage-0` support in Babel. Everything in `stage-0` is stable enough to use in production, but there is a small chance the feature/syntax will change when the new standard officially comes out.
+Even though ES7 hasn't been standardized yet, you can already use some of its features if you enable `stage-0` support in Babel. Everything in `stage-0` is stable enough to use in production, but there is a small chance the feature/syntax will change when the new standard becomes official.
 
-You don't need `stage-0` to follow the examples in this book, but I do use one or two syntax sugar features. When I do use something from ES7, I will explicitly mention the ES6 alternative.
+You don't need `stage-0` to follow the examples in this book, but I do use one or two syntax sugar features. Whenever we use something from ES7, I will mention the ES6 alternative.
 
-To enable `stage-0`, you have to first install `babel-preset-stage-0` like this:
+To enable `stage-0`, you have to first install `babel-preset-stage-0`. Like this:
 
 {linenos=off}
     $ npm install --save-dev babel-preset-stage-0
@@ -240,13 +239,13 @@ Then enable it in `.babelrc`:
 {crop-start-line=4,crop-end-line=11,linenos=off,lang=json}
 <<[Add stage-0 preset to .babelrc](code_samples/env/babelrc)
 
-That's it. You can now use fancy ES7 features in your code and Babel will transpile them into normal ES5 that all browsers support.
+That's it. You can use fancy ES7 features in your code and Babel will transpile them into normal ES5 that all browsers support.
 
 Don't worry if you don't understand how `.babelrc` works. You can read more about the environment in the [Environment in depth](#env-in-depth) chapter.
 
 ## Check that everything works
 
-Your environment should be ready to get started now. Let's try it out. First, start the dev server:
+Your environment should be ready. Let's try it out. First, start the dev server:
 
 {linenos=off}
     $ npm start
@@ -289,9 +288,9 @@ Everything else is optional.
 
 Webpack is where the real magic happens, so this is the most important configuration file in your project. It's just a JavaScript file though, so there's nothing to fear.
 
-Most projects have two versions of this file: a dev version and a prod version. The first is geared more towards what we need in development – a compile step that leaves our JavaScript easy to debug – while the second is geared towards what we need in production – compressed and uglified JavaScript that's quick to load.
+Most projects have two versions of this file: a development version and a production version. The first is geared more towards what we need in development – a compile step that leaves our JavaScript easy to debug – while the second is geared towards what we need in production – compressed and uglified JavaScript that's quick to load.
 
-Since both files are so similar, we're only going to look at the dev version.
+Both files look alike, so we're going to focus on the dev version.
 
 It comes in four parts:
 
@@ -302,7 +301,7 @@ It comes in four parts:
 
  - **Output**, which tells Webpack where to put the result. This is what our index.html file loads;
 
- - **Plugins**, which tells Webpack what plugins to use when building our code;
+ - **Plugins**, which tells Webpack which plugins to use when building our code;
 
  - and **Loaders**, which tells Webpack about the different file loaders we'd like to use.
 
@@ -321,13 +320,11 @@ In our case, it looks like this:
 
 We specify that `./src/index` is the main file. In the next section, you'll see that this is the file that requires our app and renders it into the page.
 
-The `webpack-hot-middleware/client` line enables Webpack's hot loading, which can load new versions of JavaScript files without reloading the page.
-
-If we wanted to compile multiple independent apps with a single Webpack config file, we could add more files. A common example is when you have a separate admin dashboard app for some users while providing a friendly end-user app for others.
+The `webpack-hot-middleware/client` line enables Webpack's hot loading. It loads new versions of JavaScript files without reloading the page.
 
 #### Output
 
-The output section specifies which files get the output. Our config is going to put all compiled code into a single `bundle.js` file, but it's common to have multiple output files. In the case of an admin dashboard and a user-facing app, this would allow us to avoid loading unnecessary JavaScript for users who don't need every type of functionality.
+The output section specifies which files get the output. Our config is going to put all compiled code into a single `bundle.js` file, but it's common to have multiple output files. If we had an admin dashboard and a user-facing app, this would allow us to avoid loading unnecessary JavaScript for users who don't need every type of functionality.
 
 The config looks like this:
 
@@ -353,7 +350,7 @@ The `NoErrorsPlugin` makes sure that Webpack doesn't error out and die when ther
 
 Finally, we come to the loaders section. Much like with plugins, there is a universe of Webpack loaders out there, and I've barely scratched the surface.
 
-If you can think of it, there's likely a loader for it. At my day job, we use a Webpack loader for everything from JavaScript code to images and font files.
+If you can think of it, there's a loader for it. At my day job, we use a Webpack loader for everything from JavaScript code to images and font files.
 
 For the purposes of this book, we don't need anything that fancy. We just need a loader for JavaScript and styles.
 
@@ -374,7 +371,7 @@ My friend Juho Vepsäläinen has also written a marvelous book that dives deeper
 
 ### Dev server
 
-The dev server that comes with Dan's boilerplate is based on the Express framework. It's a popular framework for building websites in node.js. Other boilerplates use different approaches.
+The dev server that comes with Dan's boilerplate is based on the Express framework. It's one of the most popular frameworks for building websites in node.js. 
 
 Many better and more in-depth books have been written about node.js and its frameworks. In this book, we're only going to take a quick look at some of the key parts.
 
@@ -430,23 +427,23 @@ I've been coding since I was a kid, and there's still no consensus. Most people 
 
 But in recent months (years?), a solution has appeared: the `.eslintrc` file. It lets you define project-specific code styles that are programmatically enforced by your editor.
 
-From what I've heard, most modern editors support `.eslintrc` out of the box, so all you have to do is include the file in your project. When you do that, your editor keeps encouraging you to write beautiful code.
+From what I've heard, most modern editors support `.eslintrc` out of the box, so all you have to do is include the file in your project. Do that and your editor keeps encouraging you to write beautiful code.
 
 The `eslint` config that comes with Dan's boilerplate loads a React linter plugin and defines a few React-specific rules. It also enables JSX linting and modern ES6 modules stuff. By the looks of it, Dan is a fan of single quotes.
 
 {linenos=off}
 <<[.eslintrc for React code](code_samples/env/eslintrc)
 
-I haven't really had a chance to play around with linting configs like these. Emacs defaults have been good to me so far, but I think these types of configs are a great idea. The biggest problem in a team is syncing everyone's linter configs, but if you can put a file like this in your Git project, then **BAM!**, everyone's always in sync.
+I haven't really had a chance to play around with linting configs like these to be honest. Emacs defaults have been good to me for years. But these types of configs are a great idea. The biggest problem in a team is syncing everyone's linters, and if you can put a file like this in your Git project - **BAM!**, everyone's always in sync.
 
 You can find a semi-exhaustive list of options in [this helpful gist](https://gist.github.com/cletusw/e01a85e399ab563b1236).
 
 ## That's it. Time to play!
 
-By this point, you not only have a working environment in which to write your code, but you also understand how it does what it does, at least from a high-level perspective. The details are far too intricate and, frankly, not that important to your project as a whole.
+By this point, you have a working environment in which to write your code, and you understand how it does what it does. On a high level at least. And you don't need the details until you want to get fancy anyway.
 
-That's how environments usually are: a combination of cargo culting and rough understanding.
+That's how environments are: a combination of cargo culting and rough understanding.
 
-What we care about is that our ES6 code compiles into ES5 so that everyone can run it. We also have it set so that our local version automatically loads new code.
+What we care about is that our ES6 code compiles into ES5 so that everyone can run it. We also have it set so that our local version hot loads new code.
 
 In the next section, we're going to start building a visualization.
