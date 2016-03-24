@@ -2,7 +2,7 @@
 
 I wrote this book for you as an experiment. The theory we’re testing is that technical content works better as a short e-book than as a long article.
 
-You see, the issue with online article is that they live and die by their length. As soon as you surpass 700 words, everything falls apart. Readers wander off to a different tab in search of memes and funny tweets, never to come back.
+You see, the issue with online articles is that they live and die by their length. As soon as you surpass 700 words, everything falls apart. Readers wander off to a different tab in search of memes and funny tweets, never to come back.
 
 This hurts my precious writer's ego, but more importantly, it sucks for you. If you're not reading, you're not learning.
 
@@ -12,7 +12,7 @@ I’m counting on you to take some time away from the internet, to  sit down and
 
 You’re counting on me to have invested more time, effort, and care in crafting this than I would have invested in an article. I have.
 
-I’ve tried to keep this book as concise as possible. iA Writer estimates it will take you about an hour to read *React+d3.js*, but playing with the examples might take some time too.
+I’ve tried to keep this book as concise as possible. iA Writer estimates it will take you about an hour to read *React+d3.js*, but playing with the examples might take some time, too.
 
 ## Why you should read React+d3.js
 
@@ -28,7 +28,7 @@ I’m also going to assume some knowledge of d3.js. Since it isn’t a widely-us
 
 React is a new kid on the block, so I’m going to assume you're not quite as familiar with it. We’re not going to talk about all the details, but you’ll be fine, even if this is your first time looking at React.
 
-The examples in React+d3.js ES6 edition, are written in ES6 - ECMAScript2015. Familiarity with the new syntax and language constructs will help, but I'm going to explain everything new that we use.
+The examples in React+d3.js ES6 edition are written in ES6 - ECMAScript2015. Familiarity with the new syntax and language constructs will help, but I'm going to explain everything new that we use.
 
 ## How to read this book
 
@@ -62,7 +62,7 @@ Removed code looks like this:
 
 ## ES5 and ES6 versions
 
-You are reading React+d3.js ES6 edition. Functionally it's almost the same as the ES5 version, but has a better file structure, and some additional content.
+You are reading React+d3.js ES6 edition. Functionally, it's almost the same as the ES5 version, but it has a better file structure and some additional content.
 
 You can read either version depending on which version of JavaScript you're more comfortable with. Keep in mind, the ES5 version isn't getting further updates.
   
@@ -103,22 +103,19 @@ React + d3.js: a powerful combination indeed.
 We're going to use a lot of buzzwords in this book. Hell, we've used some already. Most will get a thorough explanation further on, but let me give you a quick rundown.
 
 - **Babel**, a JavaScript transpiler that makes your code work on all browsers.
-- **Git**, a version control system. It's pretty popular, you probably know it :)
-- **Webpack**, a module packager for JavaScript. Makes it more convenient to organise code into multiple files. Provides cool plugins.
-- **JSX**, a language/syntax that lets you use `<a href="/example">` as a native part of JavaScript
+- **ECMAScript2016**, official name for the part of ES7 we're getting in 2016
 - **ES5**, any JavaScript features that existed before June 2015
 - **ES6/ECMAScript2015**, any JavaScript features released as part of the new standard in June 2015 (think `=>` and stuff)
 - **ES7**, the standard we were promised for 2016, but also a catch-all for future JavaScript features
-- **ECMAScript2016**, official name for the part of ES7 we're getting in 2016
-- **npm**, most popular package manager for JavaScript libraries
-- **H1B**, a popular type of work visa in the United States
 - **fat arrows**, a new way to define functions in ES6 (`=>`)
+- **Git**, a version control system. It's pretty popular, you probably know it :)
+- **H1B**, a popular type of work visa in the United States
+- **JSX**, a language/syntax that lets you use `<a href="/example">` as a native part of JavaScript
 - **Mustache**, a popular way to write HTML templates for JavaScript code. Uses `{{ ... }}` syntax.
+- **npm**, most popular package manager for JavaScript libraries
 - **props**, component properties set when rendering
 - **state**, a local dictionary of values available in most components
-
-[anything more that looks buzzwordy?]
-[can we order those alphabetically please?]
+- **Webpack**, a module packager for JavaScript. Makes it more convenient to organize code into multiple files. Provides cool plugins.
 
 ## JSX
 
@@ -143,6 +140,6 @@ As you can see, HTML code translates to `React.createElement` calls with attribu
 
 You’ll see that anything from a simple value to a function or an object works equally well.
 
-I'm not sure yet whether this is better than separate template files in Mustache or similar. There are benefits to both approaches. I mean, would you let a designer write the HTML inside your JavaScript files? I wouldn't, but it's definitely better than manually `+`-ing strings or Angular's approach of putting everything into HTML. Considerably better.
+I'm not sure yet whether this is better than separate template files in Mustache or something similar. There are benefits to both approaches. I mean, would you let a designer write the HTML inside your JavaScript files? I wouldn't, but it's definitely better than manually `+`-ing strings or Angular's approach of putting everything into HTML. Considerably better.
 
 If you skipped the setup section and don't have a JSX compilation system set up, you should do that now. You can also use the project stub that came with your book.

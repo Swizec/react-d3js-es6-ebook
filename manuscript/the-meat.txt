@@ -9,7 +9,7 @@ We start by adding three methods to `H1BGraph` in `src/components/H1BGraph/index
 {crop-start-line=54,crop-end-line=72,linenos=off,lang=jsx}
 <<[Base methods to load data](code_samples/es6/H1BGraph/index.jsx)
 
-With ES6 classes, we no longer use `getInitialState` to set the initial state of our component. That job goes to the constructor - a function that's called every time our class is instantiated into an object. We use `super()` first to call the parent's constructor. React's `Component` constructor in this case.
+With ES6 classes, we no longer use `getInitialState` to set the initial state of our component. That job goes to the constructor - a function that's called every time our class is instantiated into an object. We use `super()` first to call the parent's constructor, which is React's `Component` constructor in this case.
 
 After calling `super()`, we can use `this.state` as a dictionary that holds our component's current state. It's best to avoid using state as much as possible and rely on props instead.
 
@@ -76,7 +76,7 @@ We cleaned up the keys, parsed dates into `Date()` objects using d3's built-in d
 
 ### Add visual feedback that loading is happening
 
-Loading and parsing 81,000 data points takes some time. Let's tell users what they're waiting for with some explainer text when.
+Loading and parsing 81,000 data points takes some time. Let's tell users what they're waiting for with some explainer text.
 
 {crop-start-line=244,crop-end-line=253,linenos=off,lang=jsx}
 <<[Loading indicator](code_samples/es6/H1BGraph/index.jsx)
@@ -91,7 +91,7 @@ Marvelous.
 
 ## Making your first dataviz component – a Histogram
 
-Now that our data is loading, it’s time to start drawing. We’ll start with a basic histogram, then add an axis, and an indicator for the mean value (also known as the "average").
+Now that our data is loading, it’s time to start drawing. We’ll start with a basic histogram, then add an axis and an indicator for the mean value (also known as the "average").
 
 A histogram component isn't unique to our project, so we're going to build it as a standalone component. Create a new directory `src/components/Histogram/` with an empty `index.jsx` file.
 
@@ -131,12 +131,12 @@ For instance, all d3 layouts let you define a value accessor. You define it by c
 
 This is great when you're using d3 alone. It means there's less code to write.
 
-It's less great when you're using React and want to avoid state. The best approach I've found to mitigate this issue, is to rely on three methods: `constructor`, `componentWillReceiveProps`, and `update_d3`. Like this:
+It's less great when you're using React and want to avoid state. The best approach I've found to mitigate this issue is to rely on three methods: `constructor`, `componentWillReceiveProps`, and `update_d3`. Like this:
 
 {crop-start-line=27,crop-end-line=47,linenos=off,lang=jsx}
 <<[D3.js management functions](code_samples/es6/Histogram/Histogram.jsx)
 
-In `constructor()`, we create the d3 objects and give them any defaults we know about. Then call `this.update_d3`. In `componentWillReceiveProps()`, we call `this.update_d3` every time props change. `update_d3()` does the heavy lifting - it updates d3 objects using current component properties.
+In `constructor()`, we create the d3 objects and give them any defaults we know about. Then we call `this.update_d3`. In `componentWillReceiveProps()`, we call `this.update_d3` every time props change. `update_d3()` does the heavy lifting - it updates d3 objects using current component properties.
 
 The other approach to this state problem would be to create new objects on every `render()`, but that feels wasteful. Maybe I'm just old fashioned.
 
@@ -214,16 +214,16 @@ Now we need the `makeBar` method. It looks like this:
 
 This code uses `Histogram`'s properties and scales to calculate attributes for each bar, then passes the `props` object to a subcomponent called `HistogramBar` using a spread - `{...props}`. You can think of it as shorthand for writing `percent={percent} x={this.props.axisMargin} y={this.yScale(bar.x)} …`. 
 
-Similar to ES6 spreads, but better because it supports objects as well as arrays and function arguments.
+This is similar to ES6 spreads, but it’s better because it supports objects as well as arrays and function arguments.
 
 Now, let’s add the `HistogramBar` subcomponent.
 
 {crop-start-line=247,crop-end-line=278,linenos=off,lang=jsx}
 <<[HistogramBar component](code_samples/es6/Histogram/Histogram.jsx)
 
-There's nothing special here: we take some properties and return a grouping element with a rectangle and a text label. Components like these are great candidates to for functional stateless components - components defined as functions which render something and don't think too much.
+There's nothing special here: we take some properties and return a grouping element with a rectangle and a text label. Components like these are great candidates for functional stateless components - components defined as functions which render something and don't think too much.
 
-To do that, we would replace `class Foo extends Component { ... render() { return (<Stuff />) } }` with `const Foo () => <Stuff />`. Left as an exercise for the reader :)
+To do that, we would replace `class Foo extends Component { ... render() { return (<Stuff />) } }` with `const Foo () => <Stuff />`. I left it as an exercise for the reader :)
 
 Anyway, in `HistogramBar`, we used an ES6 string template to build the `transform` property, and we added some ad-hoc vertical padding to the bar to make it look better. We also used some ad-hoc calculations to place the `text` element at the end of the bar. This makes our histogram easier to read because every bar has its percentage rendered on the crucial right edge.
 
@@ -252,13 +252,13 @@ Then, we can add the histogram component to our `render` method.
 
 We put all our props in a `params` dictionary: dimensions, number of bins, value accessor. It makes our code easier to read.
 
-Inside the `return` statement, we make sure our `<svg>` element has a width and a height, and we add the `<Histogram .. />` component. Once more we use the spread trick to pass many `params` at once. We keep `data` as a separate attribute to make it more apparent that this component uses data.
+Inside the `return` statement, we make sure our `<svg>` element has a width and a height, and we add the `<Histogram .. />` component. Once more, we use the spread trick to pass many `params` at once. We keep `data` as a separate attribute to make it more apparent that this component uses data.
 
 If you kept `npm start` running, your browser should show something like this:
 
 ![Unstyled Histogram](images/unstyled_histogram.png)
 
-Wow, so much effort went into those labels, and you can't even see them. Let's add some styling to `src/components/Histogram/style.less` to make the Histogram prettier:
+Wow. So much effort went into those labels, and you can't even see them. Let's add some styling to `src/components/Histogram/style.less` to make the Histogram prettier:
 
 {crop-start-line=5,crop-end-line=19,linenos=off,lang=less}
 <<[style.less](code_samples/style.less)
@@ -488,7 +488,7 @@ We keep `makePick` empty for now because we'll define it later in the [propagati
 
 Using `componentWillMount` to define the default state is an exception. You're supposed to define it in the class constructor, but we don't have access to props there. You can't populate an object property before the property exists. Remember, constructors are called while an object is still being created.
 
-Yes, this tells us we're doing something wrong. Didn't we say all state lies in the top component? We did. But we can create a smoother user experience, if we grit our teeth and make some compromises. User experience trumps perfect engineering.
+Yes, this tells us we're doing something wrong. Didn't we say all state lies in the top component? We did. But we can create a smoother user experience if we grit our teeth and make some compromises. User experience trumps perfect engineering.
 
 If you're not used to lodash's functional approach, the code in `componentWillMount` might look strange. It loops through the values returned by `getToggleNames` and builds a dictionary – or object – with those names as keys, and `false` as the value.
 
@@ -512,7 +512,7 @@ First, let's render the button. We add a few lines to the `render` method:
 {crop-start-line=21,crop-end-line=40,linenos=off,lang=jsx}
 <<[Toggle renders a button](code_samples/es6/H1BGraph/Controls/Toggle.jsx)
 
-We're using a basic HTML `<button>` element and giving it some React magic properties. `className` is an alias for the DOM `class` attribute. This naming is necessary because in JavaScript `class` is a reserved symbol. `onClick` defines a click event handler similar to using `$('selector').click(do_thing)`.
+We're using a basic HTML `<button>` element and giving it some React magic properties. `className` is an alias for the DOM `class` attribute. This naming is necessary because in JavaScript, `class` is a reserved symbol. `onClick` defines a click event handler similar to using `$('selector').click(do_thing)`.
 
 React gives us the important event handlers in its `onSomething` magic properties. They might look like DOM Level 2 event handlers from the early 2000's, but their implementation is cleaner. Don't worry if, like me, you've spent the past 10 years of your life avoiding `onclick`. It's back. It's good. It's okay. I promise it has all the merits of using the *"find element, attach listener"* approach.
 
@@ -754,7 +754,7 @@ The function bodies themselves aren't too hard. They go through the dataset and 
 {crop-start-line=30,crop-end-line=61,linenos=off,lang=jsx}
 <<[The entire Meta base component](code_samples/es6/H1BGraph/Meta/BaseComponent.jsx)
 
-This is nothign we haven't done before. Sprinkle some lodash functions for traversals and groupings, and use some d3 linear scale magic for the formatter.
+This is nothing we haven't done before. Sprinkle some lodash functions for traversals and groupings, and use some d3 linear scale magic for the formatter.
 
 Let's stub out the `Title` and `Description` components so we can add them to `H1BGraph` and let hot loading do its magic. We want to see what we're doing in real time.
 
@@ -866,7 +866,7 @@ Whoa, there’s so much going on. First, we get all the years in filtered data, 
 	- if the factor between this and last year is big, return "X times more" fragment
 	- otherwise return "X% more/less" fragment
 
-That wasn't too bad, was it? I'm sure better ways exist to generate human readable text based on parameters, but there's no need to be fancy.
+That wasn't too bad, was it? I'm sure better ways exist to generate human-readable text based on parameters, but there's no need to be fancy.
 
 We also need the year and US state fragments, same as the title. Their functions look like this:
 

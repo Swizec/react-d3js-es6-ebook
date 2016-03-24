@@ -48,7 +48,7 @@ Well, actually, the pure d3.js example is 10 characters shorter. But trust me, R
 
 Despite appearances, dealing with the DOM is not d3.js’s strong suit. Especially once you're drawing a few thousand elements and your visualization slows down to a leisurely stroll… if you’re careful.
 
-Updating DOM with d3 takes a lot of work: you have to keep track of all the elements you're updating, the ones that are new, what to remove, everything. React does all that for you. Its purpose in life is knowing exactly which elements to update, and which to leave unchanged. Update it and forget it. Amazing. 
+Updating DOM with d3 takes a lot of work: you have to keep track of all the elements you're updating, the ones that are new, what to remove, everything. React does all of that for you. Its purpose in life is knowing exactly which elements to update, and which to leave unchanged. Update it and forget it. Amazing. 
 
 We're going to follow this simple approach:
 
