@@ -2,6 +2,8 @@
 # A good work environment
 If you already know how to set up the perfect development environment for modern JavaScript, go ahead and skip this section. Otherwise, keep reading.
 
+If you don't know, and don't care about this right now: Use the starter project that came with the book. It's what you would get after following this chapter.
+
 A good work environment helps us get the most out of our time. We're after three things:
 
  * code should re-compile when we change a file
@@ -64,6 +66,8 @@ Babel developers have created a [playground that live-compiles](https://babeljs.
 The quickest way to set this up is to use Dan Abramov's [react-transform-boilerplate](https://github.com/gaearon/react-transform-boilerplate) project. It's what I use for new projects these days.
 
 If you know how to do this already, skip ahead to the [Visualizing Data with React.js](#the-meat-start) chapter. In the rest of this chapter, I'm going to show you how to get started with the boilerplate project. I'm also going to explain some of the moving parts that make it tick.
+
+Your book package also contains a starter project. You can use that to get started right away. It's what you would get after following this chapter.
 
 ## NPM for dependencies and tools
 
