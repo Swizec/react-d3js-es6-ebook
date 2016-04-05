@@ -2,12 +2,14 @@
 //
 // Example 1
 //
+// ./src/components/H1BGraph/index.jsx
 import React, { Component } from 'react';
 import d3 from 'd3';
 
 //
 // Example 2
 //
+// ./src/components/H1BGraph/index.jsx
 import React, { Component } from 'react';
 import d3 from 'd3';
 
@@ -27,6 +29,7 @@ class H1BGraph extends Component {
 //
 // Example 3
 //
+// ./src/components/H1BGraph/index.jsx
 import React, { Component } from 'react';
 import d3 from 'd3';
 

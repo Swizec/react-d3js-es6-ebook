@@ -132,7 +132,7 @@ Let's start by bootstrapping our app into place. We're going to make a simple `s
 
 We start by importing `React`, `ReactDOM`, and `H1BGraph`.
 
-{crop-start-line=5,crop-end-line=9,linenos=off,lang=jsx}
+{crop-start-line=5,crop-end-line=10,linenos=off,lang=jsx}
 <<[Import main dependencies](code_samples/es6/index.jsx)
 
 `React` is, well, React. We need it for just about everything. `ReactDOM` is React's DOM renderer, which is new in v0.14. Rendering got split out of base React so that it's easier to build React apps for different render targets like canvas, WebGL, native mobile, etc. `H1BGraph` is going to be our main component.
@@ -143,14 +143,14 @@ The second argument must be a string even if you're importing a library.
 
 The main entry point for the app is also a good place to define any convenience helper functions that should be available globally but aren't big enough or important enough to make a new library for. We'll add `capitalize` and `decapitalize` to the `String` class. There are libraries out there that do this, but there's no need to add an entire string manipulation library to our codebase if all we need are two functions.
 
-{crop-start-line=13,crop-end-line=27,linenos=off,lang=jsx}
+{crop-start-line=14,crop-end-line=29,linenos=off,lang=jsx}
 <<[Define two string helpers](code_samples/es6/index.jsx)
 
 Now we'll be able to capitalize and decapitalize any string in our codebase with a call like `"some thing".capitalize()`. We're going to use this in the `Title` and `Description` meta components. We define them here because they change the global String class, and it would be odd if that happened deep down in a child component… maybe we should've just avoided changing built-in classes.
 
 All we need now is to render `H1BGraph` into the page.
 
-{crop-start-line=41,crop-end-line=50,linenos=off,lang=jsx}
+{crop-start-line=46,crop-end-line=53,linenos=off,lang=jsx}
 <<[Render H1BGraph onto page](code_samples/es6/index.jsx)
 
 This tells React to take control of the HTML element with class `h1bgraph` – a `<div>` inside the main container in our case – and render the `H1BGraph` component. We used `ReactDOM.render` because we're rendering for and in a browser. Other renderers exist, but they're not important right now.
@@ -165,14 +165,14 @@ All of our components are going to start the same way – some imports, a class 
 
 Right now, the main entry file tries to import and render `H1BGraph`, but it doesn't exist yet. Let's start a new file in `src/components/H1BGraph/index.jsx`.
 
-{crop-start-line=5,crop-end-line=7,linenos=off,lang=jsx}
+{crop-start-line=5,crop-end-line=8,linenos=off,lang=jsx}
 <<[Basic imports](code_samples/es6/H1BGraph/index.jsx)
 
 We import React and a base `Component` class. We have to import `React` even if we don't use it explicitly because Webpack throws a "React not defined" error otherwise. We'll use the `Component` class to build our own components off of.
 
 We also import `d3` because we'll use it to load data later. 
 
-{crop-start-line=13,crop-end-line=25,linenos=off,lang=jsx}
+{crop-start-line=12,crop-end-line=28,linenos=off,lang=jsx}
 <<[Empty H1BGraph component](code_samples/es6/H1BGraph/index.jsx)
 
 Then we define a component that renders an empty `<svg>` tag inside a `<div>`. A component must have at least a `render()` function; otherwise, React throws an error when it tries to render. With v0.14 we also got stateless functional components, which are essentially just the `render()` function. They don't feature in this Histogram example, but you can see some in the animation chapter.
@@ -181,7 +181,7 @@ We're using ES6's concept of classes and class inheritance to extend React's bas
 
 You can still use `React.createClass` if you want. It works just fine and is equivalent to `class X extends Component`.
 
-{crop-start-line=39,crop-end-line=46,linenos=off,lang=jsx}
+{crop-start-line=32,crop-end-line=50,linenos=off,lang=jsx}
 <<[Export H1BGraph](code_samples/es6/H1BGraph/index.jsx)
 
 In the end, we export `H1BGraph` so other parts of the codebase can import it. We define it as the `default` export because this particular file only exports a single class.
