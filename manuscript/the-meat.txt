@@ -320,7 +320,7 @@ So we ask for the same number of ticks as there are bars, and we give a list of 
 Ok, we have our axis in memory. Now here's the dirty trick:
 
 {crop-start-line=153,crop-end-line=165,linenos=off,lang=jsx}
-<<[The dirty trick for embedding d3 renders](code_samples/drawers.jsx)
+<<[The dirty trick for embedding d3 renders](code_samples/es6/Histogram/Axis.jsx)
 
 I’m sure this goes against everything React designers fought for, but it works. We hook into the `componentDidUpdate` and `componentDidMount` callbacks with a `renderAxis` method. This ensures `renderAxis` gets called every time our component has to re-render.
 
