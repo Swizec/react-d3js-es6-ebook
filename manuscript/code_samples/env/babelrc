@@ -1,6 +1,7 @@
 //
 // Example 1
 //
+// ./.babelrc
 {
   // leanpub-start-delete
   "presets": ["react", "es2015"],
@@ -18,6 +19,7 @@
 //
 // Example 2
 //
+// ./.babelrc
 {
   "presets": ["react", "es2015", "stage-0"],
   "env": {
