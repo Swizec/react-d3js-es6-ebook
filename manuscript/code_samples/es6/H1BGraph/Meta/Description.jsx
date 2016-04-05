@@ -2,6 +2,7 @@
 //
 // Example 1
 //
+// ./src/components/H1BGraph/Meta/Description.jsx
 import React, { Component } from 'react';
 import d3 from 'd3';
 
@@ -28,7 +29,7 @@ import d3 from 'd3';
 import Meta from './BaseComponent';
 import StatesMap from './StatesMap';
 
-
+// ./src/components/H1BGraph/Meta/Description.jsx
 class Description extends Meta {
     // leanpub-start-insert
     getAllDataByYear(year, data) {
@@ -77,7 +78,7 @@ class Description extends Meta {
         return data.filter((d) => d.state == USstate);
     }
 
-    // leanpub-start-insert
+    // ./src/components/H1BGraph/Meta/Description.jsx
     getPreviousYearFragment() {
         let years = this.getYears().map(Number),
             fragment;
@@ -109,7 +110,6 @@ class Description extends Meta {
 
         return fragment;
     }
-    // leanpub-end-insert
 
     render() {
         return (
@@ -176,7 +176,7 @@ class Description extends Meta {
         return fragment;
     }
 
-    // leanpub-start-insert
+    // ./src/components/H1BGraph/Meta/Description.jsx
     getYearFragment() {
         let years = this.getYears(),
             fragment;
@@ -202,7 +202,6 @@ class Description extends Meta {
 
         return fragment;
     }
-    // leanpub-end-insert
 
     render() {
         return (
@@ -295,6 +294,7 @@ class Description extends Meta {
         return fragment;
     }
 
+    // ./src/components/H1BGraph/Meta/Description.jsx
     render() {
         // leanpub-start-insert
         let formatter = this.getFormatter(),

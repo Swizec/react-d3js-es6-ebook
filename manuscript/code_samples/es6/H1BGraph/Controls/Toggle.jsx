@@ -2,6 +2,7 @@
 //
 // Example 1
 //
+// ./src/components/H1BGraph/Controls/Toggle.jsx
 import React, { Component } from 'react';
 
 class Toggle extends Component {
@@ -16,6 +17,7 @@ export default Toggle;
 //
 // Example 2
 //
+// ./src/components/H1BGraph/Controls/Toggle.jsx
 import React, { Component } from 'react';
 
 class Toggle extends Component {
@@ -47,6 +49,7 @@ export default Toggle;
 //
 import React, { Component } from 'react';
 
+// ./src/components/H1BGraph/Controls/Toggle.jsx
 class Toggle extends Component {
     // leanpub-start-insert
     constructor() {
@@ -99,6 +102,7 @@ class Toggle extends Component {
         this.setState({value: newProps.value});
     }
 
+    // ./src/components/H1BGraph/Controls/Toggle.jsx
     handleClick(event) {
         let newValue = !this.state.value;
         this.setState({value: newValue});
