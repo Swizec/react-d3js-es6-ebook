@@ -1,7 +1,46 @@
 {#the-meat-start}
 # Visualizing data with React and d3.js
 
-Welcome to the main part of React+d3.js. I’m going to walk you through an example of building a visualization using React and d3.js.
+Welcome to the main part of React+d3.js. We're going to talk a little theory, some principles, then get our hands dirty with a few examples. Through this book you're going to build:
+
+- A choropleth map  <-- need to write
+- An interactive histogram  <-- pretty much have
+- An animated alphabet  <-- already done
+- A simple particle generator  <-- done, should add canvas stuff
+- A particle generator pushed to 20,000 elements <-- canvas stuff
+
+Looks random, right? Bear with me.
+
+Examples build on each other in complexity. The first teaches you how to make a static data visualization component and shows you an approach to declarative data visualization. The second adds interactivity and components interacting with each other, this teaches you about a simple approach to state management. The third shows you how to use transitions to build simple animations, and the fourth shows you how to do complex animation using a game loop principle.
+
+The fourth example has a fifth example hidden inside where we talk about using canvas with React and pushing the limits. We're going to animate tens of thousands of elements at the same time, it's going to be great.
+
+If you like buzzwords, here are the technologies we're going to use:
+
+1. React 15, D3v4, ES6
+2. React 15, D3v4, ES6, (maybe mobx?)
+3. React 15, D3v4, ES6
+4. React 15, D3v4, ES6, Redux
+5. React 15, D3v4, ES6, Konva, canvas, Redux
+
+Don't worry, if you're not comfortable with ES6 syntax yet. By the end of this book you're gonna love it! In the meantime, here's a helpful cheatsheet for you: [es6cheatsheet.com](https://es6cheatsheet.com/). It compares the ES5 way with the ES6 way so you can brush up quickly.
+
+I'm working on a similar cheatsheet for D3v3 -> D3v4. You'll get an email when it's done.
+
+[^ or maybe just get it done?]
+
+----
+
+Before we begin with examples, let's talk about how React and D3 fit together and how we're going to structure our apps. You can skip this section, if you prefer to get your hands dirty and figure it out later.
+
+- basic approach
+- blackbox components
+- full feature integration
+- state handling architecture
+
+
+
+I’m going to walk you through an example of building a visualization using React and d3.js.
 
 We're going to build a subset of the code I used to [visualize the salary distribution of H1B workers](http://swizec.github.io/h1b-software-salaries/#2014-ca-engineer) in the United States software industry.
 

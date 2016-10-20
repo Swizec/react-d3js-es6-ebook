@@ -89,3 +89,17 @@ Code is anything that we `import` or `require()`. That includes JavaScript files
 You can poke around `src/App.js` to see how it's structured and what happens when you change something. You're going to changes bits and pieces of this file as you go through the book.
 
 I suggest you keep `npm start` running at all times while coding. The browser will refresh on every code change, so you can see instant results.
+
+## Install dependencies for this book
+
+There are a couple of libraries we're going to use a lot in this book: D3 and Lodash. We're using D3 to do our heavy lifting, and Lodash to make data manipulation easier.
+
+You can install them like this:
+
+```
+$ npm install --save d3 lodash
+```
+
+Now your environment is ready! You should see a default React App page in the browser without errors. Keep `npm start` running as you follow the examples in this book.
+
+Some examples are going to need other libraries. When that happens, I'll remind you to install them.
