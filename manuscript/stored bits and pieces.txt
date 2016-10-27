@@ -1,0 +1,35 @@
+# stored bits and pieces
+
+I’m going to walk you through an example of building a visualization using React and d3.js.
+
+We're going to build a subset of the code I used to [visualize the salary distribution of H1B workers](http://swizec.github.io/h1b-software-salaries/#2014-ca-engineer) in the United States software industry.
+
+![H1B salary distribution for engineers in California](images/engineers-california.png)
+
+If you skipped the [environment setup section](#the-environment), make sure you have the following dependencies:
+
+* d3.js
+* React
+* Lodash
+
+You should also have some way of running a static file server, and a way to compile JSX into pure JavaScript. I like having a small node.js server that supports hot loading via Webpack, and I like to compile with Babel.
+
+We’re going to put all of our code in a `src/` directory and serve the compiled version out of `static/`. A `public/data/` directory is going to hold our data.
+
+Before we begin, you should copy our dataset from the stub project you got with the book. Put it in the `public/data/` directory of your project.
+
+
+## The HTML skeleton
+
+We’re building our interface with React, but we still need some HTML. It's going to take care of including files and giving our UI a container.
+
+Make an index.html file that looks like this:
+
+{linenos=off,lang=html}
+<<[HTML skeleton](code_samples/index.html)
+
+These 20 lines do everything we need. The `<head>` sets some Bootstrap-recommended meta properties and includes Bootstrap's stylesheet. This is a good approach for when you only need Bootstrap's default styles and don't want to change anything. We'll use `require()` statements to load our own stylesheets with Webpack.
+
+The `<body>` tag creates a container and includes the JavaScript code. We didn’t really need a `<div>` inside a `<div>` like that, but I like to avoid taking over the whole `.container` with React. This gives you more flexibility to add static content.
+
+At the bottom, we load our compiled JavaScript from `static/bundle.js`. This is a virtual path created by our dev server, so it doesn't point to any actual files.

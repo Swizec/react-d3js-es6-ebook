@@ -31,73 +31,100 @@ I'm working on a similar cheatsheet for D3v3 -> D3v4. You'll get an email when i
 
 ----
 
-Before we begin with examples, let's talk about how React and D3 fit together and how we're going to structure our apps. You can skip this section, if you prefer to get your hands dirty and figure it out later.
+Before we begin the examples, let's talk about how React and D3 fit together and how we're going to structure our apps. If you prefer to get your hands dirty first and ask questions later, skip this section and jump to examples.
 
-- basic approach
-- blackbox components
-- full feature integration
-- state handling architecture
+This section is split into four chapters:
 
+- [Basic Approach](#basic-approach)
+- [Blackbox Components](#blackbox-components)
+- [Full Feature Integration](#full-feature-integration)
+- [State Handling Architecture](#state-handling-architecture)
 
-
-I’m going to walk you through an example of building a visualization using React and d3.js.
-
-We're going to build a subset of the code I used to [visualize the salary distribution of H1B workers](http://swizec.github.io/h1b-software-salaries/#2014-ca-engineer) in the United States software industry.
-
-![H1B salary distribution for engineers in California](images/engineers-california.png)
-
-If you skipped the [environment setup section](#the-environment), make sure you have the following dependencies:
-
-* d3.js
-* React
-* Lodash
-
-You should also have some way of running a static file server, and a way to compile JSX into pure JavaScript. I like having a small node.js server that supports hot loading via Webpack, and I like to compile with Babel.
-
-We’re going to put all of our code in a `src/` directory and serve the compiled version out of `static/`. A `public/data/` directory is going to hold our data.
-
-Before we begin, you should copy our dataset from the stub project you got with the book. Put it in the `public/data/` directory of your project.
-
+{#basic-approach}
 ## The basic approach
 
-Because SVG is an XML format that fits into the DOM, we can assemble it with React. To draw a `100px` by `200px` rectangle inside a grouping element moved to `(50, 20)` we can do something like this:
+Our visualizations are going to use SVG - an XML-based image format that lets us describe images in terms of mathematical shapes. For example, the source code of an 800x600 SVG image with a rectangle looks like this:
+
+{title="SVG rectangle", linenos=off, lang=xml}
+	<svg width="800" height="600">
+		<rect width="100" height="200" x="50" y="20" />
+	</svg>
+
+These four lines create an SVG image with a black rectangle at coordinates `(50, 20)` that is 100x200 pixels large. Black fill with no borders is default for all SVG shapes.
+
+SVG is perfect for data visualization on the web because it works in all browsers, renders without blurring or artifacts on all screens, and supports animation and user interaction. You can see examples of interaction and animation later in this book.
+
+But SVG can get slow when you have thousands of elements on screen. We're going to solve that problem by rendering bitmap images with canvas. More on that later.
+
+----
+
+Another nice feature of SVG is that it's just a dialect of XML - nested elements describe structure, attributes describe the details. The same principles that HTML uses.
+
+That makes React's rendering engine particularly suited for SVG.   Our 100x200 rectangle from before, looks like this as a React component:
 
 {title="A simple rectangle in React",linenos=off,lang=jsx}
-    render() {
-        return (
-            <g transform="translate(50, 20)">
-                <rect width="100" height="200" />
-            </g>
-        );
-    }
+    const Rectangle = () => (
+        <rect width="100" height="200" x="50" y="20" />
+    );
 
-If the parent component puts this inside an `<svg>` element, the user will see a rectangle. At first glance, it looks cumbersome compared to traditional d3.js. But look closely:
+To use this rectangle component in a picture, you'd use a component like this:
 
-{title="A simple rectangle in d3.js",linenos=off,lang=js}
+{title="Rect component in a picture",linenos=off,lang=jsx}
+		const Picture = () => (
+			<svg width="800" height="600">
+				<Rectangle />
+			</svg>
+		);
+
+You're right, this looks cumbersome. A lot of work for a static rectangle, right? But look closely, even if you know nothing about React and JSX, you can look at that code and see that it's a `Picture` of a `Rectangle`.
+
+Compare that to a pure D3 approach:
+
+{title="A static rectangle in d3.js",linenos=off,lang=js}
     d3.select("svg")
-      .append("g")
-      .attr("transform", "translate(50, 20)")
+	    .attr("width", 800)
+			.attr("height", 600)
       .append("rect")
       .attr("width", 100)
-      .attr("height", 200);
+      .attr("height", 200)
+      .attr("x", 50)
+      .attr("y", 20);
 
-The d3.js approach outputs SVG as if by magic, and it looks cleaner because it's pure JavaScript. But it’s more typing and more function calls for the same result.
+It's elegant, it's declarative, it looks like function call soup. Even rewriting into a more readable form doesn't make it much easier to understand the SVG structure at a glance. Observe:
 
-Well, actually, the pure d3.js example is 10 characters shorter. But trust me, React is way cooler.
+{title="Static rectangle in cleaner d3.js",linenos=off,lang=js}
+		d3.select("svg")
+			.attr({width: 800,
+						 height: 600})
+		  .append("rect")
+		  .attr({width: 100,
+					   height: 200,
+					   x: 50,
+					   y: 20})
 
-Despite appearances, dealing with the DOM is not d3.js’s strong suit. Especially once you're drawing a few thousand elements and your visualization slows down to a leisurely stroll… if you’re careful.
+That doesn't scream *"Rectangle in an SVG"* to me as much as the React example does. You have to take your time and read the code carefully.
 
-Updating DOM with d3 takes a lot of work: you have to keep track of all the elements you're updating, the ones that are new, what to remove, everything. React does all of that for you. Its purpose in life is knowing exactly which elements to update, and which to leave unchanged. Update it and forget it. Amazing. 
+Dealing with the DOM is not D3's strong suit. A lot of typing, code that's hard to read, slow when you have thousands of elements, and it's often hard to keep track of which elements you're changing. D3's enter-update-exit cycle is great theory, but I personally never found it easy to use.
 
-We're going to follow this simple approach:
+If you don't know what I just said, don't worry, we'll cover the enter-update-exit cycle in the animations example.
+
+That said, D3 is unparalleled when it comes to everything but the DOM. It comes with many statistical functions, great support for data manipulation, and a bunch of built-in data visualizations. D3 can calculate anything for us, all we have to do is draw them out.
+
+We're going to follow this approach:
 
 * React owns the DOM
-* d3 calculates properties
+* D3 calculates properties
 
-That lets us leverage both React and d3.js for what they're best at.
+This way we can leverage React for SVG structure and rendering optimizations, and D3 for all its mathematical and visualization functions.
 
-{#the-architecture}
-## The Architecture
+{#blackbox-components}
+## Blackbox Components
+
+{#full-feature-integration}
+## Full-feature Integration
+
+{#state-handling-architecture}
+## State Handling Architecture
 
 To make our lives easier, we're going to use a flow-down architecture inspired by Flux. All state is stored in one place - the main component - and data flows down via component properties. Changes travel back up the hierarchy via callbacks.
 
@@ -124,21 +151,6 @@ Having your components rely just on their properties is like having functions th
 If you want to read about this in more detail, Google "isomorphic JavaScript". You could also search for "referential transparency" and "idempotent functions".
 
 Either way, functional programming for HTML. Yay!
-
-## The HTML skeleton
-
-We’re building our interface with React, but we still need some HTML. It's going to take care of including files and giving our UI a container.
-
-Make an index.html file that looks like this:
-
-{linenos=off,lang=html}
-<<[HTML skeleton](code_samples/index.html)
-
-These 20 lines do everything we need. The `<head>` sets some Bootstrap-recommended meta properties and includes Bootstrap's stylesheet. This is a good approach for when you only need Bootstrap's default styles and don't want to change anything. We'll use `require()` statements to load our own stylesheets with Webpack.
-
-The `<body>` tag creates a container and includes the JavaScript code. We didn’t really need a `<div>` inside a `<div>` like that, but I like to avoid taking over the whole `.container` with React. This gives you more flexibility to add static content.
-
-At the bottom, we load our compiled JavaScript from `static/bundle.js`. This is a virtual path created by our dev server, so it doesn't point to any actual files.
 
 ## Structuring your React app
 
