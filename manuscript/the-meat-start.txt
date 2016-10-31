@@ -102,26 +102,128 @@ It's elegant, it's declarative, it looks like function call soup. Even rewriting
 					   x: 50,
 					   y: 20})
 
-That doesn't scream *"Rectangle in an SVG"* to me as much as the React example does. You have to take your time and read the code carefully.
+That doesn't scream *"Rectangle in an SVG"* to me as much as the React example does. You have to take your time and read the code carefully: first we `select` the `svg` element, then we add attributes for `width` and `height`. After that we `append` a `rect` element and set its attributes for `width`, `height`, `x`, and `y`.
 
-Dealing with the DOM is not D3's strong suit. A lot of typing, code that's hard to read, slow when you have thousands of elements, and it's often hard to keep track of which elements you're changing. D3's enter-update-exit cycle is great theory, but I personally never found it easy to use.
+Those 8 lines of code create HTML that looks like this:
 
-If you don't know what I just said, don't worry, we'll cover the enter-update-exit cycle in the animations example.
+{title="HTML of a rectangle",linenos=off,lang=js}
+	<svg width="800" height="600">
+		<rect width="100" height="200" x="50" y="20" />
+	</svig>
 
-That said, D3 is unparalleled when it comes to everything but the DOM. It comes with many statistical functions, great support for data manipulation, and a bunch of built-in data visualizations. D3 can calculate anything for us, all we have to do is draw them out.
+Would've been easier to just write the HTML right? Yes, for static images you're better off using Photoshop or similar then exporting to SVG.
 
-We're going to follow this approach:
+Either way, dealing with the DOM is not D3's strong suit. A lot of typing, code that's hard to read, slow when you have thousands of elements, and it's often hard to keep track of which elements you're changing. D3's enter-update-exit cycle is great theory, but I personally never found it easy to use.
+
+If you don't know what I just said, don't worry, we'll cover the enter-update-exit cycle in the animations example. Don't worry about D3 either. I know it's hard. I've written two books about it and I still spend as much time reading the docs as writing the code. There's a lot to learn, and I'll explain everything as we go along.
+
+D3's strong suit is its ability to do everything other than the DOM. There are many statistical functions, great support for data manipulation, and a bunch of built-in data visualizations. D3 can calculate anything for us, all we have to do is draw it out.
+
+Which is why we're going to follow this approach:
 
 * React owns the DOM
 * D3 calculates properties
 
 This way we can leverage React for SVG structure and rendering optimizations, and D3 for all its mathematical and visualization functions.
 
+Now let's look at two different ways to put them together: blackbox and full-feature.
+
 {#blackbox-components}
 ## Blackbox Components
 
+Blackbox components are the simplest way to integrate D3 and React. You can think of them as wrappers around D3 visualizations. 
+
+You can take any D3 example from the internets or your brain, wrap it in a thin React component and it Just Works(tm). Yes, we go against what I just said and let D3 control a small part of the DOM tree.
+
+We throw away most of React's power, but gain a quick way to get things working. 
+
+I it the blackbox approach because React's engine can't see inside your component, can't help with rendering, and has no idea what's going on. From this point onward in the DOM tree you are on your own. Sounds scary, but it's okay if you're careful.
+
+Here's how it works:
+- React renders an anchor element
+- D3 hijacks it and puts stuff in
+
+You have to manually re-render on props and state changes. You're also throwing away and recreating your component's entire DOM on each re-render.
+
+Manual re-rendering is not as annoying as it sounds, but the inefficiency can get pretty bad with complex visualizations. Use this technique sparingly.
+
+### A subtitle?
+
+Let's build an axis component. We'll use it in the overall project later.
+
+To make our lives easier, we're going to use the axis generator that ships with D3. Making our own would take too long.
+
+A D3 axis generator takes a scale, some configuration, and renders an axis for us. The code looks like this:
+
+{title="A pure D3 axis",linenos=off,lang=js}
+		const scale = d3.scaleLinear()
+		                .domain([0, 10])
+		                .range([0, 200]);
+		const axis = d3.axisBottom(scale);
+
+		d3.select('svg')
+		  .append('g')
+		  .attr('transform', 'translate(10, 30)')
+		  .call(axis); 
+
+If that doesn't make any sense, don't worry. There's a lot of D3 to learn and I'll help you out. If it's obvious, even better! You're a pro and this book will be a much quicker read.
+
+We start with a linear scale that has a domain `[0, 10]` and a range `[0, 200]`. You can think of scales as mathematical functions that map a domain to a range. In this case calling `scale(0)` returns `0`, `scale(5)` returns `100`, `scale(10)` returns `200`. Just like middle school mathematics.
+
+We create an axis generator with `axisBottom`, which takes a `scale` and is going to generate a `bottom` oriented axis – numbers below the line. You can also tweak settings for number of ticks, their sizing, and spacing.
+
+Equipped with an `axis` generator, we `select` the `svg` element, append a grouping element, use a `transform` attribute to move it `10`px to the right and `30`px down, and invoke the generator with `.call()`.
+
+It creates a small axis:
+
+![Simple axis](images/es6v2/simple-axis.png)
+
+You can play around with this example on CodePen, [here](https://codepen.io/swizec/pen/YGoYBM). Try changing the scale type.
+
+### Another subtitle?
+
+Now let's say we want to use that same axis code, but as a React component. The simplest way is to use a blackbox component approach. Like this:
+
+{title="React blackbox axis",linenos=off,lang=jsx}
+	class Axis extends Component {
+	  componentDidMount() { this.renderAxis() }
+	  componentDidUpdate() { this.renderAxis() }
+	  
+	  renderAxis() {
+	    const scale = d3.scaleLinear()
+	                    .domain([0, 10])
+	                    .range([0, 200]);
+	    const axis = d3.axisBottom(scale);
+	
+	    d3.select(this.refs.g)
+	      .call(axis);  
+	  }
+	  
+	  render() {
+	    return <g transform="translate(10, 30)" ref="g" />
+	  }
+	}
+
+Oh man so much code! Is this really worth it? Yes, for the other benefits of using React in your dataviz. You'll see :)
+
+We created an `Axis` component that extends React base `Component` class. We can't use functional stateless components for this because we need lifecycle hooks. More on those later.
+
+Our component has a `render` method, which returns a grouping element, `g`, moved 10px to the right and 30px down using the `transform` attribute. Same as before.
+
+We added a `ref` attribute, which lets us reference elements in our component via `this.refs`. This makes D3 integration cleaner and probably work with React-native. I haven't tried yet.
+
+The body of `renderAxis` should look familiar. It's where we put code from the pure D3 example. Scale, axis, select, call. No need to append a grouping element, we're already there with `this.refs.g`.
+
+For the manual re-rendering part, we call `renderAxis` in `componentDidUpdate` and `componentDidMount`. This ensures that our axis re-renders every time React's engine decides to render our component. On state and prop changes usually.
+
+That wasn't so bad was it? You can try it out on CodePen, [here](https://codepen.io/swizec/pen/qazxPz).
+
+To make our axis more useful, we could get the scale and axis orientation from props. We'll do that for scales in our bigger project.
+
 {#full-feature-integration}
 ## Full-feature Integration
+
+
 
 {#state-handling-architecture}
 ## State Handling Architecture
