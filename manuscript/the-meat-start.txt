@@ -223,7 +223,102 @@ To make our axis more useful, we could get the scale and axis orientation from p
 {#full-feature-integration}
 ## Full-feature Integration
 
+As useful as blackbox components are, we need something better, if we want to leverage React's rendering engine. We're going to look at full-feature integration where React does the rendering, and D3 calculates the props.
 
+To do that, we're going to follow a 3-part pattern:
+- set up D3 objects as class properties
+- update D3 objects when component updates
+- output SVG in `render()`
+
+It's easiest to show you with an example. Let's build a rectangle that changes color based on input values. We're going to render a couple of them to make a color scale.
+
+Yes, it looks like a trivial example, but color-as-information is an important concept in data visualization. We're going to use it later to build a choropleth map of household income in the US.
+
+I suggest following along in Codepen for now. [Here's one I set up for you](https://codepen.io/swizec/pen/oYNvpQ). It contains the final solution, so you can follow along and nod your head. I'll explain each part.
+
+You must be itching to use the environment you set up with `create-react-app`. That comes later. When we do the real-er dataviz project :)
+
+---
+
+We start with a `Swatch` component that draws a rectangle and fills it with a color.
+
+{title="Swatch component",linenos=off,lang=jsx}
+	const Swatch = ({ color, width, x }) => (
+	  <rect width={width} 
+				  height="20" 
+				  x={x} 
+				  y="0" 
+				  style={{fill: color}} />
+	);
+
+Looks like our earlier components doesn't it? It's exactly the same, a functional stateless component that draws a `rect` element with some attributes - dimensions, position, and `fill` style.
+
+Note that `style` is a dictionary so we specify it with double curly braces. Outer braces denote a dynamic value, inner braces denote a dictionary.
+
+Then we need a `Colors` component. It follows the full-featured integration structure: D3 objects as properties, an `updateD3` function, plus some wiring for updates and rendering.
+
+{title="Colors component, pt1",linenos=off,lang=jsx}
+	class Colors extends Component {
+	  colors = d3.schemeCategory20;
+	  width = d3.scaleBand()
+	            .domain(d3.range(20));
+
+We start by inheriting from `Component`, and defining defaults for D3 objects. `this.colors` is one of [D3's predefined color scales](https://github.com/d3/d3-scale/blob/master/README.md#schemeCategory10). `schemeCategory20` is a scale of 20 colors designed for categorization. Seemed like a good example, and you're welcome to try others.
+
+`this.width` is a D3 scale designed for producing bands, `d3.scaleBand`. As mentioned earlier, scales map domains to ranges. We know our domain is 20 colors, so we can statically set the domain as `[1, 2, 3, ..., 20]` with `d3.range(20)`.
+
+`d3.range` generates a counting array, by the way. We'll use that a lot.
+
+We'll use `this.width` to calculate widths and positions of our color swatches. Here's a picture from D3 docs to help you visualize what `scaleBand` does:
+
+[![Band Scale from D3 docs](https://raw.githubusercontent.com/d3/d3-scale/master/img/band.png)](https://github.com/d3/d3-scale/blob/master/README.md)
+
+Unlike the domain, our range is dynamic so that we can define the width of our color scale in props. This makes the component more reusable.
+
+{title="Colors component, pt2",linenos=off,lang=jsx}
+	  componentWillMount() {
+	    this.updateD3(this.props);
+	  }
+	
+	  componentWillUpdate(newProps) {
+	    this.updateD3(newProps);
+	  }
+	
+	  updateD3(props) {
+	    this.width.range([0, props.width]);
+	  }
+	  
+`componentWillMount` and `componentWillUpdate` are component lifecycle hooks. Can you guess when they run?
+
+The former runs just before React's engine inserts our component into the DOM, and the latter just before React updates it. That happens on any prop change or `setState` call.
+
+Both of them call our `updateD3` component with the new value of props. We use it to update the range of our `this.width` scale. This ensures our component listens to prop and state changes like any other, while ensuring the internal state of D3 objects is kept up to date.
+
+Finally, we render a bunch of color swatches.
+
+{title="Colors component, pt3",linenos=off,lang=jsx}
+	  render() {
+	    return (
+	      <g>
+	        {d3.range(20).map(i => (
+	          <Swatch color={this.colors[i]} 
+					          width={this.width.step()} 
+					          x={this.width(i)} />
+	        ))}
+	      </g>
+	    )
+	  }
+	}
+	
+We create a grouping element to fulfill React's one child per component requirement, then render 20 swatches in a loop. Each gets a `color` from `this.colors`, and a `width` and `x` from `this.width`.
+
+After inserting into the DOM with `ReactDOM`, we get a series of 20 colorful rectangles.
+
+![20 color swatches](images/color-swatches.png)
+
+Try changing the `width="400"` property of `<Colors />`. You'll see D3's `scaleBand` and our update wiring ensure the color strip renders correctly. For more fun, try changing the `Colors` component so it takes the color scale as a prop, then rendering multiple instances of `<Colors />` side-by-side.
+
+Here's the playground: [CodePen](https://codepen.io/swizec/pen/oYNvpQ)
 
 {#state-handling-architecture}
 ## State Handling Architecture
