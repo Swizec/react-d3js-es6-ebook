@@ -1,15 +1,16 @@
+@@ -1,456 +0,0 @@
 {#appendixA}
 # Appendix A - roll your own environment
 
 If you already know how to set up the perfect development environment for modern JavaScript, go ahead and skip this section. Otherwise, keep reading.
 
-If you don't know, and don't care about this right now: Use the starter project that came with the book. It's what you would get after following this chapter.
+If you don't know and you don't care about this right now: Use the starter project that came with the book. It's what you would get after following this chapter.
 
 A good work environment helps us get the most out of our time. We're after three things:
 
- * code should re-compile when we change a file
- * page should update automatically when the code changes
- * dependencies and modules should be simple to manage
+* code should re-compile when we change a file
+* page should update automatically when the code changes
+* dependencies and modules should be simple to manage
 
 When I first wrote this chapter in April 2015, I suggested a combination of Browserify, Grunt, NPM, and Bower. This was the wrong approach. It was complicated, it wasn't very extensible, and it was slow.
 
@@ -378,7 +379,7 @@ My friend Juho Vepsäläinen has also written a marvelous book that dives deeper
 
 ### Dev server
 
-The dev server that comes with Dan's boilerplate is based on the Express framework. It's one of the most popular frameworks for building websites in node.js. 
+The dev server that comes with Dan's boilerplate is based on the Express framework. It's one of the most popular frameworks for building websites in node.js.
 
 Many better and more in-depth books have been written about node.js and its frameworks. In this book, we're only going to take a quick look at some of the key parts.
 
