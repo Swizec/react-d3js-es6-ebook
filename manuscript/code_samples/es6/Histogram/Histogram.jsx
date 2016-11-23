@@ -1,6 +1,7 @@
 //
 // Example 1
 //
+// ./src/components/Histogram/Histogram.jsx
 import React, { Component } from 'react';
 import d3 from 'd3';
 
@@ -24,6 +25,7 @@ export default Histogram;
 import React, { Component } from 'react';
 import d3 from 'd3';
 
+// ./src/components/Histogram/Histogram.jsx
 class Histogram extends Component {
     // leanpub-start-insert
     constructor(props) {
@@ -78,6 +80,7 @@ class Histogram extends Component {
         this.update_d3(newProps);
     }
 
+    // ./src/components/Histogram/Histogram.jsx
     update_d3(props) {
         // leanpub-start-insert
         this.histogram
@@ -148,6 +151,7 @@ class Histogram extends Component {
             .range([0, props.height-props.topMargin-props.bottomMargin]);
     }
 
+    // ./src/components/Histogram/Histogram.jsx
     render() {
         let translate = `translate(0, ${this.props.topMargin})`,
             // leanpub-start-insert
@@ -207,6 +211,7 @@ class Histogram extends Component {
             .range([0, props.height-props.topMargin-props.bottomMargin]);
     }
 
+    // ./src/components/Histogram/Histogram.jsx
     // leanpub-start-insert
     makeBar(bar) {
         let percent = bar.y/this.props.data.length*100;
@@ -244,6 +249,7 @@ export default Histogram;
 //
 // Example 6
 //
+// ./src/components/Histogram/Histogram.jsx
 class HistogramBar extends Component {
     render() {
         let translate = `translate(${this.props.x}, ${this.props.y})`,
@@ -268,6 +274,7 @@ class HistogramBar extends Component {
 //
 // Example 7
 //
+// ./src/components/Histogram/Histogram.jsx
 class HistogramBar extends Component {
     render() {
         let translate = `translate(${this.props.x}, ${this.props.y})`,
@@ -311,6 +318,7 @@ class HistogramBar extends Component {
 import React, { Component } from 'react';
 import d3 from 'd3';
 
+// ./src/components/Histogram/Histogram.jsx
 // leanpub-start-insert
 import Axis from './Axis';
 // leanpub-end-insert

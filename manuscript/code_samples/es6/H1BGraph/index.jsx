@@ -2,12 +2,14 @@
 //
 // Example 1
 //
+// ./src/components/H1BGraph/index.jsx
 import React, { Component } from 'react';
 import d3 from 'd3';
 
 //
 // Example 2
 //
+// ./src/components/H1BGraph/index.jsx
 import React, { Component } from 'react';
 import d3 from 'd3';
 
@@ -27,6 +29,7 @@ class H1BGraph extends Component {
 //
 // Example 3
 //
+// ./src/components/H1BGraph/index.jsx
 import React, { Component } from 'react';
 import d3 from 'd3';
 
@@ -51,6 +54,7 @@ export default H1BGraph;
 import React, { Component } from 'react';
 import d3 from 'd3';
 
+// ./src/components/H1BGraph/index.jsx
 class H1BGraph extends Component {
     // leanpub-start-insert
     constructor() {
@@ -100,6 +104,7 @@ class H1BGraph extends Component {
         this.loadRawData();
     }
 
+    // ./src/components/H1BGraph/index.jsx
     loadRawData() {
         // leanpub-start-insert
         d3.csv(this.props.url)
@@ -145,6 +150,7 @@ class H1BGraph extends Component {
         this.loadRawData();
     }
 
+    // ./src/components/H1BGraph/index.jsx
     loadRawData() {
         // leanpub-start-insert
         let dateFormat = d3.time.format("%m/%d/%Y");
@@ -241,6 +247,7 @@ class H1BGraph extends Component {
           });
     }
 
+    // ./src/components/H1BGraph/index.jsx
     render() {
         // leanpub-start-insert
         if (!this.state.rawData.length) {
@@ -314,6 +321,7 @@ class H1BGraph extends Component {
           });
     }
 
+    // ./src/components/H1BGraph/index.jsx
     render() {
         if (!this.state.rawData.length) {
             return (
@@ -357,6 +365,7 @@ export default H1BGraph;
 import React, { Component } from 'react';
 import d3 from 'd3';
 
+// ./src/components/H1BGraph/index.jsx
 import Histogram from '../Histogram';
 
 // leanpub-start-insert
@@ -369,6 +378,7 @@ require('./style.less');
 import React, { Component } from 'react';
 import d3 from 'd3';
 
+// ./src/components/H1BGraph/index.jsx
 import Histogram from '../Histogram';
 // leanpub-start-insert
 import Controls from './Controls';
@@ -417,6 +427,7 @@ class H1BGraph extends Component {
           });
     }
 
+    // ./src/components/H1BGraph/index.jsx
     render() {
         if (!this.state.rawData.length) {
             return (
@@ -460,6 +471,7 @@ import d3 from 'd3';
 import Histogram from '../Histogram';
 import Controls from './Controls';
 
+// ./src/components/H1BGraph/index.jsx
 class H1BGraph extends Component {
     constructor() {
         super();
@@ -506,12 +518,14 @@ class H1BGraph extends Component {
           });
     }
 
+    // ./src/components/H1BGraph/index.jsx
     // leanpub-start-insert
     updateDataFilter(filter) {
         this.setState({dataFilter: filter});
     }
     // leanpub-end-insert
 
+    // ./src/components/H1BGraph/index.jsx
     render(){
         if (!this.state.rawData.length) {
             return (
@@ -565,6 +579,7 @@ export default H1BGraph;
 import React, { Component } from 'react';
 import d3 from 'd3';
 
+// ./src/components/H1BGraph/index.jsx
 import Histogram from '../Histogram';
 import Controls from './Controls';
 // leanpub-start-insert
@@ -640,6 +655,7 @@ class H1BGraph extends Component {
         let filteredData = this.state.rawData
                                .filter(this.state.dataFilter);
 
+        // ./src/components/H1BGraph/index.jsx
         return (
             <div>
                 // leanpub-start-insert

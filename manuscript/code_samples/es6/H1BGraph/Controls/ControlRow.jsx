@@ -2,6 +2,7 @@
 //
 // Example 1
 //
+// ./src/components/H1BGraph/Controls/ControlRow.jsx
 import React, { Component } from 'react';
 import _ from 'lodash';
 
@@ -30,6 +31,7 @@ import _ from 'lodash';
 
 import Toggle from './Toggle';
 
+// ./src/components/H1BGraph/Controls/ControlRow.jsx
 class ControlRow extends Component {
     // leanpub-start-insert
     _addToggle(name) {
@@ -50,6 +52,7 @@ class ControlRow extends Component {
     }
     // leanpub-end-insert
 
+    // ./src/components/H1BGraph/Controls/ControlRow.jsx
     render() {
         return (
             <div className="row">
@@ -76,6 +79,7 @@ import _ from 'lodash';
 
 import Toggle from './Toggle';
 
+// ./src/components/H1BGraph/Controls/ControlRow.jsx
 class ControlRow extends Component {
     // leanpub-start-insert
     makePick(picked, newState) {
@@ -91,7 +95,7 @@ class ControlRow extends Component {
     }
     // leanpub-end-insert
 
-    _addToggle(nme) {
+    _addToggle(name) {
         let key = `toggle-${name}`,
             label = name;
 
@@ -132,6 +136,7 @@ import _ from 'lodash';
 
 import Toggle from './Toggle';
 
+// ./src/components/H1BGraph/Controls/ControlRow.jsx
 class ControlRow extends Component {
     makePick(picked, newState) {
         // leanpub-start-insert

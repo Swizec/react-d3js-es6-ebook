@@ -1,0 +1,112 @@
+# stored bits and pieces
+
+I’m going to walk you through an example of building a visualization using React and d3.js.
+
+We're going to build a subset of the code I used to [visualize the salary distribution of H1B workers](http://swizec.github.io/h1b-software-salaries/#2014-ca-engineer) in the United States software industry.
+
+![H1B salary distribution for engineers in California](images/engineers-california.png)
+
+If you skipped the [environment setup section](#the-environment), make sure you have the following dependencies:
+
+* d3.js
+* React
+* Lodash
+
+You should also have some way of running a static file server, and a way to compile JSX into pure JavaScript. I like having a small node.js server that supports hot loading via Webpack, and I like to compile with Babel.
+
+We’re going to put all of our code in a `src/` directory and serve the compiled version out of `static/`. A `public/data/` directory is going to hold our data.
+
+Before we begin, you should copy our dataset from the stub project you got with the book. Put it in the `public/data/` directory of your project.
+
+
+## The HTML skeleton
+
+We’re building our interface with React, but we still need some HTML. It's going to take care of including files and giving our UI a container.
+
+Make an index.html file that looks like this:
+
+{linenos=off,lang=html}
+<<[HTML skeleton](code_samples/index.html)
+
+These 20 lines do everything we need. The `<head>` sets some Bootstrap-recommended meta properties and includes Bootstrap's stylesheet. This is a good approach for when you only need Bootstrap's default styles and don't want to change anything. We'll use `require()` statements to load our own stylesheets with Webpack.
+
+The `<body>` tag creates a container and includes the JavaScript code. We didn’t really need a `<div>` inside a `<div>` like that, but I like to avoid taking over the whole `.container` with React. This gives you more flexibility to add static content.
+
+At the bottom, we load our compiled JavaScript from `static/bundle.js`. This is a virtual path created by our dev server, so it doesn't point to any actual files.
+
+
+
+## Bootstrap your app into place
+
+Let's start by bootstrapping our app into place. We're going to make a simple `src/index.jsx` file – we set that to be our main entry file in [the environment section](#the-environment) – and an empty `H1BGraph` component that renders an SVG element.
+
+We start by importing `React`, `ReactDOM`, and `H1BGraph`.
+
+{crop-start-line=5,crop-end-line=10,linenos=off,lang=jsx}
+<<[Import main dependencies](code_samples/es6/index.jsx)
+
+`React` is, well, React. We need it for just about everything. `ReactDOM` is React's DOM renderer, which is new in v0.14. Rendering got split out of base React so that it's easier to build React apps for different render targets like canvas, WebGL, native mobile, etc. `H1BGraph` is going to be our main component.
+
+We're using ES6-style imports instead of `require()` because it gives us greater flexibility to import only the parts we want and it reads like a normal English sentence in most common-use cases. You'll see this play out in future examples.
+
+The second argument must be a string even if you're importing a library.
+
+The main entry point for the app is also a good place to define any convenience helper functions that should be available globally but aren't big enough or important enough to make a new library for. We'll add `capitalize` and `decapitalize` to the `String` class. There are libraries out there that do this, but there's no need to add an entire string manipulation library to our codebase if all we need are two functions.
+
+{crop-start-line=14,crop-end-line=29,linenos=off,lang=jsx}
+<<[Define two string helpers](code_samples/es6/index.jsx)
+
+Now we'll be able to capitalize and decapitalize any string in our codebase with a call like `"some thing".capitalize()`. We're going to use this in the `Title` and `Description` meta components. We define them here because they change the global String class, and it would be odd if that happened deep down in a child component… maybe we should've just avoided changing built-in classes.
+
+All we need now is to render `H1BGraph` into the page.
+
+{crop-start-line=46,crop-end-line=53,linenos=off,lang=jsx}
+<<[Render H1BGraph onto page](code_samples/es6/index.jsx)
+
+This tells React to take control of the HTML element with class `h1bgraph` – a `<div>` inside the main container in our case – and render the `H1BGraph` component. We used `ReactDOM.render` because we're rendering for and in a browser. Other renderers exist, but they're not important right now.
+
+You can think of this function call as a *"Give me a Thing That Does Stuff"*. It doesn't have to stand on its own. You could wrap it in a jQuery plugin, use it inside a Backbone or Angular view, or in whatever else you're already used to. That's how you can make a gradual transition towards React that doesn't force you to throw existing code away.
+
+If you've kept `npm start` running in the background, it should now complain that `components/H1BGraph` doesn't exist. Let's fix that and get an empty `<svg>` element rendering.
+
+## Start with a basic component
+
+All of our components are going to start the same way – some imports, a class with a `render()` method, and a default module export. That's the minimum we need in `<component>/index.jsx` to define a component that doesn't break our build.
+
+Right now, the main entry file tries to import and render `H1BGraph`, but it doesn't exist yet. Let's start a new file in `src/components/H1BGraph/index.jsx`.
+
+{crop-start-line=5,crop-end-line=8,linenos=off,lang=jsx}
+<<[Basic imports](code_samples/es6/H1BGraph/index.jsx)
+
+We import React and a base `Component` class. We have to import `React` even if we don't use it explicitly because Webpack throws a "React not defined" error otherwise. We'll use the `Component` class to build our own components off of.
+
+We also import `d3` because we'll use it to load data later. 
+
+{crop-start-line=12,crop-end-line=28,linenos=off,lang=jsx}
+<<[Empty H1BGraph component](code_samples/es6/H1BGraph/index.jsx)
+
+Then we define a component that renders an empty `<svg>` tag inside a `<div>`. A component must have at least a `render()` function; otherwise, React throws an error when it tries to render. With v0.14 we also got stateless functional components, which are essentially just the `render()` function. They don't feature in this Histogram example, but you can see some in the animation chapter.
+
+We're using ES6's concept of classes and class inheritance to extend React's basic `Component`, which we imported earlier. This is widely accepted as more readable than JavaScript's old/standard prototypical inheritance.
+
+You can still use `React.createClass` if you want. It works just fine and is equivalent to `class X extends Component`.
+
+{crop-start-line=32,crop-end-line=50,linenos=off,lang=jsx}
+<<[Export H1BGraph](code_samples/es6/H1BGraph/index.jsx)
+
+In the end, we export `H1BGraph` so other parts of the codebase can import it. We define it as the `default` export because this particular file only exports a single class.
+
+If we had multiple things to export, we'd use named exports. They look like this: `export { Thing }`. You can also define the Thing anonymously when exporting, like this: `export function Thing () { // ... }`.
+
+Using default exports makes our components easier to import - `import Thing from 'file'`. To import named exports, you have to specify them inside curly braces: `import { Thing1, Thing2 } from 'file'`.
+
+Hot reloading and continuous compilation should have done their magic by now, and you should see an empty `<svg>` element in your page. You have to keep `npm start` running and a browser window pointing to `localhost:3000` for that.
+
+Congratz! You just made your first React component with ES6 classes. Or at least the first in this book. You're awesome!
+
+Here's what happens next:
+
+1. We'll make `H1BGraph` load our dataset
+2. Build a Histogram component
+3. Add dynamic meta text descriptions
+4. Add some data filtering

@@ -10,4 +10,14 @@ screencast.zip
 skype_call.md
 team_license.md
 working_project.zip
+working-project.zip
 working_project/
+working-environment.zip
+working-environment/
+*.epub
+*.mobi
+*.pdf
+cover-book*
+team*.txt
+livecoding_sessions.txt
+30min_call.txt
