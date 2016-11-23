@@ -1,344 +1,74 @@
 {#the-meat-start}
 # Visualizing data with React and d3.js
 
-Welcome to the main part of React+d3.js. We're going to talk a little theory, some principles, then get our hands dirty with a few examples. Through this book you're going to build:
+Welcome to the main part of React+d3.js. I’m going to walk you through an example of building a visualization using React and d3.js.
 
-- A choropleth map  <-- need to write
-- An interactive histogram  <-- pretty much have
-- An animated alphabet  <-- already done
-- A simple particle generator  <-- done, should add canvas stuff
-- A particle generator pushed to 20,000 elements <-- canvas stuff
+We're going to build a subset of the code I used to [visualize the salary distribution of H1B workers](http://swizec.github.io/h1b-software-salaries/#2014-ca-engineer) in the United States software industry.
 
-Looks random, right? Bear with me.
+![H1B salary distribution for engineers in California](images/engineers-california.png)
 
-Examples build on each other in complexity. The first teaches you how to make a static data visualization component and shows you an approach to declarative data visualization. The second adds interactivity and components interacting with each other, this teaches you about a simple approach to state management. The third shows you how to use transitions to build simple animations, and the fourth shows you how to do complex animation using a game loop principle.
+If you skipped the [environment setup section](#the-environment), make sure you have the following dependencies:
 
-The fourth example has a fifth example hidden inside where we talk about using canvas with React and pushing the limits. We're going to animate tens of thousands of elements at the same time, it's going to be great.
+* d3.js
+* React
+* Lodash
 
-If you like buzzwords, here are the technologies we're going to use:
+You should also have some way of running a static file server, and a way to compile JSX into pure JavaScript. I like having a small node.js server that supports hot loading via Webpack, and I like to compile with Babel.
 
-1. React 15, D3v4, ES6
-2. React 15, D3v4, ES6, (maybe mobx?)
-3. React 15, D3v4, ES6
-4. React 15, D3v4, ES6, Redux
-5. React 15, D3v4, ES6, Konva, canvas, Redux
+We’re going to put all of our code in a `src/` directory and serve the compiled version out of `static/`. A `public/data/` directory is going to hold our data.
 
-Don't worry, if you're not comfortable with ES6 syntax yet. By the end of this book you're gonna love it! In the meantime, here's a helpful cheatsheet for you: [es6cheatsheet.com](https://es6cheatsheet.com/). It compares the ES5 way with the ES6 way so you can brush up quickly.
+Before we begin, you should copy our dataset from the stub project you got with the book. Put it in the `public/data/` directory of your project.
 
-I'm working on a similar cheatsheet for D3v3 -> D3v4. You'll get an email when it's done.
-
-[^ or maybe just get it done?]
-
-----
-
-Before we begin the examples, let's talk about how React and D3 fit together and how we're going to structure our apps. If you prefer to get your hands dirty first and ask questions later, skip this section and jump to examples.
-
-This section is split into five chapters:
-
-- [Basic Approach](#basic-approach)
-- [Blackbox Components](#blackbox-components)
-- [Full Feature Integration](#full-feature-integration)
-- [State Handling Architecture](#state-handling-architecture)
-- [Structuring your React App](#structuring-your-app)
-
-{#basic-approach}
 ## The basic approach
 
-Our visualizations are going to use SVG - an XML-based image format that lets us describe images in terms of mathematical shapes. For example, the source code of an 800x600 SVG image with a rectangle looks like this:
-
-{title="SVG rectangle", linenos=off, lang=xml}
-	<svg width="800" height="600">
-		<rect width="100" height="200" x="50" y="20" />
-	</svg>
-
-These four lines create an SVG image with a black rectangle at coordinates `(50, 20)` that is 100x200 pixels large. Black fill with no borders is default for all SVG shapes.
-
-SVG is perfect for data visualization on the web because it works in all browsers, renders without blurring or artifacts on all screens, and supports animation and user interaction. You can see examples of interaction and animation later in this book.
-
-But SVG can get slow when you have thousands of elements on screen. We're going to solve that problem by rendering bitmap images with canvas. More on that later.
-
-----
-
-Another nice feature of SVG is that it's just a dialect of XML - nested elements describe structure, attributes describe the details. The same principles that HTML uses.
-
-That makes React's rendering engine particularly suited for SVG.   Our 100x200 rectangle from before, looks like this as a React component:
+Because SVG is an XML format that fits into the DOM, we can assemble it with React. To draw a `100px` by `200px` rectangle inside a grouping element moved to `(50, 20)` we can do something like this:
 
 {title="A simple rectangle in React",linenos=off,lang=jsx}
-    const Rectangle = () => (
-        <rect width="100" height="200" x="50" y="20" />
-    );
+    render() {
+        return (
+            <g transform="translate(50, 20)">
+                <rect width="100" height="200" />
+            </g>
+        );
+    }
 
-To use this rectangle component in a picture, you'd use a component like this:
+If the parent component puts this inside an `<svg>` element, the user will see a rectangle. At first glance, it looks cumbersome compared to traditional d3.js. But look closely:
 
-{title="Rect component in a picture",linenos=off,lang=jsx}
-		const Picture = () => (
-			<svg width="800" height="600">
-				<Rectangle />
-			</svg>
-		);
-
-You're right, this looks cumbersome. A lot of work for a static rectangle, right? But look closely, even if you know nothing about React and JSX, you can look at that code and see that it's a `Picture` of a `Rectangle`.
-
-Compare that to a pure D3 approach:
-
-{title="A static rectangle in d3.js",linenos=off,lang=js}
+{title="A simple rectangle in d3.js",linenos=off,lang=js}
     d3.select("svg")
-	    .attr("width", 800)
-			.attr("height", 600)
+      .append("g")
+      .attr("transform", "translate(50, 20)")
       .append("rect")
       .attr("width", 100)
-      .attr("height", 200)
-      .attr("x", 50)
-      .attr("y", 20);
+      .attr("height", 200);
 
-It's elegant, it's declarative, it looks like function call soup. Even rewriting into a more readable form doesn't make it much easier to understand the SVG structure at a glance. Observe:
+The d3.js approach outputs SVG as if by magic, and it looks cleaner because it's pure JavaScript. But it’s more typing and more function calls for the same result.
 
-{title="Static rectangle in cleaner d3.js",linenos=off,lang=js}
-		d3.select("svg")
-			.attr({width: 800,
-						 height: 600})
-		  .append("rect")
-		  .attr({width: 100,
-					   height: 200,
-					   x: 50,
-					   y: 20})
+Well, actually, the pure d3.js example is 10 characters shorter. But trust me, React is way cooler.
 
-That doesn't scream *"Rectangle in an SVG"* to me as much as the React example does. You have to take your time and read the code carefully: first we `select` the `svg` element, then we add attributes for `width` and `height`. After that we `append` a `rect` element and set its attributes for `width`, `height`, `x`, and `y`.
+Despite appearances, dealing with the DOM is not d3.js’s strong suit. Especially once you're drawing a few thousand elements and your visualization slows down to a leisurely stroll… if you’re careful.
 
-Those 8 lines of code create HTML that looks like this:
+Updating DOM with d3 takes a lot of work: you have to keep track of all the elements you're updating, the ones that are new, what to remove, everything. React does all of that for you. Its purpose in life is knowing exactly which elements to update, and which to leave unchanged. Update it and forget it. Amazing. 
 
-{title="HTML of a rectangle",linenos=off,lang=js}
-	<svg width="800" height="600">
-		<rect width="100" height="200" x="50" y="20" />
-	</svig>
-
-Would've been easier to just write the HTML right? Yes, for static images you're better off using Photoshop or similar then exporting to SVG.
-
-Either way, dealing with the DOM is not D3's strong suit. A lot of typing, code that's hard to read, slow when you have thousands of elements, and it's often hard to keep track of which elements you're changing. D3's enter-update-exit cycle is great theory, but I personally never found it easy to use.
-
-If you don't know what I just said, don't worry, we'll cover the enter-update-exit cycle in the animations example. Don't worry about D3 either. I know it's hard. I've written two books about it and I still spend as much time reading the docs as writing the code. There's a lot to learn, and I'll explain everything as we go along.
-
-D3's strong suit is its ability to do everything other than the DOM. There are many statistical functions, great support for data manipulation, and a bunch of built-in data visualizations. D3 can calculate anything for us, all we have to do is draw it out.
-
-Which is why we're going to follow this approach:
+We're going to follow this simple approach:
 
 * React owns the DOM
-* D3 calculates properties
+* d3 calculates properties
 
-This way we can leverage React for SVG structure and rendering optimizations, and D3 for all its mathematical and visualization functions.
+That lets us leverage both React and d3.js for what they're best at.
 
-Now let's look at two different ways to put them together: blackbox and full-feature.
+{#the-architecture}
+## The Architecture
 
-{#blackbox-components}
-## Blackbox Components
+To make our lives easier, we're going to use a flow-down architecture inspired by Flux. All state is stored in one place - the main component - and data flows down via component properties. Changes travel back up the hierarchy via callbacks.
 
-Blackbox components are the simplest way to integrate D3 and React. You can think of them as wrappers around D3 visualizations. 
+Our approach differs from Flux (and Redux) in that it doesn't need any extra code, which makes it easier to explain. The downside is that our version doesn't scale as well as Flux would.
 
-You can take any D3 example from the internets or your brain, wrap it in a thin React component and it Just Works(tm). Yes, we go against what I just said and let D3 control a small part of the DOM tree.
-
-We throw away most of React's power, but gain a quick way to get things working. 
-
-I it the blackbox approach because React's engine can't see inside your component, can't help with rendering, and has no idea what's going on. From this point onward in the DOM tree you are on your own. Sounds scary, but it's okay if you're careful.
-
-Here's how it works:
-- React renders an anchor element
-- D3 hijacks it and puts stuff in
-
-You have to manually re-render on props and state changes. You're also throwing away and recreating your component's entire DOM on each re-render.
-
-Manual re-rendering is not as annoying as it sounds, but the inefficiency can get pretty bad with complex visualizations. Use this technique sparingly.
-
-### A subtitle?
-
-Let's build an axis component. We'll use it in the overall project later.
-
-To make our lives easier, we're going to use the axis generator that ships with D3. Making our own would take too long.
-
-A D3 axis generator takes a scale, some configuration, and renders an axis for us. The code looks like this:
-
-{title="A pure D3 axis",linenos=off,lang=js}
-		const scale = d3.scaleLinear()
-		                .domain([0, 10])
-		                .range([0, 200]);
-		const axis = d3.axisBottom(scale);
-
-		d3.select('svg')
-		  .append('g')
-		  .attr('transform', 'translate(10, 30)')
-		  .call(axis); 
-
-If that doesn't make any sense, don't worry. There's a lot of D3 to learn and I'll help you out. If it's obvious, even better! You're a pro and this book will be a much quicker read.
-
-We start with a linear scale that has a domain `[0, 10]` and a range `[0, 200]`. You can think of scales as mathematical functions that map a domain to a range. In this case calling `scale(0)` returns `0`, `scale(5)` returns `100`, `scale(10)` returns `200`. Just like middle school mathematics.
-
-We create an axis generator with `axisBottom`, which takes a `scale` and is going to generate a `bottom` oriented axis – numbers below the line. You can also tweak settings for number of ticks, their sizing, and spacing.
-
-Equipped with an `axis` generator, we `select` the `svg` element, append a grouping element, use a `transform` attribute to move it `10`px to the right and `30`px down, and invoke the generator with `.call()`.
-
-It creates a small axis:
-
-![Simple axis](images/es6v2/simple-axis.png)
-
-You can play around with this example on CodePen, [here](https://codepen.io/swizec/pen/YGoYBM). Try changing the scale type.
-
-### Another subtitle?
-
-Now let's say we want to use that same axis code, but as a React component. The simplest way is to use a blackbox component approach. Like this:
-
-{title="React blackbox axis",linenos=off,lang=jsx}
-	class Axis extends Component {
-	  componentDidMount() { this.renderAxis() }
-	  componentDidUpdate() { this.renderAxis() }
-	  
-	  renderAxis() {
-	    const scale = d3.scaleLinear()
-	                    .domain([0, 10])
-	                    .range([0, 200]);
-	    const axis = d3.axisBottom(scale);
-	
-	    d3.select(this.refs.g)
-	      .call(axis);  
-	  }
-	  
-	  render() {
-	    return <g transform="translate(10, 30)" ref="g" />
-	  }
-	}
-
-Oh man so much code! Is this really worth it? Yes, for the other benefits of using React in your dataviz. You'll see :)
-
-We created an `Axis` component that extends React base `Component` class. We can't use functional stateless components for this because we need lifecycle hooks. More on those later.
-
-Our component has a `render` method, which returns a grouping element, `g`, moved 10px to the right and 30px down using the `transform` attribute. Same as before.
-
-We added a `ref` attribute, which lets us reference elements in our component via `this.refs`. This makes D3 integration cleaner and probably work with React-native. I haven't tried yet.
-
-The body of `renderAxis` should look familiar. It's where we put code from the pure D3 example. Scale, axis, select, call. No need to append a grouping element, we're already there with `this.refs.g`.
-
-For the manual re-rendering part, we call `renderAxis` in `componentDidUpdate` and `componentDidMount`. This ensures that our axis re-renders every time React's engine decides to render our component. On state and prop changes usually.
-
-That wasn't so bad was it? You can try it out on CodePen, [here](https://codepen.io/swizec/pen/qazxPz).
-
-To make our axis more useful, we could get the scale and axis orientation from props. We'll do that for scales in our bigger project.
-
-{#full-feature-integration}
-## Full-feature Integration
-
-As useful as blackbox components are, we need something better, if we want to leverage React's rendering engine. We're going to look at full-feature integration where React does the rendering, and D3 calculates the props.
-
-To do that, we're going to follow a 3-part pattern:
-- set up D3 objects as class properties
-- update D3 objects when component updates
-- output SVG in `render()`
-
-It's easiest to show you with an example. Let's build a rectangle that changes color based on input values. We're going to render a couple of them to make a color scale.
-
-Yes, it looks like a trivial example, but color-as-information is an important concept in data visualization. We're going to use it later to build a choropleth map of household income in the US.
-
-I suggest following along in Codepen for now. [Here's one I set up for you](https://codepen.io/swizec/pen/oYNvpQ). It contains the final solution, so you can follow along and nod your head. I'll explain each part.
-
-You must be itching to use the environment you set up with `create-react-app`. That comes later. When we do the real-er dataviz project :)
-
----
-
-We start with a `Swatch` component that draws a rectangle and fills it with a color.
-
-{title="Swatch component",linenos=off,lang=jsx}
-	const Swatch = ({ color, width, x }) => (
-	  <rect width={width} 
-				  height="20" 
-				  x={x} 
-				  y="0" 
-				  style={{fill: color}} />
-	);
-
-Looks like our earlier components doesn't it? It's exactly the same, a functional stateless component that draws a `rect` element with some attributes - dimensions, position, and `fill` style.
-
-Note that `style` is a dictionary so we specify it with double curly braces. Outer braces denote a dynamic value, inner braces denote a dictionary.
-
-Then we need a `Colors` component. It follows the full-featured integration structure: D3 objects as properties, an `updateD3` function, plus some wiring for updates and rendering.
-
-{title="Colors component, pt1",linenos=off,lang=jsx}
-	class Colors extends Component {
-	  colors = d3.schemeCategory20;
-	  width = d3.scaleBand()
-	            .domain(d3.range(20));
-
-We start by inheriting from `Component`, and defining defaults for D3 objects. `this.colors` is one of [D3's predefined color scales](https://github.com/d3/d3-scale/blob/master/README.md#schemeCategory10). `schemeCategory20` is a scale of 20 colors designed for categorization. Seemed like a good example, and you're welcome to try others.
-
-`this.width` is a D3 scale designed for producing bands, `d3.scaleBand`. As mentioned earlier, scales map domains to ranges. We know our domain is 20 colors, so we can statically set the domain as `[1, 2, 3, ..., 20]` with `d3.range(20)`.
-
-`d3.range` generates a counting array, by the way. We'll use that a lot.
-
-We'll use `this.width` to calculate widths and positions of our color swatches. Here's a picture from D3 docs to help you visualize what `scaleBand` does:
-
-[![Band Scale from D3 docs](https://raw.githubusercontent.com/d3/d3-scale/master/img/band.png)](https://github.com/d3/d3-scale/blob/master/README.md)
-
-Unlike the domain, our range is dynamic so that we can define the width of our color scale in props. This makes the component more reusable.
-
-{title="Colors component, pt2",linenos=off,lang=jsx}
-	  componentWillMount() {
-	    this.updateD3(this.props);
-	  }
-	
-	  componentWillUpdate(newProps) {
-	    this.updateD3(newProps);
-	  }
-	
-	  updateD3(props) {
-	    this.width.range([0, props.width]);
-	  }
-	  
-`componentWillMount` and `componentWillUpdate` are component lifecycle hooks. Can you guess when they run?
-
-The former runs just before React's engine inserts our component into the DOM, and the latter just before React updates it. That happens on any prop change or `setState` call.
-
-Both of them call our `updateD3` component with the new value of props. We use it to update the range of our `this.width` scale. This ensures our component listens to prop and state changes like any other, while ensuring the internal state of D3 objects is kept up to date.
-
-Finally, we render a bunch of color swatches.
-
-{title="Colors component, pt3",linenos=off,lang=jsx}
-	  render() {
-	    return (
-	      <g>
-	        {d3.range(20).map(i => (
-	          <Swatch color={this.colors[i]} 
-					          width={this.width.step()} 
-					          x={this.width(i)} />
-	        ))}
-	      </g>
-	    )
-	  }
-	}
-	
-We create a grouping element to fulfill React's one child per component requirement, then render 20 swatches in a loop. Each gets a `color` from `this.colors`, and a `width` and `x` from `this.width`.
-
-After inserting into the DOM with `ReactDOM`, we get a series of 20 colorful rectangles.
-
-![20 color swatches](images/color-swatches.png)
-
-Try changing the `width="400"` property of `<Colors />`. You'll see D3's `scaleBand` and our update wiring ensure the color strip renders correctly. For more fun, try changing the `Colors` component so it takes the color scale as a prop, then rendering multiple instances of `<Colors />` side-by-side.
-
-Here's the playground again: [CodePen](https://codepen.io/swizec/pen/oYNvpQ)
-
-{#state-handling-architecture}
-## State Handling Architecture
-
-You know all about making simple components with D3 and React. You're well on your way to building great things! 🙌🏼
-
-Before I can set you loose on the world, we should talk about managing state. It's where most developers shoot themselves in the foot.
-
-Believe me, I know. I've shot myself in the foot *a lot*. Life gets harder and harder until one day you want to throw all your code away and embark on The Rewrite. That's how projects die.
-
-The Rewrite [killed Netscape](http://www.joelonsoftware.com/articles/fog0000000069.html). You probably don't even remember Netscape 😉
-
-Let's save you from that.
-
----
+If you don't know about Flux or Redux, don't worry; the explanations are self-contained. I only mention them here to make your Googling easier and to give you an idea of how this approach compares. I explain Redux in more detail in the [Animating with React, Redux, and d3 chapter](#animating-react-redux).
 
 ![The basic architecture](images/architecture.jpg)
 
-For most of the book, we're going to use a unidirectional dataflow architecture inspired by Flux:
+The idea is this:
 
 * The Main Component is the repository of truth
 * Child components react to user events
@@ -352,15 +82,25 @@ This might look roundabout, but I promise, it’s awesome. It's better than worr
 
 Having your components rely just on their properties is like having functions that rely just on their arguments. Given the same arguments, they *always* render the same output.
 
-Functional programming for HTML! 😎
+If you want to read about this in more detail, Google "isomorphic JavaScript". You could also search for "referential transparency" and "idempotent functions".
 
-Granted, our approach is less flexible and scalable than using Redux or MobX, but avoiding an extra library makes it easier to explain. With Redux or MobX, you'd use a data store in place of main component state as your source of truth, and actions in place of callbacks traversing the component tree. 
+Either way, functional programming for HTML. Yay!
 
-If you don't know about Redux or MobX, don't worry. I mention them here to make your Googling easier and to give you an idea of how our approach compares. I'll explain Redux in more detail in the [Animating with React, Redux, and d3 chapter](#animating-react-redux), and MobX in the [MobX chapter]().
+## The HTML skeleton
 
-The functional programming concepts we're relying on are called [referential transparency](https://en.wikipedia.org/wiki/Referential_transparency), [idempotent functions](https://en.wikipedia.org/wiki/Idempotence), and [functional purity](https://en.wikipedia.org/wiki/Pure_function). I suggest googling them, if you like to understand the theory behind things.
+We’re building our interface with React, but we still need some HTML. It's going to take care of including files and giving our UI a container.
 
-{#structuring-your-app}
+Make an index.html file that looks like this:
+
+{linenos=off,lang=html}
+<<[HTML skeleton](code_samples/index.html)
+
+These 20 lines do everything we need. The `<head>` sets some Bootstrap-recommended meta properties and includes Bootstrap's stylesheet. This is a good approach for when you only need Bootstrap's default styles and don't want to change anything. We'll use `require()` statements to load our own stylesheets with Webpack.
+
+The `<body>` tag creates a container and includes the JavaScript code. We didn’t really need a `<div>` inside a `<div>` like that, but I like to avoid taking over the whole `.container` with React. This gives you more flexibility to add static content.
+
+At the bottom, we load our compiled JavaScript from `static/bundle.js`. This is a virtual path created by our dev server, so it doesn't point to any actual files.
+
 ## Structuring your React app
 
 As you can guess from the architecture chapter, we're going to structure our app into components. Deciding what to put into one component and what into another is one of the hardest problems in engineering.
@@ -369,42 +109,94 @@ Entire books have been written on the topic, so here's a rule of thumb that I li
 
 Once you have those two components, you can either make them child components of a bigger component, or you can make them separate. The choice depends on their re-usability.
 
-For instance, to build our US work visa visualization, we are going to build three top-level components:
+For instance, to build our H1B histogram visualization, we are going to build two top-level components:
 
- - App, which handles the entire UI
+ - H1BGraph, which handles the entire UI
  - Histogram, which is a passive component for rendering labeled histograms
- - Choropleth, which is a passive component for rendering choropleth maps
 
-Histogram and Choropleth are going to be children of App in the final hierarchy, but we might use it somewhere else. That makes it a good candidate for a stand-alone component.
+Histogram is going to be a child of H1BGraph in the final hierarchy, but we might use it somewhere else. That makes it a good candidate for a stand-alone component.
 
 Other components such as the mean value dotted line, filter controls, and title/description meta components are specific to this use-case. We'll build them as child components of H1BGraph. Building them as separate components makes them easier to reason about, reusable locally within H1BGraph, and easier to write tests for.
 
-[^ figure this shit out for real]
+We're not going to write tests here, though. That's a topic for another book. Right now, we’re going to focus on React and d3.js.
 
-We're not going to write tests here, though. That's a topic for another book. Right now, we’re going to focus on React and D3.
+Each component will have its own folder inside `src/components/`, or its parent component, and at least an `index.jsx` file. Some will have style definitions, child components, and other JavaScript files as well.
 
-Each component will have its own folder inside `src/components/`, or its parent component, and at least an `index.js` file. Some will have style definitions, child components, and other JavaScript files as well.
-
-In theory, each component should be accessible with `import My Component from './MyComponent'`, and rendered with `<MyComponent {...params} />`. If a parent component has to know details about the implementation of a child component, something is wrong.
+In theory, each component should be accessible with `require('./MyComponent')`, and rendered with `<MyComponent {...params} />`. If a parent component has to know details about the implementation of a child component, something is wrong.
 
 You can read more about these ideas by Googling ["leaky abstractions"](https://en.wikipedia.org/wiki/Leaky_abstraction), ["single responsibility principle"](https://en.wikipedia.org/wiki/Single_responsibility_principle), ["separation of concerns"](https://en.wikipedia.org/wiki/Separation_of_concerns), and ["structured programming"](https://en.wikipedia.org/wiki/Structured_programming). Books from the late 90's and early 2000's (when object oriented programming was The Future (tm)) are the best source of [curated] info in my experience.
 
----
+## Bootstrap your app into place
 
-Congratz! You know everything you need to build visualizations with React and D3. 👏
+Let's start by bootstrapping our app into place. We're going to make a simple `src/index.jsx` file – we set that to be our main entry file in [the environment section](#the-environment) – and an empty `H1BGraph` component that renders an SVG element.
 
-Personally this is the point in tech books where I run off and start building things on my own. Then I get frustrated when something doesn't fit, spend hours Googling for answers, and remember that hey maybe I should read the rest of the book!
+We start by importing `React`, `ReactDOM`, and `H1BGraph`.
 
-Reading the rest of the book helps. I'll show you how all this stuff fits together into a larger project 😊
+{crop-start-line=5,crop-end-line=9,linenos=off,lang=jsx}
+<<[Import main dependencies](code_samples/es6/index.jsx)
 
-We're going to build this:
+`React` is, well, React. We need it for just about everything. `ReactDOM` is React's DOM renderer, which is new in v0.14. Rendering got split out of base React so that it's easier to build React apps for different render targets like canvas, WebGL, native mobile, etc. `H1BGraph` is going to be our main component.
 
-![](images/es6v2/full-dataviz.png)
+We're using ES6-style imports instead of `require()` because it gives us greater flexibility to import only the parts we want and it reads like a normal English sentence in most common-use cases. You'll see this play out in future examples.
 
-An interactive visualization app with a choropleth map and a histogram comparing tech salaries with median household income in the area.
+The second argument must be a string even if you're importing a library.
 
-![](images/es6v2/interaction-dataviz.png)
+The main entry point for the app is also a good place to define any convenience helper functions that should be available globally but aren't big enough or important enough to make a new library for. We'll add `capitalize` and `decapitalize` to the `String` class. There are libraries out there that do this, but there's no need to add an entire string manipulation library to our codebase if all we need are two functions.
 
-It's going to be great.
+{crop-start-line=13,crop-end-line=27,linenos=off,lang=jsx}
+<<[Define two string helpers](code_samples/es6/index.jsx)
 
-[^ maybe place this somewhere earlier too?]
+Now we'll be able to capitalize and decapitalize any string in our codebase with a call like `"some thing".capitalize()`. We're going to use this in the `Title` and `Description` meta components. We define them here because they change the global String class, and it would be odd if that happened deep down in a child component… maybe we should've just avoided changing built-in classes.
+
+All we need now is to render `H1BGraph` into the page.
+
+{crop-start-line=41,crop-end-line=50,linenos=off,lang=jsx}
+<<[Render H1BGraph onto page](code_samples/es6/index.jsx)
+
+This tells React to take control of the HTML element with class `h1bgraph` – a `<div>` inside the main container in our case – and render the `H1BGraph` component. We used `ReactDOM.render` because we're rendering for and in a browser. Other renderers exist, but they're not important right now.
+
+You can think of this function call as a *"Give me a Thing That Does Stuff"*. It doesn't have to stand on its own. You could wrap it in a jQuery plugin, use it inside a Backbone or Angular view, or in whatever else you're already used to. That's how you can make a gradual transition towards React that doesn't force you to throw existing code away.
+
+If you've kept `npm start` running in the background, it should now complain that `components/H1BGraph` doesn't exist. Let's fix that and get an empty `<svg>` element rendering.
+
+## Start with a basic component
+
+All of our components are going to start the same way – some imports, a class with a `render()` method, and a default module export. That's the minimum we need in `<component>/index.jsx` to define a component that doesn't break our build.
+
+Right now, the main entry file tries to import and render `H1BGraph`, but it doesn't exist yet. Let's start a new file in `src/components/H1BGraph/index.jsx`.
+
+{crop-start-line=5,crop-end-line=7,linenos=off,lang=jsx}
+<<[Basic imports](code_samples/es6/H1BGraph/index.jsx)
+
+We import React and a base `Component` class. We have to import `React` even if we don't use it explicitly because Webpack throws a "React not defined" error otherwise. We'll use the `Component` class to build our own components off of.
+
+We also import `d3` because we'll use it to load data later. 
+
+{crop-start-line=13,crop-end-line=25,linenos=off,lang=jsx}
+<<[Empty H1BGraph component](code_samples/es6/H1BGraph/index.jsx)
+
+Then we define a component that renders an empty `<svg>` tag inside a `<div>`. A component must have at least a `render()` function; otherwise, React throws an error when it tries to render. With v0.14 we also got stateless functional components, which are essentially just the `render()` function. They don't feature in this Histogram example, but you can see some in the animation chapter.
+
+We're using ES6's concept of classes and class inheritance to extend React's basic `Component`, which we imported earlier. This is widely accepted as more readable than JavaScript's old/standard prototypical inheritance.
+
+You can still use `React.createClass` if you want. It works just fine and is equivalent to `class X extends Component`.
+
+{crop-start-line=39,crop-end-line=46,linenos=off,lang=jsx}
+<<[Export H1BGraph](code_samples/es6/H1BGraph/index.jsx)
+
+In the end, we export `H1BGraph` so other parts of the codebase can import it. We define it as the `default` export because this particular file only exports a single class.
+
+If we had multiple things to export, we'd use named exports. They look like this: `export { Thing }`. You can also define the Thing anonymously when exporting, like this: `export function Thing () { // ... }`.
+
+Using default exports makes our components easier to import - `import Thing from 'file'`. To import named exports, you have to specify them inside curly braces: `import { Thing1, Thing2 } from 'file'`.
+
+Hot reloading and continuous compilation should have done their magic by now, and you should see an empty `<svg>` element in your page. You have to keep `npm start` running and a browser window pointing to `localhost:3000` for that.
+
+Congratz! You just made your first React component with ES6 classes. Or at least the first in this book. You're awesome!
+
+Here's what happens next:
+
+1. We'll make `H1BGraph` load our dataset
+2. Build a Histogram component
+3. Add dynamic meta text descriptions
+4. Add some data filtering

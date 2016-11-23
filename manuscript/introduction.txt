@@ -37,7 +37,7 @@ Relax. Breathe. You’re here to learn. I’m here to teach. I promise Twitter a
 Just you and some fun code. To get the most out of this material, I suggest two things:
 
 1. Try the example code yourself. Don’t just copy-paste; type it and execute it. Execute it frequently. If something doesn’t fit together, look at the full working project on Github [here](https://github.com/Swizec/h1b-software-salaries), or check out the zip files that came with the book.
-2. If you already know something, skip that section. You’re awesome. Thanks for making this easier.
+2. If you already know something, skip that section. You’re awesome. Thanks for making this easier for me.
 
 React+d3.js is heavily based on code samples. They look like this:
 
@@ -59,18 +59,6 @@ Removed code looks like this:
      // leanpub-start-delete
      foo += 'this is added';
      // leanpub-end-delete
-     
-Each code sample starts with a commented out file path. That's the file you're editing. Like this:
-
-{linenos=off,lang=jsx}
-    // ./src/App.jsx
-    
-    class App …
-    
-Commands that you should run in the terminal start with an `$` symbol, like this:
-
-{linenos=off}
-    $ npm start
 
 ## ES5 and ES6 versions
 
