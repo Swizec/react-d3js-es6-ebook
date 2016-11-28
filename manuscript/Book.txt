@@ -6,4 +6,5 @@ animation.md
 animating-react-redux.txt
 using-canvas.md
 conclusion.txt
-appendix.txt
+appendixA.txt
+appendixB.txt
