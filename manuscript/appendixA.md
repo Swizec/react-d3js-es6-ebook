@@ -1,5 +1,6 @@
-{#the-environment}
-# A good work environment
+{#appendixA}
+# Appendix A - roll your own environment
+
 If you already know how to set up the perfect development environment for modern JavaScript, go ahead and skip this section. Otherwise, keep reading.
 
 If you don't know, and don't care about this right now: Use the starter project that came with the book. It's what you would get after following this chapter.
