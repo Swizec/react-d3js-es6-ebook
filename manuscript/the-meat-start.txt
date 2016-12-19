@@ -8,26 +8,21 @@ Welcome to the main part of React+d3.js. We're going to talk a little theory, so
 - An animated alphabet  <-- already done
 - A simple particle generator  <-- done, should add canvas stuff
 - A particle generator pushed to 20,000 elements <-- canvas stuff
+- A dancing fractal tree 
 
 Looks random, right? Bear with me.
 
-Examples build on each other in complexity. The first teaches you how to make a static data visualization component and shows you an approach to declarative data visualization. The second adds interactivity and components interacting with each other, this teaches you about a simple approach to state management. The third shows you how to use transitions to build simple animations, and the fourth shows you how to do complex animation using a game loop principle.
+Examples build on each other in complexity. **The first** teaches you how to make a static data visualization component and shows you an approach to declarative data visualization. **The second** adds interactivity and components interacting with each other, this teaches you about a simple approach to state management. **The third** shows you how to use transitions to build simple animations. **The fourth** shows you how to do complex animation using a game loop principle. **The fifth** and  **the sixth** show you how to approach speed optimization to smoothly animate thousands of elements.
 
-The fourth example has a fifth example hidden inside where we talk about using canvas with React and pushing the limits. We're going to animate tens of thousands of elements at the same time, it's going to be great.
+Throughout the examples we're going to use **React 15**, **D3v4**, and **ES6+**. In the particle generator, we're also going to use **Redux** to drive the game loop, and **Konva** for canvas manipulation.
 
-If you like buzzwords, here are the technologies we're going to use:
+Don't worry, if you're not comfortable with ES6 syntax yet. By the end of this book you're gonna love it! 
 
-1. React 15, D3v4, ES6
-2. React 15, D3v4, ES6, (maybe mobx?)
-3. React 15, D3v4, ES6
-4. React 15, D3v4, ES6, Redux
-5. React 15, D3v4, ES6, Konva, canvas, Redux
+In the meantime, here's a helpful cheatsheet for you: [es6cheatsheet.com](https://es6cheatsheet.com/). It uses interactive code samples to compare the ES5 way with the ES6 way so you can brush up quickly.
 
-Don't worry, if you're not comfortable with ES6 syntax yet. By the end of this book you're gonna love it! In the meantime, here's a helpful cheatsheet for you: [es6cheatsheet.com](https://es6cheatsheet.com/). It compares the ES5 way with the ES6 way so you can brush up quickly.
+I'm working on a similar cheatsheet for D3v3 -> D3v4. It's going to be ready in early 2017. You'll get an email when it's done.
 
-I'm working on a similar cheatsheet for D3v3 -> D3v4. You'll get an email when it's done.
-
-[^ or maybe just get it done?]
+In the interest of looking towards the future, we'll check out **Preact**, **Vue**, and **Inferno** in the final fractal example. They're new React-like libraries that promise better performance and smaller filesizes. Their creators – Jason Miller, Evan You, and Dominic Gannaway - were graciously forked my code into their libraires. Thank you!
 
 ----
 
@@ -53,9 +48,9 @@ Our visualizations are going to use SVG - an XML-based image format that lets us
 
 These four lines create an SVG image with a black rectangle at coordinates `(50, 20)` that is 100x200 pixels large. Black fill with no borders is default for all SVG shapes.
 
-SVG is perfect for data visualization on the web because it works in all browsers, renders without blurring or artifacts on all screens, and supports animation and user interaction. You can see examples of interaction and animation later in this book.
+SVG is perfect for data visualization on the web because it works in all browsers, renders without blurring or artefacts on all screens, and supports animation and user interaction. You can see examples of interaction and animation later in this book.
 
-But SVG can get slow when you have thousands of elements on screen. We're going to solve that problem by rendering bitmap images with canvas. More on that later.
+But SVG can get slow when you have many thousands of elements on screen. We're going to solve that problem by rendering bitmap images with canvas. More on that later.
 
 ----
 
@@ -77,7 +72,7 @@ To use this rectangle component in a picture, you'd use a component like this:
 			</svg>
 		);
 
-You're right, this looks cumbersome. A lot of work for a static rectangle, right? But look closely, even if you know nothing about React and JSX, you can look at that code and see that it's a `Picture` of a `Rectangle`.
+You're right, this looks like lot of work for a static rectangle. But look closely, even if you know nothing about React and JSX, you can look at that code and see that it's a `Picture` of a `Rectangle`.
 
 Compare that to a pure D3 approach:
 
@@ -112,13 +107,13 @@ Those 8 lines of code create HTML that looks like this:
 		<rect width="100" height="200" x="50" y="20" />
 	</svig>
 
-Would've been easier to just write the HTML right? Yes, for static images you're better off using Photoshop or similar then exporting to SVG.
+Would've been easier to just write the HTML right? Yes, for static images you're better off using Photoshop or something then exporting to SVG.
 
-Either way, dealing with the DOM is not D3's strong suit. A lot of typing, code that's hard to read, slow when you have thousands of elements, and it's often hard to keep track of which elements you're changing. D3's enter-update-exit cycle is great theory, but I personally never found it easy to use.
+Either way, dealing with the DOM is not D3's strong suit. A lot of typing, code that's hard to read, slow when you have thousands of elements, and it's often hard to keep track of which elements you're changing. D3's enter-update-exit cycle is great in theory, but I personally never found it easy to use.
 
-If you don't know what I just said, don't worry, we'll cover the enter-update-exit cycle in the animations example. Don't worry about D3 either. I know it's hard. I've written two books about it and I still spend as much time reading the docs as writing the code. There's a lot to learn, and I'll explain everything as we go along.
+If you don't know what I just said, don't worry, we'll cover the enter-update-exit cycle in the animations example. Don't worry about D3 either. **I know it's hard**. I've written two books about it and I still spend as much time reading the docs as writing the code. There's a lot to learn, and I'll explain everything as we go along.
 
-D3's strong suit is its ability to do everything other than the DOM. There are many statistical functions, great support for data manipulation, and a bunch of built-in data visualizations. D3 can calculate anything for us, all we have to do is draw it out.
+D3's strong suit is its ability to do everything other than the DOM. There are many statistical functions, great support for data manipulation, and a bunch of built-in data visualizations. **D3 can calculate anything for us, all we have to do is draw it out.**
 
 Which is why we're going to follow this approach:
 
@@ -138,7 +133,7 @@ You can take any D3 example from the internets or your brain, wrap it in a thin 
 
 We throw away most of React's power, but gain a quick way to get things working. 
 
-I it the blackbox approach because React's engine can't see inside your component, can't help with rendering, and has no idea what's going on. From this point onward in the DOM tree you are on your own. Sounds scary, but it's okay if you're careful.
+I call the approach *"blackbox"* because React's engine can't see inside your component, can't help with rendering, and has no idea what's going on. From this point onward in the DOM tree you are on your own. Sounds scary, but it's okay if you're careful.
 
 Here's how it works:
 - React renders an anchor element
@@ -148,13 +143,13 @@ You have to manually re-render on props and state changes. You're also throwing 
 
 Manual re-rendering is not as annoying as it sounds, but the inefficiency can get pretty bad with complex visualizations. Use this technique sparingly.
 
-### A subtitle?
+### A quick blackbox example - a D3 axis
 
-Let's build an axis component. We'll use it in the overall project later.
+Let's build an axis component. Axes are the perfect use-case for blackbox components. D3 comes with an Axis generator bundled inside, and they're difficult to build from scratch.
 
-To make our lives easier, we're going to use the axis generator that ships with D3. Making our own would take too long.
+They don't *look* difficult, but there's a lot of tiny detail you have to get just right.
 
-A D3 axis generator takes a scale, some configuration, and renders an axis for us. The code looks like this:
+D3's axis generator takes a scale, some configuration, and renders an axis for us. The code looks like this:
 
 {title="A pure D3 axis",linenos=off,lang=js}
 		const scale = d3.scaleLinear()
@@ -167,11 +162,11 @@ A D3 axis generator takes a scale, some configuration, and renders an axis for u
 		  .attr('transform', 'translate(10, 30)')
 		  .call(axis); 
 
-If that doesn't make any sense, don't worry. There's a lot of D3 to learn and I'll help you out. If it's obvious, even better! You're a pro and this book will be a much quicker read.
+If this code doesn't make any sense, don't worry. There's a lot of D3 to learn and I'll help you out. If it's obvious, you're a pro! This book will be much quicker to read.
 
 We start with a linear scale that has a domain `[0, 10]` and a range `[0, 200]`. You can think of scales as mathematical functions that map a domain to a range. In this case calling `scale(0)` returns `0`, `scale(5)` returns `100`, `scale(10)` returns `200`. Just like middle school mathematics.
 
-We create an axis generator with `axisBottom`, which takes a `scale` and is going to generate a `bottom` oriented axis – numbers below the line. You can also tweak settings for number of ticks, their sizing, and spacing.
+We create an axis generator with `axisBottom`, which takes a `scale` and is going to generate a `bottom` oriented axis – numbers below the line. You can also tweak settings for number of ticks, their sizing, and their spacing.
 
 Equipped with an `axis` generator, we `select` the `svg` element, append a grouping element, use a `transform` attribute to move it `10`px to the right and `30`px down, and invoke the generator with `.call()`.
 
@@ -181,7 +176,7 @@ It creates a small axis:
 
 You can play around with this example on CodePen, [here](https://codepen.io/swizec/pen/YGoYBM). Try changing the scale type.
 
-### Another subtitle?
+### A quick blackbox example - a React+D3 axis
 
 Now let's say we want to use that same axis code, but as a React component. The simplest way is to use a blackbox component approach. Like this:
 
@@ -211,7 +206,7 @@ We created an `Axis` component that extends React base `Component` class. We can
 
 Our component has a `render` method, which returns a grouping element, `g`, moved 10px to the right and 30px down using the `transform` attribute. Same as before.
 
-We added a `ref` attribute, which lets us reference elements in our component via `this.refs`. This makes D3 integration cleaner and probably work with React-native. I haven't tried yet.
+We added a `ref` attribute, which lets us reference elements in our component via `this.refs`. This makes D3 integration cleaner and probably works with React-native. I haven't tried yet.
 
 The body of `renderAxis` should look familiar. It's where we put code from the pure D3 example. Scale, axis, select, call. No need to append a grouping element, we're already there with `this.refs.g`.
 
@@ -220,6 +215,65 @@ For the manual re-rendering part, we call `renderAxis` in `componentDidUpdate` a
 That wasn't so bad was it? You can try it out on CodePen, [here](https://codepen.io/swizec/pen/qazxPz).
 
 To make our axis more useful, we could get the scale and axis orientation from props. We'll do that for scales in our bigger project.
+
+## A D3 blackbox higher order component – HOC
+
+After the blackbox axis example above, you'd be right to think something like *"Dude, that looks like it's gonna get hella repetitive. Do I really have to do all that every time?"*
+
+Yes, you do. But! We can make it easier with a higher order component. A HOC.
+
+Higher order components – HOCs – are one of the best ways to improve your React code. When you see a lot of components sharing similar code, it's time for a HOC. In our case that shared code would be:
+
+- rendering an anchor element
+- calling D3's render on updates
+
+With a HOC we can abstract that away into something called a [class factory](https://en.wikipedia.org/wiki/Factory_method_pattern). It's an old concept coming back in vogue now that JavaScript has classes.
+
+You can think of it as a function that takes some params and creates a class – a React component. Another way to think about HOCs is that they're React components wrapping other React components. And a function that makes it easy.
+
+Let's build a HOC for D3 blackbox integration. We'll use it in the main example project.
+
+A `D3blackbox` HOC looks like this:
+
+{title="React blackbox HOC",linenos=off,lang=jsx}
+	function D3blackbox(D3render) {
+	  return class Blackbox extends React.Component {
+	    componentDidMount() { D3render.call(this); }
+	    componentDidUpdate() { D3render.call(this) }
+	  
+	    render() {
+	      const { x, y } = this.props;
+	      return <g transform={`translate(${x}, ${y})`} ref="anchor" />;
+	    }
+	  }
+	}
+	
+You'll recognize most of that code from earlier. We have a `componentDidMount` and`componentDidUpdate` lifecycle hooks that  call `D3render` on component updates. This used to be called `renderAxis`. And `render` renders a grouping element as an anchor for D3 to put its stuff into.
+
+Because `D3render` is no longer a part of the component, we have to use `.call` to give it the scope we want. This class. Or rather `this` instance of the `Backbone` class.
+
+We've also made some changes to make `render` more flexible. Instead of hardcoding the `translate()` transformation, we take `x` and `y` props. `{ x, y } = this.props`  takes `x` and `y` out of `this.props` using object decomposition, and we used ES6 string templates for the `transform` attribute.
+
+Consult the [ES6 cheatsheet](https://es6cheatsheet.com/) for details on that.
+
+Using our new `D3blackbox` HOC to make an axis looks like this:
+
+{title="React blackbox HOC",linenos=off,lang=jsx}
+	const Axis = D3blackbox(function () {
+	  const scale = d3.scaleLinear()
+	                  .domain([0, 10])
+	                  .range([0, 200]);
+	  const axis = d3.axisBottom(scale);
+	
+	  d3.select(this.refs.anchor)
+	    .call(axis);    
+	});
+
+Same code as we had in `renderAxis` before, except the function is wrapped in a `D3blackbox` call. This turns it into a React component.
+
+I'm not 100% whether wrapping a function in a React component counts as a real HOC, but let's roll with it. More proper HOCs are React components wrapped in components.
+
+You can play with this example on Codepen, [here](https://codepen.io/swizec/pen/woNjVw).
 
 {#full-feature-integration}
 ## Full-feature Integration
