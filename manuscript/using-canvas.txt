@@ -1,0 +1,9 @@
+# Speed optimizations
+
+## Reducing the amount of computation
+
+## Switching to Preact or Inferno
+
+## Using Canvas
+
+## 15,000+ animated nodes on a phone
