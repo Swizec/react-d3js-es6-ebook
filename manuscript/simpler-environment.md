@@ -1,3 +1,4 @@
+{#getting-started}
 # Getting started
 
 Can you believe this is the third time I'm writing a *"How to set up all the tools and get started"* section? The ecosystem moves fast! 😬
