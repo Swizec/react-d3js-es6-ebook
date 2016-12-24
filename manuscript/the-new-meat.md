@@ -1,4 +1,6 @@
-# Visualizing 176,113 US tech salaries – a big example
+# A big example project #
+
+# Visualizing 176,113 US tech salaries
 
 We're going to build this:
 
@@ -50,8 +52,8 @@ We'll put all of our components in `src/components/`.
 
 We start the component off with some imports, an export, and a functional stateless component that returns an empty div element.
 
-{crop-start-line=5,crop-end-line=17,linenos=off}
-<<[Preloader skeleton](code_samples/es6v2/compnents/Preloader.js)
+{crop-start: 5, crop-end: 17, line-numbers: false, format: javascript}
+![Preloader skeleton](code_samples/es6v2/compnents/Preloader.js)
 
 We `import` React, which we need to make JSX syntax work, and the `PreloaderImg` for our image. We can import images because of the Webpack configuration that comes with `create-react-app`. The image loader puts a file path in the `PreloaderImg` constant.
 
@@ -59,8 +61,8 @@ At the bottom we `export default Preloader`, so that we can use it in `App.js` a
 
 The `Preloader` function takes no props, because we don't need any, and returns an empty `div`. Let's fill it in.
 
-{crop-start-line=22,crop-end-line=35,linenos=off}
-<<[Preloader content](code_samples/es6v2/components/Preloader.js)
+{crop-start: 22, crop-end: 35, line-numbers: false, format: javascript}
+![Preloader content](code_samples/es6v2/components/Preloader.js)
 
 We're cheating again because I copy pasted that from the finished example. You wouldn't have anywhere to get this yet.
 

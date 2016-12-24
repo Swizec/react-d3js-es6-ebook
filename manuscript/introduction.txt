@@ -41,36 +41,46 @@ Just you and some fun code. To get the most out of this material, I suggest two 
 
 React+d3.js is heavily based on code samples. They look like this:
 
-{linenos=off,lang=jsx}
-     var foo = 'bar';
+{line-numbers: false, format: javascript}
+```
+var foo = 'bar';
+```
 
 Added code looks like this:
 
-{linenos=off,lang=jsx}
-     var foo = 'bar’;
-     // leanpub-start-insert
-     foo += 'this is added’;
-     // leanpub-end-insert
+{line-numbers: false, format: javascript}
+```
+var foo = 'bar’;
+// markua-start-insert
+foo += 'this is added’;
+// markua-end-insert
+```
 
 Removed code looks like this:
 
-{linenos=off,lang=jsx}
-     var foo = 'bar';
-     // leanpub-start-delete
-     foo += 'this is added';
-     // leanpub-end-delete
+{line-numbers: false, format: javascript}
+```
+var foo = 'bar';
+// markua-start-delete
+foo += 'this is added';
+// markua-end-delete
+```
      
 Each code sample starts with a commented out file path. That's the file you're editing. Like this:
 
-{linenos=off,lang=jsx}
-    // ./src/App.jsx
+{line-numbers: false, format: javascript}
+```
+// ./src/App.jsx
     
-    class App …
+class App ...
+```
     
 Commands that you should run in the terminal start with an `$` symbol, like this:
 
-{linenos=off}
-    $ npm start
+{line-numbers: false}
+```
+$ npm start
+```
 
 ## ES5 and ES6 versions
 
@@ -137,21 +147,21 @@ The gist of JSX is that we can use any XML-like string just like it is part of J
 
 For instance, the code that renders our whole application is going to look like this:
 
-{crop-start-line=399,crop-end-line=402,linenos=off,lang=jsx}
-<<[A basic Render](code_samples/old/main.jsx)
+{line-numbers: false, format: javascript, crop-start: 399, crop-end: 402}
+![A basic Render](code_samples/old/main.jsx)
 
 Which compiles to:
 
-{title="JSX compile result", linenos=off, lang=js}
-    ReactDOM.render(
-        React.createElement(H1BGraph, {url: “data/h1bs.csv”}),
-        document.querySelectorAll(‘.h1bgraph’)[0]
-    );
+{caption: "JSX compile result", {line-numbers: false, format: javascript}
+```
+ReactDOM.render(
+	React.createElement(H1BGraph, {url: “data/h1bs.csv”}),
+	document.querySelectorAll(‘.h1bgraph’)[0]
+);
+```
 
 As you can see, HTML code translates to `React.createElement` calls with attributes translated into a property dictionary. The beauty of this approach is two-pronged: you can use React components as if they were HTML tags and HTML attributes can be anything.
 
 You’ll see that anything from a simple value to a function or an object works equally well.
 
-I'm not sure yet whether this is better than separate template files in Mustache or something similar. There are benefits to both approaches. I mean, would you let a designer write the HTML inside your JavaScript files? I wouldn't, but it's definitely better than manually `+`-ing strings or Angular's approach of putting everything into HTML. Considerably better.
-
-If you skipped the setup section and don't have a JSX compilation system set up, you should do that now. You can also use the project stub that came with your book.
+I'm not sure yet whether this is better than separate template files in Mustache or something similar. There are benefits to both approaches. I mean, would you let a designer write the HTML inside your JavaScript files? I wouldn't, but it's definitely better than manually `+`-ing strings or Angular's approach of putting everything into HTML.

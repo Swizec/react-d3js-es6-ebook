@@ -1,4 +1,4 @@
-# Animation
+# Animation #
 
 ## Using transitions for simple animation
 
