@@ -379,11 +379,11 @@ Here's the playground again: [CodePen](https://codepen.io/swizec/pen/oYNvpQ)
 
 ## You're awesome
 
-Wow dude you've just learned the basics! You can take any D3 example from the internets and wrap it in a React component *and* you know how to build React+D3 components from scratch. You're amazing. High five! 🖐
+You know the basics! You can take any D3 example from the internets and wrap it in a React component *and* you know how to build React+D3 components from scratch. You're amazing. High five! 🖐
 
-The rest of this book is about using these concepts and pushing them to the limits of practicality. We're going to build an interactive visualization of tech salaries compared to median household income. Why? Because it piqued my interest and shows why you should call yourself an engineer, not programmer or developer. **You're an engineer**. Remember that.
+The rest of this book is about using these concepts and pushing them to the limits of practicality. We're going to build an interactive visualization of tech salaries compared to median household income. Why? Because it piqued my interest and it shows why you should call yourself an engineer, not programmer or developer. **You're an engineer**. Remember that.
 
-Throughout the example, you'll learn more details of D3, tidbits from React, and your mind will be blown when we tackle animation. It's gonna be fun!
+Throughout the example, you'll learn more details of D3, tidbits from React, and the animation chapter is going to blow your mind. Maybe ... I hope. It's gonna be fun!
 
 ![Default view](images/es6v2/full-dataviz.png)
 
@@ -394,7 +394,7 @@ Throughout the example, you'll learn more details of D3, tidbits from React, and
 
 Before I can set you loose on the world, we should talk about managing state. It's where most engineers shoot themselves in the foot.
 
-Believe me, I know. I've shot myself in the foot *a lot*. Life gets harder and harder until one day you want to throw all your code away and embark on The Rewrite. That's how projects die.
+I've shot myself in the foot *a lot*. Life gets harder and harder until one day you want to throw all your code away and embark on The Rewrite. That's how projects die.
 
 The Rewrite [killed Netscape](http://www.joelonsoftware.com/articles/fog0000000069.html). You probably don't even remember Netscape 😉
 
@@ -418,15 +418,15 @@ When a user clicks on one of our controls, a `Toggle`, it invokes a callback. Th
 
 ![Callback chain](images/es6v2/architecture_callbacks.jpg)
 
-With each hop, the nature of our callback changes. `Toggle` just tells `ControlRow` which item was toggled. `ControlRow` tells `Controls` how to update the data filter function, and `Controls` gives `App` a composite filter built from all the controls. You'll see how that works in the next chapter.
+With each hop, the nature of our callback changes. `Toggle` just tells `ControlRow` which entry was toggled. `ControlRow` tells `Controls` how to update the data filter function, and `Controls` gives `App` a composite filter built from all the controls. You'll see how that works in the next chapter.
 
 The important takeaway right now is that callbacks go from low-level info to high-level semantic info.
 
-When the final callback is invoked, `App` updates its repository of truth, and communicates the change back down the chain via props. This happens automatically with no additional wiring on your part.
+When the final callback is invoked, `App` updates its repository of truth, and communicates the change back down the chain via props. This happens with no additional wiring on your part.
 
 ![Data flows down](images/es6v2/architecture_dataflow.jpg)
 
-You can think of it like calling functions with new arguments. Because your functions – components – render UI, your interface updates. 
+You can think of it like calling functions with new arguments. Because the functions – components – render the UI, your interface updates. 
 
 Because your components are well-made and rely just on their props to render, React's engine can optimize these changes. It can compare the component tree and decide which components to re-render and which to leave alone. 
 
@@ -436,7 +436,7 @@ The functional programming concepts we're relying on are called [referential tra
 
 ### A caveat
 
-The caveat with this basic state handling approach is that it's less flexible and scalable than using a state handling library like Redux or MobX. The more components we add, and the more interaction we come up with, the harder it will become to keep track of our callbacks. Redesigning our UI also becomes cumbersome. 
+The caveat with our basic state handling approach is that it's less flexible and scalable than using a state handling library like Redux or MobX. The more components we add, and the more interaction we come up with, the harder it will become to keep track of our callbacks. Redesigning the UI is also cumbersome, because you have to rewire all the callbacks. 
 
 We're using the basic approach because it's easier to explain, works without additional libraries, and is Good Enough™. I mention Redux and MobX to make your googling easier.
 
@@ -469,22 +469,12 @@ We'll use a `Meta` folder for all our metadata components like `Title` and `Desc
 
 Each component should be accessible with `import My Component from './MyComponent'`, and rendered with `<MyComponent {...params} />`. If a parent component has to know details about the implementation of a child component, something is wrong.
 
-You can read more about these ideas by Googling ["leaky abstractions"](https://en.wikipedia.org/wiki/Leaky_abstraction), ["single responsibility principle"](https://en.wikipedia.org/wiki/Single_responsibility_principle), ["separation of concerns"](https://en.wikipedia.org/wiki/Separation_of_concerns), and ["structured programming"](https://en.wikipedia.org/wiki/Structured_programming). Books from the late 90's and early 2000's (when object oriented programming was The Future (tm)) are the best source of [curated] info in my experience.
+You can read more about these ideas by Googling ["leaky abstractions"](https://en.wikipedia.org/wiki/Leaky_abstraction), ["single responsibility principle"](https://en.wikipedia.org/wiki/Single_responsibility_principle), ["separation of concerns"](https://en.wikipedia.org/wiki/Separation_of_concerns), and ["structured programming"](https://en.wikipedia.org/wiki/Structured_programming). Books from the late 90's and early 2000's (when object oriented programming was The Future™) are the best source of [curated] info in my experience.
 
 ---
 
 Congratz! You know everything you need to build visualizations with React and D3. 👏
 
-This is the point in tech books where I personally run off and start building things on my own. Then I get frustrated, spend hours Googling for answers, and remember that hey maybe I should read the rest of the book!
+This is the point in tech books where I run off and start building things on my own. Then I get frustrated, spend hours Googling for answers, and remember that hey maybe I should read the rest of the book!
 
 Reading the rest of the book helps. I'll show you how all this stuff fits together into a larger project 😊
-
-We're going to build this:
-
-![](images/es6v2/full-dataviz.png)
-
-An interactive visualization app with a choropleth map and a histogram comparing tech salaries with median household income in the area.
-
-![](images/es6v2/interaction-dataviz.png)
-
-It's going to be great.

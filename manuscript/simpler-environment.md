@@ -91,14 +91,21 @@ You can poke around `src/App.js` to see how it's structured and what happens whe
 
 I suggest you keep `npm start` running at all times while coding. The browser will refresh on every code change, so you'll be able to see instant results.
 
+{#install-dependencies}
 ## Install dependencies for this book
 
-There are a couple of libraries we're going to use often in this book: D3 and Lodash. We're using D3 to do our heavy lifting and Lodash to make data manipulation easier.
+There are a couple of libraries we're going to use often in this book: D3, Topojson, and Lodash. We're using D3 to do our heavy lifting, Topojson to parse geographical data, and Lodash to make data manipulation easier.
 
 You can install them like this:
 
 ```
-$ npm install --save d3 lodash
+$ npm install --save d3 topojson lodash
+```
+
+Additionally, we're using Bootstrap for default styling, and String for string manipulation. You should install them as well.
+
+```
+$ npm install --save bootstrap string
 ```
 
 Now your environment is ready! You should see a default React App page in the browser without errors. Keep `npm start` running as you follow the examples in this book.
