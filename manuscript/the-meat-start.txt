@@ -18,11 +18,11 @@ Throughout the examples we're going to use **React 15**, **D3v4**, and **ES6+**.
 
 Don't worry, if you're not comfortable with ES6 syntax yet. By the end of this book you're gonna love it! 
 
-In the meantime, here's a helpful cheatsheet for you: [es6cheatsheet.com](https://es6cheatsheet.com/). It uses interactive code samples to compare the ES5 way with the ES6 way so you can brush up quickly.
+In the meantime, here's a helpful cheatsheet: [es6cheatsheet.com](https://es6cheatsheet.com/). It uses interactive code samples to compare the ES5 way with the ES6 way so you can brush up quickly.
 
 I'm working on a similar cheatsheet for D3v3 -> D3v4. It's going to be ready in early 2017. You'll get an email when it's done.
 
-In the interest of looking towards the future, we'll check out **Preact**, **Vue**, and **Inferno** in the final fractal example. They're new React-like libraries that promise better performance and smaller filesizes. Their creators – Jason Miller, Evan You, and Dominic Gannaway - were graciously forked my code into their libraires. Thank you!
+In the interest of looking towards the future, we'll check out **Preact**, **Vue**, and **Inferno** in the final fractal example. They're new React-like libraries that promise better performance and smaller filesizes. Their creators – Jason Miller, Evan You, and Dominic Gannaway - graciously forked my code into their libraires. Thank you!
 
 ----
 
