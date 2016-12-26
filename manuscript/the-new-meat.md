@@ -411,6 +411,10 @@ If that didn't work, consult [this diff on Github](https://github.com/Swizec/rea
 
 ## Render a Histogram of salaries
 
+Coming soon. First week of January 2017 at latest.
+
+Until then, follow the steps in the step-by-step Github repo. I made sure they follow chronologically and there isn't much jumping around.
+
 ## Make it understandable - meta info
 
 ### Dynamic title
