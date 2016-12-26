@@ -3,11 +3,11 @@
 
 Welcome to the main part of React+d3.js. We're going to talk a little theory, some principles, then get our hands dirty with a few examples. Through this book you're going to build:
 
-- A choropleth map  <-- need to write
-- An interactive histogram  <-- pretty much have
-- An animated alphabet  <-- already done
-- A simple particle generator  <-- done, should add canvas stuff
-- A particle generator pushed to 20,000 elements <-- canvas stuff
+- A choropleth map
+- An interactive histogram
+- An animated alphabet
+- A simple particle generator
+- A particle generator pushed to 20,000 elements
 - A dancing fractal tree 
 
 Looks random, right? Bear with me.
@@ -398,7 +398,7 @@ We create a grouping element to fulfill React's one child per component requirem
 
 After inserting into the DOM with `ReactDOM`, we get a series of 20 colorful rectangles.
 
-![20 color swatches](images/color-swatches.png)
+![20 color swatches](images/es6v2/color-swatches.png)
 
 Try changing the `width="400"` property of `<Colors />`. You'll see D3's `scaleBand` and our update wiring ensure the color strip renders correctly. For more fun, try changing the `Colors` component so it takes the color scale as a prop, then rendering multiple instances of `<Colors />` side-by-side.
 
@@ -427,6 +427,7 @@ The Rewrite [killed Netscape](http://www.joelonsoftware.com/articles/fog00000000
 
 Let's save you from that.
 
+{#basic-architecture}
 ## Basic architecture
 
 ![The basic architecture](images/es6v2/architecture.jpg)

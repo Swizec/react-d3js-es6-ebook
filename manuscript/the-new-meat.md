@@ -121,6 +121,114 @@ If you don't, try comparing your changes to this [diff on Github](https://github
 
 ## Asynchronously load data
 
+Great! We have a preloader, time to load some data. 
+
+We'll use D3's built-in data loading methods, and tie their callbacks into React's component lifecycle. You could talk to a REST API in the same way. Neither D3 nor React care what the datasource is.
+
+First, you need the data files. I scraped the tech salary info from [h1bdata.info](http://h1bdata.info/), the median household incomes from the US census datasets, and US map data from Mike Bostock's github repositories. I used some elbow grease and python scripts to tie the datasets together. 
+
+You can read about the scraping on my blog [here](https://swizec.com/blog/place-names-county-names-geonames/swizec/7083), [here](https://swizec.com/blog/facts-us-household-income/swizec/7075), and [here](https://swizec.com/blog/livecoding-24-choropleth-react-js/swizec/7078). But it's not the subject of this book.
+
+You should download the 6 datafiles from [the step-by-step repository on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/8819d9c38b4aef0a0c569e493f088ff9c3bfdf33). Put them in the `public/data` directory in your project.
+
+### Step 1: Prep App.js
+
+Let's set up our `App` component first. That way you'll see results as soon data loading starts to work.
+
+We start by importing our data loading method - `loadAllData` - and both D3 and Lodash. We'll need them later.
+
+{crop-start: 67, crop-end: 78, format: javascript}
+![Import d3, lodash, and our data loader](code_samples/es6v2/App.js)
+
+You already know the normal imports. Importing with `{}` is how we import named exports, which lets us get multiple things from the same file. You'll see how the export side works in Step 2.
+
+{crop-start: 79, crop-end: 91, format: javascript}
+![Initiate data loading in App.js](code_samples/es6v2/App.js)
+
+We initiate data loading inside the `App` class's `componentWillMount` lifecycle hook. It fires right before React mounts our component into the DOM. Seems like a good place to start loading data, but some say it's an anti-pattern.
+
+I like tying it to component mount when using the [basic architecture](#basic-architecture), and in a more render agnostic place when using Redux or MobX for state management.
+
+To initiate data loading we call the `loadAllData` function, which we're defining next, then use `this.setState` in a callback. This updates `App`'s state and triggers a re-render, which updates our entire visualization via props.
+
+We also took this opportunity to add two more entries to our `state`: `countyNames`, and `medianIncomes`.
+
+Let's add a "Data loaded" indicator to the `render` method. That way we'll know when data loading works.
+
+{crop-start: 94, crop-end: 112, format: javascript}
+![Data loaded indicator](code_samples/es6v2/App.js)
+
+We added the `container` class to the main `<div>` and added an `<h1>` tag to show how many datapoints were loaded. The `{}` pattern denotes a dynamic value in JSX. You've seen this in props so far, but it works in tag bodies as well.
+
+With all of this done, you should see an error overlay.
+
+![DataHandling.js not found error overlay](images/es6v2/datahandling-error.png)
+
+These nice error overlays come with `create-react-app`. They make it so you never have to check the terminal where `npm start` is running. A big improvement thanks to the React team at Facebook.
+
+Let's build that file and fill it with our data loading logic.
+
+### Step 2: Prep data parsing functions
+
+We're putting data loading logic in a file separate from `App.js` because it's a bunch of functions that work together and don't have much to do with the `App` component. 
+
+We start the file with two imports and four data parsing functions:
+- `cleanIncomes`, which parses each row of household income data
+- `dateParse`, which we use for parsing dates
+- `cleanSalary`, which parses each row of salary data
+- `cleanUSStateName`, which parses US state names
+
+{crop-start: 5, crop-end: 43, format: javascript}
+![Data parsing functions](code_samples/es6v2/DataHandling.js)
+
+You'll see those `d3` and `lodash` imports a lot.
+
+The data parsing functions all follow the same approach: Take a row of data as `d`, return a dictionary with nicer key names, and cast any numbers or dates into appropriate formats. They all come in as strings.
+
+Doing the parsing and the nicer key names now makes the rest of our codebase simpler because we don't have to deal with this all the time. For example `entry.job_title`{format: javascript} is nicer to read and type than `entry['job title']`{format: javascript}.
+
+### Step 3: Load the datasets
+
+Now that we have our data parsing functions, we can use D3 to load the data with ajax requests.
+
+{crop-start: 47, crop-end: 58, format: javascript}
+![Data loading](code_samples/es6v2/DataHandling.js)
+
+Here you can see another ES6 trick: default argument values. If `callback` is falsey, we set it to `_.noop` - a function that does nothing. This lets us later call `callback()` without worrying whether it was given as an argument.
+
+`d3.queue` lets us call multiple asynchronous functions and wait for them all to finish. By default it runs all functions in parallel, but that's configurable through an argument - `d3.queue(1)` for one at a time, `2` for two, etc. In our case, without an argument, it runs all tasks in parallel.
+
+We define 5 tasks to run with `.defer`, then wait for them to finish with `.await`. The tasks themselves are D3's data loading functions that fire an Ajax request to the specified URL, parse the data into a JavaScript dictionary, and use the given row parsing function to polish the result.
+
+For instance, `.defer(d3.csv, 'data/county-median-incomes.csv', cleanIncomes)`{format: javascript}, uses `d3.csv` to make an Ajax request to `data/county-median-incomes.csv`, parse the CSV file into an array of JavaScript dictionaries, and uses `cleanIncomes` to further parse each row the way we specified earlier.
+
+D3 supports formats like `json`, `csv`, `tsv`, `text`, and `xml` out of the box. You can make it work with custom data sources through the underlying `request` API.
+
+PS: we're using the shortened salary dataset to make page reloads faster while building our project.
+
+### Step 4: Tie the datasets together
+
+If you put a `console.log` in the `.await` callback above, you'll see a bunch of data. Each argument - `us`, `countyNames`, `medianIncomes`, `techSalaries`, `USstateNames` - holds the entire parsed dataset from the corresponding file.
+
+To tie them together and prepare a dictionary for `setState` back in the `App` component, we need to add some logic, but not much. We're going to build a dictionary of county household incomes and remove any empty salaries.
+
+{crop-start: 63, crop-end: 90, format: javascript}
+![Tie the datasets together](code_samples/es6v2/DataHandling.js)
+
+The first line should be one of those `cleanX` functions like we had above. I'm not sure how I missed it.
+
+Then we have the county median income map building. It looks like weird code because of the indentation but it's not that bad. We `filter` the `medianIncomes` array to discard any incomes whose `countyName` we can't find. I made sure all names are unique when building the datasets.
+
+We use `forEach` to walk through the filtered array, find the correct `countyID`, and add the entry to `medianIncomesMap`. When we're done, we have a large dictionary that maps county ids to their household income data.
+
+At the end, we filter `techSalaries` to remove any empty values - the `cleanSalaries` function returns `null` when a salary is either undefined or absurdly high.
+
+Then we call `callback` with a dictionary of the new datasets. To make future access quicker, we use `_.groupBy` to build dictionary maps of counties by county name, and by US state.
+
+You should now see how many salary entries the shortened dataset contains.
+
+![Data loaded screenshot](images/es6v2/data-loaded-screenshot.png)
+
 ## Render a choropleth map of the US
 
 ## Render a Histogram of salaries
