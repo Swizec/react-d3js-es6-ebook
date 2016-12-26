@@ -125,10 +125,6 @@ import CountyMap from './components/CountyMap';
 // markua-end-insert
 
 class App extends Component {
-    state = {
-        techSalaries: [],
-        loadAllData(data => this.setState(data));
-    }
 
     // src/App.js
     countyValue(county, techSalariesMap) {

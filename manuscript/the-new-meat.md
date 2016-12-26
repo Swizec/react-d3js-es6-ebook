@@ -231,6 +231,7 @@ You should now see how many salary entries the shortened dataset contains.
 
 If that didn't work, try comparing your changes to this [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/9f113cdd3bc18535680cb5a4e87a3fd45743c9ae).
 
+{#choropleth-map}
 ## Render a choropleth map of the US
 
 Now that we have our data, it's time to start drawing pictures - a choropleth map. That's a map that uses colored geographical areas to encode data.
@@ -251,11 +252,162 @@ Just like before, we're going to start with changes in our `App` component, then
 
 ### Step 1: Prep App.js
 
+You might guess the pattern already: add an import, add a helper method or two, update `render`.
+
+{crop-start: 119, crop-end: 126, format: javascript}
+![Import CountyMap component](code_samples/es6v2/App.js)
+
+That imports the `CountyMap` component from `components/CountyMap/`. Your browser should show an error overlay about some file or another not existing until we're done.
+
+In the `App` class itself, we add a `countyValue` method. It takes a county entry and a map of tech salaries, and returns the delta between median household income and a single tech salary.
+
+{crop-start: 129, crop-end: 144, format: javascript}
+![App.countyValue method](code_samples/es6v2/App.js)
+
+We use `this.state.medianIncomes` to get the median household salary, and the `techSalariesMap` input to get salaries for a specific census area. Then we use `d3.median` to calculate the  median value for salaries, and return a two-element dictionary with the result.
+
+`countyID` specifies the county and `value` is the delta that our choropleth displays. 
+
+In the `render` method, we'll do three things:
+
+ - prep a list of county values
+ - remove the "data loaded" indicator
+ - render the map
+
+{crop-start: 146, crop-end: 183, format: javascript}
+![Render the CountyMap component](code_samples/es6v2/App.js)
+
+We call our dataset `filteredTechSalaries` because we're going to add filtering in the [subchapter about adding user controls](#user-controls). Using the proper name now means less code to change later. The magic of foresight :)
+
+We use `_.groupBy` to build a dictionary mapping each `countyID` to an array of salaries, and use our `countyValue` method to build an array of counties for our map.
+
+We set `zoom` to `null` for now. This also will come into effect later.
+
+In the `return` statement, we remove the "data loaded" indicator, and add an `<svg>` element that's `1100` pixels wide, and `500` pixels high. Inside, we put the `CountyMap` component with a bunch of properties. Some dataset stuff, some sizing and positioning stuff.
+
 ### Step 2: CountyMap/index.js
+
+We use `index.js` for one reason alone: Make imports and debugging easier. I learned the lesson the hard way so you don't have to.
+
+{format: javascript}
+![CountyMap index.js](code_samples/es6v2/components/CountyMap/index.js)
+
+We export the default import from `./CountyMap.js`. That's it.
+
+This allows us to import `CountyMap` from the directory without knowing about internal file structure. We *could* put all the code in this `index.js` file, but then stack traces are hard to read.
+
+Putting a lot of code into `<directory>/index.js` files means that when you're looking at a stack trace, or opening different source files inside the browser, they're all going to be named `index.js`. Life is easier when components live inside a file named the same as the component you're using.
 
 ### Step 3: CountyMap/CountyMap.js
 
+Now here comes the fun part - declaratively drawing a map. You'll see why I love using React for dataviz.
+
+We're using the [full-feature integration](#full-feature-integration) and a lot of D3 magic for maps. I'm always surprised by how little code it takes to draw a map with D3.
+
+Start with the imports: React, D3, lodash, topojson, the County component.
+
+{crop-start: 5, crop-end: 12, format: javascript}
+![Import CountyMap dependencies](code_samples/es6v2/components/CountyMap/CountyMap.js)
+
+Out of these, we haven't built `County` yet, and you haven't seen `topojson` before. It's a way of defining geographical data with JSON. We're going to use the `topojson` library to translate our geographical datasets into GeoJSON, which is another way of defining geo data with JSON. 
+
+I don't know why there are two, but TopoJSON produces smaller files, and GeoJSON can be fed directly into D3's geo functions. ¯\_(ツ)_/¯
+
+Maybe it's a case of [competing standards](https://xkcd.com/927/).
+
+#### Constructor
+
+Let's stub out the `CountyMap` component then fill it in with logic.
+
+{crop-start: 13, crop-end: 40, format: javascript}
+![CountyMap stub](code_samples/es6v2/components/CountyMap/CountyMap.js)
+
+We'll set up default D3 state in `constructor` and keep it up to date in `updateD3`. To avoid repetition, we call `updateD3` in the constructor as well.
+
+We need three D3 objects to build a choropleth map: a geographical projection, a path generator, and a quantize scale for colors.
+
+{crop-start: 46, crop-end: 59, format: javascript}
+![D3 objects for a map](code_samples/es6v2/components/CountyMap/CountyMap.js)
+
+You might remember geographical projections from high school geography. They map a sphere to a flat surface. We use `geoAlbersUsa` because it's made specifically to draw maps of the USA.
+
+You can see the other projections D3 offers on the [d3-geo Github page](https://github.com/d3/d3-geo#projections).
+
+The `geoPath` generator takes a projection and returns a function that generates the `d` attribute of `<path>` elements. This is the most general way to specify SVG shapes. I won't go into explaining the `d` here, but it's [an entire DSL](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d).
+
+`quantize` is a D3 scale. We've mentioned the basics of scales in the [D3 Axis example](#blackbox-axis). This one splits a domain into 9 quantiles, and assigns them specific values from the `range`.
+
+Let's say our domain goes from 0 to 90. Calling the scale with any number between 0 and 9 would return 1. 10 to 19 returns 2 and so on. We'll use it to pick colors from an array.
+
+#### updateD3
+
+Keeping all of this up to date is easy, but we'll make it harder by adding a zoom feature. It won't work until we implement the filtering, but hey, we'll already have it by then! :D
+
+{crop-start: 65, crop-end: 91, format: javascript}
+![CountyMap updateD3](code_samples/es6v2/CountyMap/CountyMap.js)
+
+There's a lot going on here.
+
+The first part is okay. It `translates`, i.e. moves, the projection to the center of our drawing area, and sets a scale property. The value was discovered experimentally and is different for every projection.
+
+Then we do some weird stuff if `zoom` is defined.
+
+We get the list of all US state features in our geo data, find the one we're `zoom`-ing on, and use the `geoPath.centroid` method to calculate its center point. This gives us a new coordinate to `translate` our projection onto.
+
+The calculation in `.translate()` helps us align the center point of our `zoom` US state with the center of the drawing area.
+
+While all this is going on, we also tweak the `.scale` property to make the map bigger. This creates a zooming effect.
+
+At the end of the `updateD3` function, we update the quantize scale's domain with new values. Using `d3.quantile` lets us offset the scale to produce a more interesting map. The values were discovered experimentally - they cut off the top and bottom of the range because there isn't much there. This brings higher contrast to the richer middle of the range.
+
+#### render
+
+After all that work, the `render` method is a breeze. We prep the data, then loop through it and render `County` elements.
+
+{crop-start: 93, crop-end: 122, format: javascript}
+![CountyMap render](code_samples/es6v2/CountyMap/CountyMap.js)
+
+We use the topojson library to grab data out of the `usTopoJson` dataset. `.mesh` calculates a mesh for US states - thin line around the edges. `.feature` calculates the features for each county - fill in with color. 
+
+Mesh and feature aren't tied to states or counties by the way. It's just a matter of what you get back: borders or flat areas. What you need depends on what you're building.
+
+We use `_.fromPairs` to build a dictionary that maps county identifiers to their values. Building it beforehand makes our code faster. You can read some details about the speed optimizations [here](https://swizec.com/blog/optimizing-react-choropleth-map-rendering/swizec/7302).
+
+As promised, all we have to do in the `return` statement is loop through the list of `counties` and render `County` components. Each gets a bunch of attributes and will return a `<path>` element that looks like a specific county.
+
+For the US state borders, we use a single `<path>` element and use `this.geoPath` to generate the `d` property.
+
 ### Step 4: CountyMap/County.js
+
+The `County` component itself is built out of two parts: imports and color constants, and a component that returns a `<path>`. We did all the hard calculation work in `CountyMap`.
+
+{crop-start: 5, crop-end: 22, format: javascript}
+![Imports and color constants](code_samples/es6v2/CountyMap/County.js)
+
+We import React and lodash, then define some color constants. I got the `ChoroplethColors` from some example online, and `BlankColor` is a pleasant gray.
+
+Now we need the `County` component itself.
+
+{crop-start: 27, crop-end: 51, format: javascript}
+![County component](code_samples/es6v2/CountyMap/County.js)
+
+The `render` method uses the `quantize` scale to pick the right color, and returns a `<path>` element. `geoPath` generates the `d` attribute, we set style to `fill` the color, and give our path a `title`. 
+
+`shouldComponentUpdate` is more interesting. It's a React lifecycle method that lets us specify which prop changes are relevant to our component re-rendering.
+
+`CountyMap` passes complex props - `quantize`, `geoPath`, and `feature` - which are pass-by-reference instead of pass-by-value. That means React can't see when they produce different values, just when they are different instances.
+
+This can lead to all 3,220 counties re-rendering every time a user does anything. But they only have to re-render if we change the map zoom, or the county gets a new value.
+
+Using `shouldComponentUpdate` like this we can go from 3,220 DOM updates to the order of a few hundred. Big improvement in speed.
+
+--- 
+
+And with that, your browser should show you a map.
+
+![Choropleth map with shortened dataset](images/es6v2/choropleth-map-shortened-dataset.png)
+
+If that didn't work, consult [this diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/f4c1535e9c9ca4982c8f3c74cff9f739eb08c0f7).
 
 ## Render a Histogram of salaries
 
@@ -267,6 +419,7 @@ Just like before, we're going to start with changes in our `App` component, then
 
 ### Median household line
 
+{#user-controls}
 ## Add user controls for data slicing and dicing
 
 ## Rudimentary routing

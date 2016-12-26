@@ -3,7 +3,7 @@
 
 Welcome to the main part of React+d3.js. We're going to talk a little theory, some principles, then get our hands dirty with a few examples. Through this book you're going to build:
 
-- A choropleth map
+- [A choropleth map](#choropleth-map)
 - An interactive histogram
 - An animated alphabet
 - A simple particle generator
@@ -155,6 +155,7 @@ You have to manually re-render on props and state changes. You're also throwing 
 
 Manual re-rendering is not as annoying as it sounds, but the inefficiency can get pretty bad with complex visualizations. Use this technique sparingly.
 
+{#blackbox-axis}
 ## A quick blackbox example - a D3 axis
 
 Let's build an axis component. Axes are the perfect use-case for blackbox components. D3 comes with an Axis generator bundled inside, and they're difficult to build from scratch.
