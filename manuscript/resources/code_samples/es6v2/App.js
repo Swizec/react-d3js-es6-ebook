@@ -111,3 +111,77 @@ class App extends Component {
         );
     }
 }
+
+
+//
+// Example 4
+//
+// src/App.js
+import Preloader from './components/Preloader';
+import { loadAllData } from './DataHandling';
+
+// markua-start-insert
+import CountyMap from './components/CountyMap';
+// markua-end-insert
+
+class App extends Component {
+    state = {
+        techSalaries: [],
+        loadAllData(data => this.setState(data));
+    }
+
+    // src/App.js
+    countyValue(county, techSalariesMap) {
+        const medianHousehold = this.state.medianIncomes[county.id],
+              salaries = techSalariesMap[county.name];
+
+        if (!medianHousehold || !salaries) {
+            return null;
+        }
+
+        const median = d3.median(salaries, d => d.base_salary);
+
+        return {
+            countyID: county.id,
+            value: median - medianHousehold.medianIncome
+        };
+    }
+
+    // src/App.js
+    render() {
+        if (this.state.techSalaries.length < 1) {
+            return (
+                <Preloader />
+            );
+        }
+
+        // markua-start-insert
+        const filteredSalaries = this.state.techSalaries,
+              filteredSalariesMap = _.groupBy(filteredSalaries, 'countyID'),
+              countyValues = this.state.countyNames.map(
+                  county => this.countyValue(county, filteredSalariesMap)
+              ).filter(d => !_.isNull(d));
+
+        let zoom = null;
+        // markua-end-insert
+
+          return (
+              <div className="App container">
+                // markua-start-delete
+                <h1>Loaded {this.state.techSalaries.length} salaries</h1>
+                // markua-end-delete
+                // markua-start-insert
+                <svg width="1100" height="500">
+                    <CountyMap usTopoJson={this.state.usTopoJson}
+                               USstateNames={this.state.USstateNames}
+                               values={countyValues}
+                               x={0}
+                               y={0}
+                               width={500}
+                               height={500}
+                               zoom={zoom} />
+                </svg>
+                // markua-end-insert
+              </div>
+          );
+      }

@@ -229,7 +229,33 @@ You should now see how many salary entries the shortened dataset contains.
 
 ![Data loaded screenshot](images/es6v2/data-loaded-screenshot.png)
 
+If that didn't work, try comparing your changes to this [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/9f113cdd3bc18535680cb5a4e87a3fd45743c9ae).
+
 ## Render a choropleth map of the US
+
+Now that we have our data, it's time to start drawing pictures - a choropleth map. That's a map that uses colored geographical areas to encode data.
+
+In our case, we're going to show the delta between median household salary in a statistical county, and the average salary of a single tech worker on a visa. The darker the blue, the higher the difference.
+
+![Choropleth map with shortened dataset](images/es6v2/choropleth-map-shortened-dataset.png)
+
+There's a lot of gray on this map because the shortened dataset doesn't span that many counties. There's going to be plenty in the full choropleth too, but less.
+
+Turns out immigration visa opportunities for techies aren't evenly distributed throughout the country. Who knew.
+
+Just like before, we're going to start with changes in our `App` component, then build the new bit. This time a `CountyMap` component spread into three files: 
+
+- `CountyMap/index.js`, to make imports easier
+- `CountyMap/CountyMap.js`, for overall map logic
+- `CountyMap/County.js`, for individual county polygons
+
+### Step 1: Prep App.js
+
+### Step 2: CountyMap/index.js
+
+### Step 3: CountyMap/CountyMap.js
+
+### Step 4: CountyMap/County.js
 
 ## Render a Histogram of salaries
 
