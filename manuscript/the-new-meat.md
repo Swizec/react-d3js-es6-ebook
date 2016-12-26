@@ -344,7 +344,7 @@ Let's say our domain goes from 0 to 90. Calling the scale with any number betwee
 Keeping all of this up to date is easy, but we'll make it harder by adding a zoom feature. It won't work until we implement the filtering, but hey, we'll already have it by then! :D
 
 {crop-start: 65, crop-end: 91, format: javascript}
-![CountyMap updateD3](code_samples/es6v2/CountyMap/CountyMap.js)
+![CountyMap updateD3](code_samples/es6v2/components/CountyMap/CountyMap.js)
 
 There's a lot going on here.
 
@@ -365,7 +365,7 @@ At the end of the `updateD3` function, we update the quantize scale's domain wit
 After all that work, the `render` method is a breeze. We prep the data, then loop through it and render `County` elements.
 
 {crop-start: 93, crop-end: 122, format: javascript}
-![CountyMap render](code_samples/es6v2/CountyMap/CountyMap.js)
+![CountyMap render](code_samples/es6v2/components/CountyMap/CountyMap.js)
 
 We use the topojson library to grab data out of the `usTopoJson` dataset. `.mesh` calculates a mesh for US states - thin line around the edges. `.feature` calculates the features for each county - fill in with color. 
 
@@ -382,14 +382,14 @@ For the US state borders, we use a single `<path>` element and use `this.geoPath
 The `County` component itself is built out of two parts: imports and color constants, and a component that returns a `<path>`. We did all the hard calculation work in `CountyMap`.
 
 {crop-start: 5, crop-end: 22, format: javascript}
-![Imports and color constants](code_samples/es6v2/CountyMap/County.js)
+![Imports and color constants](code_samples/es6v2/components/CountyMap/County.js)
 
 We import React and lodash, then define some color constants. I got the `ChoroplethColors` from some example online, and `BlankColor` is a pleasant gray.
 
 Now we need the `County` component itself.
 
 {crop-start: 27, crop-end: 51, format: javascript}
-![County component](code_samples/es6v2/CountyMap/County.js)
+![County component](code_samples/es6v2/components/CountyMap/County.js)
 
 The `render` method uses the `quantize` scale to pick the right color, and returns a `<path>` element. `geoPath` generates the `d` attribute, we set style to `fill` the color, and give our path a `title`. 
 
