@@ -67,16 +67,16 @@ var foo = 'bar';
 foo += 'this is added';
 // markua-end-delete
 ```
-     
+
 Each code sample starts with a commented out file path. That's the file you're editing. Like this:
 
 {line-numbers: false, format: javascript}
 ```
 // ./src/App.jsx
-    
+
 class App ...
 ```
-    
+
 Commands that you should run in the terminal start with an `$` symbol, like this:
 
 {line-numbers: false}
@@ -89,7 +89,7 @@ $ npm start
 You are reading React+d3.js ES6 edition. Functionally, it's almost the same as the ES5 version, but it has a better file structure and some additional content.
 
 You can read either version depending on which version of JavaScript you're more comfortable with. Keep in mind, the ES5 version isn't getting further updates.
-  
+
 Both will teach you how to effectively use React and d3.js to make reusable data visualization components.
 
 # Why React and d3.js
@@ -167,6 +167,6 @@ As you can see, HTML code translates to `React.createElement` calls with attribu
 
 You’ll see that anything from a simple value to a function or an object works equally well.
 
-I used to be a fan of the One Language Per File principle, but using JSX has made my code much easier to work with. Especially in a small team where I do everything - the code, the markup, the styles - having the relevant code colocated helps a lot. 
+I used to be a fan of the One Language Per File principle, but using JSX has made my code much easier to work with, especially in a small team where I do everything - the code, the markup, the styles - having the relevant code colocated helps a lot. 
 
 But I wouldn't let a designer edit my HTML in JavaScript, for instance. Can't see that ending well.
