@@ -1,16 +1,5 @@
 # Speed optimizations
 
-Chapter coming in January 2017.
-
-Until then, you can read these posts and watch the attached videos:
-
-- [Rendering React components with canvas](https://swizec.com/blog/livecoding-13-rendering-react-components-with-canvas/swizec/6784)
-- [Mostly smooth animation up to 4,000 elements with React](https://swizec.com/blog/livecoding-14-mostly-smooth-animation-up-to-4000-elements-with-react-and-canvas/swizec/6864)
-- [Reaching the limits of canvas redraw speed](https://swizec.com/blog/livecoding-15-reaching-the-limits-of-canvas-redraw-speed/swizec/6875)
-- [canvas.drawImage performance is weird but magical](https://swizec.com/blog/livecoding-16-canvas-drawimage-performance-is-weird-but-magical/swizec/6881)
-- [Particle physics is hard](https://swizec.com/blog/livecoding-17-particle-physics-is-hard/swizec/6903)
-- [Animating 2048 SVG nodes in React, Preact, Inferno, Vue, Angular 2, and CycleJS – a side-by-side comparison](https://swizec.com/blog/animating-svg-nodes-react-preact-inferno-vue/swizec/7311)
-
 ## Reducing the amount of computation
 
 ## Switching to Preact or Inferno

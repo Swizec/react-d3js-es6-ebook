@@ -3,11 +3,11 @@
 
 Welcome to the main part of React+d3.js. We're going to talk a little theory, some principles, then get our hands dirty with a few examples. Through this book you're going to build:
 
-- [A choropleth map](#choropleth-map)
-- An interactive histogram
-- An animated alphabet
-- A simple particle generator
-- A particle generator pushed to 20,000 elements
+- A choropleth map  <-- need to write
+- An interactive histogram  <-- pretty much have
+- An animated alphabet  <-- already done
+- A simple particle generator  <-- done, should add canvas stuff
+- A particle generator pushed to 20,000 elements <-- canvas stuff
 - A dancing fractal tree 
 
 Looks random, right? Bear with me.
@@ -43,9 +43,9 @@ Our visualizations are going to use SVG - an XML-based image format that lets us
 
 {caption: "SVG rectangle", line-numbers: false}
 ```
-<svg width="800" height="600">
-    <rect width="100" height="200" x="50" y="20" />
-</svg>
+	<svg width="800" height="600">
+		<rect width="100" height="200" x="50" y="20" />
+	</svg>
 ```
 
 These four lines create an SVG image with a black rectangle at coordinates `(50, 20)` that is 100x200 pixels large. Black fill with no borders is default for all SVG shapes.
@@ -63,7 +63,7 @@ That makes React's rendering engine particularly suited for SVG.   Our 100x200 r
 {caption: "A simple rectangle in React", line-numbers: false, format: javascript}
 ```
 const Rectangle = () => (
-    <rect width="100" height="200" x="50" y="20" />
+	<rect width="100" height="200" x="50" y="20" />
 );
 ```
 
@@ -72,9 +72,9 @@ To use this rectangle component in a picture, you'd use a component like this:
 {caption: "Rect component in a picture", line-numbers: false, format: javascript}
 ```
 const Picture = () => (
-    <svg width="800" height="600">
-	<Rectangle />
-    </svg>
+	<svg width="800" height="600">
+		<Rectangle />
+	</svg>
 );
 ```
 
@@ -85,13 +85,13 @@ Compare that to a pure D3 approach:
 {caption: "A static rectangle in d3.js", line-numbers: false, format: javascript}
 ```
 d3.select("svg")
-  .attr("width", 800)
-  .attr("height", 600)
-  .append("rect")
-  .attr("width", 100)
-  .attr("height", 200)
-  .attr("x", 50)
-  .attr("y", 20);
+	.attr("width", 800)
+	.attr("height", 600)
+	.append("rect")
+	.attr("width", 100)
+	.attr("height", 200)
+	.attr("x", 50)
+	.attr("y", 20);
 ```
 
 It's elegant, it's declarative, it looks like function call soup. Even rewriting into a more readable form doesn't make it much easier to understand the SVG structure at a glance. Observe:
@@ -99,13 +99,13 @@ It's elegant, it's declarative, it looks like function call soup. Even rewriting
 {caption: "Static rectangle in cleaner d3.js", line-numbers: false, format: javascript}
 ```
 d3.select("svg")
-  .attr({width: 800,
-	 height: 600})
-  .append("rect")
-  .attr({width: 100,
-	 height: 200,
-	 x: 50,
-	 y: 20})
+	.attr({width: 800,
+			   height: 600})
+	.append("rect")
+	.attr({width: 100,
+			   height: 200,
+				 x: 50,
+				 y: 20})
 ```
 
 That doesn't scream *"Rectangle in an SVG"* to me as much as the React example does. You have to take your time and read the code carefully: first we `select` the `svg` element, then we add attributes for `width` and `height`. After that we `append` a `rect` element and set its attributes for `width`, `height`, `x`, and `y`.
@@ -115,7 +115,7 @@ Those 8 lines of code create HTML that looks like this:
 {caption: "HTML of a rectangle", line-numbers: false, format: javascript}
 ```
 <svg width="800" height="600">
-    <rect width="100" height="200" x="50" y="20" />
+	<rect width="100" height="200" x="50" y="20" />
 </svig>
 ```
 
@@ -155,7 +155,6 @@ You have to manually re-render on props and state changes. You're also throwing 
 
 Manual re-rendering is not as annoying as it sounds, but the inefficiency can get pretty bad with complex visualizations. Use this technique sparingly.
 
-{#blackbox-axis}
 ## A quick blackbox example - a D3 axis
 
 Let's build an axis component. Axes are the perfect use-case for blackbox components. D3 comes with an Axis generator bundled inside, and they're difficult to build from scratch.
@@ -167,8 +166,8 @@ D3's axis generator takes a scale, some configuration, and renders an axis for u
 {caption: "A pure D3 axis",line-numbers: false, format: javascript}
 ```
 const scale = d3.scaleLinear()
-		.domain([0, 10])
-		.range([0, 200]);
+		            .domain([0, 10])
+		            .range([0, 200]);
 const axis = d3.axisBottom(scale);
 
 d3.select('svg')
@@ -198,10 +197,10 @@ Now let's say we want to use that same axis code, but as a React component. The 
 {caption: "React blackbox axis", line-numbers: false, format: javascript}
 ```
 class Axis extends Component {
-    componentDidMount() { this.renderAxis() }
-    componentDidUpdate() { this.renderAxis() }
-    
-    renderAxis() {
+  componentDidMount() { this.renderAxis() }
+  componentDidUpdate() { this.renderAxis() }
+  
+  renderAxis() {
 	const scale = d3.scaleLinear()
 	                .domain([0, 10])
 	                .range([0, 200]);
@@ -209,11 +208,11 @@ class Axis extends Component {
 
 	d3.select(this.refs.g)
 	  .call(axis);  
-    }
-    
-    render() {
+  }
+  
+  render() {
 	return <g transform="translate(10, 30)" ref="g" />
-    }
+  }
 }
 ```
 
@@ -255,15 +254,15 @@ A `D3blackbox` HOC looks like this:
 {caption: "React blackbox HOC", line-numbers: false, format: javascript}
 ```
 function D3blackbox(D3render) {
-    return class Blackbox extends React.Component {
+  return class Blackbox extends React.Component {
 	componentDidMount() { D3render.call(this); }
 	componentDidUpdate() { D3render.call(this) }
-        
+  
 	render() {
-	    const { x, y } = this.props;
-	    return <g transform={`translate(${x}, ${y})`} ref="anchor" />;
+	  const { x, y } = this.props;
+	  return <g transform={`translate(${x}, ${y})`} ref="anchor" />;
 	}
-    }
+  }
 }
 ```
 
@@ -280,13 +279,13 @@ Using our new `D3blackbox` HOC to make an axis looks like this:
 {caption: "React blackbox HOC", line-numbers: false, format: javascript}
 ```
 const Axis = D3blackbox(function () {
-    const scale = d3.scaleLinear()
-	            .domain([0, 10])
-	            .range([0, 200]);
-    const axis = d3.axisBottom(scale);
+  const scale = d3.scaleLinear()
+	              .domain([0, 10])
+	              .range([0, 200]);
+  const axis = d3.axisBottom(scale);
 
-    d3.select(this.refs.anchor)
-      .call(axis);    
+  d3.select(this.refs.anchor)
+	.call(axis);    
 });
 ```
 
@@ -323,11 +322,11 @@ We start with a `Swatch` component that draws a rectangle and fills it with a co
 {caption: "Swatch component", line-numbers: false, format: javascript}
 ```
 const Swatch = ({ color, width, x }) => (
-    <rect width={width} 
-	  height="20" 
-	  x={x} 
-	  y="0" 
-	  style={{fill: color}} />
+  <rect width={width} 
+			  height="20" 
+			  x={x} 
+			  y="0" 
+			  style={{fill: color}} />
 );
 ```
 
@@ -340,9 +339,9 @@ Then we need a `Colors` component. It follows the full-featured integration stru
 {caption: "Colors component, pt1", line-numbers: false, format: javascript}
 ```
 class Colors extends Component {
-    colors = d3.schemeCategory20;
-    width = d3.scaleBand()
-	      .domain(d3.range(20));
+  colors = d3.schemeCategory20;
+  width = d3.scaleBand()
+	        .domain(d3.range(20));
 ```
 
 We start by inheriting from `Component`, and defining defaults for D3 objects. `this.colors` is one of [D3's predefined color scales](https://github.com/d3/d3-scale/blob/master/README.md#schemeCategory10). `schemeCategory20` is a scale of 20 colors designed for categorization. Seemed like a good example, and you're welcome to try others.
@@ -353,23 +352,23 @@ We start by inheriting from `Component`, and defining defaults for D3 objects. `
 
 We'll use `this.width` to calculate widths and positions of our color swatches. Here's a picture from D3 docs to help you visualize what `scaleBand` does:
 
-![Band Scale from D3 docs](https://raw.githubusercontent.com/d3/d3-scale/master/img/band.png)
+[![Band Scale from D3 docs](https://raw.githubusercontent.com/d3/d3-scale/master/img/band.png)](https://github.com/d3/d3-scale/blob/master/README.md)
 
 Unlike the domain, our range is dynamic so that we can use props to define the width of our color scale. This makes the component more reusable.
 
 {caption: "Colors component, pt2", line-numbers: false, format: javascript}
 ```
-componentWillMount() {
-    this.updateD3(this.props);
-}
+  componentWillMount() {
+	this.updateD3(this.props);
+  }
 
-componentWillUpdate(newProps) {
-    this.updateD3(newProps);
-}
+  componentWillUpdate(newProps) {
+	this.updateD3(newProps);
+  }
 
-updateD3(props) {
-    this.width.range([0, props.width]);
-}
+  updateD3(props) {
+	this.width.range([0, props.width]);
+  }
 ```
 
 `componentWillMount` and `componentWillUpdate` are component lifecycle hooks. Can you guess when they run?
@@ -382,16 +381,17 @@ Finally, we render a bunch of color swatches.
 
 {caption: "Colors component, pt3", line-numbers: false, format: javascript}
 ```
-render() {
-    return (
-	<g>
+  render() {
+	return (
+	  <g>
 	    {d3.range(20).map(i => (
-	        <Swatch color={this.colors[i]} 
-		width={this.width.step()} 
-		x={this.width(i)} />
-	     ))}
-	</g>
-    )
+	      <Swatch color={this.colors[i]} 
+					      width={this.width.step()} 
+					      x={this.width(i)} />
+	    ))}
+	  </g>
+	)
+  }
 }
 ```
 
@@ -399,7 +399,7 @@ We create a grouping element to fulfill React's one child per component requirem
 
 After inserting into the DOM with `ReactDOM`, we get a series of 20 colorful rectangles.
 
-![20 color swatches](images/es6v2/color-swatches.png)
+![20 color swatches](images/color-swatches.png)
 
 Try changing the `width="400"` property of `<Colors />`. You'll see D3's `scaleBand` and our update wiring ensure the color strip renders correctly. For more fun, try changing the `Colors` component so it takes the color scale as a prop, then rendering multiple instances of `<Colors />` side-by-side.
 
@@ -428,7 +428,6 @@ The Rewrite [killed Netscape](http://www.joelonsoftware.com/articles/fog00000000
 
 Let's save you from that.
 
-{#basic-architecture}
 ## Basic architecture
 
 ![The basic architecture](images/es6v2/architecture.jpg)
