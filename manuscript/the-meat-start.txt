@@ -8,19 +8,19 @@ Welcome to the main part of React+d3.js. We're going to talk a little theory, so
 - An animated alphabet
 - A simple particle generator
 - A particle generator pushed to 20,000 elements
-- A dancing fractal tree 
+- A dancing fractal tree
 
 Looks random, right? Bear with me.
 
-Examples build on each other in complexity. **The first** teaches you how to make a static data visualization component and shows you an approach to declarative data visualization. **The second** adds interactivity and components interacting with each other, this teaches you about a simple approach to state management. **The third** shows you how to use transitions to build simple animations. **The fourth** shows you how to do complex animation using a game loop principle. **The fifth** and  **the sixth** show you how to approach speed optimization to smoothly animate thousands of elements.
+Examples build on each other in complexity. **The first** teaches you how to make a static data visualization component and shows you an approach to declarative data visualization. **The second** adds interactivity and components interacting with each other in order to teach you about a simple approach to state management. **The third** shows you how to use transitions to build simple animations. **The fourth** shows you how to do complex animation using a game loop principle. **The fifth** and  **the sixth** show you how to approach speed optimization to smoothly animate thousands of elements.
 
-Throughout the examples we're going to use **React 15**, **D3v4**, and **ES6+**. In the particle generator, we're also going to use **Redux** to drive the game loop, and **Konva** for canvas manipulation.
+Throughout the examples, we're going to use **React 15**, **D3v4**, and **ES6+**. In the particle generator, we're also going to use **Redux** to drive the game loop and **Konva** for canvas manipulation.
 
-Don't worry, if you're not comfortable with ES6 syntax yet. By the end of this book you're gonna love it! 
+Don't worry if you're not comfortable with ES6 syntax yet. By the end of this book, you're gonna love it!
 
 In the meantime, here's a helpful cheatsheet: [es6cheatsheet.com](https://es6cheatsheet.com/). It uses interactive code samples to compare the ES5 way with the ES6 way so you can brush up quickly.
 
-I'm working on a similar cheatsheet for D3v3 -> D3v4. It's going to be ready in early 2017. You'll get an email when it's done.
+I'm working on a similar cheatsheet for D3v3 → D3v4. It's going to be ready in early 2017. You'll get an email when it's done.
 
 In the interest of looking towards the future, we'll check out **Preact**, **Vue**, and **Inferno** in the final fractal example. They're new React-like libraries that promise better performance and smaller filesizes. Their creators – Jason Miller, Evan You, and Dominic Gannaway - graciously forked my code into their libraires. Thank you!
 
@@ -50,7 +50,7 @@ Our visualizations are going to use SVG - an XML-based image format that lets us
 
 These four lines create an SVG image with a black rectangle at coordinates `(50, 20)` that is 100x200 pixels large. Black fill with no borders is default for all SVG shapes.
 
-SVG is perfect for data visualization on the web because it works in all browsers, renders without blurring or artefacts on all screens, and supports animation and user interaction. You can see examples of interaction and animation later in this book.
+SVG is perfect for data visualization on the web because it works in all browsers, renders without blurring or artifacts on all screens, and supports animation and user interaction. You can see examples of interaction and animation later in this book.
 
 But SVG can get slow when you have many thousands of elements on screen. We're going to solve that problem by rendering bitmap images with canvas. More on that later.
 
@@ -58,7 +58,7 @@ But SVG can get slow when you have many thousands of elements on screen. We're g
 
 Another nice feature of SVG is that it's just a dialect of XML - nested elements describe structure, attributes describe the details. The same principles that HTML uses.
 
-That makes React's rendering engine particularly suited for SVG.   Our 100x200 rectangle from before, looks like this as a React component:
+That makes React's rendering engine particularly suited for SVG. Our 100x200 rectangle from before looks like this as a React component:
 
 {caption: "A simple rectangle in React", line-numbers: false, format: javascript}
 ```
@@ -78,7 +78,7 @@ const Picture = () => (
 );
 ```
 
-You're right, this looks like lot of work for a static rectangle. But look closely, even if you know nothing about React and JSX, you can look at that code and see that it's a `Picture` of a `Rectangle`.
+You're right. This looks like tons of work for a static rectangle. But look closely. Even if you know nothing about React and JSX, you can look at that code and see that it's a `Picture` of a `Rectangle`.
 
 Compare that to a pure D3 approach:
 
@@ -108,7 +108,7 @@ d3.select("svg")
 	 y: 20})
 ```
 
-That doesn't scream *"Rectangle in an SVG"* to me as much as the React example does. You have to take your time and read the code carefully: first we `select` the `svg` element, then we add attributes for `width` and `height`. After that we `append` a `rect` element and set its attributes for `width`, `height`, `x`, and `y`.
+That doesn't scream *"Rectangle in an SVG"* to me as much as the React example does. You have to take your time and read the code carefully: first, we `select` the `svg` element, then we add attributes for `width` and `height`. After that, we `append` a `rect` element and set its attributes for `width`, `height`, `x`, and `y`.
 
 Those 8 lines of code create HTML that looks like this:
 
@@ -119,33 +119,33 @@ Those 8 lines of code create HTML that looks like this:
 </svig>
 ```
 
-Would've been easier to just write the HTML right? Yes, for static images you're better off using Photoshop or something then exporting to SVG.
+Would've been easier to just write the HTML, right? Yes, for static images you're better off using Photoshop or something then exporting to SVG.
 
-Either way, dealing with the DOM is not D3's strong suit. A lot of typing, code that's hard to read, slow when you have thousands of elements, and it's often hard to keep track of which elements you're changing. D3's enter-update-exit cycle is great in theory, but I personally never found it easy to use.
+Either way, dealing with the DOM is not D3's strong suit. There's a lot of typing, code that's hard to read, it's slow when you have thousands of elements, and it's often hard to keep track of which elements you're changing. D3's enter-update-exit cycle is great in theory, but I personally never found it easy to use.
 
-If you don't know what I just said, don't worry, we'll cover the enter-update-exit cycle in the animations example. Don't worry about D3 either. **I know it's hard**. I've written two books about it and I still spend as much time reading the docs as writing the code. There's a lot to learn, and I'll explain everything as we go along.
+If you don't know what I just said, don't worry. We'll cover the enter-update-exit cycle in the animations example. Don't worry about D3 either. **I know it's hard**. I've written two books about it, and I still spend as much time reading the docs as writing the code. There's much to learn, and I'll explain everything as we go along.
 
-D3's strong suit is its ability to do everything other than the DOM. There are many statistical functions, great support for data manipulation, and a bunch of built-in data visualizations. **D3 can calculate anything for us, all we have to do is draw it out.**
+D3's strong suit is its ability to do everything other than the DOM. There are many statistical functions, great support for data manipulation, and a bunch of built-in data visualizations. **D3 can calculate anything for us. All we have to do is draw it out.**
 
 Which is why we're going to follow this approach:
 
 * React owns the DOM
 * D3 calculates properties
 
-This way we can leverage React for SVG structure and rendering optimizations, and D3 for all its mathematical and visualization functions.
+This way, we can leverage React for SVG structure and rendering optimizations and D3 for all its mathematical and visualization functions.
 
 Now let's look at two different ways to put them together: blackbox and full-feature.
 
 {#blackbox-components}
 # Blackbox Components
 
-Blackbox components are the simplest way to integrate D3 and React. You can think of them as wrappers around D3 visualizations. 
+Blackbox components are the simplest way to integrate D3 and React. You can think of them as wrappers around D3 visualizations.
 
-You can take any D3 example from the internets or your brain, wrap it in a thin React component and it Just Works(tm). Yes, we go against what I just said and let D3 control a small part of the DOM tree.
+You can take any D3 example from the internets or your brain, wrap it in a thin React component, and it Just Works™. Yes, we go against what I just said and let D3 control a small part of the DOM tree.
 
-We throw away most of React's power, but gain a quick way to get things working. 
+We throw away most of React's power, but we gain a quick way to get things working.
 
-I call the approach *"blackbox"* because React's engine can't see inside your component, can't help with rendering, and has no idea what's going on. From this point onward in the DOM tree you are on your own. Sounds scary, but it's okay if you're careful.
+I call the approach *"blackbox"* because React's engine can't see inside your component, can't help with rendering, and has no idea what's going on. From this point onward in the DOM tree, you are on your own. It sounds scary, but it's okay if you're careful.
 
 Here's how it works:
 - React renders an anchor element
@@ -158,11 +158,11 @@ Manual re-rendering is not as annoying as it sounds, but the inefficiency can ge
 {#blackbox-axis}
 ## A quick blackbox example - a D3 axis
 
-Let's build an axis component. Axes are the perfect use-case for blackbox components. D3 comes with an Axis generator bundled inside, and they're difficult to build from scratch.
+Let's build an axis component. Axes are the perfect use-case for blackbox components. D3 comes with an axis generator bundled inside, and they're difficult to build from scratch.
 
-They don't *look* difficult, but there's a lot of tiny detail you have to get just right.
+They don't *look* difficult, but there are many tiny details you have to get _just right_.
 
-D3's axis generator takes a scale, some configuration, and renders an axis for us. The code looks like this:
+D3's axis generator takes a scale and some configuration to render an axis for us. The code looks like this:
 
 {caption: "A pure D3 axis",line-numbers: false, format: javascript}
 ```
@@ -174,14 +174,14 @@ const axis = d3.axisBottom(scale);
 d3.select('svg')
   .append('g')
   .attr('transform', 'translate(10, 30)')
-  .call(axis); 
+  .call(axis);
 ```
 
-If this code doesn't make any sense, don't worry. There's a lot of D3 to learn and I'll help you out. If it's obvious, you're a pro! This book will be much quicker to read.
+If this code doesn't make any sense, don't worry. There's a bunch of D3 to learn, and I'll help you out. If it's obvious, you're a pro! This book will be much quicker to read.
 
-We start with a linear scale that has a domain `[0, 10]` and a range `[0, 200]`. You can think of scales as mathematical functions that map a domain to a range. In this case calling `scale(0)` returns `0`, `scale(5)` returns `100`, `scale(10)` returns `200`. Just like middle school mathematics.
+We start with a linear scale that has a domain `[0, 10]` and a range `[0, 200]`. You can think of scales as mathematical functions that map a domain to a range. In this case, calling `scale(0)` returns `0`, `scale(5)` returns `100`, `scale(10)` returns `200`. Just like middle school mathematics.
 
-We create an axis generator with `axisBottom`, which takes a `scale` and is going to generate a `bottom` oriented axis – numbers below the line. You can also tweak settings for number of ticks, their sizing, and their spacing.
+We create an axis generator with `axisBottom`, which takes a `scale` and is going to generate a `bottom` oriented axis – numbers below the line. You can also tweak settings for the number of ticks, their sizing, and their spacing.
 
 Equipped with an `axis` generator, we `select` the `svg` element, append a grouping element, use a `transform` attribute to move it `10`px to the right and `30`px down, and invoke the generator with `.call()`.
 
@@ -189,18 +189,18 @@ It creates a small axis:
 
 ![Simple axis](images/es6v2/simple-axis.png)
 
-You can play around with this example on CodePen, [here](https://codepen.io/swizec/pen/YGoYBM). Try changing the scale type.
+You can play around with this example on CodePen [here](https://codepen.io/swizec/pen/YGoYBM). Try changing the scale type.
 
 ## A quick blackbox example - a React+D3 axis
 
-Now let's say we want to use that same axis code, but as a React component. The simplest way is to use a blackbox component approach. Like this:
+Now let's say we want to use that same axis code but as a React component. The simplest way is to use a blackbox component approach like this:
 
 {caption: "React blackbox axis", line-numbers: false, format: javascript}
 ```
 class Axis extends Component {
     componentDidMount() { this.renderAxis() }
     componentDidUpdate() { this.renderAxis() }
-    
+
     renderAxis() {
 	const scale = d3.scaleLinear()
 	                .domain([0, 10])
@@ -210,26 +210,26 @@ class Axis extends Component {
 	d3.select(this.refs.g)
 	  .call(axis);  
     }
-    
+
     render() {
 	return <g transform="translate(10, 30)" ref="g" />
     }
 }
 ```
 
-Oh man so much code! Is this really worth it? Yes, for the other benefits of using React in your dataviz. You'll see :)
+Oh man! So much code! Is this really worth it? Yes, for the other benefits of using React in your dataviz. You'll see :)
 
 We created an `Axis` component that extends React base `Component` class. We can't use functional stateless components for this because we need lifecycle hooks. More on those later.
 
-Our component has a `render` method, which returns a grouping element, `g`, moved 10px to the right and 30px down using the `transform` attribute. Same as before.
+Our component has a `render` method, which returns a grouping element (`g`) moved 10px to the right and 30px down using the `transform` attribute. Same as before.
 
-We added a `ref` attribute, which lets us reference elements in our component via `this.refs`. This makes D3 integration cleaner and probably works with React-native. I haven't tried yet.
+We added a `ref` attribute, which lets us reference elements in our component via `this.refs`. This makes D3 integration cleaner, and it probably works with React-native. I haven't tried yet.
 
-The body of `renderAxis` should look familiar. It's where we put code from the pure D3 example. Scale, axis, select, call. No need to append a grouping element, we're already there with `this.refs.g`.
+The body of `renderAxis` should look familiar. It's where we put code from the pure D3 example. Scale, axis, select, call. There's no need to append a grouping element; we're already there with `this.refs.g`.
 
 For the manual re-rendering part, we call `renderAxis` in `componentDidUpdate` and `componentDidMount`. This ensures that our axis re-renders every time React's engine decides to render our component. On state and prop changes usually.
 
-That wasn't so bad was it? You can try it out on CodePen, [here](https://codepen.io/swizec/pen/qazxPz).
+That wasn't so bad, was it? You can try it out on CodePen [here](https://codepen.io/swizec/pen/qazxPz).
 
 To make our axis more useful, we could get the scale and axis orientation from props. We'll do that for scales in our bigger project.
 
@@ -237,16 +237,16 @@ To make our axis more useful, we could get the scale and axis orientation from p
 
 After the blackbox axis example above, you'd be right to think something like *"Dude, that looks like it's gonna get hella repetitive. Do I really have to do all that every time?"*
 
-Yes, you do. But! We can make it easier with a higher order component. A HOC.
+Yes, you do. But! We can make it easier with a higher order component - a HOC.
 
-Higher order components – HOCs – are one of the best ways to improve your React code. When you see a lot of components sharing similar code, it's time for a HOC. In our case that shared code would be:
+Higher order components are one of the best ways to improve your React code. When you see more than a few components sharing similar code, it's time for a HOC. In our case, that shared code would be:
 
 - rendering an anchor element
 - calling D3's render on updates
 
-With a HOC we can abstract that away into something called a [class factory](https://en.wikipedia.org/wiki/Factory_method_pattern). It's an old concept coming back in vogue now that JavaScript has classes.
+With a HOC, we can abstract that away into something called a [class factory](https://en.wikipedia.org/wiki/Factory_method_pattern). It's an old concept coming back in vogue now that JavaScript has classes.
 
-You can think of it as a function that takes some params and creates a class – a React component. Another way to think about HOCs is that they're React components wrapping other React components. And a function that makes it easy.
+You can think of it as a function that takes some params and creates a class – a React component. Another way to think about HOCs is that they're React components wrapping other React components and a function that makes it easy.
 
 Let's build a HOC for D3 blackbox integration. We'll use it in the main example project.
 
@@ -258,7 +258,7 @@ function D3blackbox(D3render) {
     return class Blackbox extends React.Component {
 	componentDidMount() { D3render.call(this); }
 	componentDidUpdate() { D3render.call(this) }
-        
+
 	render() {
 	    const { x, y } = this.props;
 	    return <g transform={`translate(${x}, ${y})`} ref="anchor" />;
@@ -267,11 +267,11 @@ function D3blackbox(D3render) {
 }
 ```
 
-You'll recognize most of that code from earlier. We have a `componentDidMount` and`componentDidUpdate` lifecycle hooks that  call `D3render` on component updates. This used to be called `renderAxis`. And `render` renders a grouping element as an anchor for D3 to put its stuff into.
+You'll recognize most of that code from earlier. We have a `componentDidMount` and`componentDidUpdate` lifecycle hooks that call `D3render` on component updates. This used to be called `renderAxis`. `render` renders a grouping element as an anchor into which D3 can put its stuff.
 
-Because `D3render` is no longer a part of the component, we have to use `.call` to give it the scope we want. This class. Or rather `this` instance of the `Backbone` class.
+Because `D3render` is no longer a part of the component, we have to use `.call` to give it the scope we want: this class, or rather `this` instance of the `Backbone` class.
 
-We've also made some changes to make `render` more flexible. Instead of hardcoding the `translate()` transformation, we take `x` and `y` props. `{ x, y } = this.props`  takes `x` and `y` out of `this.props` using object decomposition, and we used ES6 string templates for the `transform` attribute.
+We've also made some changes to make `render` more flexible. Instead of hardcoding the `translate()` transformation, we take `x` and `y` props. `{ x, y } = this.props` takes `x` and `y` out of `this.props` using object decomposition, and we used ES6 string templates for the `transform` attribute.
 
 Consult the [ES6 cheatsheet](https://es6cheatsheet.com/) for details on that.
 
@@ -290,23 +290,23 @@ const Axis = D3blackbox(function () {
 });
 ```
 
-Same code as we had in `renderAxis` before, except the function is wrapped in a `D3blackbox` call. This turns it into a React component.
+It’s the aame code as we had in `renderAxis` before. The only difference is that the function is wrapped in a `D3blackbox` call. This turns it into a React component.
 
 I'm not 100% whether wrapping a function in a React component counts as a real HOC, but let's roll with it. More proper HOCs are React components wrapped in components.
 
-You can play with this example on Codepen, [here](https://codepen.io/swizec/pen/woNjVw).
+You can play with this example on Codepen [here](https://codepen.io/swizec/pen/woNjVw).
 
 {#full-feature-integration}
 # Full-feature Integration
 
-As useful as blackbox components are, we need something better, if we want to leverage React's rendering engine. We're going to look at full-feature integration where React does the rendering, and D3 calculates the props.
+As useful as blackbox components are, we need something better if we want to leverage React's rendering engine. We're going to look at full-feature integration where React does the rendering and D3 calculates the props.
 
 To do that, we're going to follow a 3-part pattern:
 - set up D3 objects as class properties
 - update D3 objects when component updates
 - output SVG in `render()`
 
-It's easiest to show you with an example. 
+It's easiest to show you with an example.
 
 Let's build a rectangle that changes color based on prop values. We'll render a few of them to make a color scale.
 
@@ -314,7 +314,7 @@ Yes, it looks like a trivial example, but color-as-information is an important c
 
 I suggest following along in Codepen for now. [Here's one I set up for you](https://codepen.io/swizec/pen/oYNvpQ). It contains the final solution, so you can follow along and nod your head. I'll explain each part.
 
-I know you're itching to use your local environment from the [Getting Started section](#getting-started) and you will. Later when we do the real-er example projects.
+I know you're itching to use your local environment from the [Getting Started section](#getting-started), and you will. But it'll be later when we do the real-er example projects.
 
 ## A color scale
 
@@ -323,17 +323,17 @@ We start with a `Swatch` component that draws a rectangle and fills it with a co
 {caption: "Swatch component", line-numbers: false, format: javascript}
 ```
 const Swatch = ({ color, width, x }) => (
-    <rect width={width} 
-	  height="20" 
-	  x={x} 
-	  y="0" 
+    <rect width={width}
+	  height="20"
+	  x={x}
+	  y="0"
 	  style={{fill: color}} />
 );
 ```
 
-Looks like our earlier components doesn't it? It's exactly the same! A functional stateless component that draws a `rect` element with some attributes - dimensions, position, and `fill` style.
+Looks like our earlier components, doesn't it? It's exactly the same: a functional stateless component that draws a `rect` element with some attributes - dimensions, position, and `fill` style.
 
-Note that `style` is a dictionary so we specify it with double curly braces. Outer braces for a dynamic value, inner braces for a dictionary.
+Note that `style` is a dictionary, so we specify it with double curly braces: outer braces for a dynamic value, inner braces for a dictionary.
 
 Then we need a `Colors` component. It follows the full-featured integration structure: D3 objects as properties, an `updateD3` function, plus some wiring for updates and rendering.
 
@@ -345,7 +345,7 @@ class Colors extends Component {
 	      .domain(d3.range(20));
 ```
 
-We start by inheriting from `Component`, and defining defaults for D3 objects. `this.colors` is one of [D3's predefined color scales](https://github.com/d3/d3-scale/blob/master/README.md#schemeCategory10). `schemeCategory20` is a scale of 20 colors designed for categorization. Seemed like a good example, and you're welcome to try others.
+We start by inheriting from `Component` and defining defaults for D3 objects. `this.colors` is one of [D3's predefined color scales](https://github.com/d3/d3-scale/blob/master/README.md#schemeCategory10). `schemeCategory20` is a scale of 20 colors designed for categorization. It seemed like a good example, and you're welcome to try others.
 
 `this.width` is a D3 scale designed for producing bands, `d3.scaleBand`. As mentioned earlier, scales map domains to ranges. We know our domain is 20 colors, so we can statically set the domain as `[1, 2, 3, ..., 20]` with `d3.range(20)`.
 
@@ -374,7 +374,7 @@ updateD3(props) {
 
 `componentWillMount` and `componentWillUpdate` are component lifecycle hooks. Can you guess when they run?
 
-`componentWillMount` runs just before React's engine inserts our component into the DOM, and `componentWillUpdate` just before React updates it. That happens on any prop change or `setState` call.
+`componentWillMount` runs just before React's engine inserts our component into the DOM, and `componentWillUpdate` runs just before React updates it. That happens on any prop change or `setState` call.
 
 Both of them call our `updateD3` method with the new value of props. We use it to update `this.width` scale's range. Doing so keeps the internal state of D3 objects in sync with React's reality. Without it, our component might render stale data.
 
@@ -386,8 +386,8 @@ render() {
     return (
 	<g>
 	    {d3.range(20).map(i => (
-	        <Swatch color={this.colors[i]} 
-		width={this.width.step()} 
+	        <Swatch color={this.colors[i]}
+		width={this.width.step()}
 		x={this.width(i)} />
 	     ))}
 	</g>
@@ -395,7 +395,7 @@ render() {
 }
 ```
 
-We create a grouping element to fulfill React's one child per component requirement, then render 20 swatches in a loop. Each gets a `color` from `this.colors`, and a `width` and `x` from `this.width`.
+We create a grouping element to fulfill React's one child per component requirement, then render 20 swatches in a loop. Each gets a `color` from `this.colors` and a `width` and `x` from `this.width`.
 
 After inserting into the DOM with `ReactDOM`, we get a series of 20 colorful rectangles.
 
@@ -407,11 +407,11 @@ Here's the playground again: [CodePen](https://codepen.io/swizec/pen/oYNvpQ)
 
 # You're awesome
 
-You know the basics! You can take any D3 example from the internets and wrap it in a React component *and* you know how to build React+D3 components from scratch. You're amazing. High five! 🖐
+You know the basics! You can take any D3 example from the internets and wrap it in a React component, *and* you know how to build React+D3 components from scratch. You're amazing. High five! 🖐
 
-The rest of this book is about using these concepts and pushing them to the limits of practicality. We're going to build an interactive visualization of tech salaries compared to median household income. Why? Because it piqued my interest and it shows why you should call yourself an engineer, not programmer or developer. **You're an engineer**. Remember that.
+The rest of this book is about using these concepts and pushing them to the limits of practicality. We're going to build an interactive visualization of tech salaries compared to median household income. Why? Because it piqued my interest, and because it shows why you should call yourself an engineer, not a programmer or a developer. **You're an engineer**. Remember that.
 
-Throughout the example, you'll learn more details of D3, tidbits from React, and the animation chapter is going to blow your mind. Maybe ... I hope. It's gonna be fun!
+Throughout the example, you'll learn more details of D3, tidbits from React, and the animation chapter is going to blow your mind. It's gonna be fun!
 
 ![Default view](images/es6v2/full-dataviz.png)
 
@@ -441,33 +441,33 @@ We're going to use a unidirectional dataflow architecture inspired by Flux:
 * The Main Component updates its truth
 * The real changes flow back down the chain to update UI
 
-This looks roundabout, but it's awesome. Better than worrying about parts of the UI going out of date with the rest of the app. I could talk your ear off with debugging horror stories, but I'm nice, so I won't.
+This looks roundabout, but it's awesome. It's far better than worrying about parts of the UI going out of date with the rest of the app. I could talk your ear off with debugging horror stories, but I'm nice, so I won't.
 
 When a user clicks on one of our controls, a `Toggle`, it invokes a callback. This in turn invokes a callback on `ControlRow`, which invokes a callback on `Controls`, which invokes a callback on `App`.
 
 ![Callback chain](images/es6v2/architecture_callbacks.jpg)
 
-With each hop, the nature of our callback changes. `Toggle` just tells `ControlRow` which entry was toggled. `ControlRow` tells `Controls` how to update the data filter function, and `Controls` gives `App` a composite filter built from all the controls. You'll see how that works in the next chapter.
+With each hop, the nature of our callback changes. `Toggle`  tells `ControlRow` which entry was toggled, `ControlRow` tells `Controls` how to update the data filter function, and `Controls` gives `App` a composite filter built from all the controls. You'll see how that works in the next chapter.
 
 The important takeaway right now is that callbacks go from low-level info to high-level semantic info.
 
-When the final callback is invoked, `App` updates its repository of truth, and communicates the change back down the chain via props. This happens with no additional wiring on your part.
+When the final callback is invoked, `App` updates its repository of truth and communicates the change back down the chain via props. This happens with no additional wiring on your part.
 
 ![Data flows down](images/es6v2/architecture_dataflow.jpg)
 
-You can think of it like calling functions with new arguments. Because the functions – components – render the UI, your interface updates. 
+You can think of it like calling functions with new arguments. Because the functions – components – render the UI, your interface updates.
 
-Because your components are well-made and rely just on their props to render, React's engine can optimize these changes. It can compare the component tree and decide which components to re-render and which to leave alone. 
+Because your components are well-made and rely on their props to render, React's engine can optimize these changes. It can compare the component tree and decide which components to re-render and which to leave alone.
 
 Functional programming for HTML! 😎
 
-The functional programming concepts we're relying on are called [referential transparency](https://en.wikipedia.org/wiki/Referential_transparency), [idempotent functions](https://en.wikipedia.org/wiki/Idempotence), and [functional purity](https://en.wikipedia.org/wiki/Pure_function). I suggest googling them, if you want to learn the theory behind it all.
+The functional programming concepts we're relying on are called [referential transparency](https://en.wikipedia.org/wiki/Referential_transparency), [idempotent functions](https://en.wikipedia.org/wiki/Idempotence), and [functional purity](https://en.wikipedia.org/wiki/Pure_function). I suggest Googling them if you want to learn the theory behind it all.
 
 ## A caveat
 
-The caveat with our basic state handling approach is that it's less flexible and scalable than using a state handling library like Redux or MobX. The more components we add, and the more interaction we come up with, the harder it will become to keep track of our callbacks. Redesigning the UI is also cumbersome, because you have to rewire all the callbacks. 
+The caveat with our basic state handling approach is that it's less flexible and scalable than using a state handling library like Redux or MobX. The more components we add, and the more interaction we come up with, the harder it will become to keep track of our callbacks. Redesigning the UI is also cumbersome because you have to rewire all the callbacks.
 
-We're using the basic approach because it's easier to explain, works without additional libraries, and is Good Enough™. I mention Redux and MobX to make your googling easier.
+We're using the basic approach because it's easier to explain, works without additional libraries, and is Good Enough™. I mention Redux and MobX to make your Googling easier.
 
 You can see an approach to using Redux in dataviz in the [Animating with React, Redux, and d3 chapter](#animating-react-redux), and we'll tackle MobX in the [MobX chapter](#refactoring-to-mobx).
 
@@ -477,16 +477,16 @@ You can see an approach to using Redux in dataviz in the [Animating with React, 
 
 We're going to structure our app into components. Deciding what to put into one component and what into another is one of the hardest problems in engineering.
 
-Entire books have been written on the topic, but here's a rule of thumb that I like to use: If you have to use the word "and" to describe what your component does, then it should become two components.
+Entire books have been written on the topic, but here's a rule of thumb that I like to use: if you have to use the word "and" to describe what your component does, then it should become two components.
 
 Once you have those two components, you can either make them child components of a bigger component, or you can make them separate. The choice depends on their re-usability and often mimics your design structure.
 
-For example, our tech salary visualization, is going to use 1 very top level component, 5 major components, and a bunch of child components.
+For example, our tech salary visualization is going to use 1 very top level component, 5 major components, and a bunch of child components.
 
- - `App` is the very top level component, it handles everything
+ - `App` is the very top level component; it handles everything
  - `Title`, renders the dynamic title
  - `Description`, renders the dynamic description
- - `Histogram`, renders the histogram and has child components for  the axis and histogram bars
+ - `Histogram`, renders the histogram and has child components for the axis and histogram bars
  - `CountyMap`, renders the choropleth map and uses child components for the counties
  - `Controls`, renders the rows of buttons that let users explore our dataset
 
@@ -496,14 +496,14 @@ Most of these are specific to our usecase, but `Histogram` and `CountyMap` have 
 
 We'll use a `Meta` folder for all our metadata components like `Title` and `Description`. We don't *have* to do this, but `import { Title, Description } from './Meta'` looks better than doing separate imports for related-but-different components. Namespacing, if you will.
 
-Each component should be accessible with `import My Component from './MyComponent'`, and rendered with `<MyComponent {...params} />`. If a parent component has to know details about the implementation of a child component, something is wrong.
+Each component should be accessible with `import My Component from './MyComponent'` and rendered with `<MyComponent {...params} />`. If a parent component has to know details about the implementation of a child component, something is wrong.
 
-You can read more about these ideas by Googling ["leaky abstractions"](https://en.wikipedia.org/wiki/Leaky_abstraction), ["single responsibility principle"](https://en.wikipedia.org/wiki/Single_responsibility_principle), ["separation of concerns"](https://en.wikipedia.org/wiki/Separation_of_concerns), and ["structured programming"](https://en.wikipedia.org/wiki/Structured_programming). Books from the late 90's and early 2000's (when object oriented programming was The Future™) are the best source of [curated] info in my experience.
+You can read more about these ideas by Googling ["leaky abstractions"](https://en.wikipedia.org/wiki/Leaky_abstraction), ["single responsibility principle"](https://en.wikipedia.org/wiki/Single_responsibility_principle), ["separation of concerns"](https://en.wikipedia.org/wiki/Separation_of_concerns), and ["structured programming"](https://en.wikipedia.org/wiki/Structured_programming). Books from the late 90's and early 2000's (when object-oriented programming was The Future™) are the best source of curated info in my experience.
 
 ---
 
 Congratz! You know everything you need to build visualizations with React and D3. 👏
 
-This is the point in tech books where I run off and start building things on my own. Then I get frustrated, spend hours Googling for answers, and remember that hey maybe I should read the rest of the book!
+This is the point in tech books where I run off and start building things on my own. Then I get frustrated, spend hours Googling for answers, and then remember, "Hey! Maybe I should read the rest of the book!"
 
 Reading the rest of the book helps. I'll show you how all this stuff fits together into a larger project 😊
