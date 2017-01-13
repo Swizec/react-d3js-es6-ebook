@@ -102,7 +102,7 @@ You can install them like this:
 $ npm install --save d3 topojson lodash
 ```
 
-Additionally, we're using Bootstrap for default styling, and String for string manipulation. You should install them as well.
+Additionally, we're using Bootstrap for default styling and String for string manipulation. You should install them as well.
 
 ```
 $ npm install --save bootstrap string
