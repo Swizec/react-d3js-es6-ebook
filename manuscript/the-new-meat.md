@@ -407,13 +407,77 @@ And with that, your browser should show you a map.
 
 ![Choropleth map with shortened dataset](images/es6v2/choropleth-map-shortened-dataset.png)
 
+Turns out tech job visas just aren't that well distributed geographically. Most counties come out grey even with the full dataset.
+
 If that didn't work, consult [this diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/f4c1535e9c9ca4982c8f3c74cff9f739eb08c0f7).
 
 ## Render a Histogram of salaries
 
-Coming soon. First week of January 2017 at latest.
+Knowing the median salary is great and all, but it doesn't tell you much about what you can expect. You need to know the distribution to see if it's more likely you'll get 140k or 70k.
 
-Until then, follow the steps in the step-by-step Github repo. I made sure they follow chronologically and there isn't much jumping around.
+That's what histograms are for. Give them a bunch of data and they show its distribution. We're going to build one like this:
+
+![Basic histogram](images/es6v2/basic-histogram.png)
+
+In the shortened dataset, 35% of tech salaries fall between $60k and $80k, 26% between $80k and $100k etc. Throwing a random dice using this as your [random distribution](https://en.wikipedia.org/wiki/Probability_distribution), you're far more likely to get 60k-80k than 120k-140k. Turns out this is a great way to gauge situations.
+
+It's where fun statistics like "More people die from vending machines than shark attacks" come from. Which are you afraid of, vending machines or sharks? Stats say your answer should be [heart disease](https://www.cdc.gov/nchs/fastats/deaths.htm). ;)
+
+Anyway, let's build a histogram. We'll start with changes in `App.js`, make a `Histogram` component using the [full-feature approach](#full-feature-integration), then add an `Axis` using the [blackbox HOC approach](#blackbox-hoc). We're also going to add some CSS, finally.
+
+### Step 1: Prep App.js
+
+You know the drill don't you? Import some stuff, add it to the `render()` method in our `App` component.
+
+{crop-start: 190, crop-end: 204, format: javascript}
+![Histogram imports](code_samples/es6v2/App.js)
+
+We import `App.css` and the `Histogram` component. That's what I love about using Webpack - you can import CSS in JavaScript. We got the setup with `create-react-app`.
+
+There are different schools of thought about how CSS should be used. Some say each component should have its own CSS files and that that's the whole reason we want JS-based imports anyway. Others think we shouldn't use CSS at all and should do styling in JavaScript.
+
+Me, I don't know. I like the idea of components coming with their own styling, but I find that makes them less reusable. Apps often want to specify their own styling.
+
+Maybe a combination of default per-component styling and app-level overrides? Depends on your use case I guess.
+
+With the imports done, we can add `Histogram` to `App`'s render method.
+
+{crop-start: 205, crop-end: 235, format: javascript}
+![Render Histogram in App](code_samples/es6v2/App.js)
+
+We render the `Histogram` component with a bunch of props. They specify the dimensions we want, positioning, and pass data to the component. We're using `filteredSalaries` even though we haven't set up the filtering yet. One less line of code to change later :)
+
+That's it. `App` is ready to render our `Histogram`.
+
+Your browser should now show an error complaining about missing files.
+
+### Step 2: CSS changes
+
+As mentioned, opinions vary on the best way to do styling in React apps. Some say stylesheets per component, some say styling inside JavaScript, others swear by global app styling.
+
+The truth is somewhere in between. Do what best fits your project and team. We're going to stick to global stylesheets because it's simplest.
+
+Start by emptying out `src/App.css`. All that came with `create-react-app` must go. We don't need it.
+
+Then add these 29 lines:
+
+{crop-start: 4, crop-end: 33, format: css}
+![App.css stylesheet](code_samples/es6v2/App.css)
+
+We won't go into details about CSS here. Many better books have been written about it.
+
+Generally speaking, we're making `.histogram` rectangles – the bars – blue, and labels white `12px` font. `button`s and `.row`s have some spacing. This for the user controls we'll add. And the `.mean` line is a dotted grey with grey `11px` text.
+
+Yes, this is more CSS than we need for just the histogram. We're already here, might as well add it.
+
+Adding the CSS before building the Histogram means it's going to come out beautiful the first time around.
+
+### Step 3: Histogram component
+
+### Step 4: HistogramBar (sub)component
+
+### Step 5: Axis HOC
+
 
 ## Make it understandable - meta info
 
