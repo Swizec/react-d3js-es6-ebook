@@ -470,14 +470,157 @@ Generally speaking, we're making `.histogram` rectangles – the bars – blue,
 
 Yes, this is more CSS than we need for just the histogram. We're already here, might as well add it.
 
-Adding the CSS before building the Histogram means it's going to come out beautiful the first time around.
+Adding our CSS before building the Histogram means it's going to look beautiful the first time around.
 
 ### Step 3: Histogram component
 
+We're following the [full-feature integration](#full-feature-integration) approach for our Histogram component. React talks to the DOM, D3 calculates the props.
+
+We'll use two components:
+1. `Histogram` handles the general layout, dealing with D3, and translating raw data into a histogram
+2. `HistogramBar` draws a single bar and labels it
+
+Let's start with the basics, a `Histogram` directory and an `index.js` file. It makes importing easier while keeping our code organized. I like to use dirs for components made out of multiple files.
+
+{crop-start: 5, crop-end: 8, format: javascript}
+![Histogram index.js](code_samples/es6v2/components/Histogram/index.js)
+
+Import `Histogram` from `./Histogram` and export it as the `default` export. You could do it with a re-export: `export { default } from './Histogram'`. Not sure why I picked the long way. It's not much more readable.
+
+Great, now we need the `Histogram.js` file. We start with some imports, a default export, and a stubbed out `Histogram` class.
+
+{crop-start: 5, crop-end: 33, format: javascript}
+![Histogram component stub](code_samples/es6v2/components/Histogram/Histogram.js)
+
+We need React and D3, and we set up `Histogram`. The `constructor` calls React's base constructor using `super()`, and defers to `updateD3` to init default D3 properties. `componentWillReceiveProps` defers to `updateD3` to ensure D3 state stays in sync with React, and we'll use `makeBar` and `render` to render the SVG.
+
+{class: discussion}
+{blurb}
+A note about D3 imports: D3v4 is split into multiple packages. We're using a `*` import here to get everything, because that's easier to use. You should import specific packages when possible . It leads to smaller compiled code sizes and makes it easier for you and others to see what each file is using.
+{/blurb}
+
+#### constructor
+
+Now we should add D3 object initialization to the `constructor`. We need a D3 histogram and two scales. One for chart width and one for vertical positioning.
+
+{crop-start: 35, crop-end: 48, format: javascript}
+![D3 initialization in Histogram constructor](code_samples/es6v2/components/Histogram/Histogram.js)
+
+We've talked about scales before. Put in a number, get out a number. In this case we're using linear scales for sizing and positioning.
+
+`d3.histogram` is new in D3v4. It's a generator that takes a dataset and returns a histogram-shaped dataset. An array of arrays where the top level are bins and meta data, and the children are "values in this bin".
+
+You might know it as `d3.layout.histogram` from D3v3. I think the updated API is easier to use. You'll see what I mean in the `updateD3` method.
+
+#### updateD3
+
+{crop-start: 54, crop-end: 72, format: javascript}
+![updateD3 method in Histogram](code_samples/es6v2/components/Histogram/Histogram.js)
+
+First, we configure the `histogram` generator. We use `thresholds` to specify how many bins we want, and `value` to specify a value accessor function. We get both from props passed into the `Histogram` component.
+
+In our case that's 20 bins and the value accessor returns each data point's `base_salary`.
+
+Then we call `this.histogram` on our dataset and use a `.map` to get an array of bins and count how many values went in each. We need them to configure our scales.
+
+If you print the result of `this.histogram()`, you'll see an array structure where each entry holds metadata about the bin, and the values it contains.
+
+![console.log(this.histogram())](images/es6v2/histogram-data-screenshot.png)
+
+We use this data to set up our scales. 
+
+`widthScale` has a range from the smallest (`d3.min`) bin to the biggest (`d3.max`), and a range of `0` to width less a margin. We'll use it to calculate bar sizes.
+
+`yScale` has a range from `0` to the biggest `x1` coordinate we can find in a bin. Bins go from `x0` to `x1`, which reflects the fact that most histograms are horizontally oriented. Ours is vertical so labels are easier to read. The range goes from `0` to the maximum height less a margin.
+
+Now let's render this puppy.
+
+#### render
+
+{crop-start: 78, crop-end: 92, format: javascript}
+![Histogram.render](code_samples/es6v2/components/Histogram/Histogram.js)
+
+We set up a `translate` SVG transform and run our histogram generator. Yes, that means we're running it twice for every update. Once in `updateD3` and once in `render`.
+
+I tested making it more efficient, and didn't see much improvement in overall performance. It did make the code more complex, though.
+
+Our render method returns a `<g>` grouping element transformed to the position given in props and walks through the `bars` array, calling `makeBar` for each. Later we're going to add an `Axis` as well.
+
+This is a great example of React's declarativeness. We have a bunch of stuff and all it takes to render is a loop. No worrying about how it renders, where it goes, or anything like that. Walk through data, render, done.
+
+#### makeBar
+
+`makeBar` is a function that takes a histogram bar's metadata and returns a `HistogramBar` component. We use it to make the declarative loop more readable.
+
+{crop-start: 98, crop-end: 114, format: javascript}
+![Histogram.makeBar](code_samples/es6v2/components/Histogram/Histogram.js)
+
+See, we're calculating `props` and feeding them into `HistogramBar`. Putting it in a separate function just makes the `.map` construct in `render` easier to read. There's a lot of props to calculate.
+
+Some, like `axisMargin` we pass through, others like `width` and `height` we calculate using our scales.
+
+Setting the `key` prop is important. React uses it to tell the bars apart and only re-render those that change.
+
 ### Step 4: HistogramBar (sub)component
+
+Before we can see the histogram, we need another component: `HistogramBar`. We *could* have shoved all of it in the `makeBar` function, but I think it makes sense to keep it separate.
+
+I like to put subcomponents like this in the same file as the main component. You can put it in its own file, if you feel that's cleaner. You'll have to add an `import` if you do that.
+
+{crop-start: 120, crop-end: 150, format: javascript}
+![HistogramBar component](code_samples/es6v2/components/Histogram/Histogram.js)
+
+As far as functional stateless components go, this one's pretty long. Most of it goes into deciding how much precision to render in the label, so it's okay.
+
+We start with an SVG translate – you'll see this a lot – and a default `label`. Then we update the label based on the bar size and its value.
+
+When we have a label we like, we return a `<g>` grouping element with a rectangle and a text. Both positioned based on the `width` and `height` of the bar.
+
+You should now see a histogram.
+
+![Histogram without axis](images/es6v2/histogram-without-axis.png)
 
 ### Step 5: Axis HOC
 
+Our histogram is pretty, but needs an axis to be useful. You've already implemented an axis when we talked about [blackbox integration](#blackbox-axis). We're going to use the same approach and copy those concepts into the real project.
+
+#### D3blackbox
+
+We start with the D3blackbox higher order component. Same as before, except we put it in `src/components`. Then again, I should probably just suck it up and make an npm package for it.
+
+{crop-start: 5, crop-end: 18, format: javascript}
+![D3blackbox HOC](code_samples/es6v2/components/D3blackbox.js)
+
+Take a `D3render` function, call it on `componentDidMount` and `componentDidUpdate` to keep things in sync, and render a positioned anchor element for `D3render` to hook into.
+
+#### Axis component
+
+With `D3blackbox`, we can reduce the `Axis` component to a wrapped function. We're implementing the `D3render` method.
+
+{crop-start: 5, crop-end: 19, format: javascript}
+![Axis component using D3blackbox](code_samples/es6v2/components/Histogram/Axis.js)
+
+We use D3's `axisLeft` generator, configure its `tickFormat`, give it a `scale` to use, and specify how many `ticks` we want. Then `select` the anchor element rendered by `D3blackbox`, and `call` the axis generator on it.
+
+Yes, this `Axis` works only for our specific use case. That's okay! No need to make things general when you're using them only once.
+
+#### Add it to Histogram
+
+To render our new `Axis`, we have to add it to the `Histogram` component. The process takes two steps:
+
+1. Import `Axis` component
+2. Render it
+
+{crop-start: 155, crop-end: 183, format: javascript}
+![Import and render Axis](code_samples/es6v2/components/Histogram/Histogram.js)
+
+We import our `Axis` component and add it to `Histogram`'s `render` method with some props. It takes an `x` and `y` coordinate, the `data`, and a `scale`.
+
+An axis appears.
+
+![Basic histogram with axis](images/es6v2/basic-histogram.png)
+
+If that didn't work, try comparing your changes to this [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/02a40899e348587a909e97e8f18ecf468e2fe218).
 
 ## Make it understandable - meta info
 
