@@ -233,3 +233,43 @@ render() {
         </div>
     );
 }
+
+
+//
+// Example 6
+//
+// src/App.js
+import CountyMap from './components/CountyMap';
+import Histogram from './components/Histogram';
+// markua-start-insert
+import { Title } from './components/Meta';
+// markua-end-insert
+
+class App extends Component {
+    state = {
+        techSalaries: [],
+        countyNames: [],
+        medianIncomes: [],
+        // markua-start-insert
+        filteredBy: {
+            USstate: '*',
+            year: '*',
+            jobTitle: '*'
+        }
+        // markua-end-insert
+    }
+
+    // ...
+
+    render() {
+        // ..
+        return (
+            <div className="App container">
+                // markua-start-insert
+                <Title data={filteredSalaries} filteredBy={this.state.filteredBy} />
+                // markua-end-insert
+                // ...
+            </div>
+        )
+    }
+}

@@ -624,11 +624,162 @@ If that didn't work, try comparing your changes to this [diff on Github](https:/
 
 ## Make it understandable - meta info
 
+You've come so far! There's a US map and a histogram. They're blue and shiny and you look at them and you go *"Huh?"*.
+
+The key to a good data visualization is telling users what it means. You can do that with a title and a description. Just tell them. The picture is there to give support to the words. The words are there to tell you what's in the picture.
+
+Let's add those words.
+
+We're adding a dynamic title and description, and a median line on the histogram. Dynamic because we're adding user controls later and we want the pictures and the words to stay in sync.
+
+At the end of this section, you'll have a full visualization of the shortened dataset.
+
+![Full visualization without user controls](images/es6v2/dataviz-without-controls.png)
+
 ### Dynamic title
+
+We begin with the title because it shows up first.
+
+We start with an import in `App.js` and add it to the render method. You know the drill :)
+
+{crop-start: 241, crop-end: 274, format: javascript}
+![Adding Title to main App component](code_samples/es6v2/App.js)
+
+Ok I lied. We did a lot more than just imports and adding a render.
+
+We also set up the `App` component for future user controlled data filtering. The `filteredBy` key in `state` tells us what the user is filtering by. There 3 options: `USstate`, `year`, and `jobTitle`. We set them to "everything" by default.
+
+We added them now so that we can immediately write our `Title` component in a filterable way. Means we don't have to make changes later.
+
+As you can see, the props `Title` takes are `data` and `filteredBy`.
+
+#### Prep Meta component
+
+Before we begin the `Title` component, there's a few things to take care of. Our meta components work together for a common purpose – showing meta data. Grouping them in a directory makes sense.
+
+So we make a `components/Meta` directory and add an `index.js`. It makes importing easier.
+
+{crop-start: 5, crop-end: 6, format: javascript}
+![Meta index.js](code_samples/es6v2/components/Meta/index.js)
+
+You're right, using re-exports looks better than the roundabout way we used in `Histogram/index.js`. Lesson learned.
+
+You need the `USStatesMap` file as well. It translates US state codes to full names. You should [get it from Github](https://github.com/Swizec/react-d3js-step-by-step/blob/4f94fcd1c3caeb0fc410636243ca99764e27c5e6/src/components/Meta/USStatesMap.js) and save it as `components/Meta/USStatesMap.js`. 
+
+We'll use it when creating titles and descriptions.
+
+#### Implement Title
+
+We're building two types of titles based on user selection. If both `years` and `US state` were selected, we return `In {US state}, the average {job title} paid ${mean}/year in {year}`. If not, we return `{job title} paid ${mean}/year in {state} in {year}`.
+
+I know, it's confusing. They look like the same sentence turned around. Notice the *and*. First option when *both* are selected, second when either or.
+
+We start with imports, a stub, and a default export.
+
+{crop-start: 5, crop-end: 29, format: javascript}
+![Title component stub](code_samples/es6v2/components/Meta/Title.js)
+
+We import only what we need from D3's `d3-scale` and `d3-array` packages. I consider this best practice until you're importing so much that it gets messy to look at.
+
+In the `Title` component we have 4 getters and a render. Getters are ES6 functions that work like dynamic properties. You specify a function without arguments, and use it without `()`. It's pretty neat.
+
+##### The getters
+
+1. `yearsFragment` describes the selected year
+2. `USstateFragment` describes the selected US state
+3. `jobTitleFragment` describes the selected job title
+4. `format` returns a number formatter
+
+We can implement `yearsFragment`, `USstateFragment`, and `format` in one code sample. They're short.
+
+{crop-start: 35, crop-end: 55, format: javascript}
+![3 short getters in Title](code_samples/es6v2/components/Meta/Title.js)
+
+In both `yearsFragment` and `USstateFragment`, we get the appropriate value from Title's `filteredBy` prop, then return a string with the value, or an empty string. 
+
+We rely on D3's built-in number formatters to build `format`. Linear scales have the one that turns `10000` into `10,000`. Tick formatters don't work well without a `domain`, so we define it. We don't need a range because we never use the scale itself.
+
+`format` returns a function, which makes it a [higher order function](https://en.wikipedia.org/wiki/Higher-order_function). Being a getter makes it really nice to use: `this.format()`. Looks just like a normal function call :D
+
+The `jobTitleFragment` getter is conceptually no harder than `yearsFragment` and `USstateFragment`, but comes with a few more conditionals.
+
+{crop-start: 61, crop-end: 91, format: javascript}
+![Title.jobTitleFragment](code_samples/es6v2/components/Meta/Title.js)
+
+Ho boy, so many ifs.
+
+We're dealing with the `(jobTitle, year)` combination. Each influences the other when building the fragment, for a total 4 different options.
+
+##### The render
+
+We put all this together in the `render` method. A conditional decides which of the two situations we're in, and we return an `<h2>` tag with the right text.
+
+{crop-start: 96, crop-end: 119, format: javascript}
+![Title.render](code_samples/es6v2/components/Meta/Title.js)
+
+Calculate the mean value using `d3.mean` with a value accessor, turn it into a pretty number with `this.format`, then use one of two string patterns to make a `title`.
+
+And a title appears.
+
+![Dataviz with title](images/es6v2/dataviz-with-title.png)
+
+If it doesn't, consult [this diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/4f94fcd1c3caeb0fc410636243ca99764e27c5e6).
 
 ### Dynamic description
 
+You know what, the dynamic description component is pretty much the same as the title. Just longer and more complex and using more code. It's interesting, but not super relevant to the topic of this book.
+
+So rather than explain it all here, I'm going to give you a link to the [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/032fe6e988b903b6d86a60d2f0404456785e180f)
+
+We use the same approach as before:
+
+1. Add imports in `App.js`
+2. Add component to `App` render
+3. Add re-export to `components/Meta/index.js`
+4. Implement component in `components/Meta/Description.js`
+5. Use getters for sentence fragments
+6. Play with conditionals to construct different sentences
+
+142 lines of mundane code. 
+
+All the interesting complexity goes into finding the richest city and county. That part looks like this:
+
+```javascript
+const byCounty = _.groupBy(this.props.data, 'countyID'),
+      medians = this.props.medianIncomesByCounty;
+
+let ordered = _.sortBy(
+    _.keys(byCounty)
+     .map(county => byCounty[county])
+     .filter(d => d.length/this.props.data.length > 0.01),
+    items => d3mean(items,
+                    d => d.base_salary) - medians[items[0].countyID][0].medianIncome);
+
+let best = ordered[ordered.length-1],
+    countyMedian = medians[best[0].countyID][0].medianIncome;
+```
+
+We group the dataset by county, then sort counties by their income delta. We look only at counties that are bigger than 1% of the entire dataset. And we define income delta as the difference between a county's median household income and the median tech salary in our dataset.
+
+Now that I think about it, this is not very efficient. We should've just looked for the maximum value. That would've been faster, but hey, it works :)
+
+We use basically the same process to get the best city.
+
+Yes, you're right. These should both have been separate functions. Putting them in the `countyFragment` method smells funny.
+
+If you follow along the [description Github diff](https://github.com/Swizec/react-d3js-step-by-step/commit/032fe6e988b903b6d86a60d2f0404456785e180f), or copy pasta, your visualization should now have a description.
+
+![Dataviz with Title and Description](images/es6v2/dataviz-with-description.png)
+
+Another similar component is the `GraphDescription`. It shows a small description on top of each chart that explains how to read the picture. Less "Here's a key takeaway" more "color means X".
+
+You can follow this [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/37b5222546c3f8f58f3147ce0bef6a3c1afe1b47) to implement it. Same approach as `Title` and `Description`.
+
+![Dataviz with all descriptions](images/es6v2/dataviz-with-all-descriptions.png)
+
 ### Median household line
+
+
 
 {#user-controls}
 ## Add user controls for data slicing and dicing
