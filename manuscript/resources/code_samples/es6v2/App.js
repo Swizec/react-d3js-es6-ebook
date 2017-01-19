@@ -273,3 +273,43 @@ class App extends Component {
         )
     }
 }
+
+
+//
+// Example 7
+//
+// src/App.js
+import Histogram from './components/Histogram';
+import { Title, Description, GraphDescription } from './components/Meta';
+// markua-start-insert
+import MedianLine from './components/MedianLine';
+// markua-end-insert
+
+class App extends Component {
+    // ...
+    render() {
+        // ...
+        let zoom = null,
+            // markua-start-insert
+            medianHousehold = this.state.medianIncomesByUSState['US'][0].medianIncome;
+            // markua-end-insert
+
+        return (
+            // ...
+            <svg width="1100" height="500">
+                <CountyMap // ... />
+                <Histogram // ... />
+                // markua-start-insert
+                <MedianLine data={filteredSalaries}
+                            x={500}
+                            y={10}
+                            width={600}
+                            height={500}
+                            bottomMargin={5}
+                            median={medianHousehold}
+                            value={d => d.base_salary} />
+                // markua-end-insert
+            </svg>
+        )
+    }
+}

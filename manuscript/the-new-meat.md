@@ -206,6 +206,7 @@ D3 supports formats like `json`, `csv`, `tsv`, `text`, and `xml` out of the box.
 
 PS: we're using the shortened salary dataset to make page reloads faster while building our project.
 
+{#tie-datasets-together}
 ### Step 4: Tie the datasets together
 
 If you put a `console.log` in the `.await` callback above, you'll see a bunch of data. Each argument - `us`, `countyNames`, `medianIncomes`, `techSalaries`, `USstateNames` - holds the entire parsed dataset from the corresponding file.
@@ -451,6 +452,7 @@ That's it. `App` is ready to render our `Histogram`.
 
 Your browser should now show an error complaining about missing files.
 
+{#histogram-css}
 ### Step 2: CSS changes
 
 As mentioned, opinions vary on the best way to do styling in React apps. Some say stylesheets per component, some say styling inside JavaScript, others swear by global app styling.
@@ -779,7 +781,80 @@ You can follow this [diff on Github](https://github.com/Swizec/react-d3js-step-b
 
 ### Median household line
 
+Now here's a more interesting component, the median dotted line. It gives us a direct comparison between the histogram's distribution and the median household income in an area. I'm not sure people understand it at a glance, but I think it's cool.
 
+We're using the [full-feature integration](#full-feature-integration) approach, and prepping `App.js` first, then implementing the component.
+
+#### Step 1: App.js
+
+Inside `src/App.js`, we first have to add an import, then extract the median household value from state, and in the end, add `MedianLine` to the render method.
+
+Let's see if we can do it in a single code block :)
+
+{crop-start: 281, crop-end: 315, format: javascript}
+![Adding MedianLine to App.js](code_samples/es6v2/App.js)
+
+You probably don't remember `medianIncomesByUSState` anymore. We set it up way back when [tying datasets together](#tie-datasets-together). It groups our salary data by US state.
+
+See, using good names helps :)
+
+When rendering `MedianLine`, we give it sizing and positioning props, the dataset, a `value` accessor, and the median value to show. Yes, we can make it smart enough to calculate the median, but the added flexibility of a prop felt right.
+
+#### Step 2: MedianLine
+
+The `MedianLine` component looks a lot like what you're already used to. Some imports, a `constructor` that sets up D3 objects, an `updateD3` method that keeps them in sync, and a `render` method that outputs SVG.
+
+{crop-start: 5, crop-end: 32, format: javascript}
+![MedianLine component stub](code_samples/es6v2/components/MedianLine.js)
+
+Standard stuff, right? You've seen it all before. Bear with me, please. I know you're great, but I gotta explain this for everyone else :)
+
+We have the base wiring for a D3-enabled component, and we set up a linear scale that we'll use for vertical positioning. The scale has a `domain` from `0` to `max` value in dataset, and a range from `0` to height less margins.
+
+{crop-start: 38, crop-end: 58, format: javascript}
+![MedianLine render](code_samples/es6v2/components/MedianLine.js)
+
+We use the median value from props, or calculate our own, if needed. Just like I promised.
+
+We also set up a `translate` SVG transform and the `medianLabel`. The return statement builds a `<g>` grouping element, transformed to our desired position, containing a `<text>` for our label, and a `<path>` for the line.
+
+But how we get the `d` attribute for the path, that's interesting. We use a `line` generator from D3.
+
+```javascript
+line = d3.line()([[0, 5],
+                  [this.props.width, 5]]);
+```
+
+It comes from the [d3-shape](https://github.com/d3/d3-shape#lines) package and generates splines, or polylines. By default it takes an array of points and builds a line through all of them. A line from `[0, 5]` to `[width, 5]` in our case.
+
+That makes it span the entire width and leaves 5px of room for the label. We're using a `transform` on the entire group to vertically position the final element.
+
+We're using `d3.line` in the most basic way possible, but it's really flexible. You can even build curves.
+
+Remember, we styled the `medianLine` when we did [histogram styles](#histogram-css) earlier.
+
+```css
+.mean text {
+    font: 11px sans-serif;
+    fill: grey;
+}
+
+.mean path {
+    stroke-dasharray: 3;
+    stroke: grey;
+    stroke-width: 1px;
+}
+```
+
+The `stroke-dasharray` is what makes it dashed. `3` means each `3px` dash is followed by a `3px` blank. You can use [any pattern you like](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray).
+
+You should now see a median household salary line overlaid on  your histogram.
+
+![Median line over histogram](code_samples/es6v2/dataviz-with-everything.png)
+
+Yep, almost everyone in tech makes more than the median household. Crazy huh? I think it is.
+
+If that didn't work, consult the [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/1fd055e461184fb8dc8dd509edb3a6a683c995fe).
 
 {#user-controls}
 ## Add user controls for data slicing and dicing
