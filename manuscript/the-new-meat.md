@@ -859,6 +859,168 @@ If that didn't work, consult the [diff on Github](https://github.com/Swizec/reac
 {#user-controls}
 ## Add user controls for data slicing and dicing
 
+Now comes the fun part. All that extra effort we put into making our components aware of filtering. It all comes down to this: User controls.
+
+Here's what we're building:
+
+![User controlled filters](code_samples/es6v2/controls.png)
+
+A set of filters for users to slice and dice our visualization. The shortened dataset gives you 2 years, 12 job titles, and 50 US states. You'll get 5 years and many more job titles with the full dataset.
+
+We're using the [architecture we discussed](#basic-architecture) earlier to make it work. Clicking buttons updates a filter function and communicates it all the way up to the `App` component. `App` then uses it to update `this.state.filteredSalaries`, which triggers a re-render and updates our dataviz.
+
+![Architecture sketch](images/es6v2/architecture_callbacks.jpg)
+
+We're building in 4 steps, top to bottom:
+
+1. Update `App.js` with filtering and a `<Controls>` render
+2. Build a `Controls` component, which builds the filter based on inputs
+3. Build a `ControlRow` component, which handles a row of buttons
+4. Build a `Toggle` component, which is a button
+
+We'll go through the files linearly. Makes them easier for me to explain, easier for you to understand, but means there's going to be a long period where all you're seeing is an error like this:
+
+![Controls error during coding](images/es6v2/controls-error.png)
+
+If you want to see what's up during this process, just remove an import or two and maybe a thing from render. For instance, it's complaining about `ControlRow` in this screenshot. Remove the `ControlRow` import on top, and delete `<ControlRow ... />` from render. Error goes away and you see what you're doing.
+
+### Step 1: Update App.js
+
+All right, you know the drill. Add imports, tweak some things, add to render. We have to import `Controls`, set up filtering, update the map's `zoom` prop, and render a white rectangle and `Controls`.
+
+The white rectangle makes it so the zoomed-in map doesn't cover up the histogram. I'll explain when we get there.
+
+{crop-start: 321, crop-end: 354, format: javascript}
+![Imports and filter updates in App.js](code_samples/es6v2/App.js)
+
+We import the `Controls` component and add a default `salariesFilter` function to `this.state`. The `updateDataFilter` method passes the filter function and `filteredBy` dictionary from arguments to App state. We'll use it as a callback in `Controls`.
+
+The rest of filtering setup happens in the render method.
+
+{crop-start: 360, crop-end: 388, format: javascript}
+![Filtering data and updating map zoom in App render](code_samples/es6v2/App.js)
+
+We add a `.filter` call to `filteredSalaries`, which uses our `salariesFilter` method to throw out anything that doesn't fit. Then we set up `zoom`, if a US state was selected.
+
+We built the `CountyMap` component to focus on a given US state.  Finding the centroid of a polygon, re-centering the map, and increasing the sizing factor. Creates a nice zoom effect.
+
+![Zoom effect](images/es6v2/zoom-effect.png)
+
+And here's the downside of this approach. SVG doesn't know about element boundaries, it just renders stuff.
+
+![Zoom without white rectangle](images/es6v2/zoom-without-rectangle.png)
+
+See, it goes under the histogram. Let's fix that and add the `Controls` render while we're at it.
+
+{crop-start: 394, crop-end: 421, format: javascript}
+![](code_samples/es6v2/App.js)
+
+Rectangle, `500` to the right, `0` from top, `600` wide and `500` tall, with a white background. Gives the histogram an opaque background so it doesn't matter what the map is doing.
+
+We render the `Controls` component just after `</svg>` because it's not an SVG component – uses normal HTML. Unlike the other components, it needs our entire dataset as `data`. We use the `updateDataFilter` prop to say which callback function it should call when a new filter is ready.
+
+If this seems roundabout, I guess it kinda is. But it makes our app easier to componentize and keeps the code relatively unmessy. Imagine putting everything we've done so far in `App`. What a mess that'd be! :D
+
+### Step 2: Build Controls component
+
+The `Controls` component builds our filter function and filteredBy dictionary based on what the user clicks.
+
+It renders 3 rows of controls and builds filtering out of the singular choice each row reports. That makes the `Controls` component kind of repetitive and a leaky abstraction to boot.
+
+In theory it would be better for each `ControlRow` to return a function and `Controls` built a composed function out of them. Better abstraction, but I think harder to understand.
+
+We can live with a leaky abstraction and repetitive code. Right? :)
+
+To keep the book from getting repetitive, we're going to build everything for a `year` filter first. Then I'll show you how to add `USstate` and `jobTitle` filters as well. Once you have one working, the rest is easy.
+
+Make a `Controls` directory in `src/components/` and let's begin. The main `Controls` component goes in the `index.js` file.
+
+#### Stub Controls
+
+{crop-start: 5, crop-end: 33, format: javascript}
+![Controls stubbed for year filter](code_samples/es6v2/components/Controls/index.js)
+
+We start with some imports and a `Controls` class. Inside, we define default `state` with an always-true `yearFilter` and an asterisk for `year`.
+
+We also need an `updateYear` function, which we'll use to update the filter, a `reportUpdateUpTheChain` function called in `componentDidUpdate`, a `shouldComponentUpdate` check, and a `render` method.
+
+Yes, we could have put everything in `reportUpdateUpTheChain` into `componentDidUpdate`. It's separate because the name is more descriptive that way. And I was experimenting with some optimizations that didn't pan out, but decided to keep the name.
+
+I'll explain how it works and why we need `shouldComponentUpdate` after we implement the logic.
+
+#### Filter logic
+
+{crop-start: 39, crop-end: 69, format: javascript}
+![Year filtering logic in Controls](code_samples/es6v2/components/Controls/index.js)
+
+When a user picks a year, the `ControlRow` components calls our `updateYearFilter` function where we build a new partial filter function. The `App` component uses it inside a `.filter` call so we have to return `true` for elements we want to keep, and `false` for elements we don't.
+
+Comparing `submit_date.getFullYear()` with `year` achieves that. 
+
+We use the `reset` argument to reset filters back to defaults, which allows users to unselect an option. 
+
+When we have the `year` and `filter` we update component state with `this.setState`. This triggers a re-render and calls the `componentDidUpdate` method, which calls `reportUpdateUpTheChain`.
+
+`reportUpdateUpTheChain` then calls `this.props.updateDataFilter`, which is a callback method on `App`. We defined it earlier – it needs a new filter method and a `filteredBy` dictionary.
+
+The code looks tricky because we're playing with higher order functions. We're making a new arrow function that takes a dictionary of filters as an argument and returns a new function that `&&`s them all. We invoke it immediately with `this.state` as the argument.
+
+It looks silly when there's just one filter, but I promise it makes sense.
+
+Now, because we used `this.setState` to trigger a callback up component stack, and because that callback triggers a re-render in `App`, which might trigger a re-render down here ... because of that, we need `shouldComponentUpdate`. It prevents infinite loops. React isn't smart enough on its own because we're using complex objects in `state`.
+
+{aside}
+JavaScript's equality check compares objects on the reference level. So `{a: 1} == {a: 1}` returns `false` because the operands are different objects even though they look the same.
+{/aside}
+
+#### Render
+
+Great, we have the logic. We should render the rows of controls we've been talking about.
+
+{crop-start: 75, crop-end: 93, format: javascript}
+![Render the year ControlRow](code_samples/es6v2/components/Controls/index.js)
+
+This is once more generalized code, but used for a single example. The `year` filter.
+
+We build a `Set` of years in our dataset, then render a `ControlRow` using props to give it our `data`, a set of `toggleNames`, a callback to update the filter, and which entry is `picked` right now. This enables us to maintain the data-flows-down, events-bubble-up architecture we've been using.
+
+If you don't know about `Set`s, they're new ES6 data structures that ensure every entry is unique. Just like a mathematical set. They're supposed to be pretty fast.
+
+### Step 3: Build ControlRow component
+
+Now let's build the `ControlRow` component. It renders a row of controls and ensures that only one at a time is selected.
+
+We'll start with a stub and go from there.
+
+{crop-start: 5, crop-end: 26, format: javascript}
+![ControlRow stub](code_samples/es6v2/components/Controls/ControlRow.js)
+
+We start with imports, big surprise, then make a stub with 5 methods. Can you guess what they are?
+
+- `makePick` is the `Toggle` click callback
+- `componentWillMount` sets up some initial state that needs props
+- `componentWillReceiveProps` calls `makePick` if a pick is set from above
+- `_addToggle` is a rendering helper method
+- `render` renders a row of buttons
+
+{crop-start: 53, crop-end: 72, format: javascript}
+![State setup](code_samples/es6v2/components/Controls/ControlRow.js)
+
+
+{crop-start: 32, crop-end: 47, format: javascript}
+![makePick implementation](code_samples/es6v2/components/Controls/ControlRow.js)
+
+
+
+{crop-start: 78, crop-end: 109, format: javascript}
+![Render a row of controls](code_samples/es6v2/components/Controls/ControlRow.js)
+
+### Step 4: Build Toggle component
+
+
+### Step 5: Add US state and Job Title filters
+
+
 ## Rudimentary routing
 
 ## Prep for launch

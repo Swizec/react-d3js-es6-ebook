@@ -313,3 +313,109 @@ class App extends Component {
         )
     }
 }
+
+
+//
+// Example 8
+//
+// src/App.js
+import MedianLine from './components/MedianLine';
+
+// markua-start-insert
+import Controls from './components/Controls';
+// markua-end-insert
+
+class App extends Component {
+    state = {
+        // ...
+        medianIncomes: [],
+        // markua-start-insert
+        salariesFilter: () => true,
+        // markua-end-insert
+        filteredBy: {
+            // ...
+        }
+    }
+
+    // ...
+
+    // markua-start-insert
+    updateDataFilter(filter, filteredBy) {
+        this.setState({
+            salariesFilter: filter,
+            filteredBy: filteredBy
+        });
+    }
+    // markua-end-insert
+
+    render() {
+        // ...
+    }
+}
+
+
+//
+// Example 9
+//
+// src/App.js
+class App extends Component {
+    // ...
+
+    render() {
+        // ...
+        // markua-start-delete
+        const filteredSalaries = this.state.techSalaries
+        // markua-end-delete
+        // markua-start-insert
+        const filteredSalaries = this.state.techSalaries
+                                     .filter(this.state.salariesFilter)
+        // markua-end-insert
+
+        // ...
+
+        let zoom = null,
+            medianHousehold = // ...
+        // markua-start-insert
+        if (this.state.filteredBy.USstate !== '*') {
+            zoom = this.state.filteredBy.USstate;
+            medianHousehold = d3.mean(this.state.medianIncomesByUSState[zoom],
+                                      d => d.medianIncome);
+        }
+        // markua-end-insert
+
+        // ...
+    }
+}
+
+
+//
+// Example 10
+//
+// src/App.js
+class App extends Component {
+    // ...
+
+    render() {
+        // ...
+
+        return (
+            <div //...>
+                <svg //...>
+                    <CountyMap //... />
+
+                    // markua-start-insert
+                    <rect x="500" y="0"
+                          width="600"
+                          height="500"
+                          style={{fill: 'white'}} />
+                    // markua-end insert
+                </svg>
+
+                // markua-start-insert
+                <Controls data={this.state.techSalaries}
+                          updateDataFilter={this.updateDataFilter.bind(this)} />
+                // markua-end-insert
+            </div>
+        )
+    }
+}
