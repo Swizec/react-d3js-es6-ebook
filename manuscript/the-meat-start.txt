@@ -233,6 +233,7 @@ That wasn't so bad, was it? You can try it out on CodePen [here](https://codepen
 
 To make our axis more useful, we could get the scale and axis orientation from props. We'll do that for scales in our bigger project.
 
+{#blackbox-hoc}
 # A D3 blackbox higher order component – HOC
 
 After the blackbox axis example above, you'd be right to think something like *"Dude, that looks like it's gonna get hella repetitive. Do I really have to do all that every time?"*
