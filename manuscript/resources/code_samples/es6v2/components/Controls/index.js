@@ -72,7 +72,7 @@ class Controls extends Component {
 //
 // Example 3
 //
-// src/compo7nents/Controls/index.js
+// src/components/Controls/index.js
 class Controls extends Component {
     // ...
 
@@ -90,4 +90,105 @@ class Controls extends Component {
             </div>
         )
     }
+}
+
+
+//
+// Example 4
+//
+// src/components/Controls/index.js
+class Controls extends Component {
+    // ...
+    render() {
+        const data = this.props.data;
+
+        const years = new Set(data.map(d => d.submit_date.getFullYear())),
+              // markua-start-insert
+              jobTitles = new Set(data.map(d => d.clean_job_title)),
+              USstates = new Set(data.map(d => d.USstate));
+              // markua-end-insert
+
+        return (
+            <div>
+                <ControlRow data={data}
+                            toggleNames={Array.from(years.values())}
+                            picked={this.state.year}
+                            updateDataFilter={this.updateYearFilter.bind(this)} />
+
+            // markua-start-insert
+                <ControlRow data={data}
+                            toggleNames={Array.from(jobTitles.values())}
+                            picked={this.state.jobTitle}
+                            updateDataFilter={this.updateJobTitleFilter.bind(this)} />
+
+                <ControlRow data={data}
+                            toggleNames={Array.from(USstates.values())}
+                            picked={this.state.USstate}
+                            updateDataFilter={this.updateUSstateFilter.bind(this)}
+                            capitalize="true" />
+                // markua-end-insert
+            </div>
+        )
+    }
+}
+
+
+//
+// Example 5
+//
+// src/components/Controls/index.js
+class Controls extends Component {
+    // ...
+    updateJobTitleFilter(title, reset) {
+        let filter = (d) => d.clean_job_title === title;
+
+        if (reset || !title) {
+            filter = () => true;
+            title = '*';
+        }
+
+        this.setState({jobTitleFilter: filter,
+                       jobTitle: title});
+    }
+
+    updateUSstateFilter(USstate, reset) {
+        let filter = (d) => d.USstate === USstate;
+
+        if (reset || !USstate) {
+            filter = () => true;
+            USstate = '*';
+        }
+
+        this.setState({USstateFilter: filter,
+                       USstate: USstate});
+    }
+    // ...
+}
+
+
+//
+// Example 6
+//
+// src/components/Controls/index.js
+class Controls extends Component {
+    // ...
+    reportUpdateUpTheChain() {
+        this.props.updateDataFilter(
+            ((filters) => {
+                return (d) =>  filters.yearFilter(d)
+                // markua-start-insert
+                    && filters.jobTitleFilter(d)
+                    && filters.USstateFilter(d);
+                // markua-end-insert
+            })(this.state),
+            {
+                year: this.state.year,
+                // markua-start-insert
+                jobTitle: this.state.jobTitle,
+                USstate: this.state.USstate
+                // markua-end-insert
+            }
+        );
+    }
+    // ...
 }

@@ -997,29 +997,114 @@ We'll start with a stub and go from there.
 
 We start with imports, big surprise, then make a stub with 5 methods. Can you guess what they are?
 
-- `makePick` is the `Toggle` click callback
 - `componentWillMount` sets up some initial state that needs props
 - `componentWillReceiveProps` calls `makePick` if a pick is set from above
+- `makePick` is the `Toggle` click callback
 - `_addToggle` is a rendering helper method
 - `render` renders a row of buttons
 
 {crop-start: 53, crop-end: 72, format: javascript}
 ![State setup](code_samples/es6v2/components/Controls/ControlRow.js)
 
+React triggers the `componentWillMount` lifecycle hook right before it first renders our component. Mounts it into the DOM, if you will. This is a opportunity for any last minute state setup.
+
+We take the list of `toggleNames` from props and use Lodash's `zipObject` function to create a dictionary that we save in `state`. Keys are toggle names, values are booleans that tell us whether a particular toggle is currently picked.
+
+You might think this is unnecessary, but it makes our app faster. Instead of running the comparison function for each toggle on every render, we build the dictionary, then perform quick lookups when rendering. Yes, `===` is a fast operator even with the overhead of a function call, but what if it was more complex? 
+
+The habit of using appropriate data structures is a good habit. :)
+
+In `componentWillReceiveProps`, we check if the `picked` value has changed, and if it has, we call `makePick` to mimic user action. This allows global app state to override local component state. It's what you'd expect in a unidirectional data flow architecture like the one we're using.
 
 {crop-start: 32, crop-end: 47, format: javascript}
 ![makePick implementation](code_samples/es6v2/components/Controls/ControlRow.js)
 
+`makePick` changes `state.toggleValues` when the user clicks a toggle. It takes two arguments: a toggle name and the new value.
 
+We use Lodash's `mapValues` to iterate the `name: boolean` dictionary and construct a new one with updated values. Everything that isn't `picked` gets set to `false`, and the one `picked` item becomes `true`, if `newState` is `true`.
+
+You're right if you think this is unnecessary. We could have just changed the current picked element to `false` and the new one to `true`. But I'm not entirely certain React would pick up on that. Play around and test it out :)
+
+Next we have a case of a misleading comment. We're calling `props.updateDataFilter` to communicate filter changes up the chain. The comment is talking about `!newState` and why it's not `newState`. --> because the 2nd argument in `updateDataFilter` is called `reset`. We're only resetting filters if `newState` is false since that means a toggle was unclicked without a new one being selected.
+
+Does that make sense? It's hard to explain without waving my arms around.
+
+With `this.setState`, we update state and trigger a re-render, which highlights a new button as being selected.
 
 {crop-start: 78, crop-end: 109, format: javascript}
 ![Render a row of controls](code_samples/es6v2/components/Controls/ControlRow.js)
 
+Rendering happens in two functions: `_addToggle`, which is a helper, and `render`, which is the main render. 
+
+In `render`, we set up two `div`s with Bootstrap classes. The first is a `row`, the second a full-width column. I tried using a column for each button, but it was annoying to manage and used too much space.
+
+Inside the divs, we map over all toggles and use `_addToggle` to render each of them. 
+
+`_addToggle` renders a `Toggle` component with a `label`, `name`, `value` and `onClick` callback. The label is just a prettier version of the name, which also serves as a key in our `toggleValues` dictionary. It's going to be the `picked` attribute in `makePick`.
+
+Your browser should continue showing an error, but it should change to talking about the `Toggle` component instead of `ControlRow`.
+
+![](images/es6v2/toggle-error.png)
+
+Let's build it.
+
 ### Step 4: Build Toggle component
 
+The last piece of the puzzle – the Toggle component. A button that turns on and off.
+
+{crop-start: 5, crop-end: 28, format: javascript}
+![Toggle component](code_samples/es6v2/components/Controls/Toggle.js)
+
+As always, we start with the imports, and extend React's base Component to make a new one. Small components like this are often perfect candidates for functional stateless components, but we need the click handler.
+
+`handleClick` calls the `onClick` callback given in props, using the `name` and `!value` to identify this button and toggle its value. 
+
+`render` sets up a Bootstrap classname: `btn` and `btn-default` make an element look like a button, and the conditional `btn-primary` makes it blue. If you're not familiar with Bootstrap classes, you should check [their documentation](http://getbootstrap.com/).
+
+Then we render a `<button>` tag and, well, that's it. A row of year filters appears in the browser.
+
+![A row of year filters](images/es6v2/year-filter-row.png)
+
+Our shortened dataset only spans 2012 and 2013. The full dataset goes up to 2016.
+
+If that didn't work, consult this [diff on GitHub](https://github.com/Swizec/react-d3js-step-by-step/commit/a45c33e172297ca1bbcfdc76733eae75779ebd7f).
 
 ### Step 5: Add US state and Job Title filters
 
+With all that done, we can now add two more filters: US states and job titles. Our `App` component is already set up to use them, we just have to add them to the `Controls` component.
+
+We'll start with the `render` method, then handle the parts I said earlier would look repetitive.
+
+{crop-start: 99, crop-end: 133, format: javascript}
+![Adding two more rows to Controls](code_samples/es6v2/components/Controls/index.js)
+
+Ok, this part is plenty repetitive too.
+
+We create new sets for `jobTitles` and `USstates`, then rendered two more `ControlRow` elements with appropriate attributes. They get `toggleNames` for building the buttons, `picked` to know which is active, an `updateDataFilter` callback, and we tell US states to render capitalized.
+
+The implementations of those `updateDataFilter` callbacks follow the same pattern as `updateYearFilter`.
+
+{crop-start: 139, crop-end: 166, format: javascript}
+![New updateDataFilter callbacks](code_samples/es6v2/components/Controls/index.js)
+
+Yes, they're basically the as `updateYearFilter`. Only difference is a changed `filter` function and using different keys in `setState()`. 
+
+Why separate functions then? No need to get fancy. It would've made the code harder to read.
+
+Our last step is to add these new keys to the `reportUpdateUpTheChain` function.
+
+{crop-start: 172, crop-end: 194, format: javascript}
+![Add new filters to main state update](code_samples/es6v2/components/Controls/index.js)
+
+We add them to the filter condition with `&&` and expand the `filteredBy` argument.
+
+Two more rows of filters show up.
+
+![All the filters](all-filters.png)
+
+👏
+
+Again, if it didn't work, consult [the diff on GitHub](https://github.com/Swizec/react-d3js-step-by-step/commit/a45c33e172297ca1bbcfdc76733eae75779ebd7f).
 
 ## Rudimentary routing
 

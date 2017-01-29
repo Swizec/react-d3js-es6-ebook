@@ -9,13 +9,13 @@ import _ from 'lodash';
 import Toggle from './Toggle';
 
 class ControlRow extends Component {
-    makePick(picked, newState) {
-    }
-
     componentWillMount() {
     }
 
     componentWillReceiveProps(nextProps) {
+    }
+
+    makePick(picked, newState) {
     }
 
     _addToggle(name) {
@@ -37,7 +37,7 @@ class ControlRow extends Component {
         toggleValues = _.mapValues(toggleValues,
                                    (value, key) => newState && key == picked); // eslint-disable-line
 
-        // if newState is false, we want to reset
+        // if newStaute is false, we want to reset
         this.props.updateDataFilter(picked, !newState);
 
         this.setState({toggleValues: toggleValues});
@@ -63,7 +63,7 @@ class ControlRow extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.picked !== nextProps.picked) {
+        if (ththis.props.picked !== nextProps.picked) {
             this.makePick(nextProps.picked, true);
         }
     }
@@ -87,7 +87,7 @@ class ControlRow extends Component {
             label = label.toUpperCase();
         }
 
-        return (
+        return
             <Toggle label={label}
                     name={name}
                     key={key}
