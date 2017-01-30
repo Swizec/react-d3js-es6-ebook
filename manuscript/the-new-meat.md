@@ -1160,3 +1160,136 @@ If it doesn't work at all, consult the [diff on Github](https://github.com/Swize
 
 ## Prep for launch
 
+You've built a great visualization. Congratz! It's time to put it online and share with the world. 
+
+To do that, we're going to use Github pages because our app is a glorified static website. There's no backend so all we need is something to serve our HTML, JavaScript, and CSV. Github pages is perfect for that.
+
+It's free, works well with `create-react-app`, and can withstand a lot of traffic. You don't want to worry about traffic when your app gets on top of HackerNews or Reddit.
+
+There's a few things we should take care of:
+
+- setting up deployment
+- adding a page title
+- adding some copy
+- twitter and facebook cards
+- an SEO tweak for search engines
+- use the full dataset
+
+### Setting up deployment
+
+You'll need a Github repository. If you're like me, writing all this code without version control or off-site backup made you nervous and you already have one.
+
+For everyone else, head over to Github, click the green `New Repository` button and give it a name. Then copy the commands it gives you and run them in your console.
+
+It should be something like this:
+
+```
+$ git init
+$ git commit -m "My entire dataviz"
+$ git remote add origin git://github ...
+$ git push origin -u master
+```
+
+If you've been git-ing locally without pushing, then you need only the `git remote add` and `git push origin` commands. This puts your code on Github. Great idea for anything you don't want to lose if your computer craps out.
+
+Every Github repository comes with an optional Github pages setup. The easiest way for us to use it, is with the `gh-pages` npm module.
+
+Install it with this command:
+
+```
+$ npm install --save-dev gh-pages
+```
+
+Add two lines to package.json:
+
+```json
+// package.json
+// markua-start-insert
+"homepage": "https://<your username>.github.io/<your repo name>"
+// markua-end-insert
+"scripts": {
+	"eject": "react-scripts eject",
+	// markua-start-insert
+	"deploy": "npm run build && gh-pages -d build"
+	// markua-end-insert
+}
+```
+
+We've been ignoring the `package.json` file so far, but it's a pretty important file. It specifies all of our project's dependencies, meta data for npm, and scripts that we run locally. This is where `npm start` is defined, for instance.
+
+We add a `deploy` script that runs `build` and a `gh-pages` deploy, and specify a `homepage` URL. The URL tells our build script how to set up URLs for static files in `index.html`.
+
+Github pages URLs follow a `https://<your username>.github.io/<your repo name>` schema. For instance, mine is `https://swizec.github.io/react-d3js-step-by-step`. Yours will be different.
+
+You can deploy with `npm run deploy`. Make sure all changes are committed. We'll do it together when we're done setting up.
+
+### Twitter and Facebook cards and SEO
+
+How your visualization looks on social media matters more than you'd think. Does it have a nice picture, a great description, and a title, or does it look like a random URL? Those things matter.
+
+And they're easy to set up. No excuse.
+
+We're going to poke around `public/index.html` for the first time. Add titles, twitter cards, facebook open graph things, and so on.
+
+{crop-start: 3, crop-end: 19, format: html}
+![Basic SEO](code_samples/es6v2/index.html)
+
+We add a `<title>` and a `canonical` URL. Titles configure what shows up in browser tabs and the canonical URL is there to tell search engines that this is the main and most important URL for this piece of content. Especially important for when people copy paste your stuff and put it on other websites.
+
+But I messed up here and used the wrong URL. This knocks down rankings for the original version of this visualization but oh well :)
+
+In the body root tag, we add some copy pasted text from our dataviz. You'll recognize the default title and description.
+
+As soon as React loads, these get overwritten with our preloader, but it's good to have them here for any search engines that aren't running JavaScript yet. I think both Google and Bing are capable of running our React app and getting text from there, but you never know.
+
+To make social media embeds look great, we'll use [Twitter card](https://dev.twitter.com/cards/types/summary-large-image) and [Facebook OpenGraph](https://developers.facebook.com/docs/sharing/webmasters) meta tags. I think most other websites just rely on these since most people use them. They go in the `<head>` of our HTML.
+
+{crop-start: 23, crop-end: 41, format: javascript}
+![Add FB and Twitter cards](code_samples/es6v2/index.html)
+
+Much of this code is repetitive. Both Twitter and Facebook want the same info, but they're stubborn and won't read each other's formats. You can copy all of this, but make sure to change `og:url`, `og:site_name`, `article:publisher`, `fb:admins`, `og:image`, `twitter:site`, `twitter:image`, and `twitter:creator`. They're you specific.
+
+The URLs you should change to the `homepage` URL you used above. The rest you should change to use your name and Twitter/Facebook handles. I'm not sure *why* it matters, but I'm sure it does.
+
+An important one is `fb:admin`. It enables admin features on your site, if you add their social plugins. If you don't, it probably doesn't matter.
+
+You're also going to need a thumbnail image. I made mine by taking a screenshot of the final visualization. Put it in `public/thumbnail.png`.
+
+Now when somebody shares your dataviz on Twitter or Facebook, it's going to look something like this:
+
+![Dataviz Twitter card](images/es6v2/twitter-card.png)
+
+### Full dataset
+
+One more step left to do. Use the whole dataset!
+
+Go into `src/DataHandling.js` and change one line:
+
+{crop-start: 95, crop-end: 106, format: javascript}
+![Switch to full dataset](code_samples/es6v2/DataHandling.js)
+
+We change the file name and that's that. Full dataset locked and loaded. Dataviz ready to go.
+
+### Deploy
+
+To show your dataviz to the world, make sure you've committed all changes. Using `git status` shows you anything you've forgotten.
+
+Then run:
+
+```
+$ npm run deploy
+```
+
+You'll see a bunch of output
+
+![Deploy output](images/es6v2/npm-run-deploy.png)
+
+And you're ready to go. Your visualization is online. My URL is `https://swizec.github.io/react-d3js-step-by-step/`, yours is different. Visit it and you'll see what you've built. Share it and others will see it too.
+
+![Deployed dataviz](images/es6v2/deployed-dataviz.png)
+
+Congratz! You've built and deployed your first React and D3v4 dataviz. You're amazing \o/
+
+Thanks for following along with the meaty part of my book. You're now well equipped to make cool things.
+
+In the next section, we're going to look at building animations.
