@@ -192,3 +192,37 @@ class Controls extends Component {
     }
     // ...
 }
+
+
+//
+// Example 6
+//
+// src/components/Controls/index.js
+class Controls extends Component {
+    // ...
+    componentDidMount() {
+        let [year, USstate, jobTitle] = window.location
+                                              .hash
+                                              .replace('#', '')
+                                              .split("-");
+
+        if (year !== '*' && year) {
+            this.updateYearFilter(Number(year));
+        }
+        if (USstate !== '*' && USstate) {
+            this.updateUSstateFilter(USstate);
+        }
+        if (jobTitle !== '*' && jobTitle) {
+            this.updateJobTitleFilter(jobTitle);
+        }
+    }
+
+    componentDidUpdate() {
+        window.location.hash = [this.state.year || '*',
+                                this.state.USstate || '*',
+                                this.state.jobTitle || '*'].join("-");
+
+        this.reportUpdateUpTheChain();
+    }
+    // ...
+}

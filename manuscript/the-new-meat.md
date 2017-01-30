@@ -1106,6 +1106,57 @@ Two more rows of filters show up.
 
 Again, if it didn't work, consult [the diff on GitHub](https://github.com/Swizec/react-d3js-step-by-step/commit/a45c33e172297ca1bbcfdc76733eae75779ebd7f).
 
+## A small speed optimization
+
+We're expecting a big dataset and we're recalculating our data *and* redrawing hundreds of map elements all the time. We can fix this situation with a carefully placed `shouldComponentUpdate` to avoid updates when it shouldn't.
+
+It goes in the main `App` component and performs a quick check for changes in the filters.
+
+{crop-start: 427, crop-end: 443, format: javascript}
+![shouldComponentUpdate in App.js](code_samples/es6v2/App.js)
+
+We take current salaries and filters from `state` and compare them with future state, `nextState`. To guess changes in the salary data, we compare lengths, and to see changes in filters, we compare values for each key. 
+
+This comparison works well enough and makes the visualization faster by avoiding unnecessary re-renders.
+
+You shouldn't really notice any particular change with the shortened dataset, but if things break, consult the [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/b58218eb2f18d6ce9a789808394723ddd433ee1d).
+
 ## Rudimentary routing
 
+Imagine this. A user finds your dataviz, clicks around, and finds an interesting insight. They share it with their friends.
+
+*"See! I was right! This link proves it"*
+
+*"Wtf are you talking about?"*
+
+*"Oh ... uuuuh ... you have to click this and then that and then you'll see. I'm legit winning our argument"*
+
+*"Holy shit! Kim Kardashian just posted a new snap with her weird dog"*
+
+Let's help our intrepid user out and make the dataviz linkable. We should store the current `filteredBy` state in the URL and be able to restore from a link.
+
+There are many ways to achieve this, [ReactRouter](https://github.com/ReactTraining/react-router) comes to mind, but the quickest is to implement our own rudimentary routing. We'll add some logic to manipulate and read the URL hash.
+
+Easiest place to put this logic is next to the existing filter logic inside the `Controls` component. Better places exist from a "low-down components shouldn't play with global stuff" perspective, but that's okay.
+
+{crop-start: 200, crop-end: 225, format: javascript}
+![Adding rudimentary routing](code_samples/es6v2/components/Controls/index.js)
+
+We use the `componentDidMount` lifecycle hook to read the URL when our component first renders on the page. Presumably when the page loads, but could be later. It doesn't really matter *when*, just that we update our filter the first chance we get.
+
+`window.location.hash` gives us the hash part of the URL and we clean it up and split it into three parts: `year`, `USstate`, and `jobTitle`. If the URL is `localhost:3000/#2013-CA-manager`, then `year` becomes `2013`, `USstate` becomes `CA`, and `jobTitle` becomes `manager`.
+
+We make sure each value is valid and use our existing filter update callbacks to update the visualization. Just like it was the user clicking a button.
+
+In `componentDidUpdate` we now update the URL hash as well as call `reportUpdateUpTheChain`. Updating the hash just takes assigning a new value to `window.location.hash`.
+
+You should now see the URL changing as you click around.
+
+![Changing URL hash](images/es6v2/changing-url.png)
+
+There's a bug with some combinations in 2013 that don't have enough data. It will go away when we use the full dataset.
+
+If it doesn't work at all, consult the [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/2e8fb070cbee5f1e942be8ea42fa87c6c0379a9b).
+
 ## Prep for launch
+
