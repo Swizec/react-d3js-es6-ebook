@@ -1,3 +1,5 @@
+{mainmatter}
+
 {#the-meat-start}
 # Visualizing data with React and d3.js #
 

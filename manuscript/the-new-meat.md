@@ -1,6 +1,4 @@
-# A big example project #
-
-# Visualizing 176,113 US tech salaries
+# A big example project - 176,113 tech salaries visualized #
 
 We're going to build this:
 
@@ -20,7 +18,7 @@ If you get stuck, you can use my [react-d3js-step-by-step Github repo](https://g
 
 If you want to see how this project evolved over 22 months, check [the original repo](https://github.com/Swizec/h1b-software-salaries). The [create-react-app](https://github.com/Swizec/h1b-software-salaries/tree/create-react-app) branch has the code you're about to build.
 
-## Show a Preloader
+# Show a Preloader
 
 ![Preloader screenshot](images/es6v2/preloader-screenshot.png)
 
@@ -40,11 +38,11 @@ We're building the preloader in 3 steps:
 3. Update `App`
 4. Load Bootstrap styles in `index.js`
 
-### Step 1: Get the image
+## Step 1: Get the image
 
 Download [my screenshot from Github](https://raw.githubusercontent.com/Swizec/react-d3js-step-by-step/798ec9eca54333da63b91c66b93339565d6d582a/src/assets/preloading.png) and save it in `src/assets/preloading.png`. It goes in the `src/assets/` directory because we're going to `import` it in JavaScript (which makes it part of our source code), and I like to put non-JavaScript files in `assets`. It keeps the project organized.
 
-### Step 2: Preloader component
+## Step 2: Preloader component
 
 The `Preloader` is a component that pretends it's the `App` and renders a static title, description, and a screenshot of our end result. It goes in `src/components/Preloader.js`.
 
@@ -72,7 +70,7 @@ But look at the `img` tag: the `src` attribute is dynamic, defined by `Preloader
 
 That will be one of the cornerstones of our sample project.
 
-### Step 3: Update App
+## Step 3: Update App
 
 To use our new `Preloader` component, we have to edit `src/App.js`. Let's start by removing the defaults that came with `create-react-app` and importing our `Preloader` component.
 
@@ -98,7 +96,7 @@ If you have `npm start` running, your preloader should show up on screen.
 
 Hmm… that's not very pretty. Let's fix it.
 
-### Step 4: Load Bootstrap styles
+## Step 4: Load Bootstrap styles
 
 We're going to use Bootstrap styles to avoid reinventing the wheel. We're ignoring their JavaScript widgets and the amazing integration built by the [react-bootstrap](http://react-bootstrap.github.io/) team. All we need are the stylesheets.
 
@@ -119,7 +117,7 @@ You should now see your beautiful preloader on screen.
 
 If you don't, try comparing your changes to this [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/798ec9eca54333da63b91c66b93339565d6d582a).
 
-## Asynchronously load data
+# Asynchronously load data
 
 Great! We have a preloader. Time to load some data.
 
@@ -131,7 +129,7 @@ You can read about the scraping on my blog [here](https://swizec.com/blog/place-
 
 You should download the 6 datafiles from [the step-by-step repository on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/8819d9c38b4aef0a0c569e493f088ff9c3bfdf33). Put them in the `public/data` directory in your project.
 
-### Step 1: Prep App.js
+## Step 1: Prep App.js
 
 Let's set up our `App` component first. That way you'll see results as soon data loading starts to work.
 
@@ -168,7 +166,7 @@ These nice error overlays come with `create-react-app`. They make it so you neve
 
 Let's build that file and fill it with our data loading logic.
 
-### Step 2: Prep data parsing functions
+## Step 2: Prep data parsing functions
 
 We're putting data loading logic in a file separate from `App.js` because it's a bunch of functions that work together and don't have much to do with the `App` component.
 
@@ -187,7 +185,7 @@ The data parsing functions all follow the same approach: Take a row of data as `
 
 Doing the parsing and the nicer key names now makes the rest of our codebase simpler because we don't have to deal with this all the time. For example, `entry.job_title`{format: javascript} is nicer to read and type than `entry['job title']`{format: javascript}.
 
-### Step 3: Load the datasets
+## Step 3: Load the datasets
 
 Now that we have our data parsing functions, we can use D3 to load the data with Ajax requests.
 
@@ -207,7 +205,7 @@ D3 supports formats like `json`, `csv`, `tsv`, `text`, and `xml` out of the box.
 PS: we're using the shortened salary dataset to make page reloads faster while building our project.
 
 {#tie-datasets-together}
-### Step 4: Tie the datasets together
+## Step 4: Tie the datasets together
 
 If you put a `console.log` in the `.await` callback above, you'll see a bunch of data. Each argument - `us`, `countyNames`, `medianIncomes`, `techSalaries`, `USstateNames` - holds the entire parsed dataset from the corresponding file.
 
@@ -233,7 +231,7 @@ You should now see how many salary entries the shortened dataset contains.
 If that didn't work, try comparing your changes to this [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/9f113cdd3bc18535680cb5a4e87a3fd45743c9ae).
 
 {#choropleth-map}
-## Render a choropleth map of the US
+# Render a choropleth map of the US
 
 Now that we have our data, it's time to start drawing pictures - a choropleth map. That's a map that uses colored geographical areas to encode data.
 
@@ -251,7 +249,7 @@ Just like before, we're going to start with changes in our `App` component, then
 - `CountyMap/CountyMap.js`, for overall map logic
 - `CountyMap/County.js`, for individual county polygons
 
-### Step 1: Prep App.js
+## Step 1: Prep App.js
 
 You might guess the pattern already: add an import, add a helper method or two, update `render`.
 
@@ -286,7 +284,7 @@ We set `zoom` to `null` for now. This also will come into effect later.
 
 In the `return` statement, we remove the "data loaded" indicator, and we add an `<svg>` element that's `1100` pixels wide and `500` pixels high. Inside, we put the `CountyMap` component with a bunch of properties. Some dataset stuff, some sizing and positioning stuff.
 
-### Step 2: CountyMap/index.js
+## Step 2: CountyMap/index.js
 
 We use `index.js` for one reason alone: to make imports and debugging easier. I learned this lesson the hard way so you don't have to.
 
@@ -299,7 +297,7 @@ This allows us to import `CountyMap` from the directory without knowing about in
 
 Putting a lot of code into `<directory>/index.js` files means that when you're looking at a stack trace, or opening different source files inside the browser, they're all going to be named `index.js`. Life is easier when components live inside a file named the same as the component you're using.
 
-### Step 3: CountyMap/CountyMap.js
+## Step 3: CountyMap/CountyMap.js
 
 Now here comes the fun part - declaratively drawing a map. You'll see why I love using React for dataviz.
 
@@ -316,7 +314,7 @@ I don't know why there are two, but TopoJSON produces smaller files, and GeoJSON
 
 Maybe it's a case of [competing standards](https://xkcd.com/927/).
 
-#### Constructor
+### Constructor
 
 Let's stub out the `CountyMap` component then fill it in with logic.
 
@@ -340,7 +338,7 @@ The `geoPath` generator takes a projection and returns a function that generates
 
 Let's say our domain goes from 0 to 90. Calling the scale with any number between 0 and 9 would return 1. 10 to 19 returns 2 and so on. We'll use it to pick colors from an array.
 
-#### updateD3
+### updateD3
 
 Keeping all of this up-to-date is easy, but we'll make it harder by adding a zoom feature. It won't work until we implement the filtering, but hey, we'll already have it by then! :D
 
@@ -361,7 +359,7 @@ While all of this is going on, we also tweak the `.scale` property to make the m
 
 At the end of the `updateD3` function, we update the quantize scale's domain with new values. Using `d3.quantile` lets us offset the scale to produce a more interesting map. The values were discovered experimentally - they cut off the top and bottom of the range because there isn't much there. This brings higher contrast to the richer middle of the range.
 
-#### render
+### render
 
 After all of that work, the `render` method is a breeze. We prep the data then loop through it and render `County` elements.
 
@@ -378,7 +376,7 @@ As promised, all we have to do in the `return` statement is loop through the lis
 
 For the US state borders, we use a single `<path>` element and use `this.geoPath` to generate the `d` property.
 
-### Step 4: CountyMap/County.js
+## Step 4: CountyMap/County.js
 
 The `County` component itself is built out of two parts: imports and color constants, and a component that returns a `<path>`. We did all the hard calculation work in `CountyMap`.
 
@@ -412,7 +410,7 @@ Turns out tech job visas just aren't that well distributed geographically. Most 
 
 If that didn't work, consult [this diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/f4c1535e9c9ca4982c8f3c74cff9f739eb08c0f7).
 
-## Render a Histogram of salaries
+# Render a Histogram of salaries
 
 Knowing the median salary is great and all, but it doesn't tell you much about what you can expect. You need to know the distribution to see if it's more likely you'll get 140k or 70k.
 
@@ -426,7 +424,7 @@ It's where fun statistics like "More people die from vending machines than shark
 
 Anyway, let's build a histogram. We'll start with changes in `App.js`, make a `Histogram` component using the [full-feature approach](#full-feature-integration), then add an `Axis` using the [blackbox HOC approach](#blackbox-hoc). We're also going to add some CSS, finally.
 
-### Step 1: Prep App.js
+## Step 1: Prep App.js
 
 You know the drill don't you? Import some stuff, add it to the `render()` method in our `App` component.
 
@@ -453,7 +451,7 @@ That's it. `App` is ready to render our `Histogram`.
 Your browser should now show an error complaining about missing files.
 
 {#histogram-css}
-### Step 2: CSS changes
+## Step 2: CSS changes
 
 As mentioned, opinions vary on the best way to do styling in React apps. Some say stylesheets per component, some say styling inside JavaScript, others swear by global app styling.
 
@@ -474,7 +472,7 @@ Yes, this is more CSS than we need for just the histogram. We're already here, m
 
 Adding our CSS before building the Histogram means it's going to look beautiful the first time around.
 
-### Step 3: Histogram component
+## Step 3: Histogram component
 
 We're following the [full-feature integration](#full-feature-integration) approach for our Histogram component. React talks to the DOM, D3 calculates the props.
 
@@ -501,7 +499,7 @@ We need React and D3, and we set up `Histogram`. The `constructor` calls React's
 A note about D3 imports: D3v4 is split into multiple packages. We're using a `*` import here to get everything, because that's easier to use. You should import specific packages when possible . It leads to smaller compiled code sizes and makes it easier for you and others to see what each file is using.
 {/blurb}
 
-#### constructor
+### constructor
 
 Now we should add D3 object initialization to the `constructor`. We need a D3 histogram and two scales. One for chart width and one for vertical positioning.
 
@@ -514,7 +512,7 @@ We've talked about scales before. Put in a number, get out a number. In this cas
 
 You might know it as `d3.layout.histogram` from D3v3. I think the updated API is easier to use. You'll see what I mean in the `updateD3` method.
 
-#### updateD3
+### updateD3
 
 {crop-start: 54, crop-end: 72, format: javascript}
 ![updateD3 method in Histogram](code_samples/es6v2/components/Histogram/Histogram.js)
@@ -537,7 +535,7 @@ We use this data to set up our scales.
 
 Now let's render this puppy.
 
-#### render
+### render
 
 {crop-start: 78, crop-end: 92, format: javascript}
 ![Histogram.render](code_samples/es6v2/components/Histogram/Histogram.js)
@@ -550,7 +548,7 @@ Our render method returns a `<g>` grouping element transformed to the position g
 
 This is a great example of React's declarativeness. We have a bunch of stuff and all it takes to render is a loop. No worrying about how it renders, where it goes, or anything like that. Walk through data, render, done.
 
-#### makeBar
+### makeBar
 
 `makeBar` is a function that takes a histogram bar's metadata and returns a `HistogramBar` component. We use it to make the declarative loop more readable.
 
@@ -563,7 +561,7 @@ Some, like `axisMargin` we pass through, others like `width` and `height` we cal
 
 Setting the `key` prop is important. React uses it to tell the bars apart and only re-render those that change.
 
-### Step 4: HistogramBar (sub)component
+## Step 4: HistogramBar (sub)component
 
 Before we can see the histogram, we need another component: `HistogramBar`. We *could* have shoved all of it in the `makeBar` function, but I think it makes sense to keep it separate.
 
@@ -582,11 +580,11 @@ You should now see a histogram.
 
 ![Histogram without axis](images/es6v2/histogram-without-axis.png)
 
-### Step 5: Axis HOC
+## Step 5: Axis HOC
 
 Our histogram is pretty, but needs an axis to be useful. You've already implemented an axis when we talked about [blackbox integration](#blackbox-axis). We're going to use the same approach and copy those concepts into the real project.
 
-#### D3blackbox
+### D3blackbox
 
 We start with the D3blackbox higher order component. Same as before, except we put it in `src/components`. Then again, I should probably just suck it up and make an npm package for it.
 
@@ -595,7 +593,7 @@ We start with the D3blackbox higher order component. Same as before, except we p
 
 Take a `D3render` function, call it on `componentDidMount` and `componentDidUpdate` to keep things in sync, and render a positioned anchor element for `D3render` to hook into.
 
-#### Axis component
+### Axis component
 
 With `D3blackbox`, we can reduce the `Axis` component to a wrapped function. We're implementing the `D3render` method.
 
@@ -606,7 +604,7 @@ We use D3's `axisLeft` generator, configure its `tickFormat`, give it a `scale` 
 
 Yes, this `Axis` works only for our specific use case. That's okay! No need to make things general when you're using them only once.
 
-#### Add it to Histogram
+### Add it to Histogram
 
 To render our new `Axis`, we have to add it to the `Histogram` component. The process takes two steps:
 
@@ -624,7 +622,7 @@ An axis appears.
 
 If that didn't work, try comparing your changes to this [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/02a40899e348587a909e97e8f18ecf468e2fe218).
 
-## Make it understandable - meta info
+# Make it understandable - meta info
 
 You've come so far! There's a US map and a histogram. They're blue and shiny and you look at them and you go *"Huh?"*.
 
@@ -638,7 +636,7 @@ At the end of this section, you'll have a full visualization of the shortened da
 
 ![Full visualization without user controls](images/es6v2/dataviz-without-controls.png)
 
-### Dynamic title
+## Dynamic title
 
 We begin with the title because it shows up first.
 
@@ -655,7 +653,7 @@ We added them now so that we can immediately write our `Title` component in a fi
 
 As you can see, the props `Title` takes are `data` and `filteredBy`.
 
-#### Prep Meta component
+### Prep Meta component
 
 Before we begin the `Title` component, there's a few things to take care of. Our meta components work together for a common purpose – showing meta data. Grouping them in a directory makes sense.
 
@@ -670,7 +668,7 @@ You need the `USStatesMap` file as well. It translates US state codes to full na
 
 We'll use it when creating titles and descriptions.
 
-#### Implement Title
+### Implement Title
 
 We're building two types of titles based on user selection. If both `years` and `US state` were selected, we return `In {US state}, the average {job title} paid ${mean}/year in {year}`. If not, we return `{job title} paid ${mean}/year in {state} in {year}`.
 
@@ -685,7 +683,7 @@ We import only what we need from D3's `d3-scale` and `d3-array` packages. I cons
 
 In the `Title` component we have 4 getters and a render. Getters are ES6 functions that work like dynamic properties. You specify a function without arguments, and use it without `()`. It's pretty neat.
 
-##### The getters
+#### The getters
 
 1. `yearsFragment` describes the selected year
 2. `USstateFragment` describes the selected US state
@@ -712,7 +710,7 @@ Ho boy, so many ifs.
 
 We're dealing with the `(jobTitle, year)` combination. Each influences the other when building the fragment, for a total 4 different options.
 
-##### The render
+#### The render
 
 We put all this together in the `render` method. A conditional decides which of the two situations we're in, and we return an `<h2>` tag with the right text.
 
@@ -727,7 +725,7 @@ And a title appears.
 
 If it doesn't, consult [this diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/4f94fcd1c3caeb0fc410636243ca99764e27c5e6).
 
-### Dynamic description
+## Dynamic description
 
 You know what, the dynamic description component is pretty much the same as the title. Just longer and more complex and using more code. It's interesting, but not super relevant to the topic of this book.
 
@@ -779,13 +777,13 @@ You can follow this [diff on Github](https://github.com/Swizec/react-d3js-step-b
 
 ![Dataviz with all descriptions](images/es6v2/dataviz-with-all-descriptions.png)
 
-### Median household line
+## Median household line
 
 Now here's a more interesting component, the median dotted line. It gives us a direct comparison between the histogram's distribution and the median household income in an area. I'm not sure people understand it at a glance, but I think it's cool.
 
 We're using the [full-feature integration](#full-feature-integration) approach, and prepping `App.js` first, then implementing the component.
 
-#### Step 1: App.js
+### Step 1: App.js
 
 Inside `src/App.js`, we first have to add an import, then extract the median household value from state, and in the end, add `MedianLine` to the render method.
 
@@ -800,7 +798,7 @@ See, using good names helps :)
 
 When rendering `MedianLine`, we give it sizing and positioning props, the dataset, a `value` accessor, and the median value to show. Yes, we can make it smart enough to calculate the median, but the added flexibility of a prop felt right.
 
-#### Step 2: MedianLine
+### Step 2: MedianLine
 
 The `MedianLine` component looks a lot like what you're already used to. Some imports, a `constructor` that sets up D3 objects, an `updateD3` method that keeps them in sync, and a `render` method that outputs SVG.
 
@@ -857,7 +855,7 @@ Yep, almost everyone in tech makes more than the median household. Crazy huh? I 
 If that didn't work, consult the [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/1fd055e461184fb8dc8dd509edb3a6a683c995fe).
 
 {#user-controls}
-## Add user controls for data slicing and dicing
+# Add user controls for data slicing and dicing
 
 Now comes the fun part. All that extra effort we put into making our components aware of filtering. It all comes down to this: User controls.
 
@@ -884,7 +882,7 @@ We'll go through the files linearly. Makes them easier for me to explain, easier
 
 If you want to see what's up during this process, just remove an import or two and maybe a thing from render. For instance, it's complaining about `ControlRow` in this screenshot. Remove the `ControlRow` import on top, and delete `<ControlRow ... />` from render. Error goes away and you see what you're doing.
 
-### Step 1: Update App.js
+## Step 1: Update App.js
 
 All right, you know the drill. Add imports, tweak some things, add to render. We have to import `Controls`, set up filtering, update the map's `zoom` prop, and render a white rectangle and `Controls`.
 
@@ -921,7 +919,7 @@ We render the `Controls` component just after `</svg>` because it's not an SVG c
 
 If this seems roundabout, I guess it kinda is. But it makes our app easier to componentize and keeps the code relatively unmessy. Imagine putting everything we've done so far in `App`. What a mess that'd be! :D
 
-### Step 2: Build Controls component
+## Step 2: Build Controls component
 
 The `Controls` component builds our filter function and filteredBy dictionary based on what the user clicks.
 
@@ -935,7 +933,7 @@ To keep the book from getting repetitive, we're going to build everything for a 
 
 Make a `Controls` directory in `src/components/` and let's begin. The main `Controls` component goes in the `index.js` file.
 
-#### Stub Controls
+### Stub Controls
 
 {crop-start: 5, crop-end: 33, format: javascript}
 ![Controls stubbed for year filter](code_samples/es6v2/components/Controls/index.js)
@@ -948,7 +946,7 @@ Yes, we could have put everything in `reportUpdateUpTheChain` into `componentDid
 
 I'll explain how it works and why we need `shouldComponentUpdate` after we implement the logic.
 
-#### Filter logic
+### Filter logic
 
 {crop-start: 39, crop-end: 69, format: javascript}
 ![Year filtering logic in Controls](code_samples/es6v2/components/Controls/index.js)
@@ -973,7 +971,7 @@ Now, because we used `this.setState` to trigger a callback up component stack, a
 JavaScript's equality check compares objects on the reference level. So `{a: 1} == {a: 1}` returns `false` because the operands are different objects even though they look the same.
 {/aside}
 
-#### Render
+### Render
 
 Great, we have the logic. We should render the rows of controls we've been talking about.
 
@@ -986,7 +984,7 @@ We build a `Set` of years in our dataset, then render a `ControlRow` using props
 
 If you don't know about `Set`s, they're new ES6 data structures that ensure every entry is unique. Just like a mathematical set. They're supposed to be pretty fast.
 
-### Step 3: Build ControlRow component
+## Step 3: Build ControlRow component
 
 Now let's build the `ControlRow` component. It renders a row of controls and ensures that only one at a time is selected.
 
@@ -1048,7 +1046,7 @@ Your browser should continue showing an error, but it should change to talking a
 
 Let's build it.
 
-### Step 4: Build Toggle component
+## Step 4: Build Toggle component
 
 The last piece of the puzzle – the Toggle component. A button that turns on and off.
 
@@ -1069,7 +1067,7 @@ Our shortened dataset only spans 2012 and 2013. The full dataset goes up to 2016
 
 If that didn't work, consult this [diff on GitHub](https://github.com/Swizec/react-d3js-step-by-step/commit/a45c33e172297ca1bbcfdc76733eae75779ebd7f).
 
-### Step 5: Add US state and Job Title filters
+## Step 5: Add US state and Job Title filters
 
 With all that done, we can now add two more filters: US states and job titles. Our `App` component is already set up to use them, we just have to add them to the `Controls` component.
 
@@ -1106,7 +1104,7 @@ Two more rows of filters show up.
 
 Again, if it didn't work, consult [the diff on GitHub](https://github.com/Swizec/react-d3js-step-by-step/commit/a45c33e172297ca1bbcfdc76733eae75779ebd7f).
 
-## A small speed optimization
+# A small speed optimization
 
 We're expecting a big dataset and we're recalculating our data *and* redrawing hundreds of map elements all the time. We can fix this situation with a carefully placed `shouldComponentUpdate` to avoid updates when it shouldn't.
 
@@ -1121,7 +1119,7 @@ This comparison works well enough and makes the visualization faster by avoiding
 
 You shouldn't really notice any particular change with the shortened dataset, but if things break, consult the [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/b58218eb2f18d6ce9a789808394723ddd433ee1d).
 
-## Rudimentary routing
+# Rudimentary routing
 
 Imagine this. A user finds your dataviz, clicks around, and finds an interesting insight. They share it with their friends.
 
@@ -1158,7 +1156,7 @@ There's a bug with some combinations in 2013 that don't have enough data. It wil
 
 If it doesn't work at all, consult the [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/2e8fb070cbee5f1e942be8ea42fa87c6c0379a9b).
 
-## Prep for launch
+# Prep for launch
 
 You've built a great visualization. Congratz! It's time to put it online and share with the world. 
 
@@ -1175,7 +1173,7 @@ There's a few things we should take care of:
 - an SEO tweak for search engines
 - use the full dataset
 
-### Setting up deployment
+## Setting up deployment
 
 You'll need a Github repository. If you're like me, writing all this code without version control or off-site backup made you nervous and you already have one.
 
@@ -1223,7 +1221,7 @@ Github pages URLs follow a `https://<your username>.github.io/<your repo name>` 
 
 You can deploy with `npm run deploy`. Make sure all changes are committed. We'll do it together when we're done setting up.
 
-### Twitter and Facebook cards and SEO
+## Twitter and Facebook cards and SEO
 
 How your visualization looks on social media matters more than you'd think. Does it have a nice picture, a great description, and a title, or does it look like a random URL? Those things matter.
 
@@ -1259,7 +1257,7 @@ Now when somebody shares your dataviz on Twitter or Facebook, it's going to look
 
 ![Dataviz Twitter card](images/es6v2/twitter-card.png)
 
-### Full dataset
+## Full dataset
 
 One more step left to do. Use the whole dataset!
 
@@ -1270,7 +1268,7 @@ Go into `src/DataHandling.js` and change one line:
 
 We change the file name and that's that. Full dataset locked and loaded. Dataviz ready to go.
 
-### Deploy
+# Launch
 
 To show your dataviz to the world, make sure you've committed all changes. Using `git status` shows you anything you've forgotten.
 
