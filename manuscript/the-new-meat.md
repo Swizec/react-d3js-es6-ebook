@@ -1268,7 +1268,7 @@ Go into `src/DataHandling.js` and change one line:
 
 We change the file name and that's that. Full dataset locked and loaded. Dataviz ready to go.
 
-# Launch
+# Launch!
 
 To show your dataviz to the world, make sure you've committed all changes. Using `git status` shows you anything you've forgotten.
 
