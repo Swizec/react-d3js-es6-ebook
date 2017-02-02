@@ -1,3 +1,4 @@
+{#salary-visualization}
 # A big example project - 176,113 tech salaries visualized #
 
 We're going to build this:
@@ -410,6 +411,7 @@ Turns out tech job visas just aren't that well distributed geographically. Most 
 
 If that didn't work, consult [this diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/f4c1535e9c9ca4982c8f3c74cff9f739eb08c0f7).
 
+{#histogram-of-salaries}
 # Render a Histogram of salaries
 
 Knowing the median salary is great and all, but it doesn't tell you much about what you can expect. You need to know the distribution to see if it's more likely you'll get 140k or 70k.

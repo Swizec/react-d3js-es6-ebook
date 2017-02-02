@@ -4,7 +4,7 @@
 Welcome to the main part of React+d3.js. We're going to talk a little theory, some principles, then get our hands dirty with a few examples. Through this book you're going to build:
 
 - [A choropleth map](#choropleth-map)
-- An interactive histogram
+- [An interactive histogram](#histogram-of-salaries)
 - An animated alphabet
 - A simple particle generator
 - A particle generator pushed to 20,000 elements
