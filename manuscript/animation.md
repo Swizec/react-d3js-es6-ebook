@@ -77,6 +77,8 @@ class App extends Component {
 
 Nothing renders yet. CodePen complains about missing code and unexpected tokens.
 
+The default state sets our ball's `y` coordinate to `5` and its vertical speed – `vy` – to `0`. Initial speed zero, initial position top. Perfect for a big drop.
+
 ### Step 2: The Ball
 
 We can approximate the `Ball` component with a circle. No need to get fancy, we're focusing on the animations part.
@@ -116,8 +118,101 @@ A black ball should show up on your screen. Like this:
 
 ### Step 4: The Game Loop
 
+To make the ball bounce, we need to start an infinite loop when our component first renders, change the ball's `y` coordinate on every iteration, and stop the loop when React unmounts our component. Wouldn't want to keep hogging resources would we?
 
+```javascript
+componentDidMount() {
+    this.timer = d3.timer(() => this.gameLoop());
+    this.gameLoop();
+}
+
+componentWillUnmount() {
+    this.timer.stop();
+}
+
+gameLoop() {
+    let { y, vy } = this.state;
+
+    if (y > MAX_H) {
+        vy = -vy*.87;
+    }
+    
+    this.setState({
+        y: y+vy,
+        vy: vy+0.3
+    })
+}
+```
+
+We start a new `d3.timer` when our App mounts, then stop it when App unmounts. This way we can be sure there aren't any infinite loops running that we can't see.
+
+You can read details about D3 timers in [d3-timer documentation](https://github.com/d3/d3-timer). The tl;dr version is that they're a lot like JavaScript's native `setInterval`, but pegged to `requestAnimationFrame`. That makes them smoother and friendlier to browser's CPU throttling features.
+
+It basically means our game loop executes every time the browser is ready to repaint. More or less every 16 milliseconds.
+
+We simulate bounce physics in the `gameLoop` function. With each iteration we add vertical speed to vertical position and increase the speed.
+
+Remember high school? `v = v0 + g*t`. Speed equals speed plus acceleration multiplied by time. Our acceleration is gravity, our time is "1 frame".
+
+And acceleration is measured in meters per second per second. Basically the increase in speed observed every second. Real gravity is 10m/s^2, our factor is `0.3`. Discovered when playing around. That's what looked natural.
+
+For the bounce, we look at the `y` coordinate and compare with `MAX_H`. When it's over, we invert the speed vector and multiply with the bounce factor. Again, discovered experimentally when the animation looked natural.
+
+Tweak the factors to see how they affect your animation. Changing the `0.3` value should make gravity feel stronger or weaker, and changing the `0.87` value should affect how high the ball bounces.
+
+Notice that we never look at minimum height to make the ball start falling back down. There's no need. Add `0.3` to a negative value often enough and it turns positive.
+
+Here's a CodePen with the [final bouncy ball code](http://codepen.io/swizec/pen/bgvEvp?editors=0010)
 
 ### Step 5: Correcting for time
 
+If you run the CodePen a few times, you'll notice two bugs. The first is that sometimes our ball gets trapped at the bottom of the bounce. We won't fix this one, it's tricky.
+
+The second is that when you slow down your computer, the ball starts lagging. That's not how things behave in real life.
+
+We're dealing with dropped frames.
+
+Modern browsers slow down JavaScript in tabs that aren't focused, on computers running off battery power, when batteries get low ... there's many reasons in the pile. I don't know all of them. If we want our animation to look smooth, we have to account for these effects.
+
+We have to calculate how much time each frame took, and adjust our physics.
+
+```javascript
+gameLoop() {
+    let { y, vy, lastFrame } = this.state;
+    
+    if (y > MAX_H) {
+        vy = -vy*.87;
+    }
+    
+    let frames = 1;
+    
+    if (lastFrame) {
+        frames = (d3.now()-lastFrame)/(1000/60);
+    }
+    
+    this.setState({
+        y: y+vy*frames,
+        vy: vy+0.3*frames,
+        lastFrame: d3.now()
+    })
+}
+```
+
+We add `lastFrame` to game state and set it with `d3.now()`. This gives us a high resolution timestamp that's pegged to `requestAnimationFrame`. D3 guarantees that every `d3.now()` called within the same frame gets the same timestamp.
+
+`(d3.now()-lastFrame)/16` tells us how many frames were meant to have happened since last iteration. Most of the time this value will be `1`.
+
+We use it as a multiplier for the physics calculations. Our physics should look correct now regardless of browser throttling.
+
+Unfortunately these fixes exacerbate the "ball stuck at bottom" bug. It happens when the ball goes below `MAX_H` and doesn't have enough bounce to get back above `MAX_H` in a single frame.
+
+You can fix it with a flag of some sort. Only bounce, if you haven't bounced in the last N frames. Something like that.
+
+I suggest you play with it on CodePen: [click me for time-fixed bouncy ball](http://codepen.io/swizec/pen/NdYNKj?editors=0010)
+
 # Using transitions for simple animation
+
+Section in the works. Until then, these two articles talk about using transitions to build declarative animations with React and D3.
+
+- [Animated string diffing with React and D3](https://swizec.com/blog/animated-string-diffing-with-react-and-d3/swizec/6952)
+- [Using d3js transitions in React](https://swizec.com/blog/using-d3js-transitions-in-react/swizec/6797)
