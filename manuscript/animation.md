@@ -212,7 +212,182 @@ I suggest you play with it on CodePen: [click me for time-fixed bouncy ball](htt
 
 # Using transitions for simple animation
 
-Section in the works. Until then, these two articles talk about using transitions to build declarative animations with React and D3.
+Game loops are great when you need fine-grained control. But what, if you just want an element to animate a little bit when a user does something? You don't care about the details, you just want a little flourish.
 
-- [Animated string diffing with React and D3](https://swizec.com/blog/animated-string-diffing-with-react-and-d3/swizec/6952)
-- [Using d3js transitions in React](https://swizec.com/blog/using-d3js-transitions-in-react/swizec/6797)
+That's where transitions come in.
+
+Transitions are a way to animate SVG elements by saying *"I want this property to change to this new value and take this long to do it"*. And you can use easing functions to make it look better.
+
+I won't go into details about *why* easing functions are important, but they make movement look more natural. You can read more about it in Disney's [12 Basic Principles of Animation](https://en.wikipedia.org/wiki/12_basic_principles_of_animation). 
+
+The two we can achieve with easing functions are:
+
+1. Squash and Stretch
+6. Slow In Slow Out
+
+Let me show you how it works on a small example. We're drawing a field of 50 by 50 circles that "flash" when touched. The end result looks like there's a snake following your cursor.
+
+## Rainbow snake
+
+You can play with the code on CodePen, [here](http://codepen.io/swizec/pen/QdVoOg/). Follow along as I explain how it works. Tweak parameters and see what happens :)
+
+### App
+
+The App component needs only a `render` method that returns an SVG. Yes, it could've been functional stateless.
+
+```javascript
+  render() {
+    const width = 600,
+          N = 50,
+          pos = d3.scalePoint()
+                  .domain(d3.range(N))
+                  .range([0, width])
+                  .padding(5)
+                  .round(true);
+    
+    return (
+      <svg width="600" height="600">
+        {d3.range(N).map(x => 
+           d3.range(N).map(y =>
+             <Dot x={pos(x)} y={pos(y)} key={`${x}-${y}`} 
+                  maxPos={width} />
+        ))}
+      </svg>
+    )
+  }
+```
+
+We're rendering a 600px by 600px SVG, with 50 nodes per row and column. We use D3's `scalePoint` for dot positioning  because it does everything we need. Makes sure they're evenly spaced, gives them padding on the sides, and ensures coordinates are rounded numbers.
+
+Here's a diagram of how `scalePoint` works:
+
+![scalePoint diagram](images/es6v2/pointScale.png)
+
+To render the grid, we use two nested loops going from 0 to N. `d3.range` builds an array for us so we can `.map` over it. We return a `<Dot>` component for each iteration.
+
+Looking at this code: `x={pos(x)} y={pos(y)}` you can see why D3 scales are so neat. All positioning calculation boiled down to a 1-parameter function call. \o/
+
+{aside}
+Notice that unlike so far, we didn't mess about with `updateD3` and lifecycle methods. That's useful when we're dealing with large datasets and many re-renders. You don't need the complexity when building something small.
+{/aside}
+
+### Dot
+
+The Dot component has more moving parts. It needs a `constructor`, a transition callback – `flash`, a `color` getter, and a `render` method.
+
+```javascript
+class Dot extends Component {
+  constructor(props) {
+    super(props);
+    
+    this.state = Object.assign({}, 
+                               props,
+                               {r: 5});
+  }
+  
+  flash() {
+		// transition code
+  }
+  
+  get color() {
+    // color calculation
+  }
+  
+  render() {
+    const { x, y, r, colorize } = this.state;
+    
+    return <circle cx={x} cy={y} r={r} 
+             ref="circle" onMouseOver={this.flash.bind(this)}
+             style={{fill: colorize ? this.color : 'black'}} />
+  }
+}
+```
+
+We initialize state in the component `constructor`. The quickest approach is to copy all `props` to `state`, even though we don't need all props to be in state. 
+
+Normally, you want to avoid state and render all components from props. Functional principles, state is bad, and all that. But as [Freddy Rangel](https://twitter.com/frangel85) likes to say *"State is for props that change over time"*. 
+
+Guess what transitions are ... props that change over time :)
+
+So we put props in state and render from state. This lets us keep a stable platform while running transitions. It ensures that changes re-rendering `Dot` from above, won't interfere with D3 transitions.
+
+Not super important in our example because those changes never happen. But I had many interesting issues in this [animated typing example](https://swizec.com/blog/using-d3js-transitions-in-react/swizec/6797). We'll look at that one later.
+
+For the `render` method, we return an SVG `<circle>` element positioned at `(x, y)`, with a radius, an `onMouseOver` listener, and a style with the `fill` color depending on `state.colorize`.
+
+#### flash() – the transition
+
+When you mouse over one of the dots, its `flash()` method gets called as an event callback. This is where we transition to pops the circle bigger, then back to normal size.
+
+```javascript
+  flash() {
+    let node = d3.select(this.refs.circle);
+    
+    this.setState({colorize: true});
+
+    node.transition()
+        .attr('r', 20)
+        .duration(250)
+        .ease(d3.easeCubicOut)
+        .transition()
+        .attr('r', 5)
+        .duration(250)
+        .ease(d3.easeCubicOut)
+        .on('end', () => this.setState({colorize: false}));
+  }
+```
+
+Here's what happens:
+
+1. We `d3.select` the `<circle>` node. This enables D3 to take over the rendering of this particular DOM node
+2. We `setState` to enable colorization. Yes, this triggers a re-render.
+3. We start a `transition` that changes the `r` attribute to `20` pixels over a duration of `250` milliseconds.
+4. We add an `easeCubicOut` easing function, which makes the animation look more natural
+5. When the transition ends, we start another similar transition, but change `r` back to `5`.
+6. When *that*'s done, we turn off colorization and trigger another re-render.
+
+If our transition didn't return things back to normal, I would use the `'end'` opportunity, to sync React component state with reality. Something like `this.setState({r: 20})`.
+
+#### get color() – the colorization
+
+Colorization doesn't have anything to do with transitions, but I want to explain how it works. Mostly to remind you that high school math is useful.
+
+Here's what the colored grid looks like:
+
+![](images/es6v2/colored-grid.png)
+
+Colors follow a radial pattern even though `d3.interpolateWarm` takes a single argument in the `[0, 1]` range. We achieve the pattern using [circle parametrization](http://www.mathopenref.com/coordparamcircle.html).
+
+`x^2 + y^2 = r^2`
+
+Calibrate a linear scale to translate between `[0, maxR^2]` and `[0, 1]`, then feed it `x^2 + y^2` and you get the `interpolateWarm` parameter. Magic :)
+
+```javascript
+  get color() {
+    const { x, y, maxPos } = this.state;
+    
+    const t = d3.scaleLinear()
+                .domain([0, 1.2*maxPos**2])
+                .range([0, 1]);
+    
+    return d3.interpolateWarm(t(x**2 + y**2));
+  }
+```
+
+We calibrate the `t` scale to `1.2*maxPos**2` for two reasons. First, you want to avoid square roots because they're slow. Second, adding the `1.2` factor changes how the color scale behaves and makes it look better.
+
+At least I think so. Experiment ;)
+ 
+### More things to try
+
+There's a bunch of things you can improve about this example. I suggest you try them and see how it goes.
+
+We really should have taken the `r` parameter as a property on `<Dot>`, saved it in state as a, say, `baseR`, then made sure the transition returns our dot back to that instead of a magic `5` number. Peppering your code with magic numbers is often a bad idea.
+
+Another improvement could be rendering more circles to provide a tighter grid. That doesn't work so well on CodePen, however. Breaks down with so many nodes. 😔
+
+[https://twitter.com/Swizec/status/829590239458922496]
+
+You could also add transitions to the first time a circle renders. But you need something called `ReactTransitionGroup` to achieve that and it breaks down with this many elements.
+
+Because enter/exit transitions make many data visualizations better, we're going to look at another example just for that. A typing animation where letters fly in and fall out as you type.
