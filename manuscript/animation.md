@@ -391,3 +391,32 @@ Another improvement could be rendering more circles to provide a tighter grid. T
 You could also add transitions to the first time a circle renders. But you need something called `ReactTransitionGroup` to achieve that and it breaks down with this many elements.
 
 Because enter/exit transitions make many data visualizations better, we're going to look at another example just for that. A typing animation where letters fly in and fall out as you type.
+
+# Enter exit animation
+
+Now that you know how to use transitions it's time to take it up a notch. Enter exit animation. 
+
+Enter/exit animations are the most common use of transitions. They're what happens when a new element enters or exits the picture. For instance in visualizations like this famous [Nuclear Detonation Timeline](https://www.youtube.com/watch?v=LLCF7vPanrY) by Isao Hashimoto. Each new Boom! flashes to look like an explosion.
+
+I don't know how Hashimoto did it, but with React&D3v4 you'd do it with enter/exit transitions. Well, enter mostly.
+
+There's also this famous [animated alphabet](https://bl.ocks.org/mbostock/3808234) example by Mike Bostock, the creator of D3.
+
+That's what we're going to build: An animated alphabet. New letters fall down and are green, updated letters move right or left, and deleted letter are red and fall down.
+
+You can play with a more advanced version [here](http://swizec.github.io/react-d3-enter-exit-transitions/). Same principle as the alphabet, but lets you type the text.
+
+![Typing animation screenshot](images/es6v2/typing-screenshot.png)
+
+I'd embed a gif, but I can't. Isn't it silly that in 2017, in an electronic book, you can't embed animations? 
+
+The [string diffing algorithm](https://swizec.com/blog/animated-string-diffing-with-react-and-d3/swizec/6952) behind that animation is a pain to explain. I learned that the hard way when giving workshops on React and D3.
+
+![String diffing algorithm sketch](images/es6v2/string-diffing.png)
+
+See? It's easy on paper, but putting that in code takes a while.
+
+Let's build the alphabet version. No typing, no string diffing, just enter exit animations. More focus on transitions.
+
+## Animated alphabet
+
