@@ -392,31 +392,326 @@ You could also add transitions to the first time a circle renders. But you need 
 
 Because enter/exit transitions make many data visualizations better, we're going to look at another example just for that. A typing animation where letters fly in and fall out as you type.
 
-# Enter exit animation
+# Enter/update/exit animation
 
 Now that you know how to use transitions it's time to take it up a notch. Enter exit animation. 
 
 Enter/exit animations are the most common use of transitions. They're what happens when a new element enters or exits the picture. For instance in visualizations like this famous [Nuclear Detonation Timeline](https://www.youtube.com/watch?v=LLCF7vPanrY) by Isao Hashimoto. Each new Boom! flashes to look like an explosion.
 
-I don't know how Hashimoto did it, but with React&D3v4 you'd do it with enter/exit transitions. Well, enter mostly.
+I don't know how Hashimoto did it, but with React&D3v4 you'd do it with enter/exit transitions. Well, mostly enter.
 
 There's also this famous [animated alphabet](https://bl.ocks.org/mbostock/3808234) example by Mike Bostock, the creator of D3.
 
-That's what we're going to build: An animated alphabet. New letters fall down and are green, updated letters move right or left, and deleted letter are red and fall down.
+That's what we're going to build: An animated alphabet. New letters fall down and are green, updated letters move right or left, and deleted letters are red and fall down.
 
-You can play with a more advanced version [here](http://swizec.github.io/react-d3-enter-exit-transitions/). Same principle as the alphabet, but lets you type the text.
+You can play with a more advanced version [here](http://swizec.github.io/react-d3-enter-exit-transitions/). Same principle as the alphabet, but animates your typing.
 
 ![Typing animation screenshot](images/es6v2/typing-screenshot.png)
 
-I'd embed a gif, but I can't. Isn't it silly that in 2017, in an electronic book, you can't embed animations? 
+I'd embed a gif, but I can't. It's 2017 and this is an electronic book and I still can't embed animations ...
 
-The [string diffing algorithm](https://swizec.com/blog/animated-string-diffing-with-react-and-d3/swizec/6952) behind that animation is a pain to explain. I learned that the hard way when giving workshops on React and D3.
+We're building the alphabet version because the [string diffing algorithm](https://swizec.com/blog/animated-string-diffing-with-react-and-d3/swizec/6952) is a pain to explain. I learned that the hard way when giving workshops on React and D3 ...
 
 ![String diffing algorithm sketch](images/es6v2/string-diffing.png)
 
-See? It's easy on paper, but putting that in code takes a while.
-
-Let's build the alphabet version. No typing, no string diffing, just enter exit animations. More focus on transitions.
+See? Easy on paper, but the code is long and weird. Or maybe I'm just bad at implementing it. *shrug*
 
 ## Animated alphabet
 
+Our goal is to render a random subset of the alphabet. Every time it updates old letters transition out, new letters transition in, updated letters transition into a new position. 
+
+We need two components:
+
+ - `Alphabet`, which creates random lists of letters every 1.5 seconds, then maps through them to render `Letter` components
+ - `Letter`, which renders an SVG text element, and takes care of its own enter/update/exit transitions
+
+You can see the full code on GitHub [here](https://github.com/Swizec/react-d3-enter-exit-transitions/tree/704ca0d38aa195db90392668ed08e1912f1cdcb1).
+
+### The Alphabet component
+
+The `Alphabet` component holds a list of letters in state and renders a collection of `Letter` components in a loop.
+
+We start with a skeleton like this:
+
+```javascript
+// src/components/Alphabet/index.jsx
+import React, { Component } from 'react';
+import ReactTransitionGroup from 'react-addons-transition-group';
+import d3 from 'd3';
+
+require('./style.less');
+
+import Letter from './Letter';
+
+class Alphabet extends Component {
+    static letters = "abcdefghijklmnopqrstuvwxyz".split('');
+    state = {alphabet: []}
+
+    componentWillMount() {
+				// starts an interval to update alphabet
+    }
+
+    render() {
+        // spits out svg elements
+    }
+}
+
+export default Alphabet;
+```
+
+We import our dependencies, add some styling, and define the `Alphabet` component. It holds a list of available letters in a static `letters` property, and an empty `alphabet` in local state. We'll need a `componentWillMount` and a `render` method as well.
+
+*Sidenote*: That `require('style.less')` isn't key to this tutorial. I'm not a fan of inline styling, so I like to add `less` compilation to Webpack and include stylesheets like this.
+
+To showcase enter-update-exit transitions, we want to create a new alphabet every couple of seconds. The best place to do that is in `componentWillMount`:
+
+```javascript
+// src/components/Alphabet/index.jsx
+    componentWillMount() {
+        d3.interval(() => this.setState({
+           alphabet: d3.shuffle(Alphabet.letters)
+                       .slice(0, Math.floor(Math.random() * Alphabet.letters.length))
+                       .sort()
+        }), 1500);
+    }
+```
+
+We use `d3.interval( //.., 1500)` to call a function every 1.5 seconds. It's the same as `setInterval`, but friendlier to batteries and CPUs. On each period, we shuffle the available letters, slice out a random amount, sort them, then update component state with `setState`.
+
+This ensures our alphabet is both random and in alphabetical order.
+
+Starting the interval in `componentWillMount` ensures it only runs when our Alphabet is on the page. It's good practice to stop these sorts of intervals in `componentWillUnmount`.
+
+Our declarative transitions magic starts in the `render` method.
+
+```javascript
+// src/components/Alphabet/index.jsx
+    render() {
+        let transform = `translate(${this.props.x}, ${this.props.y})`;
+
+        return (
+            <g transform={transform}>
+                <ReactTransitionGroup component="g">
+                    {this.state.alphabet.map((d, i) => (
+                        <Letter d={d} i={i} key={`letter-${d}`} />
+                     ))}
+                </ReactTransitionGroup>
+            </g>
+        );
+    }
+```
+
+An SVG transformation moves our alphabet into the specified `(x, y)` position. We map through `this.state.alphabet` inside a `<ReactTransitionGroup>` component. I'll explain that in a bit. Inside the loop, each `Letter` gets its current text – `d` – and index – `i`. We *have to* define the `key` attribute based on the letter – `d`.
+
+We assume the parent component renders `<Alphabet>` inside an `<svg>` tag.
+
+#### The key property
+
+The key property is how React identifies which component is which. You're gonna have a bad time if you pick wrong. Trust me. I spent many hours debugging and writing workarounds before I realized that basing the key on the index was a Bad Move™. *Obviously*, you want the letter to stay constant in each component and the index to change.
+
+That's how x-axis transitions work. You're moving the letter into a specific place in the alphabet. You'll see what I mean when we look at the `Letter` component.
+
+#### ReactTransitionGroup
+
+Wrapping our list of `Letter`s in `ReactTransitionGroup` gives us fine-grained access to the component lifecycle. It's a low-level API from React add-ons, that expands our kingdom of lifecycle hooks.
+
+In addition to knowing when the component mounts, updates, and unmounts, we get access to `componentWillEnter`, `componentWillLeave`, and a few others. Notice something familiar?
+
+`componentWillEnter` is the same as d3's `.enter()`, `componentWillLeave` is the same as d3's `.exit()`, and `componentWillUpdate` is the same as d3's `.update()`.
+
+"The same" is a strong word – they're analogous. The key difference is that D3's hooks operate on entire selections – groups of components – while React's lifecycle hooks operate on each component individually. In D3, an overlord dictates what happens; in React, each component knows what to do.
+
+That makes React code easier to understand.
+
+`ReactTransitionGroup` gives us [even more hooks](https://facebook.github.io/react/docs/animation.html), but these are what we need. It's nice that in both `componentWillEnter` and `componentWillLeave` we can use the callback to explicitly say *"The transition is done. React, back to you"*.
+
+My thanks to Michelle Tilley for writing about `ReactTransitionGroup` [on StackOverflow](http://stackoverflow.com/questions/29977799/how-should-i-handle-a-leave-animation-in-componentwillunmount-in-react).
+
+### The Letter component
+
+Now we're ready for the real magic – a component that can transition itself into and out of a visualization… without bothering anyone else *or* confusing React.
+
+The basic skeleton of our `Letter` component looks like this:
+
+```javascript
+// src/components/Alphabet/Letter.jsx
+
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+import d3 from 'd3';
+
+class Letter extends Component {
+    state = {
+        y: -60,
+        x: 0,
+        className: 'enter',
+        fillOpacity: 1e-6
+    }
+    transition = d3.transition()
+                   .duration(750)
+                   .ease(d3.easeCubicInOut);
+
+    componentWillEnter(callback) {
+        // start enter transition, then callback()
+    }
+
+    componentWillLeave(callback) {
+        // start exit transition, then callback()
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.i != nextProps.i) {
+           // start update transition
+        }
+    }
+
+    render() {
+       // spit out a <text> element
+    }
+};
+
+export default Letter;
+```
+
+We start with some imports, and define a `Letter` component with a default state and a default transition. Yes, it feels weird to use `state` for coordinates, class name, and styling, but the component needs to change them sometimes. As far as I know, components can't change their own props.
+
+Defining a default transition is a d3 v4 trick. It saves us some typing. With the stable version of d3, you'd define this duration and easing function on each transition.
+
+All of the magic values – default/final `y` coordinate, transition properties, etc. – are good candidates for props. That would make `Alphabet` more flexible, but add unnecessary complexity for this tutorial.
+
+### componentWillEnter
+
+We start with the enter transition in `componentWillEnter`.
+
+```javascript
+// src/components/Alphabet/Letter.jsx
+    componentWillEnter(callback) {
+        let node = d3.select(ReactDOM.findDOMNode(this));
+
+        this.setState({x: this.props.i*32});
+
+        node.transition(this.transition)
+            .attr('y', 0)
+            .style('fill-opacity', 1)
+            .on('end', () => {
+                this.setState({y: 0, fillOpacity: 1});
+                callback()
+            });
+    }
+```
+
+We use `reactDOM.findDOMNode` to get our DOM node and use `d3.select` to turn it into a d3 selection. Now we can do any and all d3 magic.
+
+Then we update `this.state.x` the current index and letter width. The width is a value that we Just Know™. 
+
+We keep our letter's `x` coordinate in `this.state` to avoid jumpiness. The `i` prop updates on each render, but we want to transition into the new position slowly. You'll see how that works in the `componentWillReceiveProps` section.
+
+At this point our component is invisible and 60 pixels above the baseline. That's because of the default values for `fillOpacity` and `y` that we set earlier.
+
+To animate our component moving down and becoming visible, we use a d3 transition. 
+
+We use `node.transition(this.transition)` to start a new transition using the default settings from earlier. In d3 v3, we'd have to define a duration and easing function here manually.
+
+Then we define what/how should change with `.attr` and `.style`.   This operates directly on the DOM and doesn't tell React about the changes.
+
+We can sync React's imagination with reality in a "transition is over" callback using `.on('end'`. We use `setState` to update component state, and trigger the main `callback`. React now knows this letter is done appearing.
+
+In d3 v3, you'd use `.each('end'` to define the callback.
+
+### componentWillLeave
+
+The exit transition goes in `componentWillLeave` and follows the same principle, except in reverse. It looks like this:
+
+```javascript
+// src/components/Alphabet/
+    componentWillLeave(callback) {
+        let node = d3.select(ReactDOM.findDOMNode(this));
+
+        this.setState({className: 'exit'});
+
+        node.transition(this.transition)
+            .attr('y', 60)
+            .style('fill-opacity', 1e-6)
+            .on('end', () => {
+                this.setState({y: 60, fillOpacity: 1e-6});
+                callback()
+            });
+    }
+```
+
+This time, we update state to change the `className` instead of `x`. That's because `x` doesn't change.
+
+The exit transition itself is an inverse of the enter transition. An exiting letter moves further down and becomes invisible. Once the transition is over, we update state for consistency's sake, and we tell React it can remove the component.
+
+On second though, we might not need to update state in this case. The component goes bye-bye anyway…
+
+### componentWillReceiveProps
+
+The update transition goes into `componentWillReceiveProps` like this:
+
+```javascript
+// src/components/Alphabet/Letter.jsx
+    componentWillReceiveProps(nextProps) {
+        if (this.props.i != nextProps.i) {
+            let node = d3.select(ReactDOM.findDOMNode(this));
+
+            this.setState({className: 'update'});
+
+            node.transition(this.transition)
+                .attr('x', nextProps.i*32)
+                .on('end', () => this.setState({x: nextProps.i*32}));
+        }
+    }
+```
+
+You know the pattern by now, don't you? Update state, do transition, sync state with reality after transition.
+
+In this case, we change the `className`, then we move the letter into its new horizontal position. 
+
+We could have done all of this in `componentWillUpdate` as well.  However, we can't do it in `componentDidUpdate`. We need to know both the current index *and* the new index. It helps us decide whether to transition or not.
+
+There are instances when the component updates, but its horizontal position doesn't change. Every time we call `setState` for example.
+
+### render
+
+After all that transition magic, you might be thinking *"Holy shit, how do I render this!?"*. I don't blame ya!
+
+But we did the hard work. Rendering is straightforward:
+
+```javascript
+// src/components/Alphabet/Letter.jsx
+    render() {
+        return (
+            <text dy=".35em"
+                  y={this.state.y}
+                  x={this.state.x}
+                  className={this.state.className}
+                  style={{fillOpacity: this.state.fillOpacity}}>
+                {this.props.d}
+            </text>
+        );
+    }
+```
+
+We return an SVG `<text>` element rendered at an `(x, y)` position with a `className` and a `fillOpacity`. It shows a single letter given by the `d` prop.
+
+As mentioned, using state for `x`, `y`, `className`, and `fillOpacity` feels weird. It's the simplest way I know of to communicate between the `render` and lifecycle methods.
+
+## That's it
+
+Boom. We're done.
+
+<iframe src="http://swizec.github.io/react-d3-enter-exit-transitions/" width="600" height="500"></iframe>
+
+We have an `Alphabet` component that declaratively renders an animated alphabet. Letters transition in and out and jump left and right.
+
+All you need now is a skeleton setup that renders an SVG element and uses the `Alphabet` component.
+
+The key take aways are:
+
+- use d3 for transitions
+- use React to manage SVG elements
+- use ReactTransitionGroup to get more lifecycle events
+- mimic d3's enter/update/exit pattern
+
+You can learn more about properly integration React and d3js from my book, [React+d3js ES6](http://swizec.com/reactd3js).****
