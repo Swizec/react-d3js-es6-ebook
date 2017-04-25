@@ -5,10 +5,12 @@ Welcome to the main part of React+d3.js. We're going to talk a little theory, so
 
 - [A choropleth map](#choropleth-map)
 - [An interactive histogram](#histogram-of-salaries)
-- An animated alphabet
+- [A rainbow snake](#rainbow-snake)
+- [An animated alphabet](#animated-alphabet)
 - A simple particle generator
 - A particle generator pushed to 20,000 elements
 - A dancing fractal tree
+- N-body collision simulation
 
 Looks random, right? Bear with me.
 
@@ -94,21 +96,9 @@ d3.select("svg")
   .attr("y", 20);
 ```
 
-It's elegant, it's declarative, it looks like function call soup. Even rewriting into a more readable form doesn't make it much easier to understand the SVG structure at a glance. Observe:
+It's elegant, it's declarative, it looks like function call soup. It doesn't scream *"Rectangle in an SVG"* to me as much as the React example does. 
 
-{caption: "Static rectangle in cleaner d3.js", line-numbers: false, format: javascript}
-```
-d3.select("svg")
-  .attr({width: 800,
-	 height: 600})
-  .append("rect")
-  .attr({width: 100,
-	 height: 200,
-	 x: 50,
-	 y: 20})
-```
-
-That doesn't scream *"Rectangle in an SVG"* to me as much as the React example does. You have to take your time and read the code carefully: first, we `select` the `svg` element, then we add attributes for `width` and `height`. After that, we `append` a `rect` element and set its attributes for `width`, `height`, `x`, and `y`.
+You have to take your time and read the code carefully: first, we `select` the `svg` element, then we add attributes for `width` and `height`. After that, we `append` a `rect` element and set its attributes for `width`, `height`, `x`, and `y`.
 
 Those 8 lines of code create HTML that looks like this:
 
