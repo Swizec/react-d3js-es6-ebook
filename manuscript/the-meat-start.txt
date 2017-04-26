@@ -7,10 +7,10 @@ Welcome to the main part of React+d3.js. We're going to talk a little theory, so
 - [An interactive histogram](#histogram-of-salaries)
 - [A rainbow snake](#rainbow-snake)
 - [An animated alphabet](#animated-alphabet)
-- A simple particle generator
+- [A simple particle generator with Redux](#animating-react-redux)
 - A particle generator pushed to 20,000 elements
 - A dancing fractal tree
-- N-body collision simulation
+- N-body collision simulation with MobX
 
 Looks random, right? Bear with me.
 

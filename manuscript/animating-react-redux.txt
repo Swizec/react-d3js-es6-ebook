@@ -1,31 +1,23 @@
 {#animating-react-redux}
 # Animating with React, Redux, and d3
 
-And now for something completely different. No more histogram, no more salaries and serious stuff. Just nerdy fun.
+And now for some pure nerdy fun: A particle generator ... or, well, as close as you can get with React and D3. You'd need WebGL for a *real* particle generator.
 
-This chapter builds a particle generator. It makes tiny circles fly out of where you click. Hold down your mouse and move around. The particles keep flying out of your cursor.
+We're making tiny circles fly out of your mouse cursor. Works on mobile with your finger too.
 
-On mobile and only have a finger? That works, too.
+To see the particle generator in action, [go here](http://swizec.github.io/react-particles-experiment/). Github won't let me host different branches, so you'll see the advanced 20,000 particle version from next chapter.
 
-I'm a nerd, so this is what I consider fun. Your mileage may vary.
+We're using the [game loop](#game-loop) approach to animation and Redux to store the state tree and drive changes for each frame.
 
-To see the particle generator in action, go [here](http://swizec.github.io/react-particles-experiment/).
-
-To see the entire code, go to the [repository on GitHub](https://github.com/Swizec/react-particles-experiment). Code samples in this chapter are less complete than before, but you will see enough to understand what's going on.
-
-We're going to use Redux as our state handler, and approach animation and dataviz like it was a game. A giant state tree (stored in a Redux store) holds information about *everything*, the game loop makes changes on every 60th of a second, things magically move.
+You can see the full code [on GitHub](https://github.com/Swizec/react-particles-experiment). Code samples in this chapter focus more on the Redux part because that's what's new.
 
 It's going to be great.
 
 ## Here's how it works
 
-The whole thing is built with React, Redux, and d3. No tricks for animation; just a bit of cleverness.
+We use **React to render everything**: the page, the SVG element, the particles inside. This lets us tap into React's algorithms that decide which nodes to update and when to garbage collect old nodes.
 
-Here's the general approach:
-
-We use **React to render everything**: the page, the SVG element, the particles inside. All of it is built with React components that take some props and return some DOM. This lets us tap into React's algorithms that decide which nodes to update and when to garbage collect old nodes.
-
-Then we use some **d3 calculations and event detection**. D3 has great random generators, so we take advantage of that. D3's mouse and touch event handlers calculate coordinates relative to our SVG. We need those, and React can't do it. React's click handlers are based on DOM nodes, which don't correspond to `(x, y)` coordinates. D3 looks at real cursor position on screen.
+Then we use some **d3 calculations and event detection**. D3 has great random generators, so we take advantage of that. D3's mouse and touch event handlers calculate coordinates relative to our SVG. We need those, and React's click handlers are based on DOM nodes, which don't correspond to `(x, y)` coordinates. D3 looks at real cursor position on screen.
 
 All **particle coordinates are in a Redux store**. Each particle also has a movement vector. The store holds some useful flags and general parameters, too. This lets us treat animation as data transformations. I'll show you what I mean in a bit.
 
@@ -37,111 +29,101 @@ When the store updates, **React flushes changes** via props and because **coordi
 
 The result is smooth animation.
 
-Keep reading to learn the details. The [code is also on GitHub](https://github.com/Swizec/react-particles-experiment).
-
-A version of this article will be featured as a chapter in my upcoming [React+d3js ES6 book](http://swizec.com/reactd3js/).
-
 ## 3 presentation components
 
-We'll start with the presentation components because they're the least complicated. To render a collection of particles, we need:
+We start with the presentation components because they're the least complicated. To render a collection of particles, we need:
 
 - a stateless `Particle`
 - a stateless `Particles`
 - a proper `App`
 
-None of them contain state, but `App` has to be a proper component so that we can use `componentDidMount`. We need it to attach d3 event listeners.
+None of them contain state, but `App` has to be a proper component so that we can use `componentDidMount`. We need it to attach D3 event listeners.
+
+### Particle
 
 The `Particle` component is a circle. It looks like this:
 
-{title="Particle component",linenos=off,lang=js}
-			// src/components/Particles/Particle.jsx
-			import React, { PropTypes } from 'react';
-			
-			const Particle = ({ x, y }) => (
-			    <circle cx={x} cy={y} r="1.8" />
-			);
-			
-			Particle.propTypes = {
-			    x: PropTypes.number.isRequired,
-			    y: PropTypes.number.isRequired
-			};
-			
-			export default Particle;
+{caption: "Particle component"}
+```javascript
+// src/components/Particles/Particle.jsx
+import React, { PropTypes } from 'react';
+
+const Particle = ({ x, y }) => (
+	<circle cx={x} cy={y} r="1.8" />
+);
+
+Particle.propTypes = {
+	x: PropTypes.number.isRequired,
+	y: PropTypes.number.isRequired
+};
+
+export default Particle;
+```
 
 It takes `x` and `y` coordinates and returns an SVG circle.
 
+### Particles
+
 The `Particles` component isn't much smarter – it returns a list of circles wrapped in a grouping element, like this:
 
-{title="Particles list",linenos=off,lang=js}
-		// src/components/Particles/index.jsx
-		import React, { PropTypes } from 'react';
-		
-		import Particle from './Particle';
-		
-		const Particles = ({ particles }) => (
-		    <g>{particles.map(particle =>
-		        <Particle key={particle.id}
-		                  {...particle} />
-		        )}
-		    </g>
-		);
-		
-		Particles.propTypes = {
-		    particles: PropTypes.arrayOf(PropTypes.shape({
-		        id: PropTypes.number.isRequired,
-		        x: PropTypes.number.isRequired,
-		        y: PropTypes.number.isRequired
-		    }).isRequired).isRequired
-		};
-		
-		export default Particles;
-		
-Note that `key={particle.id}` part. React complains endlessly without it. I think it's used to tell similar components apart, which makes the fancy algorithms work.
+{caption: "Particles list"}
+```javascript
+// src/components/Particles/index.jsx
+import React from 'react';
 
-Cool. Given an array of `{id, x, y}` objects, we can render our SVG circles. Now comes our first fun component: the `App`.
+import Particle from './Particle';
+
+const Particles = ({ particles }) => (
+	<g>{particles.map(particle =>
+		<Particle key={particle.id}
+		          {...particle} />
+		)}
+	</g>
+);
+
+export default Particles;
+```
+		
+Walk through the array of particles, render a Particle component for each. Declarative rendering that you've seen before :)
+
+We can take an array of `{id, x, y}` objects and render SVG circles. Now comes our first fun component: the `App`.
+
+### App
 
 `App` takes care of rendering the scene and attaching d3 event listeners. The rendering part looks like this:
 
-{title="App component",linenos=off,lang=js}
-			// src/components/index.jsx
-			
-			import React, { PropTypes, Component } from 'react';
-			import ReactDOM from 'react-dom';
-			import d3 from 'd3';
-			
-			import Particles from './Particles';
-			import Footer from './Footer';
-			import Header from './Header';
-			
-			class App extends Component {
-			    render() {
-			        return (
-			            <div onMouseDown={e => this.props.startTicker()} style={{overflow: 'hidden'}}>
-			                 <Header />
-			                 <svg width={this.props.svgWidth}
-			                      height={this.props.svgHeight}
-			                      ref="svg"
-			                      style={{background: 'rgba(124, 224, 249, .3)'}}>
-			                     <Particles particles={this.props.particles} />
-			                 </svg>
-			                 <Footer N={this.props.particles.length} />
-			             </div>
-			        );
-			    }
-			}
-			
-			App.propTypes = {
-			    svgWidth: PropTypes.number.isRequired,
-			    svgHeight: PropTypes.number.isRequired,
-			    startTicker: PropTypes.func.isRequired,
-			    startParticles: PropTypes.func.isRequired,
-			    stopParticles: PropTypes.func.isRequired,
-			    updateMousePos: PropTypes.func.isRequired
-			};
-			
-			export default App;
+{caption: "App component"}
+```javascript
+// src/components/index.jsx
 
-There's more going on, but the gist is that we return a `<div>` with a `Header`, a `Footer`, and an `<svg>`. Inside `<svg>`, we use `Particles` to render many circles. Don't worry about the Header and Footer; they're text.
+import React, { Component } from 'react';
+import d3 from 'd3';
+
+import Particles from './Particles';
+import Footer from './Footer';
+import Header from './Header';
+
+class App extends Component {
+	render() {
+		return (
+			<div onMouseDown={e => this.props.startTicker()} style={{overflow: 'hidden'}}>
+			     <Header />
+			     <svg width={this.props.svgWidth}
+			          height={this.props.svgHeight}
+			          ref="svg"
+			          style={{background: 'rgba(124, 224, 249, .3)'}}>
+			         <Particles particles={this.props.particles} />
+			     </svg>
+			     <Footer N={this.props.particles.length} />
+			 </div>
+		);
+	}
+}
+			
+export default App;
+```
+
+There's more going on, but the gist is that we return a `<div>` with a `Header`, a `Footer`, and an `<svg>`. Inside `<svg>`, we use `Particles` to render many circles. The Header and Footer components are just some helpful text.
 
 Notice that the core of our rendering function only says *"Put all Particles here, please"*. There's nothing about what's moved, what's new, or what's no longer needed. We don’t have to worry about that.
 
@@ -149,52 +131,55 @@ We get a list of coordinates and naively render circles. React takes care of the
 
 Oh, and we call `startTicker()` when a user clicks on our scene. No reason to have the clock running *before* any particles exist.
 
-### D3 event listeners
+#### D3 event listeners
 
-To let users generate particles, we have to wire up those functions we mentioned in `propTypes`. It looks like this:
+To let users generate particles, we have to wire up some functions in `componentDidMount`. It looks like this:
 
 {title="Event listeners",linenos=off,lang=js}
-		// src/components/index.jsx
-		
-		class App extends Component {
-		    componentDidMount() {
-		        let svg = d3.select(this.refs.svg);
-		
-		        svg.on('mousedown', () => {
-		            this.updateMousePos();
-		            this.props.startParticles();
-		        });
-		        svg.on('touchstart', () => {
-		            this.updateTouchPos();
-		            this.props.startParticles();
-		        });
-		        svg.on('mousemove', () => {
-		            this.updateMousePos();
-		        });
-		        svg.on('touchmove', () => {
-		            this.updateTouchPos();
-		        });
-		        svg.on('mouseup', () => {
-		            this.props.stopParticles();
-		        });
-		        svg.on('touchend', () => {
-		            this.props.stopParticles();
-		        });
-		        svg.on('mouseleave', () => {
-		            this.props.stopParticles();
-		        });
-		
-		    }
-		
-		    updateMousePos() {
-		        let [x, y] = d3.mouse(this.refs.svg);
-		        this.props.updateMousePos(x, y);
-		    }
-		
-		    updateTouchPos() {
-		        let [x, y] = d3.touches(this.refs.svg)[0];
-		        this.props.updateMousePos(x, y);
-		    }
+{caption: "Event listeners"}
+```javascript
+// src/components/index.jsx
+
+class App extends Component {
+	componentDidMount() {
+		let svg = d3.select(this.refs.svg);
+
+		svg.on('mousedown', () => {
+		    this.updateMousePos();
+		    this.props.startParticles();
+		});
+		svg.on('touchstart', () => {
+		    this.updateTouchPos();
+		    this.props.startParticles();
+		});
+		svg.on('mousemove', () => {
+		    this.updateMousePos();
+		});
+		svg.on('touchmove', () => {
+		    this.updateTouchPos();
+		});
+		svg.on('mouseup', () => {
+		    this.props.stopParticles();
+		});
+		svg.on('touchend', () => {
+		    this.props.stopParticles();
+		});
+		svg.on('mouseleave', () => {
+		    this.props.stopParticles();
+		});
+
+	}
+
+	updateMousePos() {
+		let [x, y] = d3.mouse(this.refs.svg);
+		this.props.updateMousePos(x, y);
+	}
+
+	updateTouchPos() {
+		let [x, y] = d3.touches(this.refs.svg)[0];
+		this.props.updateMousePos(x, y);
+	}
+```
 
 There are some events to think about:
 

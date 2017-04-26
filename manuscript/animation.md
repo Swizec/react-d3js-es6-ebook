@@ -14,6 +14,7 @@ We're going to use two different ways of changing state so often. The first foll
 
 We're going to start with an example or two in CodePen, then build something more involved. But don't worry, no more big huge projects like the [tech salary visualization](#salary-visualization)
 
+{#game-loop}
 # Using a game loop for rich animation
 
 I love game loops. It even sounds fun "game loop". Maybe it's just that whenever I build a game loop, the thing I'm building is fun to play with. 🤔
