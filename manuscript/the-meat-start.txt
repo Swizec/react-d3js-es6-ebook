@@ -8,9 +8,9 @@ Welcome to the main part of React+d3.js. We're going to talk a little theory, so
 - [A rainbow snake](#rainbow-snake)
 - [An animated alphabet](#animated-alphabet)
 - [A simple particle generator with Redux](#animating-react-redux)
-- A particle generator pushed to 20,000 elements
-- A dancing fractal tree
-- N-body collision simulation with MobX
+- [A particle generator pushed to 20,000 elements with canvas](#canvas-react-redux)
+- [A dancing fractal tree](#fractal-tree)
+- N-body collision simulation with MobX and canvas
 
 Looks random, right? Bear with me.
 
