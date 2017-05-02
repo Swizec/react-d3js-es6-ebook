@@ -483,7 +483,7 @@ You can also use a library like [immutable.js](TODO:link) to guarantee immutabil
 
 Those state updates were boilerplate. The important ones are each tick of the game loop and creating new particles. They look like this:
 
-{caption: "The particles magic"}
+{caption: "The core particles logic"}
 ```javascript
 // src/reducers/index.js
 function particlesApp(state = initialState, action) {
@@ -574,4 +574,4 @@ Here's the recap:
 - change coordinates on every `requestAnimationFrame`
 - animation!
 
-Now let's render to canvas and push this sucker to 20,000 smoothly animated elements even on a mobile phone.
+Now let's render to canvas and push this sucker to 20,000 smoothly animated elements. Even on a mobile phone.

@@ -1,4 +1,154 @@
-# Speed optimizations
+# Speed optimizations #
+
+Welcome to the section on speed optimizations. This is where we make our code harder to read and faster to run.
+
+You might never need any of the techniques discussed here. You already know how to build performant data visualization components. For 99% of applications, plain code that's easy to read and understand is plenty fast.
+
+Do you really need to save that tenth of a second at runtime and spend an extra hour thinking every time there's a bug?
+
+Answer honestly.
+
+That said, there are cases where faster code is also easier to read. And there are cases where your visualization is so massive, that you need every ounce of oomph you can get.
+
+For the most part, we're going to talk about three things:
+
+- using canvas to speed up rendering
+- using React-like libraries to speed up the core library
+- avoiding unnecessary computation and redraws
+
+We'll start with canvas because it's the biggest speed improvement you can make.
+
+# Using canvas
+
+We've been using SVG to render our apps so far. SVG is great because it follows a familiar structure, offers infinitely scalable vector graphics, and works pretty much everywhere. Sure you can't use some fancy SVG features on all browsers, but the basics are solid.
+
+However, SVG has a big flaw: it's slow.
+
+Anything more than a few hundred SVG nodes and your browser will struggle. Especially if you want to animate those thousands of elements.
+
+A panelist at ForwardJS once asked me *"But why would you want that?"*. It was my first time participating in a panel and my answer sucked. Here's the real answer: *"Because there have been thousands of UFO sightings, there are thousands of counties in the US, millions of taxi rides, hundreds of millions of people having this or that datapoint. And you want to show change over time"*
+
+That's the real answer. Sometimes, when you're visualizing some data, you have a lot of data. The data changes over time, and animation is the best way to show changes over time.
+
+Once upon a time I was working on a [D3 video course](TODO:masteringd3jslink) for Packt and used UFO sightings as an example. At peak UFO sighting, right before smartphones become a thing, the animation takes up to 2 seconds to redraw a single frame. 
+
+It's terrible.
+
+So if SVG is slow and you need to animate thousands of elements, what are you to do? HTML5 Canvas.
+
+## Why canvas
+
+Unlike SVG, HTML5 Canvas lets you draw rasterized images. This means you're not longer operating at the level of shapes, you're working with pixels on the screen.
+
+With SVG, you tell the browser *what* you want to render. With canvas, you tell the browser *how* you want to render. The browser doesn't know what you're doing, it just gets a field of pixel colors and renders them as an image.
+
+As a result, browsers can use the GPU to render canvas. With a bit of care, you can do almost anything you want even on a mobile phone.
+
+Phones these days have amazing GPUs and kind of terrible CPUs. That's why I'd almost suggest going straight to canvas for any sort of complex animation. Mobile traffic is, what, 60% or even 70% of traffic these days?
+
+Now you might be thinking this sounds complicated. How do you know which pixel should do what when you're rendering with canvas? Sounds like a lot of work.
+
+HTML5 Canvas does offer some shape primitives. It has circles and rectangles and things like that, but they suffer from the same problem that SVG does. The browser has to use your CPU to calculate those and at around 10,000 elements things break down.
+
+Notice that 10,000 elements is still a hell of a lot more than the 3,000 or so that SVG gives you.
+
+If your app allows it, you can use sprites. Tiny images copy pasted on the canvas as bytestreams. I have yet to find an upper bound for those. My JavaScript became the bottleneck :D
+
+But I'm getting ahead of myself, we'll talk about sprites later.
+
+## The trouble with HTML5 Canvas
+
+A tricky thing with HTML5 Canvas is that the API is low level and that canvas is flat. As far as your JavaScript and React code are concerned, it's a flat image. Could be anything.
+
+There's no structure, which makes it difficult to detect clicks on elements, interactions between elements, when something covers something else, how the user interacts with your stuff and things like that. You have to move most of that logic into your data store and manually keep track.
+
+You can imagine this becomes cumbersome. And you still can't detect user interaction because all you get is *"User clicked on  coordinate (x, y). Have fun"*.
+
+At the same time, the low level API makes abstractions difficult. You can't create components for "this is a map" or "histogram goes here". You're always down to circles and rectangles and basic shapes at best.
+
+Your code can soon start looking much like the D3.js spaghetti we wanted to avoid in the first place.
+
+## Declarative HTML5 Canvas with Konva and react-konva
+
+Enter [Konva](https://konvajs.github.io) and react-konva. All the benefits of declarative code, but rendered on the canvas.
+
+I'm gonna let Anton Lavrenov, the author of Konva, explain:
+
+> Konva is an HTML5 Canvas JavaScript framework that enables high performance animations, transitions, node nesting, layering, filtering, caching, event handling for desktop and mobile applications, and much more.
+
+> You can draw things onto the stage, add event listeners to them, move them, scale them, and rotate them independently from other shapes to support high performance animations, even if your application uses thousands of shapes. Served hot with a side of awesomeness.
+
+That. 
+
+It's exactly what we need to push our animated React apps to thousands of elements. Without spending too much time thinking about the *how* of rendering. Best leave the hairy details to somebody else.
+
+Let me show you two examples.
+
+1. Pushing our particle generator to 20,000 elements
+2. An n-body collision simulator built with MobX
+
+{#canvas-react-redux}
+## A particle generator pushed to 20,000 elements with canvas
+
+Our [SVG-based particle generator](#animating-react-redux) caps out at a few thousand elements. Animation becomes slow and time between each iteration of our game loop increases.
+
+Old elements leave the screen and get pruned faster than we can create new ones. This creates a natural (but stochastic) upper limit to how many elements we can push into the page.
+
+We can render many more elements, if we take out SVG and use HTML5 Canvas instead. I was able to push the code up to around 20,000 smoothly animated elements. Then JavaScript became the bottleneck.
+
+You can see it in action hosted on [Github pages](http://swizec.github.io/react-particles-experiment/).
+
+We're going to keep most of our code from before. The only changes happen in `src/components/index.jsx` where a Konva stage replaces the `<svg>` element, and in `src/components/Particles.jsx` where we change what we render.
+
+You should go into your particle generator directory, install  Konva and react-konva, then make the changes below. Trying things out is better than just reading my code ;)
+
+```
+$ npm install --save konva react-konva
+```
+
+{aside}
+react-konva is a thin wrapper on Konva itself. There's no need to think about it as its own thing. For the most part, you can go into the Konva docs, read about something, and it Just Works in react-konva.
+{/aside}
+
+### Preparing a canvas layer
+
+Our changes start in `src/components/index.jsx`. We have to throw away the `<svg>` element and replace it with a Konva stage.
+
+You can think of a Konva stage as a canvas element with a bunch of helper methods attached. Some of them Konva uses internally, others are exposed as an API. Functions like exporting to an image file, detecting intersections, etc.
+
+{caption: "Import Konva and set the stage"}
+```javascript
+// src/components/index.js
+
+// ...
+import { Stage } from 'react-konva';
+
+// ...
+class App extends Component {
+    // ..
+    render() {
+        return (
+            // ..
+                     <Stage width={this.props.svgWidth} height={this.props.svgHeight}>
+                         <Particles particles={this.props.particles} />
+
+                     </Stage>
+
+                 </div>
+                 <Footer N={this.props.particles.length} />
+             </div>
+        );
+    }
+}
+```
+
+We import `Stage` from `react-konva`, then use it instead of the `<svg>` element in the `render` method. It gets a `width` and a `height`.
+
+Inside, we render the `Particles` component. It's going to create a Konva Layer and use low-level canvas methods to render particles as sprites.
+
+### Using sprites for max redraw speed
+
+------
 
 Chapter coming in January 2017.
 
@@ -14,7 +164,3 @@ Until then, you can read these posts and watch the attached videos:
 ## Reducing the amount of computation
 
 ## Switching to Preact or Inferno
-
-## Using Canvas
-
-## 15,000+ animated nodes on a phone
