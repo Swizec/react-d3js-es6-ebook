@@ -62,6 +62,7 @@ export default Particle;
 
 It takes `x` and `y` coordinates and returns an SVG circle.
 
+{#svg-particles}
 ### Particles
 
 The `Particles` component isn't much smarter – it returns a list of circles wrapped in a grouping element, like this:

@@ -148,6 +148,145 @@ Inside, we render the `Particles` component. It's going to create a Konva Layer 
 
 ### Using sprites for max redraw speed
 
+Our [SVG-based Particles](#svg-particles) component was simple. Iterate through a list of particles, render a `<Particle>` component for each.
+
+We're going to completely rewrite it.
+
+Our new approach goes like this:
+
+0. Cache a sprite on `componentDidMount`
+1. Clear canvas
+2. Redraw all particles
+3. Repeat
+
+Because the new approach renders a flat image and because we don't care about interaction with individual particles, we can get rid of the `Particle` component. The unnecessary layer of nesting was slowing us down.
+
+The new `Particles` component looks like this:
+
+{caption: "Sprite-based Particles component"}
+```javascript
+import React, { Component } from 'react';
+import { FastLayer } from 'react-konva';
+
+class Particles extends Component {
+    componentDidMount() {
+        this.canvas = this.refs.layer.canvas._canvas;
+        this.context = this.canvas.getContext('2d');
+
+        this.sprite = new Image();
+        this.sprite.src = 'http://i.imgur.com/m5l6lhr.png';
+    }
+
+    drawParticle(particle) {
+        let { x, y } = particle;
+
+        this.context.drawImage(this.sprite, 0, 0, 128, 128, x, y, 15, 15);
+    }
+
+    componentDidUpdate() {
+        let particles = this.props.particles;
+
+        console.time('drawing');
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        for (let i = 0; i < particles.length; i++) {
+            this.drawParticle(particles[i]);
+        }
+        console.timeEnd('drawing');
+    }
+
+    render() {
+        return (
+            <FastLayer ref="layer" transformsEnabled="position" listening="false">
+
+            </FastLayer>
+        );
+    }
+}
+
+export default Particles;
+```
+
+40 lines of code is a lot to look at all at once. Let's walk through it step by step.
+
+##### componentDidMount
+
+{caption: "componentDidMount code"}
+```javascript
+componentDidMount() {
+    this.canvas = this.refs.layer.canvas._canvas;
+    this.context = this.canvas.getContext('2d');
+
+    this.sprite = new Image();
+    this.sprite.src = 'http://i.imgur.com/m5l6lhr.png';
+}
+```
+
+This is a lifecycle hook that React calls when our component first renders. We use it to set up 3 instance properties.
+
+`this.canvas` is a reference to the HTML5 Canvas element. We get it via a ref to the Konva layer, then spelunk through properties to get the canvas itself. As you can see by the `_` prefix, Anton Lavrenov did not intend this to be a public API.
+
+Thanks to JavaScript's permissiveness we can use it anyway.
+
+`this.context` is a reference to our canvas's CanvasRenderingContext2D. It's the interface we use to draw basic shapes, perform transformations, etc. Context is basically the only part of canvas you ever interact with as a developer.
+
+Why it can't be just canvas, I don't know. 
+
+`this.sprite` is a cached image. A small minion that we are going to copy paste all over the place as our particle. Using a combination of `new Image()` and setting the `src` property, loads it into memory as an HTML5 Image object.
+
+It looks like this:
+
+![Our minion particle](http://i.imgur.com/m5l6lhr.png)
+
+You might be thinking that it's unsafe to copy references to rendered elements into component properties like that, but it's okay. Our render function always renders the same thing, so the reference never changes. Copying them like this means less typing.
+
+##### drawParticle
+
+{caption: "drawParticle code"}
+```javascript
+drawParticle(particle) {
+    let { x, y } = particle;
+
+    this.context.drawImage(this.sprite, 0, 0, 128, 128, x, y, 15, 15);
+}
+```
+
+This function draws a single particle on the canvas. It gets coordinates from the `particle` and uses `drawImage` to copy our sprite into position.
+
+We use the whole sprite, corner `(0, 0)` to corner `(128, 128)`. That's how big our sprite is by the way. And we copy it to position `(x, y)` with a width and height of `15` pixels.
+
+`drawImage` is the fastest method I've found to put pixels on canvas. I don't know why it's so fast, but here's a [helpful benchmark](https://jsperf.com/canvas-drawimage-vs-putimagedata/3) so you can see for yourself.
+
+##### componentDidUpdate
+
+{caption: "componentDidUpdate code"}
+```javascript
+componentDidUpdate() {
+    let particles = this.props.particles;
+
+    console.time('drawing');
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    for (let i = 0; i < particles.length; i++) {
+        this.drawParticle(particles[i]);
+    }
+    console.timeEnd('drawing');
+}
+```
+
+##### render
+
+{caption: "render code"}
+```javascript
+render() {
+    return (
+        <FastLayer ref="layer" transformsEnabled="position" listening="false">
+
+        </FastLayer>
+    );
+}
+```
+
 ------
 
 Chapter coming in January 2017.
