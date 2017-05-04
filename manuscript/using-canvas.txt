@@ -96,6 +96,10 @@ Old elements leave the screen and get pruned faster than we can create new ones.
 
 We can render many more elements, if we take out SVG and use HTML5 Canvas instead. I was able to push the code up to around 20,000 smoothly animated elements. Then JavaScript became the bottleneck.
 
+Well, I say JavaScript was the bottleneck, but monitor size plays a role too. It goes up to 20,000 on my laptop screen, juuuust grazes 30,000 on my large desktop monitor, and averages about 17,000 on my iPhone 5SE.
+
+Friends with newer laptops got it up to 35,000.
+
 You can see it in action hosted on [Github pages](http://swizec.github.io/react-particles-experiment/).
 
 We're going to keep most of our code from before. The only changes happen in `src/components/index.jsx` where a Konva stage replaces the `<svg>` element, and in `src/components/Particles.jsx` where we change what we render.
@@ -274,6 +278,23 @@ componentDidUpdate() {
 }
 ```
 
+`componentDidUpdate` is where the real particle drawing happens.  React calls this method every time our list of particles changes. *After* the `render` method.
+
+Yes, we're moving rendering out of the `render` method and into `componentDidUpdate`.
+
+Here's how it works:
+
+1. `this.context.clearRect` clears the entire canvas. From coordinate `(0, 0)` to coordinate `(width, height)`. We delete everything and make the canvas transparent.
+2. We iterate our `particles` list with a for loop and call `drawParticle` on each element.
+
+Clearing and redrawing the canvas is faster than moving individual particles. For loops are faster than `.map` or any other form of iteration. I tested.
+
+You can open your browser console to see how long it takes to draw a frame. That's why I left `console.time` and `console.timeEnd` in the code.
+
+{aside}
+`console.time` starts a timer and `timeEnd` stops it and prints the difference. I was super happy when someone told me about it during one of my livecoding sessions.
+{/aside}
+
 ##### render
 
 {caption: "render code"}
@@ -286,6 +307,22 @@ render() {
     );
 }
 ```
+
+After all that work, our `render` method is pretty simple. We render a Konva `FastLayer`, give it a `ref`, enable `position` transforms – I can't remember why to be honest, might be a leftover from experimenting – and turn off `listening` for mouse events.
+
+Ideas for this combination of settings came from Konva's official [performance tips](https://konvajs.github.io/docs/performance/All_Performance_Tips.html) documentation. I don't understand Konva enough to know *why* this helps, but it makes sense when you think about it.
+
+A `FastLayer` is faster than a `Layer`. It's in the name. Ignoring mouse events means you don't have to keep track of elements. It reduces computation.
+
+All I know is that this was empirically the fastest solution that lead to the most particles on screen. ¯\_(ツ)_/¯
+
+### But why, Swizec?
+
+I'm glad you asked. This was a silly example. I devised the experiment because at my first React+D3 workshop somebody asked *"What if we have thousands of datapoints and we want to animate all of them?"*. I didn't have a good answer.
+
+Now I do. You put them in canvas. You drive the animation with a game loop. You are god.
+
+You can even do it as an overlay. Have an SVG for your graphs and charts, overlay with a transparent canvas for your high speed animation. 
 
 ------
 
