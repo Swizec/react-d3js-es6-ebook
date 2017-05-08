@@ -4,9 +4,9 @@ Welcome to the section on speed optimizations. This is where we make our code ha
 
 You might never need any of the techniques discussed here. You already know how to build performant data visualization components. For 99% of applications, plain code that's easy to read and understand is plenty fast.
 
-Do you really need to save that tenth of a second at runtime and spend an extra hour thinking every time there's a bug?
+Do you really need to save that tenth of a second at runtime and spend an extra hour of thinking every time there's a bug?
 
-Answer honestly.
+Be honest. ;)
 
 That said, there are cases where faster code is also easier to read. And there are cases where your visualization is so massive, that you need every ounce of oomph you can get.
 
@@ -30,7 +30,7 @@ A panelist at ForwardJS once asked me *"But why would you want that?"*. It was m
 
 That's the real answer. Sometimes, when you're visualizing some data, you have a lot of data. The data changes over time, and animation is the best way to show changes over time.
 
-Once upon a time I was working on a [D3 video course](TODO:masteringd3jslink) for Packt and used UFO sightings as an example. At peak UFO sighting, right before smartphones become a thing, the animation takes up to 2 seconds to redraw a single frame. 
+Once upon a time I worked on a [D3 video course](https://www.packtpub.com/web-development/mastering-d3js-video) for Packt and used UFO sightings as an example. At peak UFO sighting, right before smartphones become a thing, the animation takes up to 2 seconds to redraw a single frame. 
 
 It's terrible.
 
@@ -68,7 +68,7 @@ At the same time, the low level API makes abstractions difficult. You can't crea
 
 Your code can soon start looking much like the D3.js spaghetti we wanted to avoid in the first place.
 
-## Declarative HTML5 Canvas with Konva and react-konva
+# Declarative HTML5 Canvas with Konva and react-konva
 
 Enter [Konva](https://konvajs.github.io) and react-konva. All the benefits of declarative code, but rendered on the canvas.
 
@@ -102,7 +102,9 @@ Friends with newer laptops got it up to 35,000.
 
 You can see it in action hosted on [Github pages](http://swizec.github.io/react-particles-experiment/).
 
-We're going to keep most of our code from before. The only changes happen in `src/components/index.jsx` where a Konva stage replaces the `<svg>` element, and in `src/components/Particles.jsx` where we change what we render.
+We're going to keep most of our code from before. The real changes happen in `src/components/index.jsx` where a Konva stage replaces the `<svg>` element, and in `src/components/Particles.jsx` where we change what we render. There's a small tweak in the `CREATER_PARTICLES` reducer to generate more particles on each tick.
+
+If anything looks weird or doesn't work, I've prepared a helpful [GitHub branch](https://github.com/Swizec/react-particles-experiment/tree/canvas-based-branch) for you.
 
 You should go into your particle generator directory, install  Konva and react-konva, then make the changes below. Trying things out is better than just reading my code ;)
 
@@ -122,7 +124,7 @@ You can think of a Konva stage as a canvas element with a bunch of helper method
 
 {caption: "Import Konva and set the stage"}
 ```javascript
-// src/components/index.js
+// src/components/index.jsx
 
 // ...
 import { Stage } from 'react-konva';
@@ -169,6 +171,8 @@ The new `Particles` component looks like this:
 
 {caption: "Sprite-based Particles component"}
 ```javascript
+// src/components/Particles.jsx
+
 import React, { Component } from 'react';
 import { FastLayer } from 'react-konva';
 
@@ -213,10 +217,13 @@ export default Particles;
 
 40 lines of code is a lot to look at all at once. Let's walk through it step by step.
 
-##### componentDidMount
+#### componentDidMount
 
 {caption: "componentDidMount code"}
 ```javascript
+// src/components/Particles.jsx
+
+// ...
 componentDidMount() {
     this.canvas = this.refs.layer.canvas._canvas;
     this.context = this.canvas.getContext('2d');
@@ -244,10 +251,13 @@ It looks like this:
 
 You might be thinking that it's unsafe to copy references to rendered elements into component properties like that, but it's okay. Our render function always renders the same thing, so the reference never changes. Copying them like this means less typing.
 
-##### drawParticle
+#### drawParticle
 
 {caption: "drawParticle code"}
 ```javascript
+// src/components/Particles.jsx
+
+// ...
 drawParticle(particle) {
     let { x, y } = particle;
 
@@ -261,10 +271,13 @@ We use the whole sprite, corner `(0, 0)` to corner `(128, 128)`. That's how big 
 
 `drawImage` is the fastest method I've found to put pixels on canvas. I don't know why it's so fast, but here's a [helpful benchmark](https://jsperf.com/canvas-drawimage-vs-putimagedata/3) so you can see for yourself.
 
-##### componentDidUpdate
+#### componentDidUpdate
 
 {caption: "componentDidUpdate code"}
 ```javascript
+// src/components/Particles.jsx
+
+// ...
 componentDidUpdate() {
     let particles = this.props.particles;
 
@@ -295,10 +308,13 @@ You can open your browser console to see how long it takes to draw a frame. That
 `console.time` starts a timer and `timeEnd` stops it and prints the difference. I was super happy when someone told me about it during one of my livecoding sessions.
 {/aside}
 
-##### render
+#### render
 
 {caption: "render code"}
 ```javascript
+// src/components/Particles.jsx
+
+// ...
 render() {
     return (
         <FastLayer ref="layer" transformsEnabled="position" listening="false">
@@ -324,19 +340,11 @@ Now I do. You put them in canvas. You drive the animation with a game loop. You 
 
 You can even do it as an overlay. Have an SVG for your graphs and charts, overlay with a transparent canvas for your high speed animation. 
 
-------
+## n-body collision simulation with React, Konva, and MobX
 
-Chapter coming in January 2017.
 
-Until then, you can read these posts and watch the attached videos:
 
-- [Rendering React components with canvas](https://swizec.com/blog/livecoding-13-rendering-react-components-with-canvas/swizec/6784)
-- [Mostly smooth animation up to 4,000 elements with React](https://swizec.com/blog/livecoding-14-mostly-smooth-animation-up-to-4000-elements-with-react-and-canvas/swizec/6864)
-- [Reaching the limits of canvas redraw speed](https://swizec.com/blog/livecoding-15-reaching-the-limits-of-canvas-redraw-speed/swizec/6875)
-- [canvas.drawImage performance is weird but magical](https://swizec.com/blog/livecoding-16-canvas-drawimage-performance-is-weird-but-magical/swizec/6881)
-- [Particle physics is hard](https://swizec.com/blog/livecoding-17-particle-physics-is-hard/swizec/6903)
-- [Animating 2048 SVG nodes in React, Preact, Inferno, Vue, Angular 2, and CycleJS – a side-by-side comparison](https://swizec.com/blog/animating-svg-nodes-react-preact-inferno-vue/swizec/7311)
 
-## Reducing the amount of computation
+# Reducing the amount of computation
 
-## Switching to Preact or Inferno
+# Switching to Preact or Inferno
