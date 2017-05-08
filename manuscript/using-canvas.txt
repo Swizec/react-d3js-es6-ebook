@@ -340,9 +340,9 @@ Now I do. You put them in canvas. You drive the animation with a game loop. You 
 
 You can even do it as an overlay. Have an SVG for your graphs and charts, overlay with a transparent canvas for your high speed animation. 
 
-## n-body collision simulation with React, Konva, and MobX
+## n-body collision simulation with React, D3, Konva, and MobX
 
-
+Coming in May 2017. Until then you can watch this video and article: https://www.youtube.com/watch?v=H84fmXjTElM
 
 
 # Reducing the amount of computation
