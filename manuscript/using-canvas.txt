@@ -340,10 +340,366 @@ Now I do. You put them in canvas. You drive the animation with a game loop. You 
 
 You can even do it as an overlay. Have an SVG for your graphs and charts, overlay with a transparent canvas for your high speed animation. 
 
-## n-body collision simulation with React, D3, Konva, and MobX
+{#billiards-simulation}
+## Billiards simulation with MobX and canvas
 
-Coming in May 2017. Until then you can watch this video and article: https://www.youtube.com/watch?v=H84fmXjTElM
+![Billiards game](images/es6v2/billiards-start.png)
 
+We're building a small game. You have 11 glass balls – marbles, if you will. Grab one, throw it at the others, see how they bounce around. There is no point to the game, but it looks cool and it's fun to build.
+
+We're using React and Konva to render our 11 marbles on an HTML5 Canvas element, MobX to drive the animation loop, and D3 to help with collision detection. Because of our declarative approach to animation, we can split this example into two parts:
+
+1. Part 1: Rendering the marbles
+2. Part 2: Building the physics
+
+You can see the finished [code on Github](https://github.com/Swizec/declarative-canvas-react-konva) and play around with a [hosted version](https://swizec.github.io/declarative-canvas-react-konva/) of the code you're about to build. 
+
+I know this example comes late in the book and you're feeling like you know all there is to React and visualizations. You can think of this example as practice. And it's a good way to learn the basics of MobX.
+
+### Decorators
+
+Before we begin, let me tell you about decorators. MobX embraces them to make its API easier to use. You can use MobX without decorators, but decorators make it better. I promise.
+
+About two years ago decorators got very close to becoming an official spec, then were held back. I don't know *why*, but they're a great feature whose syntax is unlikely to change. So even if MobX has to change its implementation when decorators do land in the spec, you're not likely to have to change anything.
+
+You can think of decorators as function wrappers. Instead of something like this:
+
+{caption: "Decoratorless function wrapping"}
+```javascript
+inject('store', ({ store }) => <div>A thing with {store.value}</div>);
+```
+
+You can write something like this:
+
+{caption: "Function wrapping with decorators"}
+```javascript
+@inject('store')
+({ store }) => <div>A thing with {store.value}</div>
+```
+
+I know, that's not much of a difference. It becomes better looking when you work with classes or combine multiple decorators. That's when they shine. No more `})))}))` at the end of your function declarations.
+
+By the way, `inject` is to MobX much like `connect` is to Redux. We'll talk more about that later.
+
+### Part 0: Some setup
+
+Because decorators aren't in the JavaScript spec, we have to tweak how we start our project. We can still use `create-react-app`, but there's an additional step.
+
+You should start a new project like this:
+
+{caption: "Create the billiards game project"}
+```
+$ create-react-app billiards-game --scripts-version custom-react-scripts
+```
+
+This command creates a new directory with a full setup for React. Just like you're used to.
+
+The addition of `--scripts-version custom-react-scripts` employs @kitze's [custom-react-scripts](https://github.com/kitze/custom-react-scripts) project to give us more configuration options. Namely the ability to enable decorators.
+
+We enable them in the `.env` file. Add this line:
+
+{caption: "Add to .env settings"}
+```
+// billiards-game/.env
+// ...
+REACT_APP_DECORATORS=true
+```
+
+No installation necessary. I think `custom-react-scripts` uses the `transform-decorators-legacy` Babel plugin behind the scenes. It's pre-installed, and we just enabled it with that `.env` change.
+
+Before we begin, you should install the other dependencies as well:
+
+{caption: "Install libraries"}
+```
+$ npm install --save konva react-konva mobx mobx-react d3-timer d3-scale d3-quadtree
+```
+
+This installs Konva, MobX, and the parts of D3 that we need. You're now ready to build the billiards game.
+
+### A quick MobX primer
+
+Explaining MobX in detail is beyond the scope of this book. I bet you can learn it by osmosis as you follow the code in our billiards example. 
+
+That said, here's a quick rundown of the concepts we're using.
+
+MobX implements the ideas of reactive programming. There are values that are observable and functions that react when those values change. MobX ensures only the minimal possible set of observers is triggered on every change.
+
+So, we have:
+
+`@observable` – a property whose changes observers subscribe to
+`@observer` – a component whose `render()` method observes values
+`@computed` – a method whose value can be fully derived from obsevables
+`@action` – a method that changes state, analogous to a Redux reducer
+`@inject` – a decorator that injects global stores into a component's props
+
+That's basically all you need to know. Once your component is an `@observer`, you never have to worry about *what* it's observing. MobX ensures it reacts only to the values that it uses during rendering.
+
+Making your component an observer and injecting the global store, is the same as using `connect` in Redux. It gives your component access to your stare, and it triggers a re-render when something that the component uses changes.
+
+Most importantly, it *doesn't* trigger a re-render when something that the component isn't using changes. That little niggle is what makes most other reactive libraries difficult to use.
+
+### Part 1: Rendering our marbles
+
+Our marbles render on canvas using Konva. Each marble is its own  sprite rendered as a Konva element. This makes it easier to implement user and marble interactions.
+
+Rendering happens in 3 components:
+
+- `App` holds everything together
+- `MarbleList` renders a list of marbles
+- `Marble` renders an individual marble
+
+We're also using 2 MobX stores:
+
+- `Sprite` to load the marble sprite and define coordinates within
+- `Physics` as our physics engine
+
+`Sprite` and `Physics` are going to hold almost all of our game logic. We're putting a bit of drag&drop logic in the `Marble` component, but other than that, all our components are presentational. They get props and render stuff.
+
+Let's start with `App` and work our way down.
+
+#### App
+
+Our `App` component doesn't do much. It imports our MobX stores,  triggers sprite loading, and starts the game loop.
+
+{caption: "The App component"}
+```javascript
+// src/components/App.js
+
+import React, { Component } from 'react';
+import { Provider as MobXProvider, observer } from 'mobx-react';
+
+import Physics from '../logic/Physics';
+import Sprite from '../logic/Sprite';
+import MarbleList from './MarbleList';
+
+@observer
+class App extends Component {
+    componentWillMount() {
+        Sprite.loadSprite(() => Physics.startGameLoop());
+    }
+
+    render() {
+        return (
+            <div className="App">
+                <div className="App-header">
+                    <h2>Elastic collisions</h2>
+                    <p>Rendered on canvas, built with React and Konva</p>
+                </div>
+                <div className="App-intro">
+                    <MobXProvider physics={Physics} sprite={Sprite}>
+                        <MarbleList />
+                    </MobXProvider>
+                </div>
+            </div>
+        );
+    }
+}
+
+export default App;
+```
+
+We import our dependencies: React itself, a `MobXProvider` which is similar to the Redux provider (it puts stuff in react context), both our MobX stores which export singleton instances, and the main `MarbleList` component. 
+
+`App` itself is a full featured component that initiates sprite loading in `componentDidMount` and calls `startGameLoop` when the sprite is ready. We know the sprite is ready because it calls a callback. You'll see how that works in a bit.
+
+The `render` method outputs some descriptive text, and the `MarbleList` component wrapped in a `MobXProvider`. The provider puts instances of our stores – `sprite` and `physics` – in React context.
+  
+This makes them available to all child components via the `inject` decorator.
+
+#### MarbleList
+
+Even though `MarbleList` is an important component that basically renders the whole game, it can be a functional stateless component. All the props it needs come from the two stores.
+
+Like this:
+
+{caption: "MarbleList component"}
+```javascript
+// src/components/MarbleList.js
+
+import React from 'react';
+import { inject, observer } from 'mobx-react';
+import { Stage, Layer, Group } from 'react-konva';
+
+import Marble from './Marble';
+
+const MarbleList = inject('physics', 'sprite')(observer(({ physics, sprite }) => {
+    const { width, height, marbles } = physics;
+    const { marbleTypes } = sprite;
+
+    return (
+        <Stage width={width} height={height}>
+            <Layer>
+                <Group>
+                    {marbles.map(({ x, y, id }, i) => (
+                        <Marble x={x}
+                                y={y}
+                                type={marbleTypes[i%marbleTypes.length]}
+                                draggable="true"
+                                id={id}
+                                key={`marble-${id}`} />
+                    ))}
+                </Group>
+            </Layer>
+        </Stage>
+    );
+}));
+
+export default MarbleList;
+```
+
+We import our dependencies and create a `MarbleList` component. Instead of decorators, we're going with functional composition. 
+
+This shows you that MobX *can* work without decorators, but there's no real reason behind this choice. Over time I've developed a preference to use composition for functional stateless components and decorators for class-based components.
+
+`inject` takes values out of context and puts them in component props. `observer` declares that our component observes those props and reacts to them.
+
+It's generally a good idea to use both `inject` and `observer` together. I have yet to find a case where you need just one or the other.
+
+The rendering itself, takes values out of our stores, and returns a Konva `Stage` with a single `Layer`, which contains a `Group`. Inside this group is our list of marbles. 
+
+Each marble gets a position, a `type` that defines how it looks, an `id`, and a `key`. We set `draggable` to `true` so Konva knows that this element is draggable.
+
+Yes, that means we get draggability on an HTML5 Canvas without any extra effort. I like that.
+
+#### Marble
+
+Each `Marble` component renders a single marble and handles dragging and dropping. We could, perhaps should, have put this logic in the physics store, but I felt this makes more sense.
+
+The component looks like this:
+
+{caption: "Marble component"}
+```javascript
+// src/components/Marble.js
+
+import React, { Component } from 'react';
+import { Circle } from 'react-konva';
+import { inject, observer } from 'mobx-react';
+
+@inject('physics', 'sprite') @observer
+class Marble extends Component {
+    onDragStart() {
+        // set drag starting position
+    }
+
+    onDragMove() {
+        // update marble position
+    }
+
+    onDragEnd() {
+        // shoot the marble
+    }
+
+    render() {
+        const { sprite, type, draggable, id, physics } = this.props;
+        const MarbleDefinitions = sprite.marbleDefinitions;
+        const { x, y, r } = physics.marbles[id];
+
+        return (
+            <Circle x={x} y={y} radius={r}
+                    fillPatternImage={sprite.sprite}
+                    fillPatternOffset={MarbleDefinitions[type]}
+                    fillPatternScale={{ x: r*2/111, y: r*2/111 }}
+                    shadowColor={MarbleDefinitions[type].c}
+                    shadowBlur="15"
+                    shadowOpacity="1"
+                    draggable={draggable}
+                    onDragStart={this.onDragStart.bind(this)}
+                    onDragEnd={this.onDragEnd.bind(this)}
+                    onDragMove={this.onDragMove.bind(this)}
+                    ref="circle"
+                    />
+        );
+    }
+}
+
+export default Marble;
+```
+
+We `@inject` both stores into our component and make it an `
+`@observer`. The `render` method takes values out of our stores and renders a Konva `Circle`. The circle uses a chunk of our sprite as its background, has a colorful shadow, and a bunch of drag callbacks.
+
+Those callbacks make our game playable.
+
+In `onDragStart` we store the starting position of the marble being dragged. In `onDragMove` we update the marble's position in the store, which makes it possible for other marbles to bounce off ours while it's moving, and in `onDragEnd` we shoot the marble.
+
+Shoot direction depends on how we dragged. That's why we need to store the starting positions.
+
+Our drag callbacks double as MobX actions, which makes our code simpler. Instead of specifying an extra `@action` in the MobX store, we manipulate the values directly.
+
+MobX makes this okay. It keeps everything in sync and our state easy to understand. MobX even batches several value changes together before triggering re-renders.
+
+That said, I would recommend using explicit `@actions` in larger projects. 
+
+Here's what the dragging callbacks look like.
+
+{caption: "Dragging callbacks"}
+```javascript
+// src/components/Marble.js
+
+class Marble extends Component {
+    onDragStart() {
+        const { physics, id } = this.props;
+
+        this.setState({
+            origX: physics.marbles[id].x,
+            origY: physics.marbles[id].y,
+            startTime: new Date()
+        });
+    }
+
+    onDragMove() {
+        const { physics, id } = this.props;
+        const { x, y } = this.refs.circle.attrs;
+
+        physics.marbles[id].x = x;
+        physics.marbles[id].y = y;
+    }
+
+    onDragEnd() {
+        const { physics } = this.props,
+              circle = this.refs.circle,
+              { origX, origY } = this.state,
+              { x, y } = circle.attrs;
+
+
+        const delta_t = new Date() - this.state.startTime,
+              dist = (x - origX) ** 2 + (y - origY) ** 2,
+              v = Math.sqrt(dist)/(delta_t/16); // distance per frame (= 16ms)
+
+        physics.shoot({
+           x: x,
+           y: y,
+           vx: (x - origX)/(v/3), // /3 is a speedup factor
+           vy: (y - origY)/(v/3)
+           }, this.props.id);
+    }
+    
+    // ...
+}
+```
+
+In `onDragStart` we store original coordinates and start time in local state. These are temporary values that nobody outside this user action cares about. Local state makes sense.
+
+We'll use them to determine how far the user dragged our marble.
+
+In `onDragMove` we update the MobX stare with new coordinates for this particular marble. You might think we're messing with mutable state here, and we *might* be, but these are MobX observables. They're wrapped in setters that ensure everything is kept in sync, changes are being logged, etc.
+
+I don't know how MobX keeps track behind the scenes. I just know it's okay to "change" values.
+
+`onDragEnd` is where the marble shooting happens. We calculate drag speed and direction, and call the `shoot()` action on the `physics` store.
+
+If you're not sure how our math works, I suggest looking up [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance).
+
+#### Sprite store
+
+Now that we know what we're rendering and how, we ned to load our sprite. It's an icon set I bought online somewhere, but can't remember where or who from.
+
+![Billiards game](images/es6v2/billiards-start.png)
+
+sfawe
+
+
+### Part 2: Building the physics
 
 # Reducing the amount of computation
 
