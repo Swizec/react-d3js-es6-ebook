@@ -692,14 +692,406 @@ If you're not sure how our math works, I suggest looking up [euclidean distance]
 
 #### Sprite store
 
-Now that we know what we're rendering and how, we ned to load our sprite. It's an icon set I bought online somewhere, but can't remember where or who from.
+Now that we know how rendering works, we ned to load our sprite. It's an icon set I bought somewhere online, but can't remember where or who from.
 
-![Billiards game](images/es6v2/billiards-start.png)
+Here's what it looks like:
 
-sfawe
+![Marbles sprite](images/es6v2/monster-marbles-sprite-sheets.jpg)
 
+To use this we need two things:
+
+1. A way to tell where on the image each marble lies
+2. A MobX store that loads the image into memory
+
+The first is a `MarbleDefinitions` dictionary. We used it in `Marble` component's render method.
+
+{caption: "MarbleDefinitions dictionary"}
+```javascript
+// src/logic/Sprite.js
+
+const MarbleDefinitions = {
+    dino: { x: -222, y: -177, c: '#8664d5' },
+    redHeart: { x: -222, y: -299, c: '#e47178' },
+    sun: { x: -222, y: -420, c: '#5c96ac' },
+
+    yellowHeart: { x: -400, y: -177, c: '#c8b405' },
+    mouse: { x: -400, y: -299, c: '#7d7e82' },
+    pumpkin: { x: -400, y: -420, c: '#fa9801' },
+
+    frog: { x: -576, y: -177, c: '#98b42b' },
+    moon: { x: -575, y: -299, c: '#b20717' },
+    bear: { x: -576, y: -421, c: '#a88534' }
+};
+
+export { MarbleDefinitions };
+```
+
+Each type of marble has a name, a coordinate, and a color. The coordinate tells us where on the sprite image it is, and the color helps us define a nice looking shadow.
+
+All values were painstakingly assembled by hand. You're welcome.
+
+The MobX store that loads our sprite into memory and helps us use it looks like this:
+
+{caption: "Sprite store"}
+```javascript
+// src/logic/Sprite.js
+
+import { observable, action, computed } from 'mobx';
+import MarbleSprite from '../monster-marbles-sprite-sheets.jpg';
+
+class Sprite {
+    @observable sprite = null;
+
+    @action loadSprite(callback = () => null) {
+        const sprite = new Image();
+        sprite.src = MarbleSprite;
+
+        sprite.onload = () => {
+            this.sprite = sprite;
+
+            callback();
+        };
+    }
+
+    @computed get marbleTypes() {
+        return Object.keys(MarbleDefinitions);
+    }
+
+    @computed get marbleDefinitions() {
+        return MarbleDefinitions;
+    }
+}
+
+export default new Sprite();
+```
+
+As you can see a MobX store is a JavaScript object. It has `@observable` values, `@actions` and `@computed` getters. There's nothing more to it than that.
+
+No complicated reducers and action generators, just JavaScript functions and properties. There's plenty going on behind the scenes, but we don't have to think about it.
+  
+That's why I personally like MobX more than Redux. Feels easier to use :)
+
+In the `Sprite` store we have an `@observable sprite`. Changing this value will trigger a re-render in our `@observer` components that rely on it. Every marble in our case.
+
+Then we have a `loadSprite` action, which creates a new `Image` object and loads the sprite. When the image is done loading, we set `this.sprite`.
+
+Our `@computed` getters make it easier to access `MarbleDefinitions`. `marbleTypes` gives us a list of available types of marbles and `marbleDefinitions` returns the definitions object.
+
+Running your code won't work just yet. We need the physics store first because it defines marble positions.
 
 ### Part 2: Building the physics
+
+Our whole physics engine fits into a single MobX store. It contains the collision detection, marble movement calculations, and drives the game loop itself.
+
+The general approach goes like this:
+
+1. Have an observable array of marbles
+2. Run a `simulationStep` on each `requesAnimationFrame` using `d3.timer`
+3. Change marble positions and speed
+4. MobX observables and observers trigger re-renders of marbles that move
+
+The [whole Physics store](https://github.com/Swizec/declarative-canvas-react-konva/blob/master/src/logic/Physics.js) is some 120 lines of code so I won't share it all at once. Here's what its skeleton looks like:
+
+{caption: "Physics skeleton"}
+```javascript
+// src/logic/Physics.js
+
+class Physics {
+    @observable MarbleR = 25;
+    @observable width = 800;
+    @observable height = 600;
+    @observable marbles = [];
+    timer = null;
+    
+    @computed get initialPositions() {
+ 
+    }
+
+    @action startGameLoop() {
+  
+    }
+
+    @action simulationStep() {
+  
+    }
+
+    @action shoot({ x, y, vx, vy }, i) {
+  
+    }
+}
+```
+
+We have four observable properties, a `timer`, a `@computed` property for initial positions, and 3 actions. The `startGameLoop` starts our game, `simulationStep` holds our main logic, and `shoot` shoots a particular marble.
+
+Let's walk through.
+
+#### initialPositions
+
+{caption: "initialPositions function"}
+```javascript
+// src/logic/Physics.js
+class Physics {
+		// ..
+    @computed get initialPositions() {
+        const { width, height, MarbleR } = this,
+              center = width/2;
+
+        const lines = 4,
+              maxY = 200;
+
+        let marbles = range(lines, 0, -1).map(y => {
+            if (y === lines) return [{ x: center, y: maxY,
+                                       vx: 0, vy: 0, r: this.MarbleR}];
+
+            const left = center - y*(MarbleR+5),
+                  right = center + y*(MarbleR+5);
+
+            return range(left, right, MarbleR*2+5).map(x => ({
+                x: x,
+                y: maxY-y*(MarbleR*2+5),
+                vx: 0,
+                vy: 0,
+                r: this.MarbleR
+            }));
+        }).reduce((acc, pos) => acc.concat(pos), []);
+
+        marbles = [].concat(marbles, {
+            x: width/2,
+            y: height-150,
+            vx: 0,
+            vy: 0,
+            r: this.MarbleR
+        });
+
+        marbles.forEach((m, i) => marbles[i].id = i);
+
+        return marbles;
+    }
+    // ..
+}
+```
+
+Believe it or not, this is like one of those *"Arrange things in a triangle"* puzzles you'd see in an old Learn How To Program book. Or a whiteboard interview.
+
+It took me 3 hours to build. Super easy to get wrong and very fiddly to implement.
+
+We start with a `range` of numbers. From `lines` to `0` in descending order. We iterate through this list of rows and change each into a list of marbles.
+
+4 marbles in the first row, 3 in the next, all the way down to 1 in last row. 
+
+For each row, we calculate how much space we have on the `left` and `right` of the center, make a `range` of horizontal positions from `left` to `right` with a step of "1 marble size".  Using these positions and the known row we create marbles as needed.
+
+We use a `.reduce` to flatten nested arrays, and add the last marble. That's a corner case I couldn't solve elegantly, but I'm sure it's possible.
+
+In the end we add an `id` to each marble. We're using index as the id, that's true, but that still ensures we use consistent values throughout our app. Positions in the array may change.
+
+#### shoot and startGameLoop
+
+{caption: "shoot and startGameLoop functions"}
+```javascript
+// src/logic/Physics.js
+class Physics {
+    // ...
+    
+    @action startGameLoop() {
+        this.marbles = this.initialPositions;
+
+        this.timer = timer(() => this.simulationStep());
+    }
+    
+    // ...
+    
+    @action shoot({ x, y, vx, vy }, i) {
+        const maxSpeed = 20;
+
+        this.marbles[i].x = x;
+        this.marbles[i].y = y;
+        this.marbles[i].vx = vx < maxSpeed ? vx : maxSpeed;
+        this.marbles[i].vy = vy < maxSpeed ? vy : maxSpeed;
+    }
+}
+```
+
+`shoot` and `startGameLoop` are the simplest functions in our physics engine. `startGameLoop` creates the initial `marbles` array, and `shoot` updates a specific marble's coordinates and speed vector.
+
+Lovely :)
+
+#### simulationStep – where collisions collision
+
+Here comes the fun part. The one with our game loop.
+
+I've also made a video of all this. [Watch it on YouTube](https://www.youtube.com/watch?v=H84fmXjTElM). It involves hand-drawn sketches that explain the math and I think that's neat.
+
+{caption: "Full simulationStep function"}
+```javascript
+
+@action simulationStep() {
+    const { width, height, MarbleR } = this;
+
+    const moveMarble = ({x, y, vx, vy, id}) => {
+        let _vx = ((x+vx < MarbleR) ? -vx : (x+vx > width-MarbleR) ? -vx : vx)*.99,
+            _vy = ((y+vy < MarbleR) ? -vy : (y+vy > height-MarbleR) ? -vy : vy)*.99;
+
+        // nearest marble is a collision candidate
+        const subdividedSpace = quadtree().extent([[-1, -1],
+                                                   [this.width+1, this.height+1]])
+                                          .x(d => d.x)
+                                          .y(d => d.y)
+                                          .addAll(this.marbles
+                                                      .filter(m => id !== m.id)),
+              candidate = subdividedSpace.find(x, y, MarbleR*2);
+
+        if (candidate) {
+
+            // borrowing @air_hadoken's implementation from here:
+            // https://github.com/airhadoken/game_of_circles/blob/master/circles.js#L64
+            const cx = candidate.x,
+                  cy = candidate.y,
+                  normx = cx - x,
+                  normy = cy - y,
+                  dist = (normx ** 2 + normy ** 2),
+                  c = (_vx * normx + _vy * normy) / dist * 2.3;
+
+            _vx = (_vx - c * normx)/2.3;
+            _vy = (_vy - c * normy)/2.3;
+
+            candidate.vx += -_vx;
+            candidate.vy += -_vy;
+            candidate.x += -_vx;
+            candidate.y += -_vy;
+        }
+
+        return {
+            x: x + _vx,
+            y: y + _vy,
+            vx: _vx,
+            vy: _vy
+        }
+    };
+
+    this.marbles.forEach((marble, i) => {
+        const { x, y, vx, vy } = moveMarble(marble);
+
+        this.marbles[i].x = x;
+        this.marbles[i].y = y;
+        this.marbles[i].vx = vx;
+        this.marbles[i].vy = vy;
+    });
+}
+```
+
+That's a lot of code 😅. Let's break it down. 
+
+You can think of `simulationStep` as a function and a loop. At the bottom, there is a `.forEach` that applies a `moveMarble` function to each marble.
+
+{caption: "Loop through marbles"}
+```javascript
+    this.marbles.forEach((marble, i) => {
+        const { x, y, vx, vy } = moveMarble(marble);
+
+        this.marbles[i].x = x;
+        this.marbles[i].y = y;
+        this.marbles[i].vx = vx;
+        this.marbles[i].vy = vy;
+    });
+```
+
+We iterate over the list of marbles, feed them into `moveMarble`, get new properties, and save them in the main marbles array. This might be unnecessary because of MobX. We *should* be able to change them inside the loop and rely on MobX observables to do the heavy lifting.
+
+I wonder why I did it like this 🤔 Maybe a leftover from before MobX ...
+
+##### moveMarble
+
+`moveMarble` is itself a hairy function. Things happen in 3 steps:
+
+1. Handle collisions with walls
+2. Find collision with closest other marble
+3. Handle collision with marble
+
+**Handling collisions with walls happens** in two lines of code. One per coordinate.
+
+```javascript
+let _vx = ((x+vx < MarbleR) ? -vx : (x+vx > width-MarbleR) ? -vx : vx)*.99,
+    _vy = ((y+vy < MarbleR) ? -vy : (y+vy > height-MarbleR) ? -vy : vy)*.99;
+```
+
+Nested ternary expressions are kinda messy, but good enough. If marble is beyond any boundary, we reverse its direction. We *always* apply a `.99` friction coefficient so that marbles slow down.
+
+**Finding collisions** with the next closest marble happens via a quadtree. Since we don't have too many marbles, we can afford to build a new quadtree from scratch every time.
+
+{aside}
+A quadtree is a good way to subdivide space into areas. It lets us answer the question of "What's close enough to me to possibly touch me?" without making too many position comparisons.
+
+Checking every marble with every other marble produces 81 comparisons. Versus 2 comparisons using a quadtree.
+{/aside}
+
+```javascript
+// nearest marble is a collision candidate
+const subdividedSpace = quadtree().extent([[-1, -1],
+                                           [this.width+1, this.height+1]])
+                                  .x(d => d.x)
+                                  .y(d => d.y)
+                                  .addAll(this.marbles
+                                              .filter(m => id !== m.id)),
+      candidate = subdividedSpace.find(x, y, MarbleR*2);
+```
+
+We're using [`d3-quadtree`](https://github.com/d3/d3-quadtree) for the quadtree implementation. It takes an `extent`, which tells it how big our space is. It uses `x` and `y` accessors to get coordinates out of our marble objects, and we use `addAll` to fill it with marbles.
+
+To avoid detecting each marble as colliding with itself, we take each marble out of our list before feeding the quadtree. 
+
+Once we have a quadtree built out, we use `.find` to look for the nearest marble within `MarbleR*2` of the current marble. Which is exactly the one we're colliding with! :)
+
+**Handling collisions with marbles** involves math. The sort of thing you think you remember from high school, and suddenly realize you don't when the time comes to use it.
+
+The code looks like this:
+
+```javascript
+if (candidate) {
+
+    // borrowing @air_hadoken's implementation from here:
+    // https://github.com/airhadoken/game_of_circles/blob/master/circles.js#L64
+    const cx = candidate.x,
+          cy = candidate.y,
+          normx = cx - x,
+          normy = cy - y,
+          dist = (normx ** 2 + normy ** 2),
+          c = (_vx * normx + _vy * normy) / dist * 2.3;
+
+    _vx = (_vx - c * normx)/2.3;
+    _vy = (_vy - c * normy)/2.3;
+
+    candidate.vx += -_vx;
+    candidate.vy += -_vy;
+    candidate.x += -_vx;
+    candidate.y += -_vy;
+}
+
+return {
+    x: x + _vx,
+    y: y + _vy,
+    vx: _vx,
+    vy: _vy
+}
+```
+
+Ok, the `return` statement isn't about handling collisions. It updates the current marble.
+
+The rest kind of looks like magic. I implemented it and it looks like magic and I feel like I don't *really* understand it.
+
+You can think of `[normx, normy]` as a vector that points from current marble, to collision candidate. It gives us bounce direction. We use the [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) formula to calculate the length of this vector. The distance between the centers of both marbles.
+
+Then we calculate the [dot product](https://en.wikipedia.org/wiki/Dot_product) between our marble's speed vector, and the collision direction vector. And we normalize it by distance. Multiplying distance by `2` accounts for there being two marbles in the collision. That extra `.3` made the simulation look better.
+
+I fiddled with it :)
+
+Then we use the dot product scalar to adjust the marble's speed vector. Dividing by `2` takes into account that half the energy goes to the other marble. This is only true because we assume their masses are equal.
+
+Finally we update the `candidate` marble and make sure it bounces off as well. We do it additively because that's how it happens in real life.
+
+Now two marbles traveling towards each other in exactly opposite directions with exactly the same speed, will stop dead and stay there. As soon as there's any misalignment, deflection happens. If one is stationary, it starts moving. If it's moving in the same direction, it speeds up ... etc.
+
+The end result is [a decent-looking simulation of billiards](https://swizec.github.io/declarative-canvas-react-konva/). I'd show you a gif, but those don't work well in books.
 
 # Reducing the amount of computation
 
