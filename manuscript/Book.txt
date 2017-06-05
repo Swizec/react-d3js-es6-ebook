@@ -4,7 +4,7 @@ the-meat-start.txt
 the-new-meat.md
 animation.md
 animating-react-redux.txt
-using-canvas.txt
+speed-optimizations.txt
 conclusion.txt
 appendixA.md
 appendixB.txt
