@@ -1,7 +1,7 @@
 {#the-meat-start}
 # Visualizing data with React and d3.js #
 
-Welcome to the main part of React+d3.js. We're going to talk a little theory, some principles, then get our hands dirty with a few examples. Through this book you're going to build:
+Welcome to the main part of React + D3v4. We're going to talk a little theory, some principles, then get our hands dirty with a few examples. Through this book you're going to build:
 
 - [A choropleth map](#choropleth-map)
 - [An interactive histogram](#histogram-of-salaries)
@@ -14,21 +14,22 @@ Welcome to the main part of React+d3.js. We're going to talk a little theory, so
 
 Looks random, right? Bear with me.
 
-Examples build on each other in complexity. **The first** teaches you how to make a static data visualization component and shows you an approach to declarative data visualization. **The second** adds interactivity and components interacting with each other in order to teach you about a simple approach to state management. **The third** shows you how to use transitions to build simple animations. **The fourth** shows you how to do complex animation using a game loop principle. **The fifth** and  **the sixth** show you how to approach speed optimization to smoothly animate thousands of elements.
+Examples build on each other in complexity. **The first** teaches you how to make a static data visualization component and shows you an approach to declarative data visualization. **The second** adds interactivity and components interacting with each other in order to teach you about a simple approach to state management. **The third** shows you how to use transitions to build simple animations. **The fifth** shows you complex transitions with entering and exiting components.
+**The fifth** shows you how to do complex animation using a game loop principle. **The sixth, seventh, and eighth** show you how to approach speed optimization to smoothly animate thousands of elements.
 
-Throughout the examples, we're going to use **React 15**, **D3v4**, and **ES6+**. In the particle generator, we're also going to use **Redux** to drive the game loop and **Konva** for canvas manipulation.
+Throughout our examples, we're going to use **React 15**, compatible with **React 16 Fiber**, **D3v4**, and **ES6+**. In the particle generator, we're also going to use **Redux** to drive the game loop and **Konva** for canvas manipulation. The billiards simulation uses **MobX** so you can compare it to Redux and learn both.
 
 Don't worry if you're not comfortable with ES6 syntax yet. By the end of this book, you're gonna love it!
 
-In the meantime, here's a helpful cheatsheet: [es6cheatsheet.com](https://es6cheatsheet.com/). It uses interactive code samples to compare the ES5 way with the ES6 way so you can brush up quickly.
+Until then, here's an interactive cheatsheet: [es6cheatsheet.com](https://es6cheatsheet.com/). It uses code samples to compare the ES5 way with the ES6 way so you can brush up quickly.
 
-I'm working on a similar cheatsheet for D3v3 → D3v4. It's going to be ready in early 2017. You'll get an email when it's done.
+I'm working on a similar cheatsheet for D3v3 → D3v4. It's going to be ready some time in 2017. You'll get an email when it's done.
 
-In the interest of looking towards the future, we'll check out **Preact**, **Vue**, and **Inferno** in the final fractal example. They're new React-like libraries that promise better performance and smaller filesizes. Their creators – Jason Miller, Evan You, and Dominic Gannaway - graciously forked my code into their libraires. Thank you!
+In the interest of looking towards the future, we'll check out **Preact** and **Inferno** in the final fractal example. They're new React-like libraries that promise better performance and smaller file sizes. Their creators – Jason Miller and Dominic Gannaway - graciously forked my example and built the same thing in their respective libraries. Thank you!
 
 ----
 
-Before we begin the examples, let's talk about how React and D3 fit together and how we're going to structure our apps. If you prefer to get your hands dirty first and ask questions later, skip this section and jump to examples.
+Before we begin our examples, let's talk about how React and D3 fit together and how we're going to structure our apps. If you prefer to get your hands dirty first and ask questions later, skip this section and jump to examples.
 
 This section is split into five chapters:
 
