@@ -1,17 +1,22 @@
-# Conclusion
+# Conclusion #
 
-You finished the book. That makes you my favorite person!
+You finished the book! You're my new favorite person \o/
 
-If you followed the examples, you've created your first two visualizations with React and d3.js - something useful, and something fun. You’re amazing!
+You've built a really big interactive data visualization, a few silly animations, learned the basics of Redux and MobX, looked into rendering your stuff on canvas, and considered React alternatives.
 
-If you only read through the book, that’s cool, too. You know much more about making reusable visualizations than you did an hour ago.
+Right now you might be thinking *"How the hell does this all fit together to help me build interactive graphs and charts?"* You've learned building blocks!
 
-You understand why the declarative nature of React works well with d3.js and vice-versa. You know what it takes to write reusable components and how much easier they make your life once you’ve built them. You know how to configure Webpack and Babel to create an awesome environment to work with. You understand when using Redux is better than doing yourself, and when it's not.
+First you learned the basics. How to make React and D3 like each other, how to approach rendering, what to do with state. Then you built a big project to see how it fits together.
 
-In short, you know everything you need to start making your own visualization components. At the very least, you know whether React and d3.js are a good tech stack for you.
+Then you learned animation basics. How to approach updating components with fine grained control and how to do transitions. You learned that tricks from the gaming industry work here too.
 
-And that’s awesome!
+You're an expert React slinger now! I think that's awesome.
 
-If you have any questions, poke me on twitter. I’m [@Swizec](https://twitter.com/Swizec). Or send me an email at swizec@swizec.com.
+Even if you didn't build the projects, you still learned the theory. When the right problem presents itself, you'll think of this book and remember what to do. Or at least know where to look to find a solution.
 
-Got consulting time with your package? Schedule a call and I'll help you fix whatever's going wrong.
+At the very least you know where to look to find a solution. This book is yours forever. 
+
+I hope you have enjoyed this book. Tweet [@Swizec](https://twitter.com/Swizec) and tell me what you're building. :)
+
+
+Questions? Poke me on twitter. I’m [@Swizec](https://twitter.com/Swizec). Or send me an email to hi@swizec.com. I read every email and reply on a best effort basis.

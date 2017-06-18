@@ -1,3 +1,5 @@
+{mainmatter}
+
 {#getting-started}
 # Getting started
 

@@ -1,36 +1,100 @@
+{frontmatter}
+
 # Introduction #
+
+Hello new friend!
+
+![This is me, Swizec](images/es6v2/6300d21408f5e9f0c8f5698d266fb258.jpg)
+
+Welcome to what I hope is the best and most fun React learning resource on the internets. No TODO apps here, just fun interactive stuff that makes you look great at a dinner party. 
+
+240 pages, 8 example apps, a bunch of skill building blocks.
+
+Reading this book you will:
+
+- build a really big interactive data visualization
+- build a few silly animations
+- learn the basics of D3js
+- master React
+- learn the basics of Redux and MobX
+- look into rendering rich animations on canvas
+- explore React alternatives like Preact and Inferno
+
+You might be thinking *"How the hell does this all fit together to help me build interactive graphs and charts?"*. They're building blocks!
+
+First I will show you the basics. How to make React and D3 like each other, how to approach rendering, what to do with state. 
+
+Then you will build a big project to see how it all fits together.
+
+When you're comfortable with React and D3 working together, I will show you animation basics. How to approach updating components with fine grained control and how to do transitions. I'll show you that tricks from the gaming industry work here too.
+
+Short on time? Don't worry. The basic examples are built on Codepen, a web-based IDE. Read the explanation, run the code in your browser, master enough React to be dangerous.
+
+In about an hour you'll know React well enough to explore on your own, to sell the tech to your boss and your team, and to assess if the React and D3 combination fits your needs.
+
+I believe learning new tech should be exciting.
 
 # Foreword
 
-I wrote this book for you as an experiment. The theory we’re testing is that technical content works better as a short e-book than as a long article.
+I wrote the first version of this book in Spring 2015 as a dare.  Can I learn a thing and write a book in a month? Yes.
 
-You see, the issue with online articles is that they live and die by their length. As soon as you surpass 700 words, everything falls apart. Readers wander off to a different tab in search of memes and funny tweets, never to come back.
+That first version was 91 pages long and sold a few hundred copies. Great success! This version is 240 pages and sold over a hundred copies in preorders alone.
 
-This hurts my precious writer's ego, but more importantly, it sucks for you. If you're not reading, you're not learning.
+That makes me happy. If you're one of those early supporters, thank you! You're the best.
 
-So here we both are.
+Here's what I had to say about the first version:
 
-I’m counting on you to take some time away from the internet, to  sit down and read. I'm counting on you to follow the examples. I'm counting on you to *learn*.
+> I wrote this book for you as an experiment. The theory we’re testing is that technical content works better as a short e-book than as a long article.
 
-You’re counting on me to have invested more time, effort, and care in crafting this than I would have invested in an article. I have.
+> You see, the issue with online articles is that they live and die by their length. As soon as you surpass 700 words, everything falls apart. Readers wander off to a different tab in search of memes and funny tweets, never to come back.
 
-I’ve tried to keep this book as concise as possible. iA Writer estimates it will take you about an hour to read *React+d3.js*, but playing with the examples might take some time, too.
+> This hurts my precious writer's ego, but more importantly, it sucks for you. If you're not reading, you're not learning.
 
-# Why you should read React+d3.js
+> So here we both are.
 
-After an hour with *React+d3.js*, you’ll know how to make React and d3.js play together. You’ll know how to create composable data visualizations. You’re going to understand *why* that’s a good idea, and you will have the tools to build your own library of reusable visualization parts.
+> I’m counting on you to take some time away from the internet, to  sit down and read. I'm counting on you to follow the examples. I'm counting on you to *learn*.
 
-Ultimately, you’re going to understand whether React and d3.js fit the needs of your project.
+> You’re counting on me to have invested more time, effort, and care in crafting this than I would have invested in an article. I have.
+
+> I’ve tried to keep this book as concise as possible. iA Writer estimates it will take you about an hour to read *React+d3.js*, but playing with the examples might take some time, too.
+
+All of that still rings true. People are distracted, the internet is shiny, it's hard to keep readers for more than 5 minutes at a time.
+
+I don't know how fast you read, but I don't *really* learn things with a 5 minute skim. I need to sit down, try stuff out, play around.
+
+That's what I'm hoping you'll do with this book. Sit down, play with code, try the examples, have some fun.
+
+If you're short on time: Read the theory. You'll get the gist and learn the basics in about an hour. I promise :)
+
+# Why you should read React + D3v4
+
+After an hour with *React + D3v4*, you’ll know how to make React and D3js play together. You’ll know how to create composeable data visualizations. You’re going to understand *why* that’s a good idea, and you will have the tools to build your own library of interactive visualization components.
+
+With a deep dive, you're going to 
+
+- build a really big interactive data visualization
+- build a few silly animations
+- learn the basics of D3js
+- master React
+- learn the basics of Redux and MobX
+- look into rendering rich animations on canvas
+- explore React alternatives like Preact and Inferno
+
+It's going to be fun! I believe learning new tech should be exciting so I did my best to inject joy whenever I could.
 
 # What you need to know
 
-I’m going to assume you already know how to code and that you’re great with JavaScript. Many books have been written to teach the basics of JavaScript; this is not one of them.
+I’m going to assume you already know how to code and that you're great with JavaScript. Many books have been written to teach the basics of JavaScript; this is not one of them.
 
-I’m also going to assume some knowledge of d3.js. Since it isn’t a widely-used library, I’m still going to explain the specific bits that we use. If you want to learn d3.js in depth, you should read my book, [Data Visualization with d3.js](https://www.packtpub.com/web-development/data-visualization-d3js).
+If you're struggling with modern JavaScript syntax, I suggest visiting my [Interactive ES6 Cheatsheet](https://es6cheatsheet.com)
 
-React is a new kid on the block, so I’m going to assume you're not quite as familiar with it. We’re not going to talk about all the details, but you’ll be fine, even if this is your first time looking at React.
+I’m also going to assume some knowledge of D3js. Since it isn’t a widely-used library, I’m going to explain the specific bits that we use. If you want to learn d3.js in depth, you should the third edition of my first ever book, [D3.js 4.x Data Visualization - Third Edition](https://www.packtpub.com/web-development/d3js-4x-data-visualization-third-edition). Written by Ændrew Rininsland with some bits left from yours truly.
 
-The examples in React+d3.js ES6 edition are written in ES6 - ECMAScript2015. Familiarity with the new syntax and language constructs will help, but I'm going to explain everything new that we use.
+React is a new kid on the block ... well it's been 2 years but still. You'll be fine even if this is your first time looking at React. This book is more about learning React than it is about learning D3.
+
+All examples in React + D3v4 are written in modern JavaScript. Most code is ES6 – ECMAScript2015 – some might be 2016, maybe even 2017. I find it hard to keep track to be honest. 
+
+I'm going to explain any new syntax that we use.
 
 ## How to read this book
 
@@ -38,45 +102,26 @@ Relax. Breathe. You’re here to learn. I’m here to teach. I promise Twitter a
 
 Just you and some fun code. To get the most out of this material, I suggest two things:
 
-1. Try the example code yourself. Don’t just copy-paste; type it and execute it. Execute it frequently. If something doesn’t fit together, look at the full working project on Github [here](https://github.com/Swizec/h1b-software-salaries), or check out the zip files that came with the book.
+1. Try the example code yourself. Don’t just copy-paste; type it and execute it. Execute it frequently. If something doesn’t fit together, look at the linked Github [here](https://github.com/Swizec/h1b-software-salaries) repositories. Each example has one.
 2. If you already know something, skip that section. You’re awesome. Thanks for making this easier.
 
-React+d3.js is heavily based on code samples. They look like this:
+React + D3v4 is based on code samples. They look like this:
 
-{line-numbers: false, format: javascript}
+{caption: "Some code"}
+```javascript
+let foo = 'bar';
+foo += 'more stuff';
 ```
-var foo = 'bar';
-```
-
-Added code looks like this:
-
-{line-numbers: false, format: javascript}
-```
-var foo = 'bar’;
-// markua-start-insert
-foo += 'this is added’;
-// markua-end-insert
-```
-
-Removed code looks like this:
-
-{line-numbers: false, format: javascript}
-```
-var foo = 'bar';
-// markua-start-delete
-foo += 'this is added';
-// markua-end-delete
-```
-
+  
 Each code sample starts with a commented out file path. That's the file you're editing. Like this:
 
-{line-numbers: false, format: javascript}
-```
-// ./src/App.jsx
-
+{caption: "Code samples have file paths"}
+```javascript
+// ./src/App.js
+    
 class App ...
 ```
-
+    
 Commands that you should run in the terminal start with an `$` symbol, like this:
 
 {line-numbers: false}
@@ -84,15 +129,8 @@ Commands that you should run in the terminal start with an `$` symbol, like this
 $ npm start
 ```
 
-## ES5 and ES6 versions
 
-You are reading React+d3.js ES6 edition. Functionally, it's almost the same as the ES5 version, but it has a better file structure and some additional content.
-
-You can read either version depending on which version of JavaScript you're more comfortable with. Keep in mind, the ES5 version isn't getting further updates.
-
-Both will teach you how to effectively use React and d3.js to make reusable data visualization components.
-
-# Why React and d3.js
+# Why React and D3js
 
 React is Facebook's and Instagram's approach to writing modern JavaScript front-ends. It encourages building an app out of small, re-usable components. Each component is self-contained and only knows how to render a small bit of the interface.
 
@@ -108,7 +146,7 @@ Just like React, d3.js is declarative. You tell it *what* you want instead of *h
 
 This is where React comes in. For instance, once you’ve created a histogram component, you can always get a histogram with `<Histogram {...params} />`.
 
-Doesn’t that sound like the best? I think it's pretty amazing.
+Doesn’t that sound like the best? I think it's amazing.
 
 It gets even better. With React, you can make various graph and chart components build off the same data. This means that when your data changes, the whole visualization reacts.
 
@@ -130,7 +168,8 @@ We're going to use a lot of buzzwords in this book. Hell, we've used some alread
 - **ECMAScript2016**, official name for the part of ES7 we're getting in 2016
 - **ES5**, any JavaScript features that existed before June 2015
 - **ES6/ECMAScript2015**, any JavaScript features released as part of the new standard in June 2015 (think `=>` and stuff)
-- **ES7**, the standard we were promised for 2016, but also a catch-all for future JavaScript features
+- **ES7**, the standard we got in 2016, but also a catch-all for future JavaScript features
+- **ES6+**, an umbrella term for "modern JavaScript"; anything new since 2015
 - **fat arrows**, a new way to define functions in ES6 (`=>`)
 - **Git**, a version control system. It's pretty popular, you probably know it :)
 - **H1B**, a popular type of work visa in the United States
@@ -144,22 +183,27 @@ We're going to use a lot of buzzwords in this book. Hell, we've used some alread
 
 # JSX
 
-We’re going to write our code in JSX, a JavaScript syntax extension that lets us treat XML-like data as normal code. You can use React without JSX, but I think it makes React’s full power easier to use.
+We’re going to write our components in JSX, a JavaScript syntax extension that lets us treat XML-like data as normal code. You can use React without JSX, but I think JSX makes React’s full power easier to use.
 
-The gist of JSX is that we can use any XML-like string just like it is part of JavaScript. No Mustache or messy string concatenation necessary. Your functions can return straight-up HTML, SVG, or XML.
+The gist of JSX is that we can use any XML-like string just like it was part of JavaScript. No Mustache or messy string concatenation necessary. Your functions can return HTML, SVG, or XML.
 
-For instance, the code that renders our whole application is going to look like this:
+For instance, code that renders one of our first examples – a color swatch – looks like this:
 
-{format: javascript, crop-start: 399, crop-end: 402}
-![A basic Render](code_samples/old/main.jsx)
+{caption: "Render a color swatch"}
+```javascript
+ReactDOM.render(
+	<Colors width="400" />, 
+	document.getElementById('svg')
+);
+```
 
 Which compiles to:
 
-{caption: "JSX compile result", format: javascript}
-```
+{caption: "JSX compiled result"}
+```javascript
 ReactDOM.render(
-	React.createElement(H1BGraph, {url: “data/h1bs.csv”}),
-	document.querySelectorAll(‘.h1bgraph’)[0]
+	React.createElement(Colors, {width: "400"}),
+	document.querySelectorAll('svg')[0]
 );
 ```
 
@@ -167,6 +211,6 @@ As you can see, HTML code translates to `React.createElement` calls with attribu
 
 You’ll see that anything from a simple value to a function or an object works equally well.
 
-I used to be a fan of the One Language Per File principle, but using JSX has made my code much easier to work with, especially in a small team where I do everything - the code, the markup, the styles - having the relevant code colocated helps a lot. 
+I used to be a fan of the One Language Per File principle, but using JSX has made my code much easier to work with. Especially in a small team where I do everything - the code, the markup, the styles - having the relevant code colocated helps a lot. 
 
 But I wouldn't let a designer edit my HTML in JavaScript, for instance. Can't see that ending well.

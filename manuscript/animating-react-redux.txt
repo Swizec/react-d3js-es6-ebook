@@ -1,31 +1,29 @@
 {#animating-react-redux}
 # Animating with React, Redux, and d3
 
-And now for something completely different. No more histogram, no more salaries and serious stuff. Just nerdy fun.
+And now for some pure nerdy fun: A particle generator ... or, well, as close as you can get with React and D3. You'd need WebGL for a *real* particle generator.
 
-This chapter builds a particle generator. It makes tiny circles fly out of where you click. Hold down your mouse and move around. The particles keep flying out of your cursor.
+We're making tiny circles fly out of your mouse cursor. Works on mobile with your finger too.
 
-On mobile and only have a finger? That works, too.
+To see the particle generator in action, [go here](http://swizec.github.io/react-particles-experiment/). Github won't let me host different branches, so you'll see the advanced 20,000 particle version from next chapter.
 
-I'm a nerd, so this is what I consider fun. Your mileage may vary.
+We're using the [game loop](#game-loop) approach to animation and Redux to store the state tree and drive changes for each frame.
 
-To see the particle generator in action, go [here](http://swizec.github.io/react-particles-experiment/).
-
-To see the entire code, go to the [repository on GitHub](https://github.com/Swizec/react-particles-experiment). Code samples in this chapter are less complete than before, but you will see enough to understand what's going on.
-
-We're going to use Redux as our state handler, and approach animation and dataviz like it was a game. A giant state tree (stored in a Redux store) holds information about *everything*, the game loop makes changes on every 60th of a second, things magically move.
+You can see the full code [on GitHub](https://github.com/Swizec/react-particles-experiment/tree/svg-based-branch). Code samples in this chapter focus more on the Redux part because that's what's new.
 
 It's going to be great.
 
+{aside}
+Code in this example uses the `.jsx` file extension. I originally wrote it back when that was still a thing and while I did update everything to React 15.5.x, I felt changing all filenames was unnecessary.
+
+It also predates create-react-app. The code _should_ work with create-react-app, but if you have issues, I suggest copying config files [from GitHub](https://github.com/Swizec/react-particles-experiment/tree/svg-based-branch)
+{/aside}
+
 ## Here's how it works
 
-The whole thing is built with React, Redux, and d3. No tricks for animation; just a bit of cleverness.
+We use **React to render everything**: the page, the SVG element, the particles inside. This lets us tap into React's algorithms that decide which nodes to update and when to garbage collect old nodes.
 
-Here's the general approach:
-
-We use **React to render everything**: the page, the SVG element, the particles inside. All of it is built with React components that take some props and return some DOM. This lets us tap into React's algorithms that decide which nodes to update and when to garbage collect old nodes.
-
-Then we use some **d3 calculations and event detection**. D3 has great random generators, so we take advantage of that. D3's mouse and touch event handlers calculate coordinates relative to our SVG. We need those, and React can't do it. React's click handlers are based on DOM nodes, which don't correspond to `(x, y)` coordinates. D3 looks at real cursor position on screen.
+Then we use some **d3 calculations and event detection**. D3 has great random generators, so we take advantage of that. D3's mouse and touch event handlers calculate coordinates relative to our SVG. We need those, and React's click handlers are based on DOM nodes, which don't correspond to `(x, y)` coordinates. D3 looks at real cursor position on screen.
 
 All **particle coordinates are in a Redux store**. Each particle also has a movement vector. The store holds some useful flags and general parameters, too. This lets us treat animation as data transformations. I'll show you what I mean in a bit.
 
@@ -37,111 +35,99 @@ When the store updates, **React flushes changes** via props and because **coordi
 
 The result is smooth animation.
 
-Keep reading to learn the details. The [code is also on GitHub](https://github.com/Swizec/react-particles-experiment).
-
-A version of this article will be featured as a chapter in my upcoming [React+d3js ES6 book](http://swizec.com/reactd3js/).
-
 ## 3 presentation components
 
-We'll start with the presentation components because they're the least complicated. To render a collection of particles, we need:
+We start with the presentation components because they're the least complicated. To render a collection of particles, we need:
 
 - a stateless `Particle`
 - a stateless `Particles`
 - a proper `App`
 
-None of them contain state, but `App` has to be a proper component so that we can use `componentDidMount`. We need it to attach d3 event listeners.
+None of them contain state, but `App` has to be a proper component so that we can use `componentDidMount`. We need it to attach D3 event listeners.
+
+### Particle
 
 The `Particle` component is a circle. It looks like this:
 
-{title="Particle component",linenos=off,lang=js}
-			// src/components/Particles/Particle.jsx
-			import React, { PropTypes } from 'react';
-			
-			const Particle = ({ x, y }) => (
-			    <circle cx={x} cy={y} r="1.8" />
-			);
-			
-			Particle.propTypes = {
-			    x: PropTypes.number.isRequired,
-			    y: PropTypes.number.isRequired
-			};
-			
-			export default Particle;
+{caption: "Particle component"}
+```javascript
+// src/components/Particles/Particle.jsx
+import React from 'react';
+
+const Particle = ({ x, y }) => (
+	<circle cx={x} cy={y} r="1.8" />
+);
+
+export default Particle;
+```
 
 It takes `x` and `y` coordinates and returns an SVG circle.
 
+{#svg-particles}
+### Particles
+
 The `Particles` component isn't much smarter – it returns a list of circles wrapped in a grouping element, like this:
 
-{title="Particles list",linenos=off,lang=js}
-		// src/components/Particles/index.jsx
-		import React, { PropTypes } from 'react';
+{caption: "Particles list"}
+```javascript
+// src/components/Particles/index.jsx
+import React from 'react';
+import Particle from './Particle';
+
+const Particles = ({ particles }) => (
+	<g>{particles.map(particle =>
+		<Particle key={particle.id}
+		          {...particle} />
+		)}
+	</g>
+);
+
+export default Particles;
+```
 		
-		import Particle from './Particle';
-		
-		const Particles = ({ particles }) => (
-		    <g>{particles.map(particle =>
-		        <Particle key={particle.id}
-		                  {...particle} />
-		        )}
-		    </g>
+Walk through the array of particles, render a Particle component for each. Declarative rendering that you've seen before :)
+
+We can take an array of `{id, x, y}` objects and render SVG circles. Now comes our first fun component: the `App`.
+
+### App
+
+`App` takes care of rendering the scene and attaching d3 event listeners. It's not _really_ a presentation component because it gets actions via props and uses ties them to mouse events. This is a Redux faux par, but works well in practice.
+
+The rendering part looks like this:
+
+{caption: "App component"}
+```javascript
+// src/components/index.jsx
+
+import React, { Component } from 'react';
+import { select as d3Select, mouse as d3Mouse, touches as d3Touches } from 'd3';
+
+
+import Particles from './Particles';
+import Footer from './Footer';
+import Header from './Header';
+
+class App extends Component {
+	render() {
+		return (
+			<div onMouseDown={e => this.props.startTicker()} style={{overflow: 'hidden'}}>
+			     <Header />
+			     <svg width={this.props.svgWidth}
+			          height={this.props.svgHeight}
+			          ref="svg"
+			          style={{background: 'rgba(124, 224, 249, .3)'}}>
+			         <Particles particles={this.props.particles} />
+			     </svg>
+			     <Footer N={this.props.particles.length} />
+			 </div>
 		);
-		
-		Particles.propTypes = {
-		    particles: PropTypes.arrayOf(PropTypes.shape({
-		        id: PropTypes.number.isRequired,
-		        x: PropTypes.number.isRequired,
-		        y: PropTypes.number.isRequired
-		    }).isRequired).isRequired
-		};
-		
-		export default Particles;
-		
-Note that `key={particle.id}` part. React complains endlessly without it. I think it's used to tell similar components apart, which makes the fancy algorithms work.
+	}
+}
+			
+export default App;
+```
 
-Cool. Given an array of `{id, x, y}` objects, we can render our SVG circles. Now comes our first fun component: the `App`.
-
-`App` takes care of rendering the scene and attaching d3 event listeners. The rendering part looks like this:
-
-{title="App component",linenos=off,lang=js}
-			// src/components/index.jsx
-			
-			import React, { PropTypes, Component } from 'react';
-			import ReactDOM from 'react-dom';
-			import d3 from 'd3';
-			
-			import Particles from './Particles';
-			import Footer from './Footer';
-			import Header from './Header';
-			
-			class App extends Component {
-			    render() {
-			        return (
-			            <div onMouseDown={e => this.props.startTicker()} style={{overflow: 'hidden'}}>
-			                 <Header />
-			                 <svg width={this.props.svgWidth}
-			                      height={this.props.svgHeight}
-			                      ref="svg"
-			                      style={{background: 'rgba(124, 224, 249, .3)'}}>
-			                     <Particles particles={this.props.particles} />
-			                 </svg>
-			                 <Footer N={this.props.particles.length} />
-			             </div>
-			        );
-			    }
-			}
-			
-			App.propTypes = {
-			    svgWidth: PropTypes.number.isRequired,
-			    svgHeight: PropTypes.number.isRequired,
-			    startTicker: PropTypes.func.isRequired,
-			    startParticles: PropTypes.func.isRequired,
-			    stopParticles: PropTypes.func.isRequired,
-			    updateMousePos: PropTypes.func.isRequired
-			};
-			
-			export default App;
-
-There's more going on, but the gist is that we return a `<div>` with a `Header`, a `Footer`, and an `<svg>`. Inside `<svg>`, we use `Particles` to render many circles. Don't worry about the Header and Footer; they're text.
+There's more going on, but the gist is that we return a `<div>` with a `Header`, a `Footer`, and an `<svg>`. Inside `<svg>`, we use `Particles` to render many circles. The Header and Footer components are just some helpful text.
 
 Notice that the core of our rendering function only says *"Put all Particles here, please"*. There's nothing about what's moved, what's new, or what's no longer needed. We don’t have to worry about that.
 
@@ -149,388 +135,442 @@ We get a list of coordinates and naively render circles. React takes care of the
 
 Oh, and we call `startTicker()` when a user clicks on our scene. No reason to have the clock running *before* any particles exist.
 
-### D3 event listeners
+#### D3 event listeners
 
-To let users generate particles, we have to wire up those functions we mentioned in `propTypes`. It looks like this:
+To let users generate particles, we have to wire up some functions in `componentDidMount`. It looks like this:
 
-{title="Event listeners",linenos=off,lang=js}
-		// src/components/index.jsx
-		
-		class App extends Component {
-		    componentDidMount() {
-		        let svg = d3.select(this.refs.svg);
-		
-		        svg.on('mousedown', () => {
-		            this.updateMousePos();
-		            this.props.startParticles();
-		        });
-		        svg.on('touchstart', () => {
-		            this.updateTouchPos();
-		            this.props.startParticles();
-		        });
-		        svg.on('mousemove', () => {
-		            this.updateMousePos();
-		        });
-		        svg.on('touchmove', () => {
-		            this.updateTouchPos();
-		        });
-		        svg.on('mouseup', () => {
-		            this.props.stopParticles();
-		        });
-		        svg.on('touchend', () => {
-		            this.props.stopParticles();
-		        });
-		        svg.on('mouseleave', () => {
-		            this.props.stopParticles();
-		        });
-		
-		    }
-		
-		    updateMousePos() {
-		        let [x, y] = d3.mouse(this.refs.svg);
-		        this.props.updateMousePos(x, y);
-		    }
-		
-		    updateTouchPos() {
-		        let [x, y] = d3.touches(this.refs.svg)[0];
-		        this.props.updateMousePos(x, y);
-		    }
+{caption: "Event listeners"}
+```javascript
+// src/components/index.jsx
 
-There are some events to think about:
+class App extends Component {
+    componentDidMount() {
+        let svg = d3Select(this.refs.svg);
+
+        svg.on('mousedown', () => {
+            this.updateMousePos();
+            this.props.startParticles();
+        });
+        svg.on('touchstart', () => {
+            this.updateTouchPos();
+            this.props.startParticles();
+        });
+        svg.on('mousemove', () => {
+            this.updateMousePos();
+        });
+        svg.on('touchmove', () => {
+            this.updateTouchPos();
+        });
+        svg.on('mouseup', () => {
+            this.props.stopParticles();
+        });
+        svg.on('touchend', () => {
+            this.props.stopParticles();
+        });
+        svg.on('mouseleave', () => {
+            this.props.stopParticles();
+        });
+    }
+
+    updateMousePos() {
+        let [x, y] = d3Mouse(this.refs.svg);
+        this.props.updateMousePos(x, y);
+    }
+
+    updateTouchPos() {
+        let [x, y] = d3Touches(this.refs.svg)[0];
+        this.props.updateMousePos(x, y);
+    }
+```
+
+There are several events we take into account:
 
 - `mousedown` and `touchstart` turn on particle generation
 - `mousemove` and `touchmove` update the mouse location
 - `mouseup`, `touchend`, and `mouseleave` turn off particle generation
 
-Then you have `updateMousePos` and `updateTouchPos`, which use d3's magic to calculate new `(x, y)` coordinates relative to our SVG element. The particle generation step uses this data as each particle's initial position.
+Inside our event callbacks we use `updateMousePos` and `updateTouchPos` to update Redux state. They use `d3Mouse` and `d3Touches` to get `(x, y)` coordinates for new particles relative to our SVG element and call Redux actions passed-in via props. The particle generation step uses this data as each particle's initial position. 
 
-Yes, it's complicated.
+You'll see that in the next section. Yes, it smells convoluted. We need a reference to a mouse event to get the cursor position, and we want to decouple particle generation from event handling.
 
-Remember, React isn't smart enough to figure out mouse position relative to our drawing area. React knows that we clicked a DOM node. [D3 does the magic](https://github.com/mbostock/d3/blob/master/src/event/mouse.js) to find exact coordinates.
+Remember, React isn't smart enough to figure out mouse position relative to our drawing area. React knows that we clicked a DOM node. [D3 does some magic](https://github.com/d3/d3-selection/blob/master/src/mouse.js) to find exact coordinates.
 
-For touch events, we only consider the first touch's position. We *could* let users shoot particles out of multiple fingers at once, but there's enough going on as it is.
+Touch events return lists of coordinates. One for each finger. We use only the first coordinate because shooting particles out of multiple fingers would make this example too convoluted.
 
-That's it for the rendering and the user events. [107 lines of code](https://github.com/Swizec/react-particles-experiment/blob/master/src/components/index.jsx).
+That's it for rendering and user events. [107 lines of code](https://github.com/Swizec/react-particles-experiment/blob/svg-based-branch/src/components/index.jsx).
 
-## 6 Actions
+## 6 Redux Actions
 
-Redux actions are a fancy way of saying *"Yo, a thing happened!"*. They're functions you call to get structured metadata about what's up.
+Redux actions are a fancy way of saying *"Yo, a thing happened!"*. They're functions you call to get structured metadata that's passed into Redux reducers.
 
-We have 6 actions. The most complicated one looks like this:
+Our particle generator uses 6 actions. The most complicated one looks like this:
 
-{title="Actions",linenos=off,lang=js}
-		// src/actions/index.jsx
-		export const CREATE_PARTICLES = 'CREATE_PARTICLES';
+{caption: "Actions"}
+```javascript
+// src/actions/index.js
+export const CREATE_PARTICLES = 'CREATE_PARTICLES';
+
+export function createParticles(N, x, y) {
+	return {
+		type: CREATE_PARTICLES,
+		x: x,
+		y: y,
+		N: N
+	};
+}
+```
 		
-		export function createParticles(N, x, y) {
-		    return {
-		        type: CREATE_PARTICLES,
-		        x: x,
-		        y: y,
-		        N: N
-		    };
-		}
-		
-It tells the system to create `N` particles at `(x, y)` coordinates. You'll see how that works when we look at the Reducer, and you'll see how it triggers when we look at the Container.
+It tells the reducer to create `N` particles at `(x, y)` coordinates. You'll see how that works when we look at the Reducer, and you'll see how it triggers when we look at the Container.
 
 Actions *must* have a `type`. Reducers use the type to decide what to do.
 
-[Our other actions](https://github.com/Swizec/react-particles-experiment/blob/master/src/actions/index.js) are `tickTime`, `tickerStarted`, `startParticles`, `stopParticles`, and `updateMousePos`. You can guess what they mean :)
+[Our other actions](https://github.com/Swizec/react-particles-experiment/blob/svg-based-branch/src/actions/index.js) are `tickTime`, `tickerStarted`, `startParticles`, `stopParticles`, and `updateMousePos`. You can guess what they mean :)
+
+Personally, I think this is the least elegant part of Redux. It might make sense in big applications, but it feels unnecessary for small apps.
+
+The whole concept smells a lot like user-defined datatypes. You give a name to a piece of shaped data. Then you use a function to generate said data. If that sounds a lot like having a named object and an object factory, or a named struct and a generator ... well that's pretty much what's going on here.
+
+¯\_(ツ)_/¯
 
 ## 1 Container component
 
-Containers are React components much like the presentation bits.  Unlike presentation components, containers talk to the redux data store.
+Containers are React components that talk to the Redux data store.
 
-I'm not sure this separation is strictly necessary, but it does make your code look nice. You have functionally clean presentation components that turn properties into elements, and dirty, dirty containers that talk to the outside world.
+You can think of presentation components as templates that render stuff, and containers as smart-ish views that talk to controllers. Or maybe they're the controllers.
 
-You can think of them as data store monads if it helps.
+Sometimes it's hard to tell. Basically, presentation components render and don't think, containers communicate and don't render. Redux reducers and actions think.
+
+I'm not sure this separation is necessary in small projects. And maintaining it can be awkward and sometimes cumbersome in mid-size projects, but I'm sure it makes total sense at Facebook scale. We're using it in this project because it's the officially suggested way.
 
 The gist of our `AppContainer` looks like this:
 
-{title="Main container component",linenos=off,lang=js}
-		// src/containers/AppContainer.jsx
-		import { connect } from 'react-redux';
-		import React, { Component } from 'react';
-		
-		import App from '../components';
-		import { tickTime, tickerStarted, startParticles, stopParticles, updateMousePos, createParticles } from '../actions';
-		
-		class AppContainer extends Component {
-		    componentDidMount() {
-		        const { store } = this.context;
-		        this.unsubscribe = store.subscribe(() =>
-		            this.forceUpdate()
-		        );
-		    }
-		
-		    componentWillUnmount() {
-		        this.unsubscribe();
-		    }
-		
-		   // ...
-		
-		    render() {
-		        const { store } = this.context;
-		        const state = store.getState();
-		
-		        return (
-		            <App {...state}
-		                 startTicker={::this.startTicker}
-		                 startParticles={::this.startParticles}
-		                 stopParticles={::this.stopParticles}
-		                 updateMousePos={::this.updateMousePos}
-		            />
-		        );
-		    }
-		};
-		
-		AppContainer.contextTypes = {
-		    store: React.PropTypes.object
-		};
-		
-		export default AppContainer;
+{caption: "Main container component"}
+```javascript
+// src/containers/AppContainer.jsx
+import { connect } from 'react-redux';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-We import stuff, then we define `AppContainer` as a proper React `Component`. We need to use lifecycle methods, which aren't available in stateless components.
+import App from '../components';
+import { tickTime, tickerStarted, startParticles, stopParticles, updateMousePos, createParticles } from '../actions';
 
-There are three important parts in this code:
+class AppContainer extends Component {
+	componentDidMount() {
+		const { store } = this.context;
+		this.unsubscribe = store.subscribe(() =>
+		    this.forceUpdate()
+		);
+	}
+
+	componentWillUnmount() {
+		this.unsubscribe();
+	}
+
+   // ...
+
+	render() {
+		const { store } = this.context;
+		const state = store.getState();
+
+		return (
+		    <App {...state}
+		         startTicker={() => this.startTicker()}
+		         startParticles={() => this.startParticles()}
+		         stopParticles={() => this.stopParticles()}
+		         updateMousePos={() => this.updateMousePos()}
+		    />
+		);
+	}
+};
+
+AppContainer.contextTypes = {
+    store: PropTypes.object
+};
+
+export default AppContainer;
+```
+
+We import dependencies, then we define `AppContainer` as a full-feature React `Component` because we need to use lifecycle methods. Those aren't available in functional stateless components.
+
+Three parts of this code are important:
 
 1. We wire up the store in `componentDidMount` and `componentWillUnmount`. Subscribe to data changes on mount, unsubscribe on unmount.
 2. When rendering, we assume the store is our context, use `getState()`, then render the component we're wrapping. In this case, we render the `App` component.
-3. To get the store as our context, we *have to* define `contextTypes`. It won't work otherwise. This is deep React magic.
+3. To get the store as our context, we *have to* define `contextTypes`. It won't work otherwise.
 
-Contexts are nice because they let us implicitly pass properties. The context can be anything, but Redux prefers it be the store. That contains *everything* about application state – both UI and business data.
+What I like about React context is that it lets us implicitly pass properties to all children components. Anything can go in context, but if you're not careful this can lead to rendering stale data.
 
-That's where the monad comparison comes from ... my foray into Haskell may have broken me. I see monads everywhere.
-
-In case you were wondering, that `{::this.startTicker}` syntax comes from ES2016. It's equivalent to `{this.startTicker.bind(this)}`. Enable `stage-0` in your Babel config to use it.
+That's why you should reserve context for passing the Redux store. All components need access, and the store itself is smart enough to handle updates.
 
 ### AppContainer talks to the store
 
-Great, you know the basics. Now we need to define those callbacks so `App` can trigger actions. Most are boilerplate-y action wrappers. Like this:
+Congratz, you know the basics! Now we need to define those callbacks so `App` can trigger actions. Most are boilerplate-y action wrappers. Like this:
 
-{title="Container-store communnication",linenos=off,lang=js}
-		// src/containers/AppContainer.jsx
-		    startParticles() {
-		        const { store } = this.context;
-		        store.dispatch(startParticles());
-		    }
-		
-		    stopParticles() {
-		        const { store } = this.context;
-		        store.dispatch(stopParticles());
-		    }
-		
-		    updateMousePos(x, y) {
-		        const { store } = this.context;
-		        store.dispatch(updateMousePos(x, y));
-		    }
+{caption: "Container-store communication"}
+```javascript
+// src/containers/AppContainer.jsx
+class AppContainer extends Component {
+	// ...
+	startParticles() {
+		const { store } = this.context;
+		store.dispatch(startParticles());
+	}
 
-That’s boilerplate. The action function gives us that `{type: ..}` object, and we dispatch it on the store.
+	stopParticles() {
+		const { store } = this.context;
+		store.dispatch(stopParticles());
+	}
 
-When that happens, Redux uses our reducer to create a new instance of the state tree. We'll talk more about that in the next section.
+	updateMousePos(x, y) {
+		const { store } = this.context;
+		store.dispatch(updateMousePos(x, y));
+	}
+	// ...
+}
+```
 
-First, we have to look at the `startTicker` callback. It's where our magic begins.
+Each action function gives us a `{type: ...}` object, which we dispatch on the store. You can think of dispatching as triggering a global event.
 
-{title="startTicker",linenos=off,lang=js}
-	    startTicker() {
-	        const { store } = this.context;
-	
-	        let ticker = () => {
-	            if (store.getState().tickerStarted) {
-	                this.maybeCreateParticles();
-	                store.dispatch(tickTime());
-	
-	                window.requestAnimationFrame(ticker);
-	            }
-	        };
-	
-	        if (!store.getState().tickerStarted) {
-	            console.log("Starting ticker");
-	            store.dispatch(tickerStarted());
-	            ticker();
+Redux uses our action, goes to all our reducers, and asks *"Anything you wanna do with this?"*. Reducers use the action type and its properties to decide how to change the state tree. You'll see how that works in the next section.
+
+We have to look at the `startTicker` callback before we can talk about reducers. It's where our particle generator really begins.
+
+{caption: "startTicker"}
+```javascript
+// src/containers/AppContainer.jsx
+class AppContainer extends Component {
+	// ...
+	startTicker() {
+	    const { store } = this.context;
+
+	    let ticker = () => {
+	        if (store.getState().tickerStarted) {
+	            this.maybeCreateParticles();
+	            store.dispatch(tickTime());
+
+	            window.requestAnimationFrame(ticker);
 	        }
+	    };
+
+	    if (!store.getState().tickerStarted) {
+	        console.log("Starting ticker");
+	        store.dispatch(tickerStarted());
+	        ticker();
 	    }
+	}
+	// ..
+}
+```
 
-Oof. Don't worry if you don't "get" this immediately. It took me a few hours to create.
+Don't worry if you don't "get" this immediately. I fiddled for a few hours to make it. It's our game loop!
 
-This drives our animation loop. Some might call it the game loop. 
+`startTicker` creates a `ticker` function, which calls itself on each `requestAnimationFrame`. This creates an almost infinite loop.
 
-It dispatches the `tickTime` action on every `requestAnimationFrame`. Every time the browser is ready to render, we get a chance to update our Redux data store. In theory, that's 60 times a second, but it depends on many factors. Look it up.
+The loop starts in two steps:
 
-`startTicker` updates the store in two steps:
+1. Check `tickerStarted` flag and start the ticker if it hasn't been started yet. This prevents running multiple game loops in parallel. As a result, we can be naive about binding `startTicker` to `onMouseDown`.
+2. Create a `ticker` function that generates particles, dispatches the `tickTime` action, and calls itself on every `requestAnimationFrame`. We check the `tickerStarted` flag each time so we can stop the animation.
 
-1. Check `tickerStarted` flag and only start the ticker if it hasn't been started yet. This way we don't try to run multiple animation frames per render frame. As a result, we can be naive about binding `startTicker` to `onMouseDown`.
-2. Create a `ticker` function that generates particles, dispatches the `tickTime` action, and recursively calls itself on every `requestAnimationFrame`. We check the `tickerStarted` flag every time so we can potentially stop time.
+Yes, that means we are asynchronously dispatching redux actions.   I wrote this code before Redux thunks were a thing. With those, you would package `startTicker` as an action that can dispatch other actions. 
 
-Yes, that means we are asynchronously dispatching redux actions.  It's okay; that sort of Just Working (tm) is one of the main benefits of immutable data.
+This works too, I promise :)
 
-The `maybeCreateParticles` function itself isn't too interesting. It gets `(x, y)` coordinates from `store.mousePos`, checks the `generateParticles` flag, and dispatches the `createParticles` action.
+The `maybeCreateParticles` function itself isn't too interesting. It gets `(x, y)` coordinates from `store.mousePos`, checks the `generateParticles` flag – set by mousedown – and dispatches the `createParticles` action.
 
-That's the container. [83 lines of code](https://github.com/Swizec/react-particles-experiment/blob/master/src/containers/AppContainer.jsx).
+That's the container. [83 lines of code](https://github.com/Swizec/react-particles-experiment/blob/svg-based-branch/src/containers/AppContainer.jsx).
 
-## 1 Reducer
+## 1 Redux Reducer
 
-Sweet. With the actions firing and the drawing done, it's time to look at the entire logic of our particle generator. We'll get it done in just 33 lines of code and some change.
+With the actions firing and the drawing done, it's time to look at the business logic of our particle generator. We'll get it done in just 33 lines of code and some change.
 
-Ok. Honestly? It’s a bunch of change. But the 33 lines that make up `CREATE_PARTICLES` and `TIME_TICK` changes are the most interesting.
+Well, it's a bunch of change. But the 33 lines that make up `CREATE_PARTICLES` and `TIME_TICK` changes are the most interesting. The rest is just setting various flags.
 
 All of our logic goes in the reducer. [Dan Abramov says](http://redux.js.org/docs/basics/Reducers.html) to think of reducers as the function you'd put in `.reduce()`. Given a state and a set of changes, how do I create the new state?
 
-A simplistic example would look like this:
+A "sum numbers" example would look like this:
 
-{title="Reducer concept",linenos=off,lang=js}
-		let sum = [1,2,3,4].reduce((sum, i) => sum+i, 0);
+{caption: "Reducer concept"}
+```javascript
+let sum = [1,2,3,4].reduce(sum, n => sum+n, 0);
+```
 
-For every number, take the previous sum and add the number.
+For each number, take the previous sum and add the number.
 
-Our particle generator is a more complicated version of that. It takes the current application state, incorporates an action, and returns the new application state. To keep things simple, we'll put everything into the same reducer and use a big `switch` statement to decide what to do based on `action.type`.
+Our particle generator is a more complicated version of the same concept. It takes the current application state, incorporates an action, and returns the new application state. 
 
-In bigger applications, we'd split this into multiple reducers, but the base principles stay the same.
+To keep the example code simple, we'll put everything into the same reducer and use a big `switch` statement to decide what to do based on `action.type`. In bigger applications, we'd split our logic into domain-specific reducers. The base principle stays the same.
 
 Let's start with the basics:
 
-{title="Redux reducer basic state",linenos=off,lang=js}
-		// src/reducers/index.js
-		const Gravity = 0.5,
-		      randNormal = d3.random.normal(0.3, 2),
-		      randNormal2 = d3.random.normal(0.5, 1.8);
-		
-		const initialState = {
-		    particles: [],
-		    particleIndex: 0,
-		    particlesPerTick: 5,
-		    svgWidth: 800,
-		    svgHeight: 600,
-		    tickerStarted: false,
-		    generateParticles: false,
-		    mousePos: [null, null]
-		};
-		
-		function particlesApp(state = initialState, action) {
-		    switch (action.type) {
-		    default:
-		            return state;
-		    }
-		}
-		
-		export default particlesApp;
+{caption: "Redux reducer basic state"}
+```javascript
+// src/reducers/index.js
+const Gravity = 0.5,
+	  randNormal = d3.random.normal(0.3, 2),
+	  randNormal2 = d3.random.normal(0.5, 1.8);
+
+const initialState = {
+	particles: [],
+	particleIndex: 0,
+	particlesPerTick: 5,
+	svgWidth: 800,
+	svgHeight: 600,
+	tickerStarted: false,
+	generateParticles: false,
+	mousePos: [null, null]
+};
+
+function particlesApp(state = initialState, action) {
+	switch (action.type) {
+	default:
+		    return state;
+	}
+}
+
+export default particlesApp;
+```
 
 This is our reducer.
 
-We started with the gravity constant and two random generators. Then we defined the default state:
+We start with the gravity constant, two random generators, and define the default state:
 
 - an empty list of particles
 - a particle index, which I'll explain in a bit
 - the number of particles we want to generate on each tick
-- default svg sizing
+- default SVG sizing
 - and the two flags and `mousePos` for the generator
 
-Our reducer doesn't change anything yet. It's important to always return at least an unchanged state.
+Our reducer doesn't change anything yet. You should always return at least the same state. Otherwise you could replace the whole thing with a big `undefined` when you don't recognize an action.
 
-### Update the state to animate
+### Update Redux state to animate
 
 For most actions, our reducer updates a single value. Like this:
 
-{title="Reducer big switch",linenos=off,lang=js}
-		// src/reducers/index.js
-		    switch (action.type) {
-		        case 'TICKER_STARTED':
-		            return Object.assign({}, state, {
-		                tickerStarted: true
-		            });
-		        case 'START_PARTICLES':
-		            return Object.assign({}, state, {
-		                generateParticles: true
-		            });
-		        case 'STOP_PARTICLES':
-		            return Object.assign({}, state, {
-		                generateParticles: false
-		            });
-		        case 'UPDATE_MOUSE_POS':
-		            return Object.assign({}, state, {
-		                mousePos: [action.x, action.y]
-		            });
+{caption: "Reducer big switch"}
+```javascript
+// src/reducers/index.js
+function particlesApp(state = initialState, action) {
+	switch (action.type) {
+		case 'TICKER_STARTED':
+		    return Object.assign({}, state, {
+		        tickerStarted: true
+		    });
+		case 'START_PARTICLES':
+		    return Object.assign({}, state, {
+		        generateParticles: true
+		    });
+		case 'STOP_PARTICLES':
+		    return Object.assign({}, state, {
+		        generateParticles: false
+		    });
+		case 'UPDATE_MOUSE_POS':
+		    return Object.assign({}, state, {
+		        mousePos: [action.x, action.y]
+		    });
+		// ...
+	}
+}	
+```
 
-Even though we're only changing values of boolean flags and two-digit arrays, *we have to create a new state*. Always create a new state. Redux relies on application state being immutable.
+Even though we're only changing values of boolean flags and two-digit arrays, *we have to create a new state*. Redux relies on application state being immutable.
 
-That's why we use `Object.assign({}, ...` every time. It creates a new empty object, fills it with the current state, then overwrites specific values with new ones.
+Well, JavaScript doesn't have real immutability. We pretend and make sure to never change state without making a new copy first.
 
-Either do that every time, or use a library for immutable data structures. That might work better, but I haven't tried it yet.
+We use `Object.assign({}, ...` to create a new empty object, fill it with the current state, then overwrite specific values with new ones. This is fast enough even with large state trees thanks to advancements in JavaScript engines.
 
-The two most important state updates – animation tick and create particles – look like this:
+You can also use a library like [immutable.js](https://facebook.github.io/immutable-js/) to guarantee immutability. I haven't tried it yet.
 
-{title="The particles magic",linenos=off,lang=js}
-        case 'CREATE_PARTICLES':
-            let newParticles = state.particles.slice(0),
-                i;
+Those state updates were boilerplate. The important ones are each tick of the game loop and creating new particles. They look like this:
 
-            for (i = 0; i < action.N; i++) {
-                let particle = {id: state.particleIndex+i,
-                                x: action.x,
-                                y: action.y};
+{caption: "The core particles logic"}
+```javascript
+// src/reducers/index.js
+function particlesApp(state = initialState, action) {
+	switch (action.type) {
+		// ...
+    case 'CREATE_PARTICLES':
+        let newParticles = state.particles.slice(0),
+            i;
 
-                particle.vector = [particle.id%2 ? -randNormal() : randNormal(),
-                                   -randNormal2()*3.3];
+        for (i = 0; i < action.N; i++) {
+            let particle = {id: state.particleIndex+i,
+                            x: action.x,
+                            y: action.y};
 
-                newParticles.unshift(particle);
-            }
+            particle.vector = [particle.id%2 ? -randNormal() : randNormal(),
+                               -randNormal2()*3.3];
 
-            return Object.assign({}, state, {
-                particles: newParticles,
-                particleIndex: state.particleIndex+i+1
-            });
-        case 'TIME_TICK':
-            let {svgWidth, svgHeight} = state,
-                movedParticles = state.particles
-                                      .filter((p) =>
-                                          !(p.y > svgHeight || p.x < 0 || p.x > svgWidth))
-                                      .map((p) => {
-                                          let [vx, vy] = p.vector;
-                                          p.x += vx;
-                                          p.y += vy;
-                                          p.vector[1] += Gravity;
-                                          return p;
-                                      });
+            newParticles.unshift(particle);
+        }
 
-            return Object.assign({}, state, {
-                particles: movedParticles
-            });
+        return Object.assign({}, state, {
+            particles: newParticles,
+            particleIndex: state.particleIndex+i+1
+        });
+    case 'TIME_TICK':
+        let {svgWidth, svgHeight} = state,
+            movedParticles = state.particles
+                                  .filter((p) =>
+                                      !(p.y > svgHeight || p.x < 0 || p.x > svgWidth))
+                                  .map((p) => {
+                                      let [vx, vy] = p.vector;
+                                      p.x += vx;
+                                      p.y += vy;
+                                      p.vector[1] += Gravity;
+                                      return p;
+                                  });
+
+        return Object.assign({}, state, {
+            particles: movedParticles
+        });
+		// ..
+	}
+}
+```
 
 That looks like a bunch of code. Sort of. It's spread out.
 
-The first part – `CREATE_PARTICLES` – copies all current articles into a new array and adds `action.N` new particles to the beginning. In my tests, this proved smoother than adding particles at the end. Each particle starts life at `(action.x, action.y)` and gets a random movement vector.
+The first part – `CREATE_PARTICLES` – copies all current articles into a new array and adds `action.N` new particles to the beginning. In my tests, this looked smoother than adding particles at the end. I don't know why. Each particle starts life at `(action.x, action.y)` and gets a random movement vector.
 
-This is bad from Redux's perspective. Reducers are supposed to be pure functions, and randomness is inherently impure. I think it's fine in this case. 
+This randomness is another Redux faux pas. Reducers are supposed to be functionally pure: produce the same result every time they are called with the same argument values. Randomness is inherently impure.
 
-The other possible approach would shove this logic into the action. That has benefits, but makes it harder to see all logic in one place. Anyway ...
+We don't need our particle vectors to be deterministic, so I think this is fine. Let's say our universe is stochastic instead :)
 
-The second part – `TIME_TICK` – doesn't copy the particles (although maybe it should). Arrays are passed by reference, so we're mutating existing data either way. This is bad, but it’s not *too* bad. It definitely works faster :)
+{aside}
+Stochastic means that our universe/physic simulation is governed by probabilities. You can still model such a universe and reason about its behavior. A lot of real world physics is stochastic in nature.
+{/aside}
+
+You could also move all this logic into the action, which would keep the reducer pure, but make it harder to see all logic in one place.
+
+The second part – `TIME_TICK` – copies the particles array, but not each particle itself. JavaScript passes arrays by reference, which means that changing `p.vector` in a `map` mutates existing data.
+
+This is bad from a Redux standpoint, but it’s not *too* bad unless you want to use time-traveling debugging. It works faster though :)
 
 We filter out any particles that have left the visible area. For the rest, we add the movement vector to their position. Then we change the `y` part of the vector using our `Gravity` constant.
 
 That's an easy way to implement acceleration.
 
-That's it. Our reducer is done. Our particle generator works. Our thing animates smoothly. \o/
+Our reducer is done. Our particle generator works. Our thing animates smoothly. \o/
 
 ## What we learned
 
 Building this particle generator in React and Redux, I made three important discoveries:
 
-1. **Redux is much faster than I thought**. You'd think creating a new copy of the state tree on each animation loop was crazy, but it works well. We're probably creating only a shallow copy for the most part, which explains the speed.
+1. **Redux is much faster than I thought**. You'd think creating a new copy of the state tree on each animation loop was crazy, but it works. I think most our code creates only a shallow copy, which explains the speed.
 2. **Adding to JavaScript arrays is slow**. Once we hit about 300 particles, adding new ones becomes visibly slow. Stop adding particles and you get smooth animation. This indicates that something about creating particles is slow: either adding to the array, or creating React component instances, or creating SVG DOM nodes.
-3. **SVG is also slow**. To test the above hypothesis, I made the generator create 3000 particles on first click. The animation speed is *terrible* at first and becomes okayish at around 1000 particles. This suggests that shallow copying big arrays and moving existing SVG nodes around is faster than adding new stuff. [Here's a gif](http://i.imgur.com/ug478Me.gif)
+3. **SVG is also slow**. To test the above hypothesis, I made the generator create 3000 particles on first click. The animation speed is *terrible* at first and becomes okayish at around 1000 particles. This suggests that making shallow copies of big arrays and moving existing SVG nodes around is faster than adding new DOM nodes and array elements. [Here's a gif](http://i.imgur.com/ug478Me.gif)
 
 ----
 
-There you go. Animations done with React, Redux, and d3. New superpower? Maybe.
+There you go: Animating with React, Redux, and d3. Kind of a new superpower ;)
 
 Here's the recap:
 
 - React handles rendering
-- d3 calculates stuff
+- d3 calculates stuff, detects mouse positions
 - Redux handles state
 - element coordinates are state
 - change coordinates on every `requestAnimationFrame`
-- magic
+- animation!
 
-:)
+Now let's render to canvas and push this sucker to 20,000 smoothly animated elements. Even on a mobile phone.
