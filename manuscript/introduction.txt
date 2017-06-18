@@ -10,7 +10,7 @@ Welcome to what I hope is the best and most fun React learning resource on the i
 
 240 pages, 8 example apps, a bunch of skill building blocks.
 
-Reading this book you will:
+By reading this book, you will:
 
 - build a really big interactive data visualization
 - build a few silly animations
