@@ -75,9 +75,9 @@ To use this rectangle component in a picture, you'd use a component like this:
 {caption: "Rect component in a picture", line-numbers: false, format: javascript}
 ```
 const Picture = () => (
-    <svg width="800" height="600">
-	<Rectangle />
-    </svg>
+	<svg width="800" height="600">
+		<Rectangle />
+	</svg>
 );
 ```
 
@@ -180,7 +180,7 @@ It creates a small axis:
 
 ![Simple axis](images/es6v2/simple-axis.png)
 
-You can play around with this example on CodePen [here](https://codepen.io/swizec/pen/YGoYBM). Try changing the scale type.
+You can play around with this example on CodePen [here](https://codepen.io/swizec/pen/YGoYBM). Try changing the scale type to `scaleLog`.
 
 ## A quick blackbox example - a React+D3 axis
 
@@ -189,28 +189,28 @@ Now let's say we want to use that same axis code but as a React component. The s
 {caption: "React blackbox axis", line-numbers: false, format: javascript}
 ```
 class Axis extends Component {
-    componentDidMount() { this.renderAxis() }
-    componentDidUpdate() { this.renderAxis() }
+	componentDidMount() { this.renderAxis() }
+	componentDidUpdate() { this.renderAxis() }
 
-    renderAxis() {
-	const scale = d3.scaleLinear()
-	                .domain([0, 10])
-	                .range([0, 200]);
-	const axis = d3.axisBottom(scale);
+	renderAxis() {
+		const scale = d3.scaleLinear()
+	                  .domain([0, 10])
+                   .range([0, 200]);
+    	const axis = d3.axisBottom(scale);
 
-	d3.select(this.refs.g)
-	  .call(axis);  
-    }
+		d3.select(this.refs.g)
+		  .call(axis);  
+	}
 
-    render() {
-	return <g transform="translate(10, 30)" ref="g" />
-    }
+	render() {
+    	return <g transform="translate(10, 30)" ref="g" />
+	}
 }
 ```
 
 Oh man! So much code! Is this really worth it? Yes, for the other benefits of using React in your dataviz. You'll see :)
 
-We created an `Axis` component that extends React base `Component` class. We can't use functional stateless components for this because we need lifecycle hooks. More on those later.
+We created an `Axis` component that extends React base `Component` class. We can't use functional stateless components because we need lifecycle hooks. More on those later.
 
 Our component has a `render` method, which returns a grouping element (`g`) moved 10px to the right and 30px down using the `transform` attribute. Same as before.
 
@@ -247,15 +247,15 @@ A `D3blackbox` HOC looks like this:
 {caption: "React blackbox HOC", line-numbers: false, format: javascript}
 ```
 function D3blackbox(D3render) {
-    return class Blackbox extends React.Component {
-	componentDidMount() { D3render.call(this); }
-	componentDidUpdate() { D3render.call(this) }
+	return class Blackbox extends React.Component {
+		componentDidMount() { D3render.call(this); }
+		componentDidUpdate() { D3render.call(this) }
 
-	render() {
+		render() {
 	    const { x, y } = this.props;
 	    return <g transform={`translate(${x}, ${y})`} ref="anchor" />;
+		}
 	}
-    }
 }
 ```
 
@@ -315,11 +315,11 @@ We start with a `Swatch` component that draws a rectangle and fills it with a co
 {caption: "Swatch component", line-numbers: false, format: javascript}
 ```
 const Swatch = ({ color, width, x }) => (
-    <rect width={width}
-	  height="20"
-	  x={x}
-	  y="0"
-	  style={{fill: color}} />
+	<rect width={width}
+			  height="20"
+			  x={x}
+			  y="0"
+			  style={{fill: color}} />
 );
 ```
 
@@ -334,7 +334,7 @@ Then we need a `Colors` component. It follows the full-featured integration stru
 class Colors extends Component {
     colors = d3.schemeCategory20;
     width = d3.scaleBand()
-	      .domain(d3.range(20));
+				      .domain(d3.range(20));
 ```
 
 We start by inheriting from `Component` and defining defaults for D3 objects. `this.colors` is one of [D3's predefined color scales](https://github.com/d3/d3-scale/blob/master/README.md#schemeCategory10). `schemeCategory20` is a scale of 20 colors designed for categorization. It seemed like a good example, and you're welcome to try others.
@@ -375,15 +375,15 @@ Finally, we render a bunch of color swatches.
 {caption: "Colors component, pt3", line-numbers: false, format: javascript}
 ```
 render() {
-    return (
-	<g>
+	return (
+		<g>
 	    {d3.range(20).map(i => (
 	        <Swatch color={this.colors[i]}
-		width={this.width.step()}
-		x={this.width(i)} />
+									width={this.width.step()}
+									x={this.width(i)} />
 	     ))}
-	</g>
-    )
+		</g>
+	)
 }
 ```
 
@@ -396,6 +396,8 @@ After inserting into the DOM with `ReactDOM`, we get a series of 20 colorful rec
 Try changing the `width="400"` property of `<Colors />`. You'll see D3's `scaleBand` and our update wiring ensure the color strip renders correctly. For more fun, try changing the `Colors` component so it takes the color scale as a prop, then rendering multiple instances of `<Colors />` side-by-side.
 
 Here's the playground again: [CodePen](https://codepen.io/swizec/pen/oYNvpQ)
+
+As an exercise, try to add another row of swatches, but rendered in reverse.
 
 # You're awesome
 
@@ -461,7 +463,7 @@ The caveat with our basic state handling approach is that it's less flexible and
 
 We're using the basic approach because it's easier to explain, works without additional libraries, and is Good Enough™. I mention Redux and MobX to make your Googling easier.
 
-You can see an approach to using Redux in dataviz in the [Animating with React, Redux, and d3 chapter](#animating-react-redux), and we'll tackle MobX in the [MobX chapter](#refactoring-to-mobx).
+You can see an approach to using Redux in dataviz in the [Animating with React, Redux, and d3 chapter](#animating-react-redux), and we'll tackle MobX in the [MobX chapter](#billiards-simulation).
 
 
 {#structuring-your-app}
