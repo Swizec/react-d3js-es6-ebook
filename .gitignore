@@ -21,3 +21,4 @@ cover-book*
 team*.txt
 livecoding_sessions.txt
 30min_call.txt
+.DS_Store
