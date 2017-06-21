@@ -51,8 +51,8 @@ We'll put all of our components in `src/components/`.
 
 We start the component off with some imports, an export, and a functional stateless component that returns an empty div element.
 
-{crop-start: 5, crop-end: 17, format: javascript}
-![Preloader skeleton](code_samples/es6v2/compnents/Preloader.js)
+{crop-start: 5, crop-end: 17, format: javascript, line-numbers: false}
+![Preloader skeleton](code_samples/es6v2/components/Preloader.js)
 
 We `import` React (which we need to make JSX syntax work) and the `PreloaderImg` for our image. We can import images because of the Webpack configuration that comes with `create-react-app`. The image loader puts a file path in the `PreloaderImg` constant.
 
@@ -60,7 +60,7 @@ At the bottom, we `export default Preloader` so that we can use it in `App.js` a
 
 The `Preloader` function takes no props (because we don't need any) and returns an empty `div`. Let's fill it in.
 
-{crop-start: 22, crop-end: 35, format: javascript}
+{crop-start: 22, crop-end: 39, format: javascript, line-numbers: false}
 ![Preloader content](code_samples/es6v2/components/Preloader.js)
 
 We're cheating again because I copy-pasted that from the finished example. You wouldn't have anywhere to get this yet.
@@ -75,14 +75,14 @@ That will be one of the cornerstones of our sample project.
 
 To use our new `Preloader` component, we have to edit `src/App.js`. Let's start by removing the defaults that came with `create-react-app` and importing our `Preloader` component.
 
-{crop-start: 5, crop-end: 35, format: javascript}
+{crop-start: 5, crop-end: 35, format: javascript, line-numbers: false}
 ![Revamp App.js](code_samples/es6v2/App.js)
 
 We removed the logo and style imports, added an import for `Preloader`, and gutted everything out of the `App` class. It's a great starting point for a default app, but it's served its purpose.
 
 Let's define a default `state` and a `render` method that uses our `Preloader` component when there's no data.
 
-{crop-start: 40, crop-end: 62, format: javascript}
+{crop-start: 40, crop-end: 62, format: javascript, line-numbers: false}
 ![Render the preloader](code_samples/es6v2/App.js)
 
 With modern ES6+ classes, we can define properties directly in the class without going through the constructor method. This makes our code cleaner and easier to read.
@@ -93,7 +93,7 @@ We set `techSalaries` to an empty array, then in `render` check whether it's emp
 
 If you have `npm start` running, your preloader should show up on screen.
 
-![Preloader without Bootstrap styles](preloader-without-styles-screenshot.png)
+![Preloader without Bootstrap styles](images/es6v2/preloader-without-styles-screenshot.png)
 
 Hmm… that's not very pretty. Let's fix it.
 
@@ -105,7 +105,7 @@ They'll make the fonts look better, help with layouting, and make buttons look l
 
 We add them in `src/index.js`.
 
-{crop-start: 5, crop-end: 18, format: javascript}
+{crop-start: 5, crop-end: 18, format: javascript, line-numbers: false}
 ![Add bootstrap in index.js](code_samples/es6v2/index.js)
 
 Another benefit of using Webpack: `import`-ing stylesheets. These imports turn into `<style>` tags with CSS in their body at runtime.
@@ -128,7 +128,11 @@ First, you need the data files. I scraped the tech salary info from [h1bdata.inf
 
 You can read about the scraping on my blog [here](https://swizec.com/blog/place-names-county-names-geonames/swizec/7083), [here](https://swizec.com/blog/facts-us-household-income/swizec/7075), and [here](https://swizec.com/blog/livecoding-24-choropleth-react-js/swizec/7078). But it's not the subject of this book.
 
+## Step 0: Get the data
+
 You should download the 6 datafiles from [the step-by-step repository on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/8819d9c38b4aef0a0c569e493f088ff9c3bfdf33). Put them in the `public/data` directory in your project.
+
+The quickest way to download each file is to click `View`, then right-click `Raw` and `Save Link As`.
 
 ## Step 1: Prep App.js
 
@@ -136,12 +140,12 @@ Let's set up our `App` component first. That way you'll see results as soon data
 
 We start by importing our data loading method - `loadAllData` - and both D3 and Lodash. We'll need them later.
 
-{crop-start: 67, crop-end: 78, format: javascript}
+{crop-start: 67, crop-end: 78, format: javascript, line-numbers: false}
 ![Import d3, lodash, and our data loader](code_samples/es6v2/App.js)
 
 You already know the normal imports. Importing with `{}` is how we import named exports, which lets us get multiple things from the same file. You'll see how the export side works in Step 2.
 
-{crop-start: 79, crop-end: 91, format: javascript}
+{crop-start: 79, crop-end: 91, format: javascript, line-numbers: false}
 ![Initiate data loading in App.js](code_samples/es6v2/App.js)
 
 We initiate data loading inside the `App` class's `componentWillMount` lifecycle hook. It fires right before React mounts our component into the DOM. Seems like a good place to start loading data, but some say it's an anti-pattern.
@@ -154,7 +158,7 @@ We also took this opportunity to add two more entries to our `state`: `countyNam
 
 Let's add a "Data loaded" indicator to the `render` method. That way we'll know when data loading works.
 
-{crop-start: 94, crop-end: 112, format: javascript}
+{crop-start: 94, crop-end: 112, format: javascript, line-numbers: false}
 ![Data loaded indicator](code_samples/es6v2/App.js)
 
 We added the `container` class to the main `<div>` and added an `<h1>` tag to show how many datapoints were loaded. The `{}` pattern denotes a dynamic value in JSX. You've seen this in props so far, but it works in tag bodies as well.
@@ -172,12 +176,13 @@ Let's build that file and fill it with our data loading logic.
 We're putting data loading logic in a file separate from `App.js` because it's a bunch of functions that work together and don't have much to do with the `App` component.
 
 We start the file with two imports and four data parsing functions:
+
 - `cleanIncomes`, which parses each row of household income data
 - `dateParse`, which we use for parsing dates
 - `cleanSalary`, which parses each row of salary data
 - `cleanUSStateName`, which parses US state names
 
-{crop-start: 5, crop-end: 43, format: javascript}
+{crop-start: 5, crop-end: 43, format: javascript, line-numbers: false}
 ![Data parsing functions](code_samples/es6v2/DataHandling.js)
 
 You'll see those `d3` and `lodash` imports a lot. [@Swizec: Should you mention those imports in the list?]
@@ -186,11 +191,11 @@ The data parsing functions all follow the same approach: Take a row of data as `
 
 Doing the parsing and the nicer key names now makes the rest of our codebase simpler because we don't have to deal with this all the time. For example, `entry.job_title`{format: javascript} is nicer to read and type than `entry['job title']`{format: javascript}.
 
-## Step 3: Load the datasets
+## Step 3: Load datasets
 
 Now that we have our data parsing functions, we can use D3 to load the data with Ajax requests.
 
-{crop-start: 47, crop-end: 58, format: javascript}
+{crop-start: 47, crop-end: 58, format: javascript, line-numbers: false}
 ![Data loading](code_samples/es6v2/DataHandling.js)
 
 Here you can see another ES6 trick: default argument values. If `callback` is false, we set it to `_.noop` - a function that does nothing. This lets us later call `callback()` without worrying whether it was given as an argument.
@@ -212,7 +217,7 @@ If you put a `console.log` in the `.await` callback above, you'll see a bunch of
 
 To tie them together and prepare a dictionary for `setState` back in the `App` component, we need to add a little big of logic. We're going to build a dictionary of county household incomes and remove any empty salaries.
 
-{crop-start: 63, crop-end: 90, format: javascript}
+{crop-start: 63, crop-end: 90, format: javascript, line-numbers: false}
 ![Tie the datasets together](code_samples/es6v2/DataHandling.js)
 
 The first line should be one of those `cleanX` functions like we had above. I'm not sure how I missed it.
