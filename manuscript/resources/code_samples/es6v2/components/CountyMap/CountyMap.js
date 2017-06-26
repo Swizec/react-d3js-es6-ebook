@@ -85,8 +85,10 @@ class CountyMap extends Component {
         }
 
         if (props.values) {
-            this.quantize.domain([d3.quantile(props.values, 0.15, d => d.value),
-                                  d3.quantile(props.values, 0.85, d => d.value)]);
+            this.quantize.domain([
+                d3.quantile(props.values, 0.15, d => d.value),
+                d3.quantile(props.values, 0.85, d => d.value)
+            ]);
         }
     }
 
@@ -96,11 +98,14 @@ class CountyMap extends Component {
             return null;
         }else{
             const us = this.props.usTopoJson,
-                  statesMesh = topojson.mesh(us, us.objects.states, (a, b) => a !== b),
+                  statesMesh = topojson.mesh(us, us.objects.states,
+                                             (a, b) => a !== b),
                   counties = topojson.feature(us, us.objects.counties).features;
 
-            const countyValueMap = _.fromPairs(this.props.values
-                                                   .map(d => [d.countyID, d.value]));
+            const countyValueMap = _.fromPairs(
+                this.props.values
+                    .map(d => [d.countyID, d.value])
+            );
 
             return (
                 <g transform={`translate(${this.props.x}, ${this.props.y})`}>
@@ -113,12 +118,14 @@ class CountyMap extends Component {
                                 value={countyValueMap[feature.id]} />
                      ))}
 
-                     <path d={this.geoPath(statesMesh)} style={{fill: 'none',
-                                                                stroke: '#fff',
-                                                                strokeLinejoin: 'round'}} />
+                        <path d={this.geoPath(statesMesh)}
+                              style={{fill: 'none',
+                                      stroke: '#fff',
+                                      strokeLinejoin: 'round'}} />
                 </g>
             );
-
+        }
+    }
 }
 
 export default CountyMap;

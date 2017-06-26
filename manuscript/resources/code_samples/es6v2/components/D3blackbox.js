@@ -6,7 +6,7 @@
 import React, { Component } from 'react';
 
 export default function D3blackbox(D3render) {
-  return class Blackbox exComponent {
+  return class Blackbox extends Component {
     componentDidMount() { D3render.call(this); }
     componentDidUpdate() { D3render.call(this) }
 

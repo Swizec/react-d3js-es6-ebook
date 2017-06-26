@@ -266,7 +266,8 @@ class App extends Component {
         return (
             <div className="App container">
                 // markua-start-insert
-                <Title data={filteredSalaries} filteredBy={this.state.filteredBy} />
+                <Title data={filteredSalaries}
+                       filteredBy={this.state.filteredBy} />
                 // markua-end-insert
                 // ...
             </div>

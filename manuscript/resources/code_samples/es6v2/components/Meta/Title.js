@@ -104,13 +104,16 @@ class Title extends Component {
         if (this.yearsFragment && this.USstateFragment) {
             title = (
                 <h2>
-                    In {this.USstateFragment}, {this.jobTitleFragment} ${mean}/year {this.yearsFragment}
+                    In {this.USstateFragment}, {this.jobTitleFragment}
+                    ${mean}/year {this.yearsFragment}
                 </h2>
             );
         }else{
             title = (
                 <h2>
-                    {this.jobTitleFragment} ${mean}/year {this.USstateFragment ? `in ${this.stateFragment}` : ''} {this.yearsFragment}
+                    {this.jobTitleFragment} ${mean}/year
+                    {this.USstateFragment ? `in ${this.stateFragment}` : ''}
+                    {this.yearsFragment}
                 </h2>
             );
         }

@@ -43,9 +43,11 @@ class County extends Component {
         }
 
         return (
-            <path d={geoPath(feature)} style={{fill: color}} title={feature.id} />
+            <path d={geoPath(feature)}
+                  style={{fill: color}}
+                  title={feature.id} />
         );
     }
 }
 
-export default
+export default County;

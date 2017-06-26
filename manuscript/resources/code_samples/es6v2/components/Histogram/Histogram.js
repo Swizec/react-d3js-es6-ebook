@@ -56,7 +56,7 @@ class Histogram extends Component {
     // ...
     updateD3(props) {
         this.histogram
-            .thresholds(props.bin`s)
+            .thresholds(props.bins)
             .value(props.value);
 
         const bars = this.histogram(props.data),

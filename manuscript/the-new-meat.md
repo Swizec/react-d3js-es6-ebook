@@ -241,7 +241,7 @@ If that didn't work, try comparing your changes to this [diff on Github](https:/
 
 Now that we have our data, it's time to start drawing pictures - a choropleth map. That's a map that uses colored geographical areas to encode data.
 
-In this case, we're going to show the delta between median household salary in a statistical county and the average salary of a single tech worker on a visa. The darker the blue, the higher the difference.
+In this case, we're going to show the delta between median household salary in a statistical county and the average salary of a single tech worker on a visa. The darker the blue, the bigger the difference.
 
 ![Choropleth map with shortened dataset](images/es6v2/choropleth-map-shortened-dataset.png)
 
@@ -348,7 +348,7 @@ Let's say our domain goes from 0 to 90. Calling the scale with any number betwee
 
 Keeping all of this up-to-date is easy, but we'll make it harder by adding a zoom feature. It won't work until we implement the filtering, but hey, we'll already have it by then! :D
 
-{crop-start: 65, crop-end: 91, format: javascript}
+{crop-start: 65, crop-end: 93, format: javascript}
 ![CountyMap updateD3](code_samples/es6v2/components/CountyMap/CountyMap.js)
 
 There's a lot going on here.
@@ -369,7 +369,7 @@ At the end of the `updateD3` function, we update the quantize scale's domain wit
 
 After all of that work, the `render` method is a breeze. We prep the data then loop through it and render `County` elements.
 
-{crop-start: 93, crop-end: 122, format: javascript}
+{crop-start: 95, crop-end: 128, format: javascript}
 ![CountyMap render](code_samples/es6v2/components/CountyMap/CountyMap.js)
 
 We use the topojson library to grab data out of the `usTopoJson` dataset. `.mesh` calculates a mesh for US states - a thin line around the edges. `.feature` calculates the features for each county - fill in with color.
@@ -393,7 +393,7 @@ We import React and lodash, then define some color constants. I got the `Choropl
 
 Now we need the `County` component itself.
 
-{crop-start: 27, crop-end: 51, format: javascript}
+{crop-start: 27, crop-end: 53, format: javascript}
 ![County component](code_samples/es6v2/components/CountyMap/County.js)
 
 The `render` method uses the `quantize` scale to pick the right color and returns a `<path>` element. `geoPath` generates the `d` attribute, we set style to `fill` the color, and we give our path a `title`.
@@ -510,7 +510,7 @@ A note about D3 imports: D3v4 is split into multiple packages. We're using a `*`
 
 Now we should add D3 object initialization to the `constructor`. We need a D3 histogram and two scales. One for chart width and one for vertical positioning.
 
-{crop-start: 35, crop-end: 48, format: javascript}
+{crop-start: 38, crop-end: 49, format: javascript}
 ![D3 initialization in Histogram constructor](code_samples/es6v2/components/Histogram/Histogram.js)
 
 We've talked about scales before. Put in a number, get out a number. In this case we're using linear scales for sizing and positioning.
@@ -521,7 +521,7 @@ You might know it as `d3.layout.histogram` from D3v3. I think the updated API is
 
 ### updateD3
 
-{crop-start: 54, crop-end: 72, format: javascript}
+{crop-start: 54, crop-end: 73, format: javascript}
 ![updateD3 method in Histogram](code_samples/es6v2/components/Histogram/Histogram.js)
 
 First, we configure the `histogram` generator. We use `thresholds` to specify how many bins we want, and `value` to specify a value accessor function. We get both from props passed into the `Histogram` component.
@@ -649,7 +649,7 @@ We begin with the title because it shows up first.
 
 We start with an import in `App.js` and add it to the render method. You know the drill :)
 
-{crop-start: 241, crop-end: 274, format: javascript}
+{crop-start: 241, crop-end: 275, format: javascript}
 ![Adding Title to main App component](code_samples/es6v2/App.js)
 
 Ok I lied. We did a lot more than just imports and adding a render.
@@ -671,7 +671,9 @@ So we make a `components/Meta` directory and add an `index.js`. It makes importi
 
 You're right, using re-exports looks better than the roundabout way we used in `Histogram/index.js`. Lesson learned.
 
+{aside}
 You need the `USStatesMap` file as well. It translates US state codes to full names. You should [get it from Github](https://github.com/Swizec/react-d3js-step-by-step/blob/4f94fcd1c3caeb0fc410636243ca99764e27c5e6/src/components/Meta/USStatesMap.js) and save it as `components/Meta/USStatesMap.js`. 
+{/aside}
 
 We'll use it when creating titles and descriptions.
 
@@ -721,7 +723,7 @@ We're dealing with the `(jobTitle, year)` combination. Each influences the other
 
 We put all this together in the `render` method. A conditional decides which of the two situations we're in, and we return an `<h2>` tag with the right text.
 
-{crop-start: 96, crop-end: 119, format: javascript}
+{crop-start: 96, crop-end: 123, format: javascript}
 ![Title.render](code_samples/es6v2/components/Meta/Title.js)
 
 Calculate the mean value using `d3.mean` with a value accessor, turn it into a pretty number with `this.format`, then use one of two string patterns to make a `title`.
@@ -752,18 +754,23 @@ We use the same approach as before:
 All the interesting complexity goes into finding the richest city and county. That part looks like this:
 
 ```javascript
-const byCounty = _.groupBy(this.props.data, 'countyID'),
-      medians = this.props.medianIncomesByCounty;
+// src/components/Meta/Description.js
+get countyFragment() {
+	const byCounty = _.groupBy(this.props.data, 'countyID'),
+	      medians = this.props.medianIncomesByCounty;
 
-let ordered = _.sortBy(
-    _.keys(byCounty)
-     .map(county => byCounty[county])
-     .filter(d => d.length/this.props.data.length > 0.01),
-    items => d3mean(items,
-                    d => d.base_salary) - medians[items[0].countyID][0].medianIncome);
+	let ordered = _.sortBy(
+	    _.keys(byCounty)
+	     .map(county => byCounty[county])
+	     .filter(d => d.length/this.props.data.length > 0.01),
+	    items => d3mean(items,
+	                    d => d.base_salary) - medians[items[0].countyID][0].medianIncome);
+	
+	let best = ordered[ordered.length-1],
+	    countyMedian = medians[best[0].countyID][0].medianIncome;
 
-let best = ordered[ordered.length-1],
-    countyMedian = medians[best[0].countyID][0].medianIncome;
+	// ...
+}
 ```
 
 We group the dataset by county, then sort counties by their income delta. We look only at counties that are bigger than 1% of the entire dataset. And we define income delta as the difference between a county's median household income and the median tech salary in our dataset.
