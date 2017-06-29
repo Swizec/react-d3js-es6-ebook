@@ -803,7 +803,7 @@ Inside `src/App.js`, we first have to add an import, then extract the median hou
 
 Let's see if we can do it in a single code block :)
 
-{crop-start: 281, crop-end: 315, format: javascript}
+{crop-start: 282, crop-end: 317, format: javascript}
 ![Adding MedianLine to App.js](code_samples/es6v2/App.js)
 
 You probably don't remember `medianIncomesByUSState` anymore. We set it up way back when [tying datasets together](#tie-datasets-together). It groups our salary data by US state.
@@ -862,11 +862,11 @@ The `stroke-dasharray` is what makes it dashed. `3` means each `3px` dash is fol
 
 You should now see a median household salary line overlaid on  your histogram.
 
-![Median line over histogram](code_samples/es6v2/dataviz-with-everything.png)
+![Median line over histogram](imagesd/es6v2/dataviz-with-everything.png)
 
-Yep, almost everyone in tech makes more than the median household. Crazy huh? I think it is.
+Yep, almost everyone in tech makes more than the median household. Crazy huh? I think it's bonkers.
 
-If that didn't work, consult the [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/1fd055e461184fb8dc8dd509edb3a6a683c995fe).
+If you don't see the `medianLine`, consult the [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/1fd055e461184fb8dc8dd509edb3a6a683c995fe).
 
 {#user-controls}
 # Add user controls for data slicing and dicing
@@ -875,7 +875,7 @@ Now comes the fun part. All that extra effort we put into making our components 
 
 Here's what we're building:
 
-![User controlled filters](code_samples/es6v2/controls.png)
+![User controlled filters](images/es6v2/controls.png)
 
 A set of filters for users to slice and dice our visualization. The shortened dataset gives you 2 years, 12 job titles, and 50 US states. You'll get 5 years and many more job titles with the full dataset.
 
@@ -902,14 +902,14 @@ All right, you know the drill. Add imports, tweak some things, add to render. We
 
 The white rectangle makes it so the zoomed-in map doesn't cover up the histogram. I'll explain when we get there.
 
-{crop-start: 321, crop-end: 354, format: javascript}
+{crop-start: 323, crop-end: 356, format: javascript}
 ![Imports and filter updates in App.js](code_samples/es6v2/App.js)
 
 We import the `Controls` component and add a default `salariesFilter` function to `this.state`. The `updateDataFilter` method passes the filter function and `filteredBy` dictionary from arguments to App state. We'll use it as a callback in `Controls`.
 
 The rest of filtering setup happens in the render method.
 
-{crop-start: 360, crop-end: 388, format: javascript}
+{crop-start: 362, crop-end: 390, format: javascript}
 ![Filtering data and updating map zoom in App render](code_samples/es6v2/App.js)
 
 We add a `.filter` call to `filteredSalaries`, which uses our `salariesFilter` method to throw out anything that doesn't fit. Then we set up `zoom`, if a US state was selected.
@@ -924,7 +924,7 @@ And here's the downside of this approach. SVG doesn't know about element boundar
 
 See, it goes under the histogram. Let's fix that and add the `Controls` render while we're at it.
 
-{crop-start: 394, crop-end: 421, format: javascript}
+{crop-start: 396, crop-end: 423, format: javascript}
 ![](code_samples/es6v2/App.js)
 
 Rectangle, `500` to the right, `0` from top, `600` wide and `500` tall, with a white background. Gives the histogram an opaque background so it doesn't matter what the map is doing.

@@ -292,7 +292,8 @@ class App extends Component {
         // ...
         let zoom = null,
             // markua-start-insert
-            medianHousehold = this.state.medianIncomesByUSState['US'][0].medianIncome;
+            medianHousehold = this.state.medianIncomesByUSState['US'][0]
+                                  .medianIncome;
             // markua-end-insert
 
         return (
@@ -409,7 +410,7 @@ class App extends Component {
                           width="600"
                           height="500"
                           style={{fill: 'white'}} />
-                    // markua-end insert
+                    // markua-end-insert
                 </svg>
 
                 // markua-start-insert

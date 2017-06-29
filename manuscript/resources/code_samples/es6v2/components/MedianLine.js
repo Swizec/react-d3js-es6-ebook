@@ -39,12 +39,14 @@ export default MedianLine;
 class MedianLine extends Component {
     // ...
     render() {
-        const median = this.props.median || d3.median(this.props.data, this.props.value),
+        const median = this.props.median || d3.median(this.props.data,
+                                                      this.props.value),
               line = d3.line()([[0, 5],
-                                [this.props.width, 5]]);
+                                [this.props.width, 5]]),
+              tickFormat = this.yScale.tickFormat();
 
         const translate = `translate(${this.props.x}, ${this.yScale(median)})`,
-              medianLabel = `Median Household: $${this.yScale.tickFormat()(median)}`;
+              medianLabel = `Median Household: $${tickFormat(median)}`;
 
         return (
             <g className="mean" transform={translate}>
