@@ -924,7 +924,7 @@ And here's the downside of this approach. SVG doesn't know about element boundar
 
 See, it goes under the histogram. Let's fix that and add the `Controls` render while we're at it.
 
-{crop-start: 396, crop-end: 423, format: javascript}
+{crop-start: 396, crop-end: 426, format: javascript}
 ![](code_samples/es6v2/App.js)
 
 Rectangle, `500` to the right, `0` from top, `600` wide and `500` tall, with a white background. Gives the histogram an opaque background so it doesn't matter what the map is doing.
@@ -949,7 +949,7 @@ Make a `Controls` directory in `src/components/` and let's begin. The main `Cont
 
 ### Stub Controls
 
-{crop-start: 5, crop-end: 33, format: javascript}
+{crop-start: 5, crop-end: 35, format: javascript}
 ![Controls stubbed for year filter](code_samples/es6v2/components/Controls/index.js)
 
 We start with some imports and a `Controls` class. Inside, we define default `state` with an always-true `yearFilter` and an asterisk for `year`.
@@ -962,7 +962,7 @@ I'll explain how it works and why we need `shouldComponentUpdate` after we imple
 
 ### Filter logic
 
-{crop-start: 39, crop-end: 69, format: javascript}
+{crop-start: 41, crop-end: 71, format: javascript}
 ![Year filtering logic in Controls](code_samples/es6v2/components/Controls/index.js)
 
 When a user picks a year, the `ControlRow` components calls our `updateYearFilter` function where we build a new partial filter function. The `App` component uses it inside a `.filter` call so we have to return `true` for elements we want to keep, and `false` for elements we don't.
@@ -989,7 +989,7 @@ JavaScript's equality check compares objects on the reference level. So `{a: 1} 
 
 Great, we have the logic. We should render the rows of controls we've been talking about.
 
-{crop-start: 75, crop-end: 93, format: javascript}
+{crop-start: 77, crop-end: 96, format: javascript}
 ![Render the year ControlRow](code_samples/es6v2/components/Controls/index.js)
 
 This is once more generalized code, but used for a single example. The `year` filter.
@@ -1004,7 +1004,7 @@ Now let's build the `ControlRow` component. It renders a row of controls and ens
 
 We'll start with a stub and go from there.
 
-{crop-start: 5, crop-end: 26, format: javascript}
+{crop-start: 5, crop-end: 28, format: javascript}
 ![ControlRow stub](code_samples/es6v2/components/Controls/ControlRow.js)
 
 We start with imports, big surprise, then make a stub with 5 methods. Can you guess what they are?
@@ -1015,7 +1015,7 @@ We start with imports, big surprise, then make a stub with 5 methods. Can you gu
 - `_addToggle` is a rendering helper method
 - `render` renders a row of buttons
 
-{crop-start: 53, crop-end: 72, format: javascript}
+{crop-start: 56, crop-end: 77, format: javascript}
 ![State setup](code_samples/es6v2/components/Controls/ControlRow.js)
 
 React triggers the `componentWillMount` lifecycle hook right before it first renders our component. Mounts it into the DOM, if you will. This is a opportunity for any last minute state setup.
@@ -1028,7 +1028,7 @@ The habit of using appropriate data structures is a good habit. :)
 
 In `componentWillReceiveProps`, we check if the `picked` value has changed, and if it has, we call `makePick` to mimic user action. This allows global app state to override local component state. It's what you'd expect in a unidirectional data flow architecture like the one we're using.
 
-{crop-start: 32, crop-end: 47, format: javascript}
+{crop-start: 33, crop-end: 50, format: javascript}
 ![makePick implementation](code_samples/es6v2/components/Controls/ControlRow.js)
 
 `makePick` changes `state.toggleValues` when the user clicks a toggle. It takes two arguments: a toggle name and the new value.
@@ -1043,7 +1043,7 @@ Does that make sense? It's hard to explain without waving my arms around.
 
 With `this.setState`, we update state and trigger a re-render, which highlights a new button as being selected.
 
-{crop-start: 78, crop-end: 109, format: javascript}
+{crop-start: 83, crop-end: 114, format: javascript}
 ![Render a row of controls](code_samples/es6v2/components/Controls/ControlRow.js)
 
 Rendering happens in two functions: `_addToggle`, which is a helper, and `render`, which is the main render. 
@@ -1087,7 +1087,7 @@ With all that done, we can now add two more filters: US states and job titles. O
 
 We'll start with the `render` method, then handle the parts I said earlier would look repetitive.
 
-{crop-start: 99, crop-end: 133, format: javascript}
+{crop-start: 102, crop-end: 137, format: javascript}
 ![Adding two more rows to Controls](code_samples/es6v2/components/Controls/index.js)
 
 Ok, this part is plenty repetitive too.
@@ -1096,23 +1096,23 @@ We create new sets for `jobTitles` and `USstates`, then rendered two more `Contr
 
 The implementations of those `updateDataFilter` callbacks follow the same pattern as `updateYearFilter`.
 
-{crop-start: 139, crop-end: 166, format: javascript}
+{crop-start: 143, crop-end: 181, format: javascript}
 ![New updateDataFilter callbacks](code_samples/es6v2/components/Controls/index.js)
 
-Yes, they're basically the as `updateYearFilter`. Only difference is a changed `filter` function and using different keys in `setState()`. 
+Yes, they're basically the same as `updateYearFilter`. Same default state configuration, different keys. Same sort of update logic, changed `filter` function and using different keys in `setState()`.
 
 Why separate functions then? No need to get fancy. It would've made the code harder to read.
 
 Our last step is to add these new keys to the `reportUpdateUpTheChain` function.
 
-{crop-start: 172, crop-end: 194, format: javascript}
-![Add new filters to main state update](code_samples/es6v2/components/Controls/index.js)
+{crop-start: 187, crop-end: 209, format: javascript}
+![Adding new filters to the main update function](code_samples/es6v2/components/Controls/index.js)
 
-We add them to the filter condition with `&&` and expand the `filteredBy` argument.
+We add them to the filter condition with `&&` and expand the `filteredBy` argument. 
 
 Two more rows of filters show up.
 
-![All the filters](all-filters.png)
+![All the filters](images/es6v2/all-filters.png)
 
 👏
 
@@ -1124,7 +1124,7 @@ We're expecting a big dataset and we're recalculating our data *and* redrawing h
 
 It goes in the main `App` component and performs a quick check for changes in the filters.
 
-{crop-start: 427, crop-end: 443, format: javascript}
+{crop-start: 432, crop-end: 452, format: javascript}
 ![shouldComponentUpdate in App.js](code_samples/es6v2/App.js)
 
 We take current salaries and filters from `state` and compare them with future state, `nextState`. To guess changes in the salary data, we compare lengths, and to see changes in filters, we compare values for each key. 
@@ -1151,7 +1151,7 @@ There are many ways to achieve this, [ReactRouter](https://github.com/ReactTrain
 
 Easiest place to put this logic is next to the existing filter logic inside the `Controls` component. Better places exist from a "low-down components shouldn't play with global stuff" perspective, but that's okay.
 
-{crop-start: 200, crop-end: 225, format: javascript}
+{crop-start: 215, crop-end: 243, format: javascript}
 ![Adding rudimentary routing](code_samples/es6v2/components/Controls/index.js)
 
 We use the `componentDidMount` lifecycle hook to read the URL when our component first renders on the page. Presumably when the page loads, but could be later. It doesn't really matter *when*, just that we update our filter the first chance we get.
@@ -1243,7 +1243,7 @@ And they're easy to set up. No excuse.
 
 We're going to poke around `public/index.html` for the first time. Add titles, twitter cards, facebook open graph things, and so on.
 
-{crop-start: 3, crop-end: 19, format: html}
+{crop-start: 3, crop-end: 30, format: html}
 ![Basic SEO](code_samples/es6v2/index.html)
 
 We add a `<title>` and a `canonical` URL. Titles configure what shows up in browser tabs and the canonical URL is there to tell search engines that this is the main and most important URL for this piece of content. Especially important for when people copy paste your stuff and put it on other websites.
@@ -1256,7 +1256,7 @@ As soon as React loads, these get overwritten with our preloader, but it's good 
 
 To make social media embeds look great, we'll use [Twitter card](https://dev.twitter.com/cards/types/summary-large-image) and [Facebook OpenGraph](https://developers.facebook.com/docs/sharing/webmasters) meta tags. I think most other websites just rely on these since most people use them. They go in the `<head>` of our HTML.
 
-{crop-start: 23, crop-end: 41, format: javascript}
+{crop-start: 34, crop-end: 64, format: javascript}
 ![Add FB and Twitter cards](code_samples/es6v2/index.html)
 
 Much of this code is repetitive. Both Twitter and Facebook want the same info, but they're stubborn and won't read each other's formats. You can copy all of this, but make sure to change `og:url`, `og:site_name`, `article:publisher`, `fb:admins`, `og:image`, `twitter:site`, `twitter:image`, and `twitter:creator`. They're you specific.

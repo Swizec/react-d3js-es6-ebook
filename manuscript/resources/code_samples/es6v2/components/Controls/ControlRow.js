@@ -25,6 +25,7 @@ class ControlRow extends Component {
     }
 }
 
+export default ControlRow;
 
 //
 // Example 3
@@ -34,10 +35,12 @@ class ControlRow extends Component {
     makePick(picked, newState) {
         let toggleValues = this.state.toggleValues;
 
-        toggleValues = _.mapValues(toggleValues,
-                                   (value, key) => newState && key == picked); // eslint-disable-line
+        toggleValues = _.mapValues(
+            toggleValues,
+            (value, key) => newState && key == picked // eslint-disable-line
+        );
 
-        // if newStaute is false, we want to reset
+        // if newState is false, we want to reset
         this.props.updateDataFilter(picked, !newState);
 
         this.setState({toggleValues: toggleValues});
@@ -56,14 +59,16 @@ class ControlRow extends Component {
 
     componentWillMount() {
         let toggles = this.props.toggleNames,
-            toggleValues = _.zipObject(toggles,
-                                       toggles.map((name) => name === this.props.picked));
+            toggleValues = _.zipObject(
+                toggles,
+                toggles.map((name) => name === this.props.picked)
+            );
 
         this.setState({toggleValues: toggleValues});
     }
 
     componentWillReceiveProps(nextProps) {
-        if (ththis.props.picked !== nextProps.picked) {
+        if (this.props.picked !== nextProps.picked) {
             this.makePick(nextProps.picked, true);
         }
     }
@@ -87,7 +92,7 @@ class ControlRow extends Component {
             label = label.toUpperCase();
         }
 
-        return
+        return (
             <Toggle label={label}
                     name={name}
                     key={key}

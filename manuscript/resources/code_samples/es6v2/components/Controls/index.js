@@ -25,12 +25,14 @@ class Controls extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual)this.state, nextState);
+        return !_.isEqual(this.state, nextState);
     }
 
     render() {
     }
 }
+
+export default Controls;
 
 
 //
@@ -41,7 +43,7 @@ class Controls extends Component {
     // ...
 
     updateYearFilter(year, reset) {
-        let filter = (d) => d.submit_date`.getFullYear() === year;
+        let filter = (d) => d.submit_date.getFullYear() === year;
 
         if (reset || !year) {
             filter = () => true;
@@ -86,7 +88,8 @@ class Controls extends Component {
                 <ControlRow data={data}
                             toggleNames={Array.from(years.values())}
                             picked={this.state.year}
-                            updateDataFilter={this.updateYearFilter.bind(this)} />
+                            updateDataFilter={this.updateYearFilter.bind(this)}
+                            />
             </div>
         )
     }
@@ -113,7 +116,8 @@ class Controls extends Component {
                 <ControlRow data={data}
                             toggleNames={Array.from(years.values())}
                             picked={this.state.year}
-                            updateDataFilter={this.updateYearFilter.bind(this)} />
+                            updateDataFilter={this.updateYearFilter.bind(this)}
+                            />
 
             // markua-start-insert
                 <ControlRow data={data}
@@ -138,6 +142,17 @@ class Controls extends Component {
 //
 // src/components/Controls/index.js
 class Controls extends Component {
+    state = {
+        yearFilter: () => true,
+        year: '*',
+        // markua-start-insert
+        jobTitleFilter: () => true,
+        jobTitle: '*',
+        USstateFilter: () => true,
+        USstate: '*'
+        // markua-end-insert
+    }
+
     // ...
     updateJobTitleFilter(title, reset) {
         let filter = (d) => d.clean_job_title === title;
@@ -195,7 +210,7 @@ class Controls extends Component {
 
 
 //
-// Example 6
+// Example 7
 //
 // src/components/Controls/index.js
 class Controls extends Component {

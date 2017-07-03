@@ -411,6 +411,9 @@ class App extends Component {
                           height="500"
                           style={{fill: 'white'}} />
                     // markua-end-insert
+
+                    <Histogram //... />
+                    <MedianLine //.. />
                 </svg>
 
                 // markua-start-insert
@@ -432,11 +435,15 @@ class App extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         const { techSalaries, filteredBy } = this.state;
 
-        const changedSalaries = (techSalaries && techSalaries.length) !== (nextState.techSalaries && nextState.techSalaries.length);
+        const changedSalaries =
+        (techSalaries && techSalaries.length)
+            !== (nextState.techSalaries
+                && nextState.techSalaries.length);
 
         const changedFilters = Object.keys(filteredBy)
                                      .some(
-                                         k => filteredBy[k] !== nextState.filteredBy[k]
+                                         k => filteredBy[k]
+                                         !== nextState.filteredBy[k]
                                      );
 
         return changedSalaries || changedFilters;
