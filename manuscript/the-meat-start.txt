@@ -1,8 +1,13 @@
+{mainmatter}
+
 {#the-meat-start}
 # Visualizing data with React and d3.js #
 
-Welcome to the main part of React + D3v4. We're going to talk a little theory, some principles, then get our hands dirty with a few examples. Through this book you're going to build:
+Welcome to the main part of React + D3v4. We're going to talk a little theory, some principles, then get our hands dirty with a few examples. No need to install anything to get started :)
 
+Through this book you're going to build:
+
+- [A few small components in Codepen](#basic-approach)
 - [A choropleth map](#choropleth-map)
 - [An interactive histogram](#histogram-of-salaries)
 - [A rainbow snake](#rainbow-snake)
@@ -305,8 +310,6 @@ Let's build a rectangle that changes color based on prop values. We'll render a 
 Yes, it looks like a trivial example, but color-as-information is an important concept in data visualization. We're going to use it later to build a choropleth map of household income in the US.
 
 I suggest following along in Codepen for now. [Here's one I set up for you](https://codepen.io/swizec/pen/oYNvpQ). It contains the final solution, so you can follow along and nod your head. I'll explain each part.
-
-I know you're itching to use your local environment from the [Getting Started section](#getting-started), and you will. But it'll be later when we do the real-er example projects.
 
 ## A color scale
 

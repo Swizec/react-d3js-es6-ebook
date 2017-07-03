@@ -1,7 +1,6 @@
-{mainmatter}
 
 {#getting-started}
-# Getting started
+# Set up a local environment with create-react-app
 
 Can you believe this is the third time I'm writing a *"How to set up all the tools and get started"* section? The ecosystem moves fast! 😬
 
@@ -23,7 +22,7 @@ Go to [nodejs.org](https://nodejs.org/en/), download one of the latest versions,
 
 Server-side rendering might be easier with the fancy-pants version. More on that later.
 
-## Install the app generator
+## Install create-react-app
 
 Great, you have node and you're ready to go.
 
@@ -41,7 +40,7 @@ You can think of `create-react-app` and `react-scripts` as two parts of the same
 
 Keeping a global dependency up to date would suck, especially considering there have been six major updates since Facebook first launched `create-react-app` in July 2016.
 
-## Run the app generator
+## Run create-react-app
 
 Superb! You have `create-react-app`. Time to create an app and get started with some coding.
 

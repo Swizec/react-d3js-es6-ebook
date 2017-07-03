@@ -1,6 +1,6 @@
 introduction.txt
-simpler-environment.md
 the-meat-start.txt
+simpler-environment.md
 the-new-meat.md
 animation.md
 animating-react-redux.txt
