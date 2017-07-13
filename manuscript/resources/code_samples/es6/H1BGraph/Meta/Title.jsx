@@ -2,7 +2,6 @@
 //
 // Example 1
 //
-// ./src/components/H1BGraph/Meta/Title.jsx
 import React, { Component } from 'react';
 import d3 from 'd3';
 
@@ -30,7 +29,6 @@ import d3 from 'd3';
 import Meta from './BaseComponent';
 import StatesMap from './StatesMap';
 
-// ./src/components/H1BGraph/Meta/Title.jsx
 class Title extends Meta {
     // leanpub-start-insert
     getYearsFragment() {
@@ -46,7 +44,6 @@ class Title extends Meta {
         return title;
     }
 
-    // ./src/components/H1BGraph/Meta/Title.jsx
     getUSStateFragment() {
         var states = this.getUSStates(),
             title;
@@ -111,7 +108,6 @@ class Title extends Meta {
     }
     // leanpub-end-insert
 
-    // ./src/components/H1BGraph/Meta/Title.jsx
     render() {
         // leanpub-start-delete
         let title = (<h2>This is a title</h2>);

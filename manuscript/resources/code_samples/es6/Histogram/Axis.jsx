@@ -1,7 +1,6 @@
 //
 // Example 1
 //
-// ./src/components/Histogram/Axis.jsx
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import d3 from 'd3';
@@ -22,7 +21,6 @@ export default Axis;
 //
 // Example 2
 //
-// ./src/components/Histogram/Axis.jsx
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import d3 from 'd3';
@@ -45,6 +43,19 @@ class Axis extends Component {
     }
 
     update_d3(props) {
+        // leanpub-start-insert
+        this.yScale
+            .domain([0,
+                     d3.max(props.data.map((d) => d.x+d.dx))])
+            .range([0, props.height-props.topMargin-props.bottomMargin]);
+
+        this.axis
+            .ticks(props.data.length)
+            .tickValues(props.data
+                             .map((d) => d.x)
+                             .concat(props.data[props.data.length-1].x
+                                    +props.data[props.data.length-1].dx));
+        // leanpub-end-insert
     }
 
     render() {
@@ -83,7 +94,6 @@ class Axis extends Component {
         this.update_d3(newProps);
     }
 
-    // ./src/components/Histogram/Axis.jsx
     update_d3(props) {
         // leanpub-start-insert
         this.yScale
@@ -150,7 +160,6 @@ class Axis extends Component {
                                     +props.data[props.data.length-1].dx));
     }
 
-    // ./src/components/Histogram/Axis.jsx
     // leanpub-start-insert
     componentDidUpdate() { this.renderAxis(); }
     componentDidMount() { this.renderAxis(); }

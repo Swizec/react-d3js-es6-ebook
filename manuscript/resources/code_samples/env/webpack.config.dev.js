@@ -1,7 +1,6 @@
 //
 // Example 1
 //
-// ./webpack.config.dev.js
 module: {
     loaders: [{
         test: /\.js$/,
@@ -20,7 +19,6 @@ module: {
 //
 // Example 2
 //
-// ./webpack.config.dev.js
 var path = require('path');
 var webpack = require('webpack');
 
@@ -43,7 +41,6 @@ module.exports = {
 var path = require('path');
 var webpack = require('webpack');
 
-// ./webpack.config.dev.js
 module.exports = {
   devtool: 'eval',
   entry: [
@@ -73,7 +70,6 @@ module.exports = {
     'webpack-hot-middleware/client',
     './src/index'
   ],
-  // ./webpack.config.dev.js
   output: {
     // leanpub-start-insert
     path: path.join(__dirname, 'dist'),
@@ -105,7 +101,6 @@ module.exports = {
     filename: 'bundle.js',
     publicPath: '/static/'
   },
-  // ./webpack.config.dev.js
   plugins: [
     // leanpub-start-insert
     new webpack.HotModuleReplacementPlugin(),
@@ -138,7 +133,6 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin()
   ],
-  // ./webpack.config.dev.js
   module: {
    loaders: [
        // leanpub-start-insert
@@ -157,7 +151,6 @@ module.exports = {
 //
 // Example 7
 //
-// ./webpack.config.dev.js
 module: {
    loaders: [
        // leanpub-start-delete
@@ -179,7 +172,6 @@ module: {
 //
 // Example 8
 //
-// ./webpack.config.dev.js
     new webpack.NoErrorsPlugin()
   ],
   // leanpub-start-insert

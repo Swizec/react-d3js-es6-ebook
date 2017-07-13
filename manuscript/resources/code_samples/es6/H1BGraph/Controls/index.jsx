@@ -1,7 +1,6 @@
 //
 // Example 1
 //
-// ./components/H1BGraph/Controls/index.jsx
 import React, { Component } from 'react';
 import _ from 'lodash';
 
@@ -21,7 +20,6 @@ export default Controls;
 //
 // Example 2
 //
-// ./components/H1BGraph/Controls/index.jsx
 import React, { Component } from 'react';
 import _ from 'lodash';
 
@@ -29,7 +27,6 @@ import _ from 'lodash';
 import ControlRow from './ControlRow';
 // leanpub-end-insert
 
-// ./components/H1BGraph/Controls/index.jsx
 class Controls extends Component {
     render() {
         // leanpub-start-insert
@@ -63,7 +60,6 @@ import _ from 'lodash';
 
 import ControlRow from './ControlRow';
 
-// ./src/components/H1BGraph/Controls/index.jsx
 class Controls extends Component {
     // leanpub-start-insert
     constructor() {
@@ -75,7 +71,6 @@ class Controls extends Component {
         };
     }
 
-    // ./src/components/H1BGraph/Controls/index.jsx
     updateYearFilter(year, reset) {
         let filter = (d) => d.submit_date.getFullYear() == year;
 
@@ -89,7 +84,6 @@ class Controls extends Component {
     }
     // leanpub-end-insert
 
-    // ./src/components/H1BGraph/Controls/index.jsx
     render() {
         let getYears = (data) => {
             return _.keys(_.groupBy(data,
@@ -145,7 +139,6 @@ class Controls extends Component {
                        year: year});
     }
 
-    // ./src/components/H1BGraph/Controls/index.jsx
     // leanpub-start-insert
     componentDidUpdate() {
         this.props.updateDataFilter(
@@ -155,7 +148,6 @@ class Controls extends Component {
         );
     }
 
-    // ./src/components/H1BGraph/Controls/index.jsx
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(this.state, nextState);
     }
@@ -189,7 +181,6 @@ import _ from 'lodash';
 
 import ControlRow from './ControlRow';
 
-// ./src/components/H1BGraph/Controls/index.jsx
 class Controls extends Component {
     constructor() {
         super();
@@ -216,7 +207,6 @@ class Controls extends Component {
                        year: year});
     }
 
-    // ./src/components/H1BGraph/Controls/index.jsx
     // leanpub-start-insert
     updateUSStateFilter(USstate, reset) {
         var filter = (d) => d.state == USstate;
@@ -231,7 +221,6 @@ class Controls extends Component {
     }
     // leanpub-end-insert
 
-    // ./src/components/H1BGraph/Controls/index.jsx
     componentDidUpdate() {
         this.props.updateDataFilter(
             ((filters) => {
@@ -247,7 +236,6 @@ class Controls extends Component {
         return !_.isEqual(this.state, nextState);
     }
 
-    // ./src/components/H1BGraph/Controls/index.jsx
     render() {
         let getYears = (data) => {
             return _.keys(_.groupBy(data,
