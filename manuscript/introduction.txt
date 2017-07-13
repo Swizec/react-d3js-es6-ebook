@@ -42,7 +42,6 @@ That first version was 91 pages long and sold a few hundred copies. Great succes
 
 That makes me happy. If you're one of those early supporters, thank you! You're the best.
 
-<<<<<<< HEAD
 Here's what I had to say about the first version:
 
 > I wrote this book for you as an experiment. The theory we’re testing is that technical content works better as a short e-book than as a long article.
@@ -68,10 +67,6 @@ That's what I'm hoping you'll do with this book. Sit down, play with code, try t
 If you're short on time: Read the theory. You'll get the gist and learn the basics in about an hour. I promise :)
 
 # Why you should read React + D3v4
-=======
-1. Try the example code yourself. Don’t just copy-paste; type it and execute it. Execute it frequently. If something doesn’t fit together, look at the full working project on Github [here](https://github.com/Swizec/h1b-software-salaries), or check out the zip files that came with the book.
-2. If you already know something, skip that section. You’re awesome. Thanks for making this easier for me.
->>>>>>> master
 
 After an hour with *React + D3v4*, you’ll know how to make React and D3.js play together. You’ll know how to create composeable data visualizations. You’re going to understand *why* that’s a good idea, and you will have the tools to build your own library of interactive visualization components.
 
@@ -108,7 +103,6 @@ let foo = 'bar';
 foo += 'more stuff';
 ```
 
-<<<<<<< HEAD
 Each code sample starts with a commented out file path. That's the file you're editing. Like this:
 
 {caption: "Code samples have file paths"}
@@ -117,13 +111,6 @@ Each code sample starts with a commented out file path. That's the file you're e
 
 class App ...
 ```
-=======
-{linenos=off,lang=jsx}
-     var foo = 'bar';
-     // leanpub-start-delete
-     foo += 'this is added';
-     // leanpub-end-delete
->>>>>>> master
 
 Commands that you should run in the terminal start with an `$` symbol, like this:
 
