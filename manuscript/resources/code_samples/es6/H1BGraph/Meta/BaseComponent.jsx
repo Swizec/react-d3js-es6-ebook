@@ -2,7 +2,6 @@
 //
 // Example 1
 //
-// ./src/components/H1BGraph/Meta/BaseComponent.jsx
 import React, { Component } from 'react';
 import d3 from 'd3';
 import _ from 'lodash';
@@ -28,7 +27,6 @@ import React, { Component } from 'react';
 import d3 from 'd3';
 import _ from 'lodash';
 
-// ./src/components/H1BGraph/Meta/BaseComponent.jsx
 export default class Meta extends Component {
     getYears(data) {
         // leanpub-start-insert

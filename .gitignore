@@ -10,8 +10,8 @@ screencast.zip
 skype_call.md
 team_license.md
 working_project.zip
-working-project.zip
 working_project/
+<<<<<<< HEAD
 working-environment.zip
 working-environment/
 *.epub
@@ -22,3 +22,5 @@ team*.txt
 livecoding_sessions.txt
 30min_call.txt
 .DS_Store
+=======
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa

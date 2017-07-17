@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+{mainmatter}
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 {#getting-started}
 # Set up a local environment with create-react-app

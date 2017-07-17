@@ -25,14 +25,14 @@ If you want to see how this project evolved over 22 months, check [the original 
 
 Our preloader is a screenshot of the final result. Usually you'd have to wait until the end of the project to make that, but I'll just give you mine. Starting with the preloader makes sense for two reasons:
 
-1. It's nicer than watching a blank screen while data loads
+1. It's nicer than looking at a blank screen while data loads
 2. It's a good sanity check for our environment
 
 We're using a screenshot of the final result because the full dataset takes a few seconds to load, parse, and render. It looks better if visitors see something informative while they wait.
 
 Make sure you've installed [all dependencies](#install-dependencies) and that `npm start` is running.
 
-We're building the preloader in 3 steps:
+We're building the preloader in 4 steps:
 
 1. Get the image
 2. Make the `Preloader` component
@@ -124,6 +124,7 @@ Great! We have a preloader. Time to load some data.
 
 We'll use D3's built-in data loading methods and tie their callbacks into React's component lifecycle. You could talk to a REST API in the same way. Neither D3 nor React care what the datasource is.
 
+<<<<<<< HEAD
 First, you need the data files. I scraped the tech salary info from [h1bdata.info](http://h1bdata.info/), the median household incomes from the US census datasets, and US map data from Mike Bostock's github repositories. I used some elbow grease and python scripts to tie the datasets together.
 
 You can read about the scraping on my blog [here](https://swizec.com/blog/place-names-county-names-geonames/swizec/7083), [here](https://swizec.com/blog/facts-us-household-income/swizec/7075), and [here](https://swizec.com/blog/livecoding-24-choropleth-react-js/swizec/7078). But it's not the subject of this book.
@@ -133,6 +134,13 @@ You can read about the scraping on my blog [here](https://swizec.com/blog/place-
 You should download the 6 datafiles from [the step-by-step repository on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/8819d9c38b4aef0a0c569e493f088ff9c3bfdf33). Put them in the `public/data` directory in your project.
 
 The quickest way to download each file is to click `View`, then right-click `Raw` and `Save Link As`.
+=======
+First, you need the data files. I scraped the tech salary info from [h1bdata.info](http://h1bdata.info/), the median household incomes from the US census datasets, and US map data from Mike Bostock's Github repositories. I used some elbow grease and python scripts to tie the datasets together.
+
+You can read about the scraping on my blog [here](https://swizec.com/blog/place-names-county-names-geonames/swizec/7083), [here](https://swizec.com/blog/facts-us-household-income/swizec/7075), and [here](https://swizec.com/blog/livecoding-24-choropleth-react-js/swizec/7078). But it's not the subject of this book.
+
+You should download the 6 data files from [the step-by-step repository on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/8819d9c38b4aef0a0c569e493f088ff9c3bfdf33). Put them in the `public/data` directory in your project.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ## Step 1: Prep App.js
 
@@ -140,12 +148,20 @@ Let's set up our `App` component first. That way you'll see results as soon data
 
 We start by importing our data loading method - `loadAllData` - and both D3 and Lodash. We'll need them later.
 
+<<<<<<< HEAD
 {crop-start: 67, crop-end: 78, format: javascript, line-numbers: false}
+=======
+{crop-start: 67, crop-end: 78, format: javascript}
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ![Import d3, lodash, and our data loader](code_samples/es6v2/App.js)
 
 You already know the normal imports. Importing with `{}` is how we import named exports, which lets us get multiple things from the same file. You'll see how the export side works in Step 2.
 
+<<<<<<< HEAD
 {crop-start: 79, crop-end: 91, format: javascript, line-numbers: false}
+=======
+{crop-start: 79, crop-end: 91, format: javascript}
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ![Initiate data loading in App.js](code_samples/es6v2/App.js)
 
 We initiate data loading inside the `App` class's `componentWillMount` lifecycle hook. It fires right before React mounts our component into the DOM. Seems like a good place to start loading data, but some say it's an anti-pattern.
@@ -158,7 +174,11 @@ We also took this opportunity to add two more entries to our `state`: `countyNam
 
 Let's add a "Data loaded" indicator to the `render` method. That way we'll know when data loading works.
 
+<<<<<<< HEAD
 {crop-start: 94, crop-end: 112, format: javascript, line-numbers: false}
+=======
+{crop-start: 94, crop-end: 112, format: javascript}
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ![Data loaded indicator](code_samples/es6v2/App.js)
 
 We added the `container` class to the main `<div>` and added an `<h1>` tag to show how many datapoints were loaded. The `{}` pattern denotes a dynamic value in JSX. You've seen this in props so far, but it works in tag bodies as well.
@@ -176,12 +196,16 @@ Let's build that file and fill it with our data loading logic.
 We're putting data loading logic in a file separate from `App.js` because it's a bunch of functions that work together and don't have much to do with the `App` component.
 
 We start the file with two imports and four data parsing functions:
+<<<<<<< HEAD
 
+=======
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 - `cleanIncomes`, which parses each row of household income data
 - `dateParse`, which we use for parsing dates
 - `cleanSalary`, which parses each row of salary data
 - `cleanUSStateName`, which parses US state names
 
+<<<<<<< HEAD
 {crop-start: 5, crop-end: 43, format: javascript, line-numbers: false}
 ![Data parsing functions](code_samples/es6v2/DataHandling.js)
 
@@ -196,6 +220,22 @@ Doing the parsing and the nicer key names now makes the rest of our codebase sim
 Now that we have our data parsing functions, we can use D3 to load the data with Ajax requests.
 
 {crop-start: 47, crop-end: 58, format: javascript, line-numbers: false}
+=======
+{crop-start: 5, crop-end: 43, format: javascript}
+![Data parsing functions](code_samples/es6v2/DataHandling.js)
+
+You'll see those `d3` and `lodash` imports a lot. ::[@Swizec: Should you mention those imports in the list?]::
+
+The data parsing functions all follow the same approach: Take a row of data as `d`, return a dictionary with nicer key names, and cast any numbers or dates into appropriate formats. They all come in as strings.
+
+Doing the parsing and the nicer key names now makes the rest of our codebase simpler because we don't have to deal with this all the time. For example, `entry.job_title` is nicer to read and type than `entry['job title']`.
+
+## Step 3: Load the datasets
+
+Now that we have our data parsing functions, we can use D3 to load the data with Ajax requests.
+
+{crop-start: 47, crop-end: 58, format: javascript}
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ![Data loading](code_samples/es6v2/DataHandling.js)
 
 Here you can see another ES6 trick: default argument values. If `callback` is false, we set it to `_.noop` - a function that does nothing. This lets us later call `callback()` without worrying whether it was given as an argument.
@@ -204,7 +244,11 @@ Here you can see another ES6 trick: default argument values. If `callback` is fa
 
 We define 5 tasks to run with `.defer` then wait for them to finish with `.await`. The tasks themselves are D3's data loading functions that fire an Ajax request to the specified URL, parse the data into a JavaScript dictionary, and use the given row parsing function to polish the result.
 
+<<<<<<< HEAD
 For instance, `.defer(d3.csv, 'data/county-median-incomes.csv', cleanIncomes)`{format: javascript}, uses `d3.csv` to make an Ajax request to `data/county-median-incomes.csv`, parses the CSV file into an array of JavaScript dictionaries, and uses `cleanIncomes` to further parse each row the way we specified earlier.
+=======
+For instance, `.defer(d3.csv, 'data/county-median-incomes.csv', cleanIncomes)` uses `d3.csv` to make an Ajax request to `data/county-median-incomes.csv`, parses the CSV file into an array of JavaScript dictionaries, and uses `cleanIncomes` to further parse each row the way we specified earlier.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 D3 supports formats like `json`, `csv`, `tsv`, `text`, and `xml` out of the box. You can make it work with custom data sources through the underlying `request` API.
 
@@ -215,9 +259,15 @@ PS: we're using the shortened salary dataset to make page reloads faster while b
 
 If you put a `console.log` in the `.await` callback above, you'll see a bunch of data. Each argument - `us`, `countyNames`, `medianIncomes`, `techSalaries`, `USstateNames` - holds the entire parsed dataset from the corresponding file.
 
+<<<<<<< HEAD
 To tie them together and prepare a dictionary for `setState` back in the `App` component, we need to add a little big of logic. We're going to build a dictionary of county household incomes and remove any empty salaries.
 
 {crop-start: 63, crop-end: 90, format: javascript, line-numbers: false}
+=======
+To tie them together and prepare a dictionary for `setState` back in the `App` component, we need to add a little bit of logic. We're going to build a dictionary of county household incomes and remove any empty salaries.
+
+{crop-start: 63, crop-end: 90, format: javascript}
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ![Tie the datasets together](code_samples/es6v2/DataHandling.js)
 
 The first line should be one of those `cleanX` functions like we had above. I'm not sure how I missed it.
@@ -241,7 +291,11 @@ If that didn't work, try comparing your changes to this [diff on Github](https:/
 
 Now that we have our data, it's time to start drawing pictures - a choropleth map. That's a map that uses colored geographical areas to encode data.
 
+<<<<<<< HEAD
 In this case, we're going to show the delta between median household salary in a statistical county and the average salary of a single tech worker on a visa. The darker the blue, the bigger the difference.
+=======
+In this case, we're going to show the delta between median household salary in a statistical county and the average salary of a single tech worker on a visa. The darker the blue, the higher the difference.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ![Choropleth map with shortened dataset](images/es6v2/choropleth-map-shortened-dataset.png)
 
@@ -269,7 +323,11 @@ In the `App` class itself, we add a `countyValue` method. It takes a county entr
 {crop-start: 129, crop-end: 144, format: javascript}
 ![App.countyValue method](code_samples/es6v2/App.js)
 
+<<<<<<< HEAD
 We use `this.state.medianIncomes` to get the median household salary and the `techSalariesMap` input to get salaries for a specific census area. Then we use `d3.median` to calculate the  median value for salaries and return a two-element dictionary with the result.
+=======
+We use `this.state.medianIncomes` to get the median household salary and the `techSalariesMap` input to get salaries for a specific census area. Then we use `d3.median` to calculate the median value for salaries and return a two-element dictionary with the result.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 `countyID` specifies the county and `value` is the delta that our choropleth displays.
 
@@ -286,7 +344,11 @@ We call our dataset `filteredTechSalaries` because we're going to add filtering 
 
 We use `_.groupBy` to build a dictionary mapping each `countyID` to an array of salaries, and we use our `countyValue` method to build an array of counties for our map.
 
+<<<<<<< HEAD
 We set `zoom` to `null` for now. This also will come into effect later.
+=======
+We set `zoom` to `null` for now. This will also come into effect later.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 In the `return` statement, we remove the "data loaded" indicator, and we add an `<svg>` element that's `1100` pixels wide and `500` pixels high. Inside, we put the `CountyMap` component with a bunch of properties. Some dataset stuff, some sizing and positioning stuff.
 
@@ -340,7 +402,11 @@ You can see the other projections D3 offers on the [d3-geo Github page](https://
 
 The `geoPath` generator takes a projection and returns a function that generates the `d` attribute of `<path>` elements. This is the most general way to specify SVG shapes. I won't go into explaining the `d` here, but it's [an entire DSL](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d).
 
+<<<<<<< HEAD
 `quantize` is a D3 scale. We've mentioned the basics of scales in the [D3 Axis example](#blackbox-axis). This one splits a domain into 9 quantiles and assigns them specific values from the `range`.
+=======
+`quantize` is a D3 scale. We've dealt with the basics of scales in the [D3 Axis example](#blackbox-axis). This one splits a domain into 9 quantiles and assigns them specific values from the `range`.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 Let's say our domain goes from 0 to 90. Calling the scale with any number between 0 and 9 would return 1. 10 to 19 returns 2 and so on. We'll use it to pick colors from an array.
 
@@ -348,12 +414,20 @@ Let's say our domain goes from 0 to 90. Calling the scale with any number betwee
 
 Keeping all of this up-to-date is easy, but we'll make it harder by adding a zoom feature. It won't work until we implement the filtering, but hey, we'll already have it by then! :D
 
+<<<<<<< HEAD
 {crop-start: 65, crop-end: 93, format: javascript}
+=======
+{crop-start: 65, crop-end: 91, format: javascript}
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ![CountyMap updateD3](code_samples/es6v2/components/CountyMap/CountyMap.js)
 
 There's a lot going on here.
 
+<<<<<<< HEAD
 The first part is okay. It `translates` (i.e. moves) the projection to the center of our drawing area and sets a scale property. The value was discovered experimentally and is different for every projection.
+=======
+The first part is okay. It `translates` (moves) the projection to the center of our drawing area and sets a scale property. The value was discovered experimentally and is different for every projection.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 Then we do some weird stuff if `zoom` is defined.
 
@@ -369,7 +443,11 @@ At the end of the `updateD3` function, we update the quantize scale's domain wit
 
 After all of that work, the `render` method is a breeze. We prep the data then loop through it and render `County` elements.
 
+<<<<<<< HEAD
 {crop-start: 95, crop-end: 128, format: javascript}
+=======
+{crop-start: 93, crop-end: 122, format: javascript}
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ![CountyMap render](code_samples/es6v2/components/CountyMap/CountyMap.js)
 
 We use the topojson library to grab data out of the `usTopoJson` dataset. `.mesh` calculates a mesh for US states - a thin line around the edges. `.feature` calculates the features for each county - fill in with color.
@@ -393,7 +471,11 @@ We import React and lodash, then define some color constants. I got the `Choropl
 
 Now we need the `County` component itself.
 
+<<<<<<< HEAD
 {crop-start: 27, crop-end: 53, format: javascript}
+=======
+{crop-start: 27, crop-end: 51, format: javascript}
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ![County component](code_samples/es6v2/components/CountyMap/County.js)
 
 The `render` method uses the `quantize` scale to pick the right color and returns a `<path>` element. `geoPath` generates the `d` attribute, we set style to `fill` the color, and we give our path a `title`.
@@ -421,7 +503,11 @@ If that didn't work, consult [this diff on Github](https://github.com/Swizec/rea
 
 Knowing the median salary is great and all, but it doesn't tell you much about what you can expect. You need to know the distribution to see if it's more likely you'll get 140k or 70k.
 
+<<<<<<< HEAD
 That's what histograms are for. Give them a bunch of data and they show its distribution. We're going to build one like this:
+=======
+That's what histograms are for. Give them a bunch of data, and they show its distribution. We're going to build one like this:
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ![Basic histogram](images/es6v2/basic-histogram.png)
 
@@ -433,7 +519,11 @@ Anyway, let's build a histogram. We'll start with changes in `App.js`, make a `H
 
 ## Step 1: Prep App.js
 
+<<<<<<< HEAD
 You know the drill don't you? Import some stuff, add it to the `render()` method in our `App` component.
+=======
+You know the drill, don't you? Import some stuff, add it to the `render()` method in our `App` component.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 {crop-start: 190, crop-end: 204, format: javascript}
 ![Histogram imports](code_samples/es6v2/App.js)
@@ -442,9 +532,15 @@ We import `App.css` and the `Histogram` component. That's what I love about usin
 
 There are different schools of thought about how CSS should be used. Some say each component should have its own CSS files and that that's the whole reason we want JS-based imports anyway. Others think we shouldn't use CSS at all and should do styling in JavaScript.
 
+<<<<<<< HEAD
 Me, I don't know. I like the idea of components coming with their own styling, but I find that makes them less reusable. Apps often want to specify their own styling.
 
 Maybe a combination of default per-component styling and app-level overrides? Depends on your use case I guess.
+=======
+Personally, I don't know. I like the idea of components coming with their own styling, but I find that makes them less reusable. Apps often want to specify their own styling.
+
+Maybe a combination of default per-component styling and app-level overrides? Depends on your use case, I guess.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 With the imports done, we can add `Histogram` to `App`'s render method.
 
@@ -462,7 +558,11 @@ Your browser should now show an error complaining about missing files.
 
 As mentioned, opinions vary on the best way to do styling in React apps. Some say stylesheets per component, some say styling inside JavaScript, others swear by global app styling.
 
+<<<<<<< HEAD
 The truth is somewhere in between. Do what best fits your project and team. We're going to stick to global stylesheets because it's simplest.
+=======
+The truth is somewhere in between. Do what best fits your project and team. We're going to stick to global stylesheets because it's the simplest.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 Start by emptying out `src/App.css`. All that came with `create-react-app` must go. We don't need it.
 
@@ -473,9 +573,15 @@ Then add these 29 lines:
 
 We won't go into details about CSS here. Many better books have been written about it.
 
+<<<<<<< HEAD
 Generally speaking, we're making `.histogram` rectangles – the bars – blue, and labels white `12px` font. `button`s and `.row`s have some spacing. This for the user controls we'll add. And the `.mean` line is a dotted grey with grey `11px` text.
 
 Yes, this is more CSS than we need for just the histogram. We're already here, might as well add it.
+=======
+Generally speaking, we're making `.histogram` rectangles – the bars – blue, and labels white `12px` font. `button`s and `.row`s have some spacing. This is for the user controls we'll add. And the `.mean` line is a dotted grey with grey `11px` text.
+
+Yes, this is more CSS than we need for just the histogram. We're already here, so we might as well add it.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 Adding our CSS before building the Histogram means it's going to look beautiful the first time around.
 
@@ -487,27 +593,44 @@ We'll use two components:
 1. `Histogram` handles the general layout, dealing with D3, and translating raw data into a histogram
 2. `HistogramBar` draws a single bar and labels it
 
+<<<<<<< HEAD
 Let's start with the basics, a `Histogram` directory and an `index.js` file. It makes importing easier while keeping our code organized. I like to use dirs for components made out of multiple files.
+=======
+Let's start with the basics: a `Histogram` directory and an `index.js` file. It makes importing easier while keeping our code organized. I like to use dirs for components made out of multiple files.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 {crop-start: 5, crop-end: 8, format: javascript}
 ![Histogram index.js](code_samples/es6v2/components/Histogram/index.js)
 
+<<<<<<< HEAD
 Import `Histogram` from `./Histogram` and export it as the `default` export. You could do it with a re-export: `export { default } from './Histogram'`. Not sure why I picked the long way. It's not much more readable.
+=======
+Import `Histogram` from `./Histogram` and export it as the `default` export. You could do it with a re-export: `export { default } from './Histogram'`. I'm not sure why I picked the long way. It's not *that* much more readable.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 Great, now we need the `Histogram.js` file. We start with some imports, a default export, and a stubbed out `Histogram` class.
 
 {crop-start: 5, crop-end: 33, format: javascript}
 ![Histogram component stub](code_samples/es6v2/components/Histogram/Histogram.js)
 
+<<<<<<< HEAD
 We need React and D3, and we set up `Histogram`. The `constructor` calls React's base constructor using `super()`, and defers to `updateD3` to init default D3 properties. `componentWillReceiveProps` defers to `updateD3` to ensure D3 state stays in sync with React, and we'll use `makeBar` and `render` to render the SVG.
 
 {class: discussion}
 {blurb}
 A note about D3 imports: D3v4 is split into multiple packages. We're using a `*` import here to get everything, because that's easier to use. You should import specific packages when possible . It leads to smaller compiled code sizes and makes it easier for you and others to see what each file is using.
+=======
+We need React and D3, and we set up `Histogram`. The `constructor` calls React's base constructor using `super()` and defers to `updateD3` to init default D3 properties. `componentWillReceiveProps` defers to `updateD3` to ensure D3 state stays in sync with React, and we'll use `makeBar` and `render` to render the SVG.
+
+{class: discussion}
+{blurb}
+A note about D3 imports: D3v4 is split into multiple packages. We're using a `*` import here to get everything because that's easier to use. You should import specific packages when possible. It leads to smaller compiled code sizes and makes it easier for you and others to see what each file is using.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 {/blurb}
 
 ### constructor
 
+<<<<<<< HEAD
 Now we should add D3 object initialization to the `constructor`. We need a D3 histogram and two scales. One for chart width and one for vertical positioning.
 
 {crop-start: 38, crop-end: 49, format: javascript}
@@ -516,11 +639,22 @@ Now we should add D3 object initialization to the `constructor`. We need a D3 hi
 We've talked about scales before. Put in a number, get out a number. In this case we're using linear scales for sizing and positioning.
 
 `d3.histogram` is new in D3v4. It's a generator that takes a dataset and returns a histogram-shaped dataset. An array of arrays where the top level are bins and meta data, and the children are "values in this bin".
+=======
+Now we should add D3 object initialization to the `constructor`. We need a D3 histogram and two scales: one for chart width and one for vertical positioning.
+
+{crop-start: 35, crop-end: 48, format: javascript}
+![D3 initialization in Histogram constructor](code_samples/es6v2/components/Histogram/Histogram.js)
+
+We've talked about scales before. Put in a number, get out a number. In this case, we're using linear scales for sizing and positioning.
+
+`d3.histogram` is new in D3v4. It's a generator that takes a dataset and returns a histogram-shaped dataset. It's an array of arrays where the top level are bins and meta data and the children are "values in this bin".
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 You might know it as `d3.layout.histogram` from D3v3. I think the updated API is easier to use. You'll see what I mean in the `updateD3` method.
 
 ### updateD3
 
+<<<<<<< HEAD
 {crop-start: 54, crop-end: 73, format: javascript}
 ![updateD3 method in Histogram](code_samples/es6v2/components/Histogram/Histogram.js)
 
@@ -539,6 +673,26 @@ We use this data to set up our scales.
 `widthScale` has a range from the smallest (`d3.min`) bin to the biggest (`d3.max`), and a range of `0` to width less a margin. We'll use it to calculate bar sizes.
 
 `yScale` has a range from `0` to the biggest `x1` coordinate we can find in a bin. Bins go from `x0` to `x1`, which reflects the fact that most histograms are horizontally oriented. Ours is vertical so labels are easier to read. The range goes from `0` to the maximum height less a margin.
+=======
+{crop-start: 54, crop-end: 72, format: javascript}
+![updateD3 method in Histogram](code_samples/es6v2/components/Histogram/Histogram.js)
+
+First, we configure the `histogram` generator. We use `thresholds` to specify how many bins we want and `value` to specify a value accessor function. We get both from props passed into the `Histogram` component.
+
+In our case, that's 20 bins, and the value accessor returns each data point's `base_salary`.
+
+Then we call `this.histogram` on our dataset and use a `.map` to get an array of bins and count how many values went in each. We need them to configure our scales.
+
+If you print the result of `this.histogram()`, you'll see an array structure where each entry holds metadata about the bin and the values it contains.
+
+![console.log(this.histogram())](images/es6v2/histogram-data-screenshot.png)
+
+We use this data to set up our scales.
+
+`widthScale` has a range from the smallest (`d3.min`) bin to the largest (`d3.max`), and a range of `0` to width less a margin. We'll use it to calculate bar sizes.
+
+`yScale` has a range from `0` to the largest `x1` coordinate we can find in a bin. Bins go from `x0` to `x1`, which reflects the fact that most histograms are horizontally oriented. Ours is vertical so that our labels are easier to read. The range goes from `0` to the maximum height less a margin.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 Now let's render this puppy.
 
@@ -547,6 +701,7 @@ Now let's render this puppy.
 {crop-start: 78, crop-end: 92, format: javascript}
 ![Histogram.render](code_samples/es6v2/components/Histogram/Histogram.js)
 
+<<<<<<< HEAD
 We set up a `translate` SVG transform and run our histogram generator. Yes, that means we're running it twice for every update. Once in `updateD3` and once in `render`.
 
 I tested making it more efficient, and didn't see much improvement in overall performance. It did make the code more complex, though.
@@ -554,6 +709,15 @@ I tested making it more efficient, and didn't see much improvement in overall pe
 Our render method returns a `<g>` grouping element transformed to the position given in props and walks through the `bars` array, calling `makeBar` for each. Later we're going to add an `Axis` as well.
 
 This is a great example of React's declarativeness. We have a bunch of stuff and all it takes to render is a loop. No worrying about how it renders, where it goes, or anything like that. Walk through data, render, done.
+=======
+We set up a `translate` SVG transform and run our histogram generator. Yes, that means we're running it twice for every update, once in `updateD3` and once in `render`.
+
+I tested making it more efficient, and I didn't see much improvement in overall performance. It did make the code more complex, though.
+
+Our render method returns a `<g>` grouping element transformed to the position given in props and walks through the `bars` array, calling `makeBar` for each. Later, we're going to add an `Axis` as well.
+
+This is a great example of React's declarativeness. We have a bunch of stuff, and all it takes to render is a loop. No worrying about how it renders, where it goes, or anything like that. Walk through data, render, done.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ### makeBar
 
@@ -579,9 +743,15 @@ I like to put subcomponents like this in the same file as the main component. Yo
 
 As far as functional stateless components go, this one's pretty long. Most of it goes into deciding how much precision to render in the label, so it's okay.
 
+<<<<<<< HEAD
 We start with an SVG translate – you'll see this a lot – and a default `label`. Then we update the label based on the bar size and its value.
 
 When we have a label we like, we return a `<g>` grouping element with a rectangle and a text. Both positioned based on the `width` and `height` of the bar.
+=======
+We start with an SVG translate – you'll see this a few more times – and a default `label`. Then we update the label based on the bar size and its value.
+
+When we have a label we like, we return a `<g>` grouping element with a rectangle and a text. They’re both positioned based on the `width` and `height` of the bar.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 You should now see a histogram.
 
@@ -589,7 +759,11 @@ You should now see a histogram.
 
 ## Step 5: Axis HOC
 
+<<<<<<< HEAD
 Our histogram is pretty, but needs an axis to be useful. You've already implemented an axis when we talked about [blackbox integration](#blackbox-axis). We're going to use the same approach and copy those concepts into the real project.
+=======
+Our histogram is pretty, but it needs an axis to be useful. You've already learned how to implement an axis when we talked about [blackbox integration](#blackbox-axis). We're going to use the same approach and copy those concepts into the real project.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ### D3blackbox
 
@@ -607,9 +781,15 @@ With `D3blackbox`, we can reduce the `Axis` component to a wrapped function. We'
 {crop-start: 5, crop-end: 19, format: javascript}
 ![Axis component using D3blackbox](code_samples/es6v2/components/Histogram/Axis.js)
 
+<<<<<<< HEAD
 We use D3's `axisLeft` generator, configure its `tickFormat`, give it a `scale` to use, and specify how many `ticks` we want. Then `select` the anchor element rendered by `D3blackbox`, and `call` the axis generator on it.
 
 Yes, this `Axis` works only for our specific use case. That's okay! No need to make things general when you're using them only once.
+=======
+We use D3's `axisLeft` generator, configure its `tickFormat`, give it a `scale` to use, and specify how many `ticks` we want. Then `select` the anchor element rendered by `D3blackbox` and `call` the axis generator on it.
+
+Yes, this `Axis` works only for our specific use case. That's okay! No need to make things general when you're only using them once.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ### Add it to Histogram
 
@@ -637,7 +817,11 @@ The key to a good data visualization is telling users what it means. You can do 
 
 Let's add those words.
 
+<<<<<<< HEAD
 We're adding a dynamic title and description, and a median line on the histogram. Dynamic because we're adding user controls later and we want the pictures and the words to stay in sync.
+=======
+We're adding a dynamic title and description, and a median line on the histogram. It's dynamic because we're adding user controls later, and we want the pictures and the words to stay in sync.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 At the end of this section, you'll have a full visualization of the shortened dataset.
 
@@ -649,6 +833,7 @@ We begin with the title because it shows up first.
 
 We start with an import in `App.js` and add it to the render method. You know the drill :)
 
+<<<<<<< HEAD
 {crop-start: 241, crop-end: 275, format: javascript}
 ![Adding Title to main App component](code_samples/es6v2/App.js)
 
@@ -657,12 +842,26 @@ Ok I lied. We did a lot more than just imports and adding a render.
 We also set up the `App` component for future user controlled data filtering. The `filteredBy` key in `state` tells us what the user is filtering by. There 3 options: `USstate`, `year`, and `jobTitle`. We set them to "everything" by default.
 
 We added them now so that we can immediately write our `Title` component in a filterable way. Means we don't have to make changes later.
+=======
+{crop-start: 241, crop-end: 274, format: javascript}
+![Adding Title to main App component](code_samples/es6v2/App.js)
+
+Ok, I lied. We did a lot more than just imports and adding a render.
+
+We also set up the `App` component for future user-controlled data filtering. The `filteredBy` key in `state` tells us what the user is filtering by. There 3 options: `USstate`, `year`, and `jobTitle`. We set them to "everything" by default.
+
+We added them now so that we can immediately write our `Title` component in a filterable way. That means we don't have to make changes later.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 As you can see, the props `Title` takes are `data` and `filteredBy`.
 
 ### Prep Meta component
 
+<<<<<<< HEAD
 Before we begin the `Title` component, there's a few things to take care of. Our meta components work together for a common purpose – showing meta data. Grouping them in a directory makes sense.
+=======
+Before we begin the `Title` component, there are a few things to take care of. Our meta components work together for a common purpose – showing meta data. Grouping them in a directory makes sense.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 So we make a `components/Meta` directory and add an `index.js`. It makes importing easier.
 
@@ -671,9 +870,13 @@ So we make a `components/Meta` directory and add an `index.js`. It makes importi
 
 You're right, using re-exports looks better than the roundabout way we used in `Histogram/index.js`. Lesson learned.
 
+<<<<<<< HEAD
 {aside}
 You need the `USStatesMap` file as well. It translates US state codes to full names. You should [get it from Github](https://github.com/Swizec/react-d3js-step-by-step/blob/4f94fcd1c3caeb0fc410636243ca99764e27c5e6/src/components/Meta/USStatesMap.js) and save it as `components/Meta/USStatesMap.js`. 
 {/aside}
+=======
+You need the `USStatesMap` file as well. It translates US state codes to full names. You should [get it from Github](https://github.com/Swizec/react-d3js-step-by-step/blob/4f94fcd1c3caeb0fc410636243ca99764e27c5e6/src/components/Meta/USStatesMap.js) and save it as `components/Meta/USStatesMap.js`.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 We'll use it when creating titles and descriptions.
 
@@ -681,7 +884,11 @@ We'll use it when creating titles and descriptions.
 
 We're building two types of titles based on user selection. If both `years` and `US state` were selected, we return `In {US state}, the average {job title} paid ${mean}/year in {year}`. If not, we return `{job title} paid ${mean}/year in {state} in {year}`.
 
+<<<<<<< HEAD
 I know, it's confusing. They look like the same sentence turned around. Notice the *and*. First option when *both* are selected, second when either or.
+=======
+I know, it's confusing. They look like the same sentence turned around. Notice the *and*. First option when *both* are selected, second when either/or.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 We start with imports, a stub, and a default export.
 
@@ -690,7 +897,11 @@ We start with imports, a stub, and a default export.
 
 We import only what we need from D3's `d3-scale` and `d3-array` packages. I consider this best practice until you're importing so much that it gets messy to look at.
 
+<<<<<<< HEAD
 In the `Title` component we have 4 getters and a render. Getters are ES6 functions that work like dynamic properties. You specify a function without arguments, and use it without `()`. It's pretty neat.
+=======
+In the `Title` component, we have 4 getters and a render. Getters are ES6 functions that work like dynamic properties. You specify a function without arguments, and you use it without `()`. It's pretty neat.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 #### The getters
 
@@ -704,26 +915,42 @@ We can implement `yearsFragment`, `USstateFragment`, and `format` in one code sa
 {crop-start: 35, crop-end: 55, format: javascript}
 ![3 short getters in Title](code_samples/es6v2/components/Meta/Title.js)
 
+<<<<<<< HEAD
 In both `yearsFragment` and `USstateFragment`, we get the appropriate value from Title's `filteredBy` prop, then return a string with the value, or an empty string. 
+=======
+In both `yearsFragment` and `USstateFragment`, we get the appropriate value from Title's `filteredBy` prop, then return a string with the value or an empty string.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 We rely on D3's built-in number formatters to build `format`. Linear scales have the one that turns `10000` into `10,000`. Tick formatters don't work well without a `domain`, so we define it. We don't need a range because we never use the scale itself.
 
 `format` returns a function, which makes it a [higher order function](https://en.wikipedia.org/wiki/Higher-order_function). Being a getter makes it really nice to use: `this.format()`. Looks just like a normal function call :D
 
+<<<<<<< HEAD
 The `jobTitleFragment` getter is conceptually no harder than `yearsFragment` and `USstateFragment`, but comes with a few more conditionals.
+=======
+The `jobTitleFragment` getter is conceptually no harder than `yearsFragment` and `USstateFragment`, but it comes with a few more conditionals.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 {crop-start: 61, crop-end: 91, format: javascript}
 ![Title.jobTitleFragment](code_samples/es6v2/components/Meta/Title.js)
 
 Ho boy, so many ifs.
 
+<<<<<<< HEAD
 We're dealing with the `(jobTitle, year)` combination. Each influences the other when building the fragment, for a total 4 different options.
+=======
+We're dealing with the `(jobTitle, year)` combination. Each influences the other when building the fragment for a total 4 different options.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 #### The render
 
 We put all this together in the `render` method. A conditional decides which of the two situations we're in, and we return an `<h2>` tag with the right text.
 
+<<<<<<< HEAD
 {crop-start: 96, crop-end: 123, format: javascript}
+=======
+{crop-start: 96, crop-end: 119, format: javascript}
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ![Title.render](code_samples/es6v2/components/Meta/Title.js)
 
 Calculate the mean value using `d3.mean` with a value accessor, turn it into a pretty number with `this.format`, then use one of two string patterns to make a `title`.
@@ -736,7 +963,11 @@ If it doesn't, consult [this diff on Github](https://github.com/Swizec/react-d3j
 
 ## Dynamic description
 
+<<<<<<< HEAD
 You know what, the dynamic description component is pretty much the same as the title. Just longer and more complex and using more code. It's interesting, but not super relevant to the topic of this book.
+=======
+You know what? The dynamic description component is pretty much the same as the title. It's just longer and more complex and uses more code. It's interesting, but not super relevant to the topic of this book.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 So rather than explain it all here, I'm going to give you a link to the [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/032fe6e988b903b6d86a60d2f0404456785e180f)
 
@@ -749,11 +980,16 @@ We use the same approach as before:
 5. Use getters for sentence fragments
 6. Play with conditionals to construct different sentences
 
+<<<<<<< HEAD
 142 lines of mundane code. 
+=======
+142 lines of mundane code.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 All the interesting complexity goes into finding the richest city and county. That part looks like this:
 
 ```javascript
+<<<<<<< HEAD
 // src/components/Meta/Description.js
 get countyFragment() {
 	const byCounty = _.groupBy(this.props.data, 'countyID'),
@@ -771,6 +1007,20 @@ get countyFragment() {
 
 	// ...
 }
+=======
+const byCounty = _.groupBy(this.props.data, 'countyID'),
+      medians = this.props.medianIncomesByCounty;
+
+let ordered = _.sortBy(
+    _.keys(byCounty)
+     .map(county => byCounty[county])
+     .filter(d => d.length/this.props.data.length > 0.01),
+    items => d3mean(items,
+                    d => d.base_salary) - medians[items[0].countyID][0].medianIncome);
+
+let best = ordered[ordered.length-1],
+    countyMedian = medians[best[0].countyID][0].medianIncome;
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ```
 
 We group the dataset by county, then sort counties by their income delta. We look only at counties that are bigger than 1% of the entire dataset. And we define income delta as the difference between a county's median household income and the median tech salary in our dataset.
@@ -785,7 +1035,11 @@ If you follow along the [description Github diff](https://github.com/Swizec/reac
 
 ![Dataviz with Title and Description](images/es6v2/dataviz-with-description.png)
 
+<<<<<<< HEAD
 Another similar component is the `GraphDescription`. It shows a small description on top of each chart that explains how to read the picture. Less "Here's a key takeaway" more "color means X".
+=======
+Another similar component is the `GraphDescription`. It shows a small description on top of each chart that explains how to read the picture. Less "Here's a key takeaway", more "color means X".
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 You can follow this [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/37b5222546c3f8f58f3147ce0bef6a3c1afe1b47) to implement it. Same approach as `Title` and `Description`.
 
@@ -793,7 +1047,11 @@ You can follow this [diff on Github](https://github.com/Swizec/react-d3js-step-b
 
 ## Median household line
 
+<<<<<<< HEAD
 Now here's a more interesting component, the median dotted line. It gives us a direct comparison between the histogram's distribution and the median household income in an area. I'm not sure people understand it at a glance, but I think it's cool.
+=======
+Now here's a more interesting component: the median dotted line. It gives us a direct comparison between the histogram's distribution and the median household income in an area. I'm not sure people understand it at a glance, but I think it's cool.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 We're using the [full-feature integration](#full-feature-integration) approach, and prepping `App.js` first, then implementing the component.
 
@@ -803,7 +1061,11 @@ Inside `src/App.js`, we first have to add an import, then extract the median hou
 
 Let's see if we can do it in a single code block :)
 
+<<<<<<< HEAD
 {crop-start: 282, crop-end: 317, format: javascript}
+=======
+{crop-start: 281, crop-end: 315, format: javascript}
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ![Adding MedianLine to App.js](code_samples/es6v2/App.js)
 
 You probably don't remember `medianIncomesByUSState` anymore. We set it up way back when [tying datasets together](#tie-datasets-together). It groups our salary data by US state.
@@ -821,7 +1083,11 @@ The `MedianLine` component looks a lot like what you're already used to. Some im
 
 Standard stuff, right? You've seen it all before. Bear with me, please. I know you're great, but I gotta explain this for everyone else :)
 
+<<<<<<< HEAD
 We have the base wiring for a D3-enabled component, and we set up a linear scale that we'll use for vertical positioning. The scale has a `domain` from `0` to `max` value in dataset, and a range from `0` to height less margins.
+=======
+We have the base wiring for a D3-enabled component, and we set up a linear scale that we'll use for vertical positioning. The scale has a `domain` from `0` to `max` value in dataset and a range from `0` to height less margins.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 {crop-start: 38, crop-end: 58, format: javascript}
 ![MedianLine render](code_samples/es6v2/components/MedianLine.js)
@@ -837,7 +1103,11 @@ line = d3.line()([[0, 5],
                   [this.props.width, 5]]);
 ```
 
+<<<<<<< HEAD
 It comes from the [d3-shape](https://github.com/d3/d3-shape#lines) package and generates splines, or polylines. By default it takes an array of points and builds a line through all of them. A line from `[0, 5]` to `[width, 5]` in our case.
+=======
+It comes from the [d3-shape](https://github.com/d3/d3-shape#lines) package and generates splines, or polylines. By default, it takes an array of points and builds a line through all of them. A line from `[0, 5]` to `[width, 5]` in our case.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 That makes it span the entire width and leaves 5px of room for the label. We're using a `transform` on the entire group to vertically position the final element.
 
@@ -860,6 +1130,7 @@ Remember, we styled the `medianLine` when we did [histogram styles](#histogram-c
 
 The `stroke-dasharray` is what makes it dashed. `3` means each `3px` dash is followed by a `3px` blank. You can use [any pattern you like](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray).
 
+<<<<<<< HEAD
 You should now see a median household salary line overlaid on  your histogram.
 
 ![Median line over histogram](imagesd/es6v2/dataviz-with-everything.png)
@@ -867,10 +1138,20 @@ You should now see a median household salary line overlaid on  your histogram.
 Yep, almost everyone in tech makes more than the median household. Crazy huh? I think it's bonkers.
 
 If you don't see the `medianLine`, consult the [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/1fd055e461184fb8dc8dd509edb3a6a683c995fe).
+=======
+You should now see a median household salary line overlaid on your histogram.
+
+![Median line over histogram](code_samples/es6v2/dataviz-with-everything.png)
+
+Yep, almost everyone in tech makes more than the median household. Crazy, huh? I think it is.
+
+If that didn't work, consult the [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/1fd055e461184fb8dc8dd509edb3a6a683c995fe).
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 {#user-controls}
 # Add user controls for data slicing and dicing
 
+<<<<<<< HEAD
 Now comes the fun part. All that extra effort we put into making our components aware of filtering. It all comes down to this: User controls.
 
 Here's what we're building:
@@ -878,6 +1159,15 @@ Here's what we're building:
 ![User controlled filters](images/es6v2/controls.png)
 
 A set of filters for users to slice and dice our visualization. The shortened dataset gives you 2 years, 12 job titles, and 50 US states. You'll get 5 years and many more job titles with the full dataset.
+=======
+Now comes the fun part. All that extra effort we put into making our components aware of filtering, and it all comes down to this: User controls.
+
+Here's what we're building:
+
+![User controlled filters](code_samples/es6v2/controls.png)
+
+It's a set of filters for users to slice and dice our visualization. The shortened dataset gives you 2 years, 12 job titles, and 50 US states. You'll get 5 years and many more job titles with the full dataset.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 We're using the [architecture we discussed](#basic-architecture) earlier to make it work. Clicking buttons updates a filter function and communicates it all the way up to the `App` component. `App` then uses it to update `this.state.filteredSalaries`, which triggers a re-render and updates our dataviz.
 
@@ -890,11 +1180,19 @@ We're building in 4 steps, top to bottom:
 3. Build a `ControlRow` component, which handles a row of buttons
 4. Build a `Toggle` component, which is a button
 
+<<<<<<< HEAD
 We'll go through the files linearly. Makes them easier for me to explain, easier for you to understand, but means there's going to be a long period where all you're seeing is an error like this:
 
 ![Controls error during coding](images/es6v2/controls-error.png)
 
 If you want to see what's up during this process, just remove an import or two and maybe a thing from render. For instance, it's complaining about `ControlRow` in this screenshot. Remove the `ControlRow` import on top, and delete `<ControlRow ... />` from render. Error goes away and you see what you're doing.
+=======
+We'll go through the files linearly. That makes them easier for me to explain and easier for you to understand, but that also means there's going to be a long period where all you're seeing is an error like this:
+
+![Controls error during coding](images/es6v2/controls-error.png)
+
+If you want to see what's up during this process, just remove an import or two and maybe a thing from render. For instance, it's complaining about `ControlRow` in this screenshot. Remove the `ControlRow` import on top and delete `<ControlRow ... />` from render. The error goes away, and you see what you're doing.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ## Step 1: Update App.js
 
@@ -902,13 +1200,18 @@ All right, you know the drill. Add imports, tweak some things, add to render. We
 
 The white rectangle makes it so the zoomed-in map doesn't cover up the histogram. I'll explain when we get there.
 
+<<<<<<< HEAD
 {crop-start: 323, crop-end: 356, format: javascript}
+=======
+{crop-start: 321, crop-end: 354, format: javascript}
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ![Imports and filter updates in App.js](code_samples/es6v2/App.js)
 
 We import the `Controls` component and add a default `salariesFilter` function to `this.state`. The `updateDataFilter` method passes the filter function and `filteredBy` dictionary from arguments to App state. We'll use it as a callback in `Controls`.
 
 The rest of filtering setup happens in the render method.
 
+<<<<<<< HEAD
 {crop-start: 362, crop-end: 390, format: javascript}
 ![Filtering data and updating map zoom in App render](code_samples/es6v2/App.js)
 
@@ -919,22 +1222,44 @@ We built the `CountyMap` component to focus on a given US state.  Finding the ce
 ![Zoom effect](images/es6v2/zoom-effect.png)
 
 And here's the downside of this approach. SVG doesn't know about element boundaries, it just renders stuff.
+=======
+{crop-start: 360, crop-end: 388, format: javascript}
+![Filtering data and updating map zoom in App render](code_samples/es6v2/App.js)
+
+We add a `.filter` call to `filteredSalaries`, which uses our `salariesFilter` method to throw out anything that doesn't fit. Then we set up `zoom` if a US state was selected.
+
+We built the `CountyMap` component to focus on a given US state. Finding the centroid of a polygon, re-centering the map, and increasing the sizing factor. It creates a nice zoom effect.
+
+![Zoom effect](images/es6v2/zoom-effect.png)
+
+And here's the downside of this approach. SVG doesn't know about element boundaries. It just renders stuff.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ![Zoom without white rectangle](images/es6v2/zoom-without-rectangle.png)
 
 See, it goes under the histogram. Let's fix that and add the `Controls` render while we're at it.
 
+<<<<<<< HEAD
 {crop-start: 396, crop-end: 426, format: javascript}
 ![](code_samples/es6v2/App.js)
 
 Rectangle, `500` to the right, `0` from top, `600` wide and `500` tall, with a white background. Gives the histogram an opaque background so it doesn't matter what the map is doing.
 
 We render the `Controls` component just after `</svg>` because it's not an SVG component – uses normal HTML. Unlike the other components, it needs our entire dataset as `data`. We use the `updateDataFilter` prop to say which callback function it should call when a new filter is ready.
+=======
+{crop-start: 394, crop-end: 421, format: javascript}
+![](code_samples/es6v2/App.js)
+
+Rectangle, `500` to the right, `0` from top, `600` wide and `500` tall, with a white background. It gives the histogram an opaque background, so it doesn't matter what the map is doing.
+
+We render the `Controls` component just after `</svg>` because it's not an SVG component – it uses normal HTML. Unlike the other components, it needs our entire dataset as `data`. We use the `updateDataFilter` prop to say which callback function it should call when a new filter is ready.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 If this seems roundabout, I guess it kinda is. But it makes our app easier to componentize and keeps the code relatively unmessy. Imagine putting everything we've done so far in `App`. What a mess that'd be! :D
 
 ## Step 2: Build Controls component
 
+<<<<<<< HEAD
 The `Controls` component builds our filter function and filteredBy dictionary based on what the user clicks.
 
 It renders 3 rows of controls and builds filtering out of the singular choice each row reports. That makes the `Controls` component kind of repetitive and a leaky abstraction to boot.
@@ -942,6 +1267,15 @@ It renders 3 rows of controls and builds filtering out of the singular choice ea
 In theory it would be better for each `ControlRow` to return a function and `Controls` built a composed function out of them. Better abstraction, but I think harder to understand.
 
 We can live with a leaky abstraction and repetitive code. Right? :)
+=======
+The `Controls` component builds our filter function and `filteredBy` dictionary based on what the user clicks.
+
+It renders 3 rows of controls and builds filtering out of the singular choice each row reports. That makes the `Controls` component kind of repetitive and a leaky abstraction to boot.
+
+In theory, it would be better for each `ControlRow` to return a function and for `Controls` to build a composed function out of them. It's a better abstraction, but I it's think harder to understand.
+
+We can live with a leaky abstraction and repetitive code, right? :)
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 To keep the book from getting repetitive, we're going to build everything for a `year` filter first. Then I'll show you how to add `USstate` and `jobTitle` filters as well. Once you have one working, the rest is easy.
 
@@ -949,19 +1283,28 @@ Make a `Controls` directory in `src/components/` and let's begin. The main `Cont
 
 ### Stub Controls
 
+<<<<<<< HEAD
 {crop-start: 5, crop-end: 35, format: javascript}
+=======
+{crop-start: 5, crop-end: 33, format: javascript}
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ![Controls stubbed for year filter](code_samples/es6v2/components/Controls/index.js)
 
 We start with some imports and a `Controls` class. Inside, we define default `state` with an always-true `yearFilter` and an asterisk for `year`.
 
 We also need an `updateYear` function, which we'll use to update the filter, a `reportUpdateUpTheChain` function called in `componentDidUpdate`, a `shouldComponentUpdate` check, and a `render` method.
 
+<<<<<<< HEAD
 Yes, we could have put everything in `reportUpdateUpTheChain` into `componentDidUpdate`. It's separate because the name is more descriptive that way. And I was experimenting with some optimizations that didn't pan out, but decided to keep the name.
+=======
+Yes, we could have put everything in `reportUpdateUpTheChain` into `componentDidUpdate`. It's separate because the name is more descriptive that way. I was experimenting with some optimizations that didn't pan out, but I decided to keep the name.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 I'll explain how it works and why we need `shouldComponentUpdate` after we implement the logic.
 
 ### Filter logic
 
+<<<<<<< HEAD
 {crop-start: 41, crop-end: 71, format: javascript}
 ![Year filtering logic in Controls](code_samples/es6v2/components/Controls/index.js)
 
@@ -972,6 +1315,18 @@ Comparing `submit_date.getFullYear()` with `year` achieves that.
 We use the `reset` argument to reset filters back to defaults, which allows users to unselect an option. 
 
 When we have the `year` and `filter` we update component state with `this.setState`. This triggers a re-render and calls the `componentDidUpdate` method, which calls `reportUpdateUpTheChain`.
+=======
+{crop-start: 39, crop-end: 69, format: javascript}
+![Year filtering logic in Controls](code_samples/es6v2/components/Controls/index.js)
+
+When a user picks a year, the `ControlRow` components calls our `updateYearFilter` function where we build a new partial filter function. The `App` component uses it inside a `.filter` call, so we have to return `true` for elements we want to keep and `false` for elements we don't.
+
+Comparing `submit_date.getFullYear()` with `year` achieves that.
+
+We use the `reset` argument to reset filters back to defaults, which allows users to unselect an option.
+
+When we have the `year` and `filter`, we update component state with `this.setState`. This triggers a re-render and calls the `componentDidUpdate` method, which calls `reportUpdateUpTheChain`.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 `reportUpdateUpTheChain` then calls `this.props.updateDataFilter`, which is a callback method on `App`. We defined it earlier – it needs a new filter method and a `filteredBy` dictionary.
 
@@ -979,7 +1334,11 @@ The code looks tricky because we're playing with higher order functions. We're m
 
 It looks silly when there's just one filter, but I promise it makes sense.
 
+<<<<<<< HEAD
 Now, because we used `this.setState` to trigger a callback up component stack, and because that callback triggers a re-render in `App`, which might trigger a re-render down here ... because of that, we need `shouldComponentUpdate`. It prevents infinite loops. React isn't smart enough on its own because we're using complex objects in `state`.
+=======
+Now, because we used `this.setState` to trigger a callback up component stack, and because that callback triggers a re-render in `App`, which might trigger a re-render down here… because of that, we need `shouldComponentUpdate`. It prevents infinite loops. React isn't smart enough on its own because we're using complex objects in `state`.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 {aside}
 JavaScript's equality check compares objects on the reference level. So `{a: 1} == {a: 1}` returns `false` because the operands are different objects even though they look the same.
@@ -989,10 +1348,17 @@ JavaScript's equality check compares objects on the reference level. So `{a: 1} 
 
 Great, we have the logic. We should render the rows of controls we've been talking about.
 
+<<<<<<< HEAD
 {crop-start: 77, crop-end: 96, format: javascript}
 ![Render the year ControlRow](code_samples/es6v2/components/Controls/index.js)
 
 This is once more generalized code, but used for a single example. The `year` filter.
+=======
+{crop-start: 75, crop-end: 93, format: javascript}
+![Render the year ControlRow](code_samples/es6v2/components/Controls/index.js)
+
+This is once more generalized code, but it's used for a single example: the `year` filter.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 We build a `Set` of years in our dataset, then render a `ControlRow` using props to give it our `data`, a set of `toggleNames`, a callback to update the filter, and which entry is `picked` right now. This enables us to maintain the data-flows-down, events-bubble-up architecture we've been using.
 
@@ -1004,7 +1370,11 @@ Now let's build the `ControlRow` component. It renders a row of controls and ens
 
 We'll start with a stub and go from there.
 
+<<<<<<< HEAD
 {crop-start: 5, crop-end: 28, format: javascript}
+=======
+{crop-start: 5, crop-end: 26, format: javascript}
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ![ControlRow stub](code_samples/es6v2/components/Controls/ControlRow.js)
 
 We start with imports, big surprise, then make a stub with 5 methods. Can you guess what they are?
@@ -1015,11 +1385,16 @@ We start with imports, big surprise, then make a stub with 5 methods. Can you gu
 - `_addToggle` is a rendering helper method
 - `render` renders a row of buttons
 
+<<<<<<< HEAD
 {crop-start: 56, crop-end: 77, format: javascript}
+=======
+{crop-start: 53, crop-end: 72, format: javascript}
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ![State setup](code_samples/es6v2/components/Controls/ControlRow.js)
 
 React triggers the `componentWillMount` lifecycle hook right before it first renders our component. Mounts it into the DOM, if you will. This is a opportunity for any last minute state setup.
 
+<<<<<<< HEAD
 We take the list of `toggleNames` from props and use Lodash's `zipObject` function to create a dictionary that we save in `state`. Keys are toggle names, values are booleans that tell us whether a particular toggle is currently picked.
 
 You might think this is unnecessary, but it makes our app faster. Instead of running the comparison function for each toggle on every render, we build the dictionary, then perform quick lookups when rendering. Yes, `===` is a fast operator even with the overhead of a function call, but what if it was more complex? 
@@ -1029,20 +1404,40 @@ The habit of using appropriate data structures is a good habit. :)
 In `componentWillReceiveProps`, we check if the `picked` value has changed, and if it has, we call `makePick` to mimic user action. This allows global app state to override local component state. It's what you'd expect in a unidirectional data flow architecture like the one we're using.
 
 {crop-start: 33, crop-end: 50, format: javascript}
+=======
+We take the list of `toggleNames` from props and use Lodash's `zipObject` function to create a dictionary that we save in `state`. Keys are toggle names, and values are booleans that tell us whether a particular toggle is currently picked.
+
+You might think this is unnecessary, but it makes our app faster. Instead of running the comparison function for each toggle on every render, we build the dictionary, then perform quick lookups when rendering. Yes, `===` is a fast operator even with the overhead of a function call, but what if it was more complex?
+
+Using appropriate data structures is a good habit. :)
+
+In `componentWillReceiveProps`, we check if the `picked` value has changed, and if it has, we call `makePick` to mimic user action. This allows global app state to override local component state. It's what you'd expect in a unidirectional data flow architecture like the one we're using.
+
+{crop-start: 32, crop-end: 47, format: javascript}
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ![makePick implementation](code_samples/es6v2/components/Controls/ControlRow.js)
 
 `makePick` changes `state.toggleValues` when the user clicks a toggle. It takes two arguments: a toggle name and the new value.
 
+<<<<<<< HEAD
 We use Lodash's `mapValues` to iterate the `name: boolean` dictionary and construct a new one with updated values. Everything that isn't `picked` gets set to `false`, and the one `picked` item becomes `true`, if `newState` is `true`.
 
 You're right if you think this is unnecessary. We could have just changed the current picked element to `false` and the new one to `true`. But I'm not entirely certain React would pick up on that. Play around and test it out :)
 
 Next we have a case of a misleading comment. We're calling `props.updateDataFilter` to communicate filter changes up the chain. The comment is talking about `!newState` and why it's not `newState`. --> because the 2nd argument in `updateDataFilter` is called `reset`. We're only resetting filters if `newState` is false since that means a toggle was unclicked without a new one being selected.
+=======
+We use Lodash's `mapValues` to iterate the `name: boolean` dictionary and construct a new one with updated values. Everything that isn't `picked` gets set to `false`, and the one `picked` item becomes `true` if `newState` is `true`.
+
+You're right if you think this is unnecessary. We could have just changed the current picked element to `false` and the new one to `true`. But I'm not entirely certain React would pick up on that. Play around and test it out :)
+
+Next, we have a case of a misleading comment. We're calling `props.updateDataFilter` to communicate filter changes up the chain. The comment is talking about `!newState` and why it's not `newState`. → because the 2nd argument in `updateDataFilter` is called `reset`. We're only resetting filters if `newState` is false since that means a toggle was unclicked without a new one being selected.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 Does that make sense? It's hard to explain without waving my arms around.
 
 With `this.setState`, we update state and trigger a re-render, which highlights a new button as being selected.
 
+<<<<<<< HEAD
 {crop-start: 83, crop-end: 114, format: javascript}
 ![Render a row of controls](code_samples/es6v2/components/Controls/ControlRow.js)
 
@@ -1051,6 +1446,16 @@ Rendering happens in two functions: `_addToggle`, which is a helper, and `render
 In `render`, we set up two `div`s with Bootstrap classes. The first is a `row`, the second a full-width column. I tried using a column for each button, but it was annoying to manage and used too much space.
 
 Inside the divs, we map over all toggles and use `_addToggle` to render each of them. 
+=======
+{crop-start: 78, crop-end: 109, format: javascript}
+![Render a row of controls](code_samples/es6v2/components/Controls/ControlRow.js)
+
+Rendering happens in two functions: `_addToggle`, which is a helper, and `render`, which is the main render.
+
+In `render`, we set up two `div`s with Bootstrap classes. The first is a `row`, and the second is a full-width column. I tried using a column for each button, but it was annoying to manage and used too much space.
+
+Inside the divs, we map over all toggles and use `_addToggle` to render each of them.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 `_addToggle` renders a `Toggle` component with a `label`, `name`, `value` and `onClick` callback. The label is just a prettier version of the name, which also serves as a key in our `toggleValues` dictionary. It's going to be the `picked` attribute in `makePick`.
 
@@ -1069,7 +1474,11 @@ The last piece of the puzzle – the Toggle component. A button that turns on an
 
 As always, we start with the imports, and extend React's base Component to make a new one. Small components like this are often perfect candidates for functional stateless components, but we need the click handler.
 
+<<<<<<< HEAD
 `handleClick` calls the `onClick` callback given in props, using the `name` and `!value` to identify this button and toggle its value. 
+=======
+`handleClick` calls the `onClick` callback given in props, using the `name` and `!value` to identify this button and toggle its value.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 `render` sets up a Bootstrap classname: `btn` and `btn-default` make an element look like a button, and the conditional `btn-primary` makes it blue. If you're not familiar with Bootstrap classes, you should check [their documentation](http://getbootstrap.com/).
 
@@ -1083,6 +1492,7 @@ If that didn't work, consult this [diff on GitHub](https://github.com/Swizec/rea
 
 ## Step 5: Add US state and Job Title filters
 
+<<<<<<< HEAD
 With all that done, we can now add two more filters: US states and job titles. Our `App` component is already set up to use them, we just have to add them to the `Controls` component.
 
 We'll start with the `render` method, then handle the parts I said earlier would look repetitive.
@@ -1100,11 +1510,31 @@ The implementations of those `updateDataFilter` callbacks follow the same patter
 ![New updateDataFilter callbacks](code_samples/es6v2/components/Controls/index.js)
 
 Yes, they're basically the same as `updateYearFilter`. Same default state configuration, different keys. Same sort of update logic, changed `filter` function and using different keys in `setState()`.
+=======
+With all that done, we can now add two more filters: US states and job titles. Our `App` component is already set up to use them, so we just have to add them to the `Controls` component.
+
+We'll start with the `render` method, then handle the parts I said earlier would look repetitive.
+
+{crop-start: 99, crop-end: 133, format: javascript}
+![Adding two more rows to Controls](code_samples/es6v2/components/Controls/index.js)
+
+Ok, this part is plenty repetitive, too.
+
+We created new sets for `jobTitles` and `USstates`, then we rendered two more `ControlRow` elements with appropriate attributes. They get `toggleNames` for building the buttons, `picked` to know which is active, an `updateDataFilter` callback, and we tell US states to render capitalized.
+
+The implementations of those `updateDataFilter` callbacks follow the same pattern as `updateYearFilter`.
+
+{crop-start: 139, crop-end: 166, format: javascript}
+![New updateDataFilter callbacks](code_samples/es6v2/components/Controls/index.js)
+
+Yes, they're basically the same as `updateYearFilter`. THe only difference is a changed `filter` function and using different keys in `setState()`.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 Why separate functions then? No need to get fancy. It would've made the code harder to read.
 
 Our last step is to add these new keys to the `reportUpdateUpTheChain` function.
 
+<<<<<<< HEAD
 {crop-start: 187, crop-end: 209, format: javascript}
 ![Adding new filters to the main update function](code_samples/es6v2/components/Controls/index.js)
 
@@ -1113,6 +1543,16 @@ We add them to the filter condition with `&&` and expand the `filteredBy` argume
 Two more rows of filters show up.
 
 ![All the filters](images/es6v2/all-filters.png)
+=======
+{crop-start: 172, crop-end: 194, format: javascript}
+![Add new filters to main state update](code_samples/es6v2/components/Controls/index.js)
+
+We add them to the filter condition with `&&` and expand the `filteredBy` argument.
+
+Two more rows of filters show up.
+
+![All the filters](all-filters.png)
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 👏
 
@@ -1120,6 +1560,7 @@ Again, if it didn't work, consult [the diff on GitHub](https://github.com/Swizec
 
 # A small speed optimization
 
+<<<<<<< HEAD
 We're expecting a big dataset and we're recalculating our data *and* redrawing hundreds of map elements all the time. We can fix this situation with a carefully placed `shouldComponentUpdate` to avoid updates when it shouldn't.
 
 It goes in the main `App` component and performs a quick check for changes in the filters.
@@ -1128,6 +1569,16 @@ It goes in the main `App` component and performs a quick check for changes in th
 ![shouldComponentUpdate in App.js](code_samples/es6v2/App.js)
 
 We take current salaries and filters from `state` and compare them with future state, `nextState`. To guess changes in the salary data, we compare lengths, and to see changes in filters, we compare values for each key. 
+=======
+We're expecting a big dataset, and we're recalculating our data *and* redrawing hundreds of map elements all the time. We can fix this situation with a carefully placed `shouldComponentUpdate` to avoid updates when it shouldn't.
+
+It goes in the main `App` component and performs a quick check for changes in the filters.
+
+{crop-start: 427, crop-end: 443, format: javascript}
+![shouldComponentUpdate in App.js](code_samples/es6v2/App.js)
+
+We take current salaries and filters from `state` and compare them with future state, `nextState`. To guess changes in the salary data, we compare lengths, and to see changes in filters, we compare values for each key.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 This comparison works well enough and makes the visualization faster by avoiding unnecessary re-renders.
 
@@ -1137,6 +1588,7 @@ You shouldn't really notice any particular change with the shortened dataset, bu
 
 Imagine this. A user finds your dataviz, clicks around, and finds an interesting insight. They share it with their friends.
 
+<<<<<<< HEAD
 *"See! I was right! This link proves it"*
 
 *"Wtf are you talking about?"*
@@ -1155,12 +1607,36 @@ Easiest place to put this logic is next to the existing filter logic inside the 
 ![Adding rudimentary routing](code_samples/es6v2/components/Controls/index.js)
 
 We use the `componentDidMount` lifecycle hook to read the URL when our component first renders on the page. Presumably when the page loads, but could be later. It doesn't really matter *when*, just that we update our filter the first chance we get.
+=======
+*"See! I was right! This link proves it."*
+
+*"Wtf are you talking about?"*
+
+*"Oh… uuuuh… you have to click this and then that and then you'll see. I'm legit winning our argument."*
+
+*"Holy shit! Kim Kardashian just posted a new snap with her weird dog."*
+
+Let's help our intrepid user out and make the dataviz linkable. We should store the current `filteredBy` state in the URL and be able to restore from a link.
+
+There are many ways to achieve this. [ReactRouter](https://github.com/ReactTraining/react-router) comes to mind, but the quickest is to implement our own rudimentary routing. We'll add some logic to manipulate and read the URL hash.
+
+THe easiest place to put this logic is next to the existing filter logic inside the `Controls` component. Better places exist from a "low-down components shouldn't play with global stuff" perspective, but that's okay.
+
+{crop-start: 200, crop-end: 225, format: javascript}
+![Adding rudimentary routing](code_samples/es6v2/components/Controls/index.js)
+
+We use the `componentDidMount` lifecycle hook to read the URL when our component first renders on the page. Presumably when the page loads, but it could be later. It doesn't really matter *when*, just that we update our filter the first chance we get.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 `window.location.hash` gives us the hash part of the URL and we clean it up and split it into three parts: `year`, `USstate`, and `jobTitle`. If the URL is `localhost:3000/#2013-CA-manager`, then `year` becomes `2013`, `USstate` becomes `CA`, and `jobTitle` becomes `manager`.
 
 We make sure each value is valid and use our existing filter update callbacks to update the visualization. Just like it was the user clicking a button.
 
+<<<<<<< HEAD
 In `componentDidUpdate` we now update the URL hash as well as call `reportUpdateUpTheChain`. Updating the hash just takes assigning a new value to `window.location.hash`.
+=======
+In `componentDidUpdate`, we now update the URL hash as well as call `reportUpdateUpTheChain`. Updating the hash just takes assigning a new value to `window.location.hash`.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 You should now see the URL changing as you click around.
 
@@ -1172,6 +1648,7 @@ If it doesn't work at all, consult the [diff on Github](https://github.com/Swize
 
 # Prep for launch
 
+<<<<<<< HEAD
 You've built a great visualization. Congratz! It's time to put it online and share with the world. 
 
 To do that, we're going to use Github pages because our app is a glorified static website. There's no backend so all we need is something to serve our HTML, JavaScript, and CSV. Github pages is perfect for that.
@@ -1179,17 +1656,34 @@ To do that, we're going to use Github pages because our app is a glorified stati
 It's free, works well with `create-react-app`, and can withstand a lot of traffic. You don't want to worry about traffic when your app gets on top of HackerNews or Reddit.
 
 There's a few things we should take care of:
+=======
+You've built a great visualization. Congratz! It's time to put it online and share with the world.
+
+To do that, we're going to use Github Pages because our app is a glorified static website. There's no backend, so all we need is something to serve our HTML, JavaScript, and CSV. Github Pages is perfect for that.
+
+It's free, works well with `create-react-app`, and can withstand a lot of traffic. You don't want to worry about traffic when your app gets to the top of HackerNews or Reddit.
+
+There are a few things we should take care of:
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 - setting up deployment
 - adding a page title
 - adding some copy
+<<<<<<< HEAD
 - twitter and facebook cards
+=======
+- Twitter and Facebook cards
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 - an SEO tweak for search engines
 - use the full dataset
 
 ## Setting up deployment
 
+<<<<<<< HEAD
 You'll need a Github repository. If you're like me, writing all this code without version control or off-site backup made you nervous and you already have one.
+=======
+You'll need a Github repository. If you're like me, writing all this code without version control or off-site backup made you nervous, so you already have one.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 For everyone else, head over to Github, click the green `New Repository` button and give it a name. Then copy the commands it gives you and run them in your console.
 
@@ -1204,7 +1698,11 @@ $ git push origin -u master
 
 If you've been git-ing locally without pushing, then you need only the `git remote add` and `git push origin` commands. This puts your code on Github. Great idea for anything you don't want to lose if your computer craps out.
 
+<<<<<<< HEAD
 Every Github repository comes with an optional Github pages setup. The easiest way for us to use it, is with the `gh-pages` npm module.
+=======
+Every Github repository comes with an optional Github Pages setup. The easiest way for us to use it is with the `gh-pages` npm module.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 Install it with this command:
 
@@ -1229,9 +1727,15 @@ Add two lines to package.json:
 
 We've been ignoring the `package.json` file so far, but it's a pretty important file. It specifies all of our project's dependencies, meta data for npm, and scripts that we run locally. This is where `npm start` is defined, for instance.
 
+<<<<<<< HEAD
 We add a `deploy` script that runs `build` and a `gh-pages` deploy, and specify a `homepage` URL. The URL tells our build script how to set up URLs for static files in `index.html`.
 
 Github pages URLs follow a `https://<your username>.github.io/<your repo name>` schema. For instance, mine is `https://swizec.github.io/react-d3js-step-by-step`. Yours will be different.
+=======
+We add a `deploy` script that runs `build` and a `gh-pages` deploy, and we specify a `homepage` URL. The URL tells our build script how to set up URLs for static files in `index.html`.
+
+Github Pages URLs follow a `https://<your username>.github.io/<your repo name>` schema. For instance, mine is `https://swizec.github.io/react-d3js-step-by-step`. Yours will be different.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 You can deploy with `npm run deploy`. Make sure all changes are committed. We'll do it together when we're done setting up.
 
@@ -1241,6 +1745,7 @@ How your visualization looks on social media matters more than you'd think. Does
 
 And they're easy to set up. No excuse.
 
+<<<<<<< HEAD
 We're going to poke around `public/index.html` for the first time. Add titles, twitter cards, facebook open graph things, and so on.
 
 {crop-start: 3, crop-end: 30, format: html}
@@ -1251,11 +1756,24 @@ We add a `<title>` and a `canonical` URL. Titles configure what shows up in brow
 But I messed up here and used the wrong URL. This knocks down rankings for the original version of this visualization but oh well :)
 
 In the body root tag, we add some copy pasted text from our dataviz. You'll recognize the default title and description.
+=======
+We're going to poke around `public/index.html` for the first time. Add titles, Twitter cards, Facebook Open Graph things, and so on.
+
+{crop-start: 3, crop-end: 19, format: html}
+![Basic SEO](code_samples/es6v2/index.html)
+
+We add a `<title>` and a `canonical` URL. Titles configure what shows up in browser tabs, and the canonical URL is there to tell search engines that this is the main and most important URL for this piece of content. This is especially important for when people copy-paste your stuff and put it on other websites.
+
+But I messed up here and used the wrong URL. This knocks down rankings for the original version of this visualization, but oh well :)
+
+In the body root tag, we add some copy-pasted text from our dataviz. You'll recognize the default title and description.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 As soon as React loads, these get overwritten with our preloader, but it's good to have them here for any search engines that aren't running JavaScript yet. I think both Google and Bing are capable of running our React app and getting text from there, but you never know.
 
 To make social media embeds look great, we'll use [Twitter card](https://dev.twitter.com/cards/types/summary-large-image) and [Facebook OpenGraph](https://developers.facebook.com/docs/sharing/webmasters) meta tags. I think most other websites just rely on these since most people use them. They go in the `<head>` of our HTML.
 
+<<<<<<< HEAD
 {crop-start: 34, crop-end: 64, format: javascript}
 ![Add FB and Twitter cards](code_samples/es6v2/index.html)
 
@@ -1266,6 +1784,18 @@ The URLs you should change to the `homepage` URL you used above. The rest you sh
 An important one is `fb:admin`. It enables admin features on your site, if you add their social plugins. If you don't, it probably doesn't matter.
 
 You're also going to need a thumbnail image. I made mine by taking a screenshot of the final visualization. Put it in `public/thumbnail.png`.
+=======
+{crop-start: 23, crop-end: 41, format: javascript}
+![Add FB and Twitter cards](code_samples/es6v2/index.html)
+
+Much of this code is repetitive. Both Twitter and Facebook want the same info, but they're stubborn and won't read each other's formats. You can copy all of this, but make sure to change `og:url`, `og:site_name`, `article:publisher`, `fb:admins`, `og:image`, `twitter:site`, `twitter:image`, and `twitter:creator`. They're specific to you.
+
+The URLs you should change to the `homepage` URL you used above. The rest you should change to use your name and Twitter/Facebook handles. I'm not sure *why* it matters, but I'm sure it does.
+
+An important one is `fb:admin`. It enables admin features on your site if you add their social plugins. If you don't, it probably doesn't matter.
+
+You're also going to need a thumbnail image. I made mine by taking a screenshot of the final visualization, then I put it in `public/thumbnail.png`.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 Now when somebody shares your dataviz on Twitter or Facebook, it's going to look something like this:
 
@@ -1280,7 +1810,11 @@ Go into `src/DataHandling.js` and change one line:
 {crop-start: 95, crop-end: 106, format: javascript}
 ![Switch to full dataset](code_samples/es6v2/DataHandling.js)
 
+<<<<<<< HEAD
 We change the file name and that's that. Full dataset locked and loaded. Dataviz ready to go.
+=======
+We change the file name, and that's that. Full dataset locked and loaded. Dataviz ready to go.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 # Launch!
 
@@ -1292,7 +1826,11 @@ Then run:
 $ npm run deploy
 ```
 
+<<<<<<< HEAD
 You'll see a bunch of output
+=======
+You'll see a bunch of output:
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ![Deploy output](images/es6v2/npm-run-deploy.png)
 
@@ -1304,4 +1842,8 @@ Congratz! You've built and deployed your first React and D3v4 dataviz. You're am
 
 Thanks for following along with the meaty part of my book. You're now well equipped to make cool things.
 
+<<<<<<< HEAD
 In the next section, we're going to look at building animations.
+=======
+In the next section, we're going to look at building animations.
+>>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
