@@ -6,15 +6,15 @@ Hello new friend!
 
 ![This is me, Swizec](images/es6v2/6300d21408f5e9f0c8f5698d266fb258.jpg)
 
-Welcome to what I hope is the best and most fun React learning resource on the internets. No TODO apps here, just fun interactive stuff that makes you look great at a dinner party. 
+Welcome to what I hope is the best and most fun React learning resource on the internets. No TODO apps here, just fun interactive stuff that makes you look great at a dinner party.
 
 240 pages, 8 example apps, a bunch of skill building blocks.
 
-Reading this book you will:
+By reading this book, you will:
 
 - build a really big interactive data visualization
 - build a few silly animations
-- learn the basics of D3js
+- learn the basics of D3.js
 - master React
 - learn the basics of Redux and MobX
 - look into rendering rich animations on canvas
@@ -22,15 +22,15 @@ Reading this book you will:
 
 You might be thinking *"How the hell does this all fit together to help me build interactive graphs and charts?"*. They're building blocks!
 
-First I will show you the basics. How to make React and D3 like each other, how to approach rendering, what to do with state. 
+First I will show you the basics. Stuff like how to make React and D3 like each other, how to approach rendering, what to do with state.
 
 Then you will build a big project to see how it all fits together.
 
-When you're comfortable with React and D3 working together, I will show you animation basics. How to approach updating components with fine grained control and how to do transitions. I'll show you that tricks from the gaming industry work here too.
+When you're comfortable with React and D3 working together, I will show you animation basics. Cool things like how to approach updating components with fine grained control and how to do transitions. I'll show you that tricks from the gaming industry work here too.
 
 Short on time? Don't worry. The basic examples are built on Codepen, a web-based IDE. Read the explanation, run the code in your browser, master enough React to be dangerous.
 
-In about an hour you'll know React well enough to explore on your own, to sell the tech to your boss and your team, and to assess if the React and D3 combination fits your needs.
+In about an hour, you'll know React well enough to explore on your own, to sell the tech to your boss and your team, and to assess if the React and D3 combination fits your needs.
 
 I believe learning new tech should be exciting.
 
@@ -52,35 +52,25 @@ Here's what I had to say about the first version:
 
 > So here we both are.
 
-> I’m counting on you to take some time away from the internet, to  sit down and read. I'm counting on you to follow the examples. I'm counting on you to *learn*.
+> I’m counting on you to take some time away from the internet, to sit down and read. I'm counting on you to follow the examples. I'm counting on you to *learn*.
 
 > You’re counting on me to have invested more time, effort, and care in crafting this than I would have invested in an article. I have.
 
 > I’ve tried to keep this book as concise as possible. iA Writer estimates it will take you about an hour to read *React+d3.js*, but playing with the examples might take some time, too.
 
-All of that still rings true. People are distracted, the internet is shiny, it's hard to keep readers for more than 5 minutes at a time.
+All of that still rings true. People are distracted, the internet is shiny, and it's hard to keep readers for more than 5 minutes at a time.
 
-I don't know how fast you read, but I don't *really* learn things with a 5 minute skim. I need to sit down, try stuff out, play around.
+I don't know how fast you read, but I don't *really* learn things with a 5-minute skim. I need to sit down, try stuff out, play around.
 
-That's what I'm hoping you'll do with this book. Sit down, play with code, try the examples, have some fun.
+That's what I'm hoping you'll do with this book. Sit down, play with code, try the examples, and have some fun.
 
 If you're short on time: Read the theory. You'll get the gist and learn the basics in about an hour. I promise :)
 
 # Why you should read React + D3v4
 
-After an hour with *React + D3v4*, you’ll know how to make React and D3js play together. You’ll know how to create composeable data visualizations. You’re going to understand *why* that’s a good idea, and you will have the tools to build your own library of interactive visualization components.
+After an hour with *React + D3v4*, you’ll know how to make React and D3.js play together. You’ll know how to create composeable data visualizations. You’re going to understand *why* that’s a good idea, and you will have the tools to build your own library of interactive visualization components.
 
-With a deep dive, you're going to 
-
-- build a really big interactive data visualization
-- build a few silly animations
-- learn the basics of D3js
-- master React
-- learn the basics of Redux and MobX
-- look into rendering rich animations on canvas
-- explore React alternatives like Preact and Inferno
-
-It's going to be fun! I believe learning new tech should be exciting so I did my best to inject joy whenever I could.
+It's going to be fun! I believe learning new tech should be exciting, so I did my best to inject joy whenever I could.
 
 # What you need to know
 
@@ -88,11 +78,11 @@ I’m going to assume you already know how to code and that you're great with Ja
 
 If you're struggling with modern JavaScript syntax, I suggest visiting my [Interactive ES6 Cheatsheet](https://es6cheatsheet.com)
 
-I’m also going to assume some knowledge of D3js. Since it isn’t a widely-used library, I’m going to explain the specific bits that we use. If you want to learn d3.js in depth, you should the third edition of my first ever book, [D3.js 4.x Data Visualization - Third Edition](https://www.packtpub.com/web-development/d3js-4x-data-visualization-third-edition). Written by Ændrew Rininsland with some bits left from yours truly.
+I’m also going to assume some knowledge of D3.js. Since it isn’t a widely-used library, I’m going to explain the specific bits that we use. If you want to learn D3.js in depth, you should the third edition of my first ever book, [D3.js 4.x Data Visualization - Third Edition](https://www.packtpub.com/web-development/d3js-4x-data-visualization-third-edition). Written by Ændrew Rininsland with some bits left from yours truly.
 
-React is a new kid on the block ... well it's been 2 years but still. You'll be fine even if this is your first time looking at React. This book is more about learning React than it is about learning D3.
+React is a new kid on the block… well it's been 2 years but still. You'll be fine even if this is your first time looking at React. This book is more about learning React than it is about learning D3.
 
-All examples in React + D3v4 are written in modern JavaScript. Most code is ES6 – ECMAScript2015 – some might be 2016, maybe even 2017. I find it hard to keep track to be honest. 
+All of the examples in React + D3v4 are written in modern JavaScript. Most code is ES6 – ECMAScript2015 – some might be 2016, maybe even 2017. I find it hard to keep track to be honest.
 
 I'm going to explain any new syntax that we use.
 
@@ -100,9 +90,9 @@ I'm going to explain any new syntax that we use.
 
 Relax. Breathe. You’re here to learn. I’m here to teach. I promise Twitter and Facebook will still be there when we're done.
 
-Just you and some fun code. To get the most out of this material, I suggest two things:
+For now, it's just you and some fun code. To get the most out of this material, I suggest two things:
 
-1. Try the example code yourself. Don’t just copy-paste; type it and execute it. Execute it frequently. If something doesn’t fit together, look at the linked Github [here](https://github.com/Swizec/h1b-software-salaries) repositories. Each example has one.
+1. Try the example code yourself. Don’t just copy-paste; type it and execute it. Execute it frequently. If something doesn’t fit together, look at the linked Github repositories [here](https://github.com/Swizec/h1b-software-salaries). Each example has one.
 2. If you already know something, skip that section. You’re awesome. Thanks for making this easier.
 
 React + D3v4 is based on code samples. They look like this:
@@ -112,16 +102,16 @@ React + D3v4 is based on code samples. They look like this:
 let foo = 'bar';
 foo += 'more stuff';
 ```
-  
+
 Each code sample starts with a commented out file path. That's the file you're editing. Like this:
 
 {caption: "Code samples have file paths"}
 ```javascript
 // ./src/App.js
-    
+
 class App ...
 ```
-    
+
 Commands that you should run in the terminal start with an `$` symbol, like this:
 
 {line-numbers: false}
@@ -130,7 +120,7 @@ $ npm start
 ```
 
 
-# Why React and D3js
+# Why React and D3.js
 
 React is Facebook's and Instagram's approach to writing modern JavaScript front-ends. It encourages building an app out of small, re-usable components. Each component is self-contained and only knows how to render a small bit of the interface.
 
@@ -140,15 +130,15 @@ I have found it a joy to use. Using React was the first time I have ever been ab
 
 D3.js is Mike Bostock’s infamous data visualization library. It's used by The New York Times along with many other sites. It is the workhorse of data visualization on the web, and many charting libraries out there are based on it.
 
-But d3.js is a fairly low-level library. You can’t just say *"I have data; give me a bar chart"*. Well, you can, but it takes a few more lines of code than that. Once you get used to it though, d3.js is a joy to use.
+But D3.js is a fairly low-level library. You can’t just say *"I have data; give me a bar chart"*. Well, you can, but it takes a few more lines of code than that. Once you get used to it though, D3.js is a joy to use.
 
-Just like React, d3.js is declarative. You tell it *what* you want instead of *how* you want it. It gives you access straight to the SVG so you can manipulate your lines and rectangles at will. The issue is that d3.js isn't that great if all you want are charts.
+Just like React, D3.js is declarative. You tell it *what* you want instead of *how* you want it. It gives you access straight to the SVG so you can manipulate your lines and rectangles at will. The issue is that D3.js isn't that great if all you want are charts.
 
 This is where React comes in. For instance, once you’ve created a histogram component, you can always get a histogram with `<Histogram {...params} />`.
 
 Doesn’t that sound like the best? I think it's amazing.
 
-It gets even better. With React, you can make various graph and chart components build off the same data. This means that when your data changes, the whole visualization reacts.
+It gets even better. With React, you can make various graph and chart components build off of the same data. This means that when your data changes, the whole visualization reacts.
 
 Your graph changes. The title changes. The description changes. Everything changes. Mind = blown.
 
@@ -207,10 +197,10 @@ ReactDOM.render(
 );
 ```
 
-As you can see, HTML code translates to `React.createElement` calls with attributes translated into a property dictionary. The beauty of this approach is two-pronged: you can use React components as if they were HTML tags and HTML attributes can be anything.
+As you can see, HTML code translates to `React.createElement` calls with attributes translated into a property dictionary. The beauty of this approach is two-pronged: you can use React components as if they were HTML tags, and HTML attributes can be anything.
 
 You’ll see that anything from a simple value to a function or an object works equally well.
 
-I used to be a fan of the One Language Per File principle, but using JSX has made my code much easier to work with. Especially in a small team where I do everything - the code, the markup, the styles - having the relevant code colocated helps a lot. 
+I used to be a fan of the One Language Per File principle, but using JSX has made my code much easier to work with. Especially in a small team where I do everything - the code, the markup, the styles - having the relevant code colocated helps a lot.
 
 But I wouldn't let a designer edit my HTML in JavaScript, for instance. Can't see that ending well.

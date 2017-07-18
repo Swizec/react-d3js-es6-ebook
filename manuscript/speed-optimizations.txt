@@ -30,7 +30,7 @@ A panelist at ForwardJS once asked me *"But why would you want that?"*. It was m
 
 That's the real answer. Sometimes, when you're visualizing some data, you have a lot of data. The data changes over time, and animation is the best way to show changes over time.
 
-Once upon a time I worked on a [D3 video course](https://www.packtpub.com/web-development/mastering-d3js-video) for Packt and used UFO sightings as an example. At peak UFO sighting, right before smartphones become a thing, the animation takes up to 2 seconds to redraw a single frame. 
+Once upon a time I worked on a [D3 video course](https://www.packtpub.com/web-development/mastering-d3js-video) for Packt and used UFO sightings as an example. At peak UFO sighting, right before smartphones become a thing, the animation takes up to 2 seconds to redraw a single frame.
 
 It's terrible.
 
@@ -78,7 +78,7 @@ I'm gonna let Anton Lavrenov, the author of Konva, explain:
 
 > You can draw things onto the stage, add event listeners to them, move them, scale them, and rotate them independently from other shapes to support high performance animations, even if your application uses thousands of shapes. Served hot with a side of awesomeness.
 
-That. 
+That.
 
 It's exactly what we need to push our animated React apps to thousands of elements. Without spending too much time thinking about the *how* of rendering. Best leave the hairy details to somebody else.
 
@@ -241,7 +241,7 @@ Thanks to JavaScript's permissiveness we can use it anyway.
 
 `this.context` is a reference to our canvas's CanvasRenderingContext2D. It's the interface we use to draw basic shapes, perform transformations, etc. Context is basically the only part of canvas you ever interact with as a developer.
 
-Why it can't be just canvas, I don't know. 
+Why it can't be just canvas, I don't know.
 
 `this.sprite` is a cached image. A small minion that we are going to copy paste all over the place as our particle. Using a combination of `new Image()` and setting the `src` property, loads it into memory as an HTML5 Image object.
 
@@ -330,7 +330,7 @@ Ideas for this combination of settings came from Konva's official [performance t
 
 A `FastLayer` is faster than a `Layer`. It's in the name. Ignoring mouse events means you don't have to keep track of elements. It reduces computation.
 
-All I know is that this was empirically the fastest solution that lead to the most particles on screen. ¯\_(ツ)_/¯
+All I know is that this was empirically the fastest solution that lead to the most particles on screen.
 
 ### But why, Swizec?
 
@@ -338,7 +338,7 @@ I'm glad you asked. This was a silly example. I devised the experiment because a
 
 Now I do. You put them in canvas. You drive the animation with a game loop. You are god.
 
-You can even do it as an overlay. Have an SVG for your graphs and charts, overlay with a transparent canvas for your high speed animation. 
+You can even do it as an overlay. Have an SVG for your graphs and charts, overlay with a transparent canvas for your high speed animation.
 
 {#billiards-simulation}
 ## Billiards simulation with MobX and canvas
@@ -352,7 +352,7 @@ We're using React and Konva to render our 11 marbles on an HTML5 Canvas element,
 1. Part 1: Rendering the marbles
 2. Part 2: Building the physics
 
-You can see the finished [code on Github](https://github.com/Swizec/declarative-canvas-react-konva) and play around with a [hosted version](https://swizec.github.io/declarative-canvas-react-konva/) of the code you're about to build. 
+You can see the finished [code on Github](https://github.com/Swizec/declarative-canvas-react-konva) and play around with a [hosted version](https://swizec.github.io/declarative-canvas-react-konva/) of the code you're about to build.
 
 I know this example comes late in the book and you're feeling like you know all there is to React and visualizations. You can think of this example as practice. And it's a good way to learn the basics of MobX.
 
@@ -418,7 +418,7 @@ This installs Konva, MobX, and the parts of D3 that we need. You're now ready to
 
 ### A quick MobX primer
 
-Explaining MobX in detail is beyond the scope of this book. I bet you can learn it by osmosis as you follow the code in our billiards example. 
+Explaining MobX in detail is beyond the scope of this book. I bet you can learn it by osmosis as you follow the code in our billiards example.
 
 That said, here's a quick rundown of the concepts we're using.
 
@@ -498,12 +498,12 @@ class App extends Component {
 export default App;
 ```
 
-We import our dependencies: React itself, a `MobXProvider` which is similar to the Redux provider (it puts stuff in react context), both our MobX stores which export singleton instances, and the main `MarbleList` component. 
+We import our dependencies: React itself, a `MobXProvider` which is similar to the Redux provider (it puts stuff in react context), both our MobX stores which export singleton instances, and the main `MarbleList` component.
 
 `App` itself is a full featured component that initiates sprite loading in `componentDidMount` and calls `startGameLoop` when the sprite is ready. We know the sprite is ready because it calls a callback. You'll see how that works in a bit.
 
 The `render` method outputs some descriptive text, and the `MarbleList` component wrapped in a `MobXProvider`. The provider puts instances of our stores – `sprite` and `physics` – in React context.
-  
+
 This makes them available to all child components via the `inject` decorator.
 
 #### MarbleList
@@ -547,7 +547,7 @@ const MarbleList = inject('physics', 'sprite')(observer(({ physics, sprite }) =>
 export default MarbleList;
 ```
 
-We import our dependencies and create a `MarbleList` component. Instead of decorators, we're going with functional composition. 
+We import our dependencies and create a `MarbleList` component. Instead of decorators, we're going with functional composition.
 
 This shows you that MobX *can* work without decorators, but there's no real reason behind this choice. Over time I've developed a preference to use composition for functional stateless components and decorators for class-based components.
 
@@ -555,7 +555,7 @@ This shows you that MobX *can* work without decorators, but there's no real reas
 
 It's generally a good idea to use both `inject` and `observer` together. I have yet to find a case where you need just one or the other.
 
-The rendering itself, takes values out of our stores, and returns a Konva `Stage` with a single `Layer`, which contains a `Group`. Inside this group is our list of marbles. 
+The rendering itself, takes values out of our stores, and returns a Konva `Stage` with a single `Layer`, which contains a `Group`. Inside this group is our list of marbles.
 
 Each marble gets a position, a `type` that defines how it looks, an `id`, and a `key`. We set `draggable` to `true` so Konva knows that this element is draggable.
 
@@ -628,7 +628,7 @@ Our drag callbacks double as MobX actions, which makes our code simpler. Instead
 
 MobX makes this okay. It keeps everything in sync and our state easy to understand. MobX even batches several value changes together before triggering re-renders.
 
-That said, I would recommend using explicit `@actions` in larger projects. 
+That said, I would recommend using explicit `@actions` in larger projects.
 
 Here's what the dragging callbacks look like.
 
@@ -673,7 +673,7 @@ class Marble extends Component {
            vy: (y - origY)/(v/3)
            }, this.props.id);
     }
-    
+
     // ...
 }
 ```
@@ -768,7 +768,7 @@ export default new Sprite();
 As you can see a MobX store is a JavaScript object. It has `@observable` values, `@actions` and `@computed` getters. There's nothing more to it than that.
 
 No complicated reducers and action generators, just JavaScript functions and properties. There's plenty going on behind the scenes, but we don't have to think about it.
-  
+
 That's why I personally like MobX more than Redux. Feels easier to use :)
 
 In the `Sprite` store we have an `@observable sprite`. Changing this value will trigger a re-render in our `@observer` components that rely on it. Every marble in our case.
@@ -802,7 +802,7 @@ class Physics {
     @observable height = 600;
     @observable marbles = [];
     timer = null;
-    
+        
     @computed get initialPositions() {
  
     }
@@ -877,7 +877,7 @@ It took me 3 hours to build. Super easy to get wrong and very fiddly to implemen
 
 We start with a `range` of numbers. From `lines` to `0` in descending order. We iterate through this list of rows and change each into a list of marbles.
 
-4 marbles in the first row, 3 in the next, all the way down to 1 in last row. 
+4 marbles in the first row, 3 in the next, all the way down to 1 in last row.
 
 For each row, we calculate how much space we have on the `left` and `right` of the center, make a `range` of horizontal positions from `left` to `right` with a step of "1 marble size".  Using these positions and the known row we create marbles as needed.
 
@@ -892,15 +892,15 @@ In the end we add an `id` to each marble. We're using index as the id, that's tr
 // src/logic/Physics.js
 class Physics {
     // ...
-    
+
     @action startGameLoop() {
         this.marbles = this.initialPositions;
 
         this.timer = timer(() => this.simulationStep());
     }
-    
+
     // ...
-    
+
     @action shoot({ x, y, vx, vy }, i) {
         const maxSpeed = 20;
 
@@ -980,7 +980,7 @@ I've also made a video of all this. [Watch it on YouTube](https://www.youtube.co
 }
 ```
 
-That's a lot of code 😅. Let's break it down. 
+That's a lot of code 😅. Let's break it down.
 
 You can think of `simulationStep` as a function and a loop. At the bottom, there is a `.forEach` that applies a `moveMarble` function to each marble.
 
@@ -1038,7 +1038,7 @@ const subdividedSpace = quadtree().extent([[-1, -1],
 
 We're using [`d3-quadtree`](https://github.com/d3/d3-quadtree) for the quadtree implementation. It takes an `extent`, which tells it how big our space is. It uses `x` and `y` accessors to get coordinates out of our marble objects, and we use `addAll` to fill it with marbles.
 
-To avoid detecting each marble as colliding with itself, we take each marble out of our list before feeding the quadtree. 
+To avoid detecting each marble as colliding with itself, we take each marble out of our list before feeding the quadtree.
 
 Once we have a quadtree built out, we use `.find` to look for the nearest marble within `MarbleR*2` of the current marble. Which is exactly the one we're colliding with! :)
 
@@ -1218,7 +1218,7 @@ const memoizedCalc = function () {
 
 We expanded the basic law of sines with a dynamic `heightFactor` and `lean` adjustment. We'll control those with mouse movement.
 
-To improve performance, maybe, our `memoizedCalc` function has an internal data store that maintains a hash of every argument tuple and its result. This lets us avoid computation and read from memory instead. 
+To improve performance, maybe, our `memoizedCalc` function has an internal data store that maintains a hash of every argument tuple and its result. This lets us avoid computation and read from memory instead.
 
 At 11 levels of recursion, `memoizedCalc` is called 2,048 times and only returns 11 different results. You can't find a better candidate for memoization.
 
@@ -1240,7 +1240,7 @@ state = {
         heightFactor: 0,
         lean: 0
     };
-    
+
 componentDidMount() {
 	d3select(this.refs.svg)
 	   .on("mousemove", this.onMouseMove.bind(this));
@@ -1317,7 +1317,7 @@ But since this is a book, you probably can't see the gif move. I suggest looking
 
 ## Trying the stress test in Preact and Inferno
 
-The Pythagoras tree example got converted into 6 different UI libraries. React, Preact, Inferno, Vue, Angular 2, CycleJS. 
+The Pythagoras tree example got converted into 6 different UI libraries. React, Preact, Inferno, Vue, Angular 2, CycleJS.
 
 Mostly by the creators of those libraries themselves because they're awesome and much smarter than I am. You can see the result, in gifs, on [my blog here](https://swizec.com/blog/animating-svg-nodes-react-preact-inferno-vue/swizec/7311).
 

@@ -1,9 +1,9 @@
 {#animating-react-redux}
 # Animating with React, Redux, and d3
 
-And now for some pure nerdy fun: A particle generator ... or, well, as close as you can get with React and D3. You'd need WebGL for a *real* particle generator.
+And now for some pure nerdy fun: A particle generator… or, well, as close as you can get with React and D3. You'd need WebGL for a *real* particle generator.
 
-We're making tiny circles fly out of your mouse cursor. Works on mobile with your finger too.
+We're making tiny circles fly out of your mouse cursor. Works on mobile with your finger, too.
 
 To see the particle generator in action, [go here](http://swizec.github.io/react-particles-experiment/). Github won't let me host different branches, so you'll see the advanced 20,000 particle version from next chapter.
 
@@ -14,7 +14,7 @@ You can see the full code [on GitHub](https://github.com/Swizec/react-particles-
 It's going to be great.
 
 {aside}
-Code in this example uses the `.jsx` file extension. I originally wrote it back when that was still a thing and while I did update everything to React 15.5.x, I felt changing all filenames was unnecessary.
+Code in this example uses the `.jsx` file extension. I originally wrote it back when that was still a thing, and while I did update everything to React 15.5.x, I felt that changing all filenames was unnecessary.
 
 It also predates create-react-app. The code _should_ work with create-react-app, but if you have issues, I suggest copying config files [from GitHub](https://github.com/Swizec/react-particles-experiment/tree/svg-based-branch)
 {/aside}
@@ -84,14 +84,14 @@ const Particles = ({ particles }) => (
 
 export default Particles;
 ```
-		
+
 Walk through the array of particles, render a Particle component for each. Declarative rendering that you've seen before :)
 
 We can take an array of `{id, x, y}` objects and render SVG circles. Now comes our first fun component: the `App`.
 
 ### App
 
-`App` takes care of rendering the scene and attaching d3 event listeners. It's not _really_ a presentation component because it gets actions via props and uses ties them to mouse events. This is a Redux faux par, but works well in practice.
+`App` takes care of rendering the scene and attaching d3 event listeners. It's not _really_ a presentation component because it gets actions via props and ties them to mouse events. This is a Redux faux pas, but it works well in practice.
 
 The rendering part looks like this:
 
@@ -123,7 +123,7 @@ class App extends Component {
 		);
 	}
 }
-			
+
 export default App;
 ```
 
@@ -189,7 +189,7 @@ There are several events we take into account:
 - `mousemove` and `touchmove` update the mouse location
 - `mouseup`, `touchend`, and `mouseleave` turn off particle generation
 
-Inside our event callbacks we use `updateMousePos` and `updateTouchPos` to update Redux state. They use `d3Mouse` and `d3Touches` to get `(x, y)` coordinates for new particles relative to our SVG element and call Redux actions passed-in via props. The particle generation step uses this data as each particle's initial position. 
+Inside our event callbacks, we use `updateMousePos` and `updateTouchPos` to update Redux state. They use `d3Mouse` and `d3Touches` to get `(x, y)` coordinates for new particles relative to our SVG element and call Redux actions passed-in via props. The particle generation step uses this data as each particle's initial position. 
 
 You'll see that in the next section. Yes, it smells convoluted. We need a reference to a mouse event to get the cursor position, and we want to decouple particle generation from event handling.
 
@@ -219,7 +219,7 @@ export function createParticles(N, x, y) {
 	};
 }
 ```
-		
+
 It tells the reducer to create `N` particles at `(x, y)` coordinates. You'll see how that works when we look at the Reducer, and you'll see how it triggers when we look at the Container.
 
 Actions *must* have a `type`. Reducers use the type to decide what to do.
@@ -230,17 +230,17 @@ Personally, I think this is the least elegant part of Redux. It might make sense
 
 The whole concept smells a lot like user-defined datatypes. You give a name to a piece of shaped data. Then you use a function to generate said data. If that sounds a lot like having a named object and an object factory, or a named struct and a generator ... well that's pretty much what's going on here.
 
-¯\_(ツ)_/¯
+¯\\_(ツ)_/¯
 
 ## 1 Container component
 
 Containers are React components that talk to the Redux data store.
 
-You can think of presentation components as templates that render stuff, and containers as smart-ish views that talk to controllers. Or maybe they're the controllers.
+You can think of presentation components as templates that render stuff and containers as smart-ish views that talk to controllers. Or maybe they're the controllers.
 
 Sometimes it's hard to tell. Basically, presentation components render and don't think, containers communicate and don't render. Redux reducers and actions think.
 
-I'm not sure this separation is necessary in small projects. And maintaining it can be awkward and sometimes cumbersome in mid-size projects, but I'm sure it makes total sense at Facebook scale. We're using it in this project because it's the officially suggested way.
+I'm not sure this separation is necessary in small projects. Maintaining it can be awkward and sometimes cumbersome in mid-size projects, but I'm sure it makes total sense at Facebook scale. We're using it in this project because it's the officially suggested way.
 
 The gist of our `AppContainer` looks like this:
 
@@ -298,7 +298,7 @@ Three parts of this code are important:
 2. When rendering, we assume the store is our context, use `getState()`, then render the component we're wrapping. In this case, we render the `App` component.
 3. To get the store as our context, we *have to* define `contextTypes`. It won't work otherwise.
 
-What I like about React context is that it lets us implicitly pass properties to all children components. Anything can go in context, but if you're not careful this can lead to rendering stale data.
+What I like about React context is that it lets us implicitly pass properties to all children components. Anything can go in context, but if you're not careful, this can lead to rendering stale data.
 
 That's why you should reserve context for passing the Redux store. All components need access, and the store itself is smart enough to handle updates.
 
@@ -371,7 +371,7 @@ The loop starts in two steps:
 1. Check `tickerStarted` flag and start the ticker if it hasn't been started yet. This prevents running multiple game loops in parallel. As a result, we can be naive about binding `startTicker` to `onMouseDown`.
 2. Create a `ticker` function that generates particles, dispatches the `tickTime` action, and calls itself on every `requestAnimationFrame`. We check the `tickerStarted` flag each time so we can stop the animation.
 
-Yes, that means we are asynchronously dispatching redux actions.   I wrote this code before Redux thunks were a thing. With those, you would package `startTicker` as an action that can dispatch other actions. 
+Yes, that means we are asynchronously dispatching redux actions. I wrote this code before Redux thunks were a thing. With those, you would package `startTicker` as an action that can dispatch other actions.
 
 This works too, I promise :)
 
@@ -396,7 +396,7 @@ let sum = [1,2,3,4].reduce(sum, n => sum+n, 0);
 
 For each number, take the previous sum and add the number.
 
-Our particle generator is a more complicated version of the same concept. It takes the current application state, incorporates an action, and returns the new application state. 
+Our particle generator is a more complicated version of the same concept. It takes the current application state, incorporates an action, and returns the new application state.
 
 To keep the example code simple, we'll put everything into the same reducer and use a big `switch` statement to decide what to do based on `action.type`. In bigger applications, we'd split our logic into domain-specific reducers. The base principle stays the same.
 
@@ -469,7 +469,7 @@ function particlesApp(state = initialState, action) {
 		    });
 		// ...
 	}
-}	
+}
 ```
 
 Even though we're only changing values of boolean flags and two-digit arrays, *we have to create a new state*. Redux relies on application state being immutable.

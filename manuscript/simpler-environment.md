@@ -1,4 +1,3 @@
-
 {#getting-started}
 # Set up a local environment with create-react-app
 
