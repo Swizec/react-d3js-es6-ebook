@@ -3,16 +3,9 @@
 {#the-meat-start}
 # Visualizing data with React and d3.js #
 
-<<<<<<< HEAD
-Welcome to the main part of React + D3v4. We're going to talk a little theory, some principles, then get our hands dirty with a few examples. No need to install anything to get started :)
-
-Through this book you're going to build:
-
-- [A few small components in Codepen](#basic-approach)
-=======
 Welcome to the main part of React + D3v4. We're going to talk a little theory, learn some principles, and then get our hands dirty with a few examples. Through this book you're going to build:
 
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
+- [A few small components in Codepen](#basic-approach)
 - [A choropleth map](#choropleth-map)
 - [An interactive histogram](#histogram-of-salaries)
 - [A rainbow snake](#rainbow-snake)
@@ -24,12 +17,7 @@ Welcome to the main part of React + D3v4. We're going to talk a little theory, l
 
 Looks random, right? Bear with me.
 
-<<<<<<< HEAD
-Examples build on each other in complexity. **The first** teaches you how to make a static data visualization component and shows you an approach to declarative data visualization. **The second** adds interactivity and components interacting with each other in order to teach you about a simple approach to state management. **The third** shows you how to use transitions to build simple animations. **The fifth** shows you complex transitions with entering and exiting components.
-**The fifth** shows you how to do complex animation using a game loop principle. **The sixth, seventh, and eighth** show you how to approach speed optimization to smoothly animate thousands of elements.
-=======
 Examples build on each other in complexity. **The first** teaches you how to make a static data visualization component and shows you an approach to declarative data visualization. **The second** adds interactivity and components interacting with each other in order to teach you about a simple approach to state management. **The third** shows you how to use transitions to build simple animations. **The fifth** shows you complex transitions with entering and exiting components. **The fifth** shows you how to do complex animation using a game loop principle. **The sixth, seventh, and eighth** show you how to approach speed optimization to smoothly animate thousands of elements.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 Throughout our examples, we're going to use **React 15**, compatible with **React 16 Fiber**, **D3v4**, and **ES6+**. In the particle generator, we're also going to use **Redux** to drive the game loop and **Konva** for canvas manipulation. The billiards simulation uses **MobX** so you can compare it to Redux and learn both.
 
@@ -37,21 +25,11 @@ Don't worry if you're not comfortable with ES6 syntax yet. By the end of this bo
 
 Until then, here's an interactive cheatsheet: [es6cheatsheet.com](https://es6cheatsheet.com/). It uses code samples to compare the ES5 way with the ES6 way so you can brush up quickly.
 
-I'm working on a similar cheatsheet for D3v3 → D3v4. It's going to be ready some time in 2017. You'll get an email when it's done.
-
-<<<<<<< HEAD
-In the interest of looking towards the future, we'll check out **Preact** and **Inferno** in the final fractal example. They're new React-like libraries that promise better performance and smaller file sizes. Their creators – Jason Miller and Dominic Gannaway - graciously forked my example and built the same thing in their respective libraries. Thank you!
-
-----
-
-Before we begin our examples, let's talk about how React and D3 fit together and how we're going to structure our apps. If you prefer to get your hands dirty first and ask questions later, skip this section and jump to examples.
-=======
 In the interest of looking towards the future, we'll check out **Preact** and **Inferno** in the final fractal example. They're new React-like libraries that promise better performance and smaller file sizes. Their creators – Jason Miller and Dominic Gannaway - graciously forked my fractal tree example and built the same thing in their respective libraries. Thank you!
 
 ----
 
 Before we begin our examples, let's talk about how React and D3 fit together and how we're going to structure our apps. If you prefer to get your hands dirty first and ask questions later, skip this section and jump to the examples.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 This section is split into five chapters:
 
@@ -119,11 +97,7 @@ d3.select("svg")
   .attr("y", 20);
 ```
 
-<<<<<<< HEAD
-It's elegant, it's declarative, it looks like function call soup. It doesn't scream *"Rectangle in an SVG"* to me as much as the React example does. 
-=======
 It's elegant, it's declarative, and it looks like function call soup. It doesn't scream *"Rectangle in an SVG"* to me as much as the React example does.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 You have to take your time and read the code carefully: first, we `select` the `svg` element, then we add attributes for `width` and `height`. After that, we `append` a `rect` element and set its attributes for `width`, `height`, `x`, and `y`.
 
@@ -136,19 +110,11 @@ Those 8 lines of code create HTML that looks like this:
 </svig>
 ```
 
-<<<<<<< HEAD
-Would've been easier to just write the HTML, right? Yes, for static images you're better off using Photoshop or something then exporting to SVG.
-
-Either way, dealing with the DOM is not D3's strong suit. There's a lot of typing, code that's hard to read, it's slow when you have thousands of elements, and it's often hard to keep track of which elements you're changing. D3's enter-update-exit cycle is great in theory, but I personally never found it easy to use.
-
-If you don't know what I just said, don't worry. We'll cover the enter-update-exit cycle in the animations example. Don't worry about D3 either. **I know it's hard**. I've written two books about it, and I still spend as much time reading the docs as writing the code. There's much to learn, and I'll explain everything as we go along.
-=======
 Would've been easier to just write the HTML, right? Yes, for static images, you're better off using Photoshop or something then exporting to SVG.
 
 Either way, dealing with the DOM is not D3's strong suit. There's a lot of typing, code that's hard to read, it's slow when you have thousands of elements, and it's often hard to keep track of which elements you're changing. D3's enter-update-exit cycle is great in theory, but I personally never found it easy to use.
 
 If you don't completely understand what I just said, don't worry. We'll cover the enter-update-exit cycle in the animations example. Don't worry about D3 either. **I know it's hard**. I've written two books about it, and I still spend as much time reading the docs as writing the code. There's much to learn, and I'll explain everything as we go along.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 D3's strong suit is its ability to do everything other than the DOM. There are many statistical functions, great support for data manipulation, and a bunch of built-in data visualizations. **D3 can calculate anything for us. All we have to do is draw it out.**
 
@@ -214,11 +180,7 @@ It creates a small axis:
 
 ![Simple axis](images/es6v2/simple-axis.png)
 
-<<<<<<< HEAD
-You can play around with this example on CodePen [here](https://codepen.io/swizec/pen/YGoYBM). Try changing the scale type to `scaleLog`.
-=======
 You can play around with this example on CodePen [here](https://codepen.io/swizec/pen/YGoYBM). Try changing the scale type.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ## A quick blackbox example - a React+D3 axis
 
@@ -227,7 +189,6 @@ Now let's say we want to use that same axis code but as a React component. The s
 {caption: "React blackbox axis", line-numbers: false, format: javascript}
 ```
 class Axis extends Component {
-<<<<<<< HEAD
 	componentDidMount() { this.renderAxis() }
 	componentDidUpdate() { this.renderAxis() }
 
@@ -244,24 +205,6 @@ class Axis extends Component {
 	render() {
     	return <g transform="translate(10, 30)" ref="g" />
 	}
-=======
-    componentDidMount() { this.renderAxis() }
-    componentDidUpdate() { this.renderAxis() }
-
-    renderAxis() {
-	const scale = d3.scaleLinear()
-	                .domain([0, 10])
-	                .range([0, 200]);
-	const axis = d3.axisBottom(scale);
-
-	d3.select(this.refs.g)
-	  .call(axis);  
-    }
-
-    render() {
-	return <g transform="translate(10, 30)" ref="g" />
-    }
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 }
 ```
 
@@ -304,7 +247,6 @@ A `D3blackbox` HOC looks like this:
 {caption: "React blackbox HOC", line-numbers: false, format: javascript}
 ```
 function D3blackbox(D3render) {
-<<<<<<< HEAD
 	return class Blackbox extends React.Component {
 		componentDidMount() { D3render.call(this); }
 		componentDidUpdate() { D3render.call(this) }
@@ -314,17 +256,6 @@ function D3blackbox(D3render) {
 	    return <g transform={`translate(${x}, ${y})`} ref="anchor" />;
 		}
 	}
-=======
-    return class Blackbox extends React.Component {
-	componentDidMount() { D3render.call(this); }
-	componentDidUpdate() { D3render.call(this) }
-
-	render() {
-	    const { x, y } = this.props;
-	    return <g transform={`translate(${x}, ${y})`} ref="anchor" />;
-	}
-    }
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 }
 ```
 
@@ -351,11 +282,7 @@ const Axis = D3blackbox(function () {
 });
 ```
 
-<<<<<<< HEAD
-It’s the aame code as we had in `renderAxis` before. The only difference is that the function is wrapped in a `D3blackbox` call. This turns it into a React component.
-=======
 It’s the same code as we had in `renderAxis` before. The only difference is that the function is wrapped in a `D3blackbox` call. This turns it into a React component.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 I'm not 100% whether wrapping a function in a React component counts as a real HOC, but let's roll with it. More proper HOCs are React components wrapped in components.
 
@@ -379,11 +306,6 @@ Yes, it looks like a trivial example, but color-as-information is an important c
 
 I suggest following along in Codepen for now. [Here's one I set up for you](https://codepen.io/swizec/pen/oYNvpQ). It contains the final solution, so you can follow along and nod your head. I'll explain each part.
 
-<<<<<<< HEAD
-=======
-I know you're itching to use your local environment from the [Getting Started section](#getting-started), and you will. But it'll be later when we do the real-er example projects.
-
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ## A color scale
 
 We start with a `Swatch` component that draws a rectangle and fills it with a color.
@@ -391,19 +313,11 @@ We start with a `Swatch` component that draws a rectangle and fills it with a co
 {caption: "Swatch component", line-numbers: false, format: javascript}
 ```
 const Swatch = ({ color, width, x }) => (
-<<<<<<< HEAD
 	<rect width={width}
 			  height="20"
 			  x={x}
 			  y="0"
 			  style={{fill: color}} />
-=======
-    <rect width={width}
-	  height="20"
-	  x={x}
-	  y="0"
-	  style={{fill: color}} />
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 );
 ```
 
@@ -418,11 +332,7 @@ Then we need a `Colors` component. It follows the full-featured integration stru
 class Colors extends Component {
     colors = d3.schemeCategory20;
     width = d3.scaleBand()
-<<<<<<< HEAD
 				      .domain(d3.range(20));
-=======
-	      .domain(d3.range(20));
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ```
 
 We start by inheriting from `Component` and defining defaults for D3 objects. `this.colors` is one of [D3's predefined color scales](https://github.com/d3/d3-scale/blob/master/README.md#schemeCategory10). `schemeCategory20` is a scale of 20 colors designed for categorization. It seemed like a good example, and you're welcome to try others.
@@ -463,7 +373,6 @@ Finally, we render a set of color swatches.
 {caption: "Colors component, pt3", line-numbers: false, format: javascript}
 ```
 render() {
-<<<<<<< HEAD
 	return (
 		<g>
 	    {d3.range(20).map(i => (
@@ -473,17 +382,6 @@ render() {
 	     ))}
 		</g>
 	)
-=======
-    return (
-	<g>
-	    {d3.range(20).map(i => (
-	        <Swatch color={this.colors[i]}
-		width={this.width.step()}
-		x={this.width(i)} />
-	     ))}
-	</g>
-    )
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 }
 ```
 
@@ -563,11 +461,7 @@ The caveat with our basic state handling approach is that it's less flexible and
 
 We're using the basic approach because it's easier to explain, works without additional libraries, and is Good Enough™. I mention Redux and MobX to make your Googling easier.
 
-<<<<<<< HEAD
-You can see an approach to using Redux in dataviz in the [Animating with React, Redux, and d3 chapter](#animating-react-redux), and we'll tackle MobX in the [MobX chapter](#billiards-simulation).
-=======
 You can see an approach to using Redux in dataviz in the [Animating with React, Redux, and D3 chapter](#animating-react-redux), and we'll tackle MobX in the [MobX chapter](#refactoring-to-mobx).
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 
 {#structuring-your-app}
@@ -582,19 +476,11 @@ Once you have those two components, you can either make them child components of
 For example, our tech salary visualization is going to use 1 very top level component, 5 major components, and a bunch of child components.
 
  - `App` is the very top level component; it handles everything
-<<<<<<< HEAD
- - `Title`, renders the dynamic title
- - `Description`, renders the dynamic description
- - `Histogram`, renders the histogram and has child components for the axis and histogram bars
- - `CountyMap`, renders the choropleth map and uses child components for the counties
- - `Controls`, renders the rows of buttons that let users explore our dataset
-=======
  - `Title` renders the dynamic title
  - `Description` renders the dynamic description
  - `Histogram` renders the histogram and has child components for the axis and histogram bars
  - `CountyMap` renders the choropleth map and uses child components for the counties
  - `Controls` renders the rows of buttons that let users explore our dataset
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 Most of these are specific to our use case, but `Histogram` and `CountyMap` have potential to be used elsewhere. We'll keep that mind when we build them.
 

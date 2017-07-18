@@ -4,15 +4,6 @@ Welcome to the animation section. This is where the real fun begins. Demos that 
 
 ![](images/es6v2/puking-rainbows.png)
 
-<<<<<<< HEAD
-You already know how React and D3 work together, so these demos are going to go faster. You know that we're using React for rendering SVG, and D3 for calculating props. You know how to make your dataviz interactive, and how to handle oodles of data.
-
-Now you're going to learn how to make it dance. To build smooth transitions between states, build complex animations, and how to interact with the user in real-time. 60 frames per second baby!
-
-Our general approach to animation goes like this: Render from state. Change state 60 times per second. Animation!
-
-We're going to use two different ways of changing state so often. The first follows a game loop principle, which gives you more control, but is more tedious. The second is using D3 transitions, which is quicker to build, but gives you less control.
-=======
 You already know how React and D3 work together, so these demos are going to go faster. You know that we're using React for rendering SVG and D3 for calculating props. You know how to make your dataviz interactive and how to handle oodles of data.
 
 Now you're going to learn how to make it dance. Time to build smooth transitions between states, build complex animations, and interact with the user in real-time. 60 frames per second, baby!
@@ -20,26 +11,12 @@ Now you're going to learn how to make it dance. Time to build smooth transitions
 Our general approach to animation goes like this: Render from state → Change state 60 times per second. Animation!
 
 We're going to use two different ways of changing state so often. The first follows a game loop principle, which gives you more control, but is more tedious. The second uses D3 transitions, which is quicker to build, but gives you less control.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 We're going to start with an example or two in CodePen, then build something more involved. But don't worry, no more big huge projects like the [tech salary visualization](#salary-visualization)
 
 {#game-loop}
 # Using a game loop for rich animation
 
-<<<<<<< HEAD
-I love game loops. It even sounds fun "game loop". Maybe it's just that whenever I build a game loop, the thing I'm building is fun to play with. 🤔
-
-A game loop is an infinite loop where each iteration renders the next frame of your game or animation. You do your best to complete each iteration in 16 milliseconds and your user gets smooth animation.
-
-As you can imagine, our challenge is to cram all physics and rendering into those 16 milliseconds. The more elements you're rendering, the harder it gets.
-
-## A bouncing ball
-
-Let's get our feet wet with my favorite childhood example: a bouncing ball. 
-
-I must have built dozens of them back in my [Turbo Pascal](https://en.wikipedia.org/wiki/Turbo_Pascal) days using [BGI](https://en.wikipedia.org/wiki/Borland_Graphics_Interface). Yes, those Turbo Pascal and BGI are from the 80's. No, I'm not that old, I just started young and with old equipment. Coding for DOS is easier when you're 12 than coding for Windows 95.
-=======
 I love game loops. It even sounds fun: "game loop". Maybe it's just that whenever I build a game loop, the thing I'm building is fun to play with. 🤔
 
 A game loop is an infinite loop where each iteration renders the next frame of your game or animation. You do your best to complete each iteration in 16 milliseconds, and your user gets smooth animation.
@@ -51,17 +28,12 @@ As you can imagine, our challenge is to cram all the physics and rendering into 
 Let's get our feet wet with my favorite childhood example: a bouncing ball.
 
 I must have built dozens of them back in my [Turbo Pascal](https://en.wikipedia.org/wiki/Turbo_Pascal) days using [BGI](https://en.wikipedia.org/wiki/Borland_Graphics_Interface). Yes, those Turbo Pascal and BGI are from the 80's. No, I'm not that old. I just started young and with old equipment. Coding for DOS is easier when you're a kid than coding for Windows 95.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 Here is a screenshot of our bouncing ball:
 
 ![Bouncing Ball](images/es6v2/bouncing-ball.png)
 
-<<<<<<< HEAD
-Exciting isn't it? Took me five tries to catch it. Future examples will look better as screenshots, I promise.
-=======
 Exciting, isn't it? Took me five tries to catch it. Future examples will look better as screenshots, I promise.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 I suggest you follow along on CodePen. Here's one I prepared for you earlier: [click me](http://codepen.io/swizec/pen/WRzqvK?editors=0010)
 
@@ -79,18 +51,13 @@ const MAX_H = 750;
 class App extends Component {
   constructor() {
     super();
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
     this.state = {
       y: 5,
       vy: 0
     }
   }
-<<<<<<< HEAD
-  
+
   componentDidMount() {
     // start game loop
   }
@@ -103,21 +70,6 @@ class App extends Component {
     // move ball
   }
   
-=======
-
-  componentDidMount() {
-    // start game loop
-  }
-
-  componentWillUnmount() {
-    // stop loop
-  }
-
-  gameLoop() {
-    // move ball
-  }
-
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
   render() {
     // render svg
   }
@@ -130,11 +82,7 @@ The default state sets our ball's `y` coordinate to `5` and its vertical speed �
 
 ### Step 2: The Ball
 
-<<<<<<< HEAD
-We can approximate the `Ball` component with a circle. No need to get fancy, we're focusing on the animations part.
-=======
 We can approximate the `Ball` component with a circle. No need to get fancy; we're focusing on the animations part.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ```javascript
 const Ball = ({ x, y }) => (
@@ -163,11 +111,7 @@ class App extends Component {
 }
 ```
 
-<<<<<<< HEAD
-We're using `MAX_H`, which is set to 750, because a falling ball needs a lot of room to bounce up and down. You've thrown bouncy balls in a small apartment before haven't you? It's terrifying.
-=======
 We're using `MAX_H`, which is set to 750, because a falling ball needs a lot of room to bounce up and down. You've thrown bouncy balls in a small apartment before, haven't you? It's terrifying.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 A black ball should show up on your screen. Like this:
 
@@ -175,11 +119,7 @@ A black ball should show up on your screen. Like this:
 
 ### Step 4: The Game Loop
 
-<<<<<<< HEAD
-To make the ball bounce, we need to start an infinite loop when our component first renders, change the ball's `y` coordinate on every iteration, and stop the loop when React unmounts our component. Wouldn't want to keep hogging resources would we?
-=======
 To make the ball bounce, we need to start an infinite loop when our component first renders, change the ball's `y` coordinate on every iteration, and stop the loop when React unmounts our component. Wouldn't want to keep hogging resources, would we?
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ```javascript
 componentDidMount() {
@@ -197,11 +137,7 @@ gameLoop() {
     if (y > MAX_H) {
         vy = -vy*.87;
     }
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
     this.setState({
         y: y+vy,
         vy: vy+0.3
@@ -213,15 +149,6 @@ We start a new `d3.timer` when our App mounts, then stop it when App unmounts. T
 
 You can read details about D3 timers in [d3-timer documentation](https://github.com/d3/d3-timer). The tl;dr version is that they're a lot like JavaScript's native `setInterval`, but pegged to `requestAnimationFrame`. That makes them smoother and friendlier to browser's CPU throttling features.
 
-<<<<<<< HEAD
-It basically means our game loop executes every time the browser is ready to repaint. More or less every 16 milliseconds.
-
-We simulate bounce physics in the `gameLoop` function. With each iteration we add vertical speed to vertical position and increase the speed.
-
-Remember high school? `v = v0 + g*t`. Speed equals speed plus acceleration multiplied by time. Our acceleration is gravity, our time is "1 frame".
-
-And acceleration is measured in meters per second per second. Basically the increase in speed observed every second. Real gravity is 10m/s^2, our factor is `0.3`. Discovered when playing around. That's what looked natural.
-=======
 It basically means our game loop executes every time the browser is ready to repaint. Every 16 milliseconds, give or take.
 
 We simulate bounce physics in the `gameLoop` function. With each iteration, we add vertical speed to vertical position and increase the speed.
@@ -229,7 +156,6 @@ We simulate bounce physics in the `gameLoop` function. With each iteration, we a
 Remember high school? `v = v0 + g*t`. Speed equals speed plus acceleration multiplied by time. Our acceleration is gravity, and our time is "1 frame".
 
 And acceleration is measured in meters per second per second. Basically, the increase in speed observed every second. Real gravity is 10m/s^2, our factor is `0.3`. I discovered it when playing around. That's what looked natural.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 For the bounce, we look at the `y` coordinate and compare with `MAX_H`. When it's over, we invert the speed vector and multiply with the bounce factor. Again, discovered experimentally when the animation looked natural.
 
@@ -237,38 +163,23 @@ Tweak the factors to see how they affect your animation. Changing the `0.3` valu
 
 Notice that we never look at minimum height to make the ball start falling back down. There's no need. Add `0.3` to a negative value often enough and it turns positive.
 
-<<<<<<< HEAD
-Here's a CodePen with the [final bouncy ball code](http://codepen.io/swizec/pen/bgvEvp?editors=0010)
-
-### Step 5: Correcting for time
-
-If you run the CodePen a few times, you'll notice two bugs. The first is that sometimes our ball gets trapped at the bottom of the bounce. We won't fix this one, it's tricky.
-=======
 Here's a CodePen with the [final bouncy ball code](http://codepen.io/swizec/pen/bgvEvp?editors=0010).
 
 ### Step 5: Correcting for time
 
 If you run the CodePen a few times, you'll notice two bugs. The first is that sometimes our ball gets trapped at the bottom of the bounce. We won't fix this one; it's tricky.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 The second is that when you slow down your computer, the ball starts lagging. That's not how things behave in real life.
 
 We're dealing with dropped frames.
 
-<<<<<<< HEAD
-Modern browsers slow down JavaScript in tabs that aren't focused, on computers running off battery power, when batteries get low ... there's many reasons in the pile. I don't know all of them. If we want our animation to look smooth, we have to account for these effects.
-
-We have to calculate how much time each frame took, and adjust our physics.
-=======
 Modern browsers slow down JavaScript in tabs that aren't focused, on computers running off battery power, when batteries get low… there's many reasons in the pile. I don't know all of them. If we want our animation to look smooth, we have to account for these effects.
 
 We have to calculate how much time each frame took and adjust our physics.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ```javascript
 gameLoop() {
     let { y, vy, lastFrame } = this.state;
-<<<<<<< HEAD
     
     if (y > MAX_H) {
         vy = -vy*.87;
@@ -280,19 +191,6 @@ gameLoop() {
         frames = (d3.now()-lastFrame)/(1000/60);
     }
     
-=======
-
-    if (y > MAX_H) {
-        vy = -vy*.87;
-    }
-
-    let frames = 1;
-
-    if (lastFrame) {
-        frames = (d3.now()-lastFrame)/(1000/60);
-    }
-
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
     this.setState({
         y: y+vy*frames,
         vy: vy+0.3*frames,
@@ -303,19 +201,11 @@ gameLoop() {
 
 We add `lastFrame` to game state and set it with `d3.now()`. This gives us a high resolution timestamp that's pegged to `requestAnimationFrame`. D3 guarantees that every `d3.now()` called within the same frame gets the same timestamp.
 
-<<<<<<< HEAD
-`(d3.now()-lastFrame)/16` tells us how many frames were meant to have happened since last iteration. Most of the time this value will be `1`.
-
-We use it as a multiplier for the physics calculations. Our physics should look correct now regardless of browser throttling.
-
-Unfortunately these fixes exacerbate the "ball stuck at bottom" bug. It happens when the ball goes below `MAX_H` and doesn't have enough bounce to get back above `MAX_H` in a single frame.
-=======
 `(d3.now()-lastFrame)/16` tells us how many frames were meant to have happened since last iteration. Most of the time, this value will be `1`.
 
 We use it as a multiplier for the physics calculations. Our physics should look correct now regardless of browser throttling.
 
 Unfortunately, these fixes exacerbate the "ball stuck at bottom" bug. It happens when the ball goes below `MAX_H` and doesn't have enough bounce to get back above `MAX_H` in a single frame.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 You can fix it with a flag of some sort. Only bounce, if you haven't bounced in the last N frames. Something like that.
 
@@ -323,21 +213,13 @@ I suggest you play with it on CodePen: [click me for time-fixed bouncy ball](htt
 
 # Using transitions for simple animation
 
-<<<<<<< HEAD
-Game loops are great when you need fine-grained control. But what, if you just want an element to animate a little bit when a user does something? You don't care about the details, you just want a little flourish.
-=======
 Game loops are great when you need fine-grained control. But what if you just want an element to animate a little bit when a user does something? You don't care about the details; you just want a little flourish.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 That's where transitions come in.
 
 Transitions are a way to animate SVG elements by saying *"I want this property to change to this new value and take this long to do it"*. And you can use easing functions to make it look better.
 
-<<<<<<< HEAD
-I won't go into details about *why* easing functions are important, but they make movement look more natural. You can read more about it in Disney's [12 Basic Principles of Animation](https://en.wikipedia.org/wiki/12_basic_principles_of_animation). 
-=======
 I won't go into details about *why* easing functions are important, but they make movement look more natural. You can read more about it in Disney's [12 Basic Principles of Animation](https://en.wikipedia.org/wiki/12_basic_principles_of_animation).
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 The two we can achieve with easing functions are:
 
@@ -349,19 +231,11 @@ Let me show you how it works on a small example. We're drawing a field of 50 by 
 {#rainbow-snake}
 ## Rainbow snake
 
-<<<<<<< HEAD
-You can play with the code on CodePen, [here](http://codepen.io/swizec/pen/QdVoOg/). Follow along as I explain how it works. Tweak parameters and see what happens :)
-
-### App
-
-The App component needs only a `render` method that returns an SVG. Yes, that means it could've been a functional stateless component.
-=======
 You can play with the code on CodePen [here](http://codepen.io/swizec/pen/QdVoOg/). Follow along as I explain how it works. Tweak parameters and see what happens :)
 
 ### App
 
 The App component only needs  a `render` method that returns an SVG. Yes, that means it could've been a functional stateless component.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ```javascript
   render() {
@@ -372,21 +246,12 @@ The App component only needs  a `render` method that returns an SVG. Yes, that m
                   .range([0, width])
                   .padding(5)
                   .round(true);
-<<<<<<< HEAD
     
     return (
       <svg width="600" height="600">
         {d3.range(N).map(x => 
            d3.range(N).map(y =>
              <Dot x={pos(x)} y={pos(y)} key={`${x}-${y}`} 
-=======
-
-    return (
-      <svg width="600" height="600">
-        {d3.range(N).map(x =>
-           d3.range(N).map(y =>
-             <Dot x={pos(x)} y={pos(y)} key={`${x}-${y}`}
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
                   maxPos={width} />
         ))}
       </svg>
@@ -394,11 +259,7 @@ The App component only needs  a `render` method that returns an SVG. Yes, that m
   }
 ```
 
-<<<<<<< HEAD
-We're rendering a 600px by 600px SVG, with 50 nodes per row and column. We use D3's `scalePoint` for dot positioning  because it does everything we need. Makes sure they're evenly spaced, gives them padding on the sides, and ensures coordinates are rounded numbers.
-=======
 We're rendering a 600px by 600px SVG, with 50 nodes per row and column. We use D3's `scalePoint` for dot positioning because it does everything we need. It makes sure they're evenly spaced, gives them padding on the sides, and ensures coordinates are rounded numbers.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 Here's a diagram of how `scalePoint` works:
 
@@ -406,17 +267,10 @@ Here's a diagram of how `scalePoint` works:
 
 To render the grid, we use two nested loops going from 0 to N. `d3.range` builds an array for us so we can `.map` over it. We return a `<Dot>` component for each iteration.
 
-<<<<<<< HEAD
-Looking at this code: `x={pos(x)} y={pos(y)}` you can see why D3 scales are so neat. All positioning calculation boiled down to a 1-parameter function call. \o/
-
-{aside}
-Notice that unlike so far, we didn't mess about with `updateD3` and lifecycle methods. That's useful when we're dealing with large datasets and many re-renders. You don't need the complexity when building something small.
-=======
 Looking at this code: `x={pos(x)} y={pos(y)}`, you can see why D3 scales are so neat. All positioning calculation boiled down to a 1-parameter function call. \\o/
 
 {aside}
 Notice that unlike thus far, we didn't mess about with `updateD3` and lifecycle methods. That's useful when we're dealing with large datasets and many re-renders. You don't need the complexity when building something small.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 {/aside}
 
 ### Dot
@@ -427,7 +281,6 @@ The Dot component has more moving parts. It needs a `constructor`, a transition 
 class Dot extends Component {
   constructor(props) {
     super(props);
-<<<<<<< HEAD
     
     this.state = Object.assign({}, 
                                props,
@@ -446,49 +299,12 @@ class Dot extends Component {
     const { x, y, r, colorize } = this.state;
     
     return <circle cx={x} cy={y} r={r} 
-=======
-
-    this.state = Object.assign({},
-                               props,
-                               {r: 5});
-  }
-
-  flash() {
-		// transition code
-  }
-
-  get color() {
-    // color calculation
-  }
-
-  render() {
-    const { x, y, r, colorize } = this.state;
-
-    return <circle cx={x} cy={y} r={r}
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
              ref="circle" onMouseOver={this.flash.bind(this)}
              style={{fill: colorize ? this.color : 'black'}} />
   }
 }
 ```
 
-<<<<<<< HEAD
-We initialize state in the component `constructor`. The quickest approach is to copy all `props` to `state`, even though we don't need all props to be in state. 
-
-Normally, you want to avoid state and render all components from props. Functional principles, state is bad, and all that. But as [Freddy Rangel](https://twitter.com/frangel85) likes to say *"State is for props that change over time"*. 
-
-Guess what transitions are ... props that change over time :)
-
-So we put props in state and render from state. This lets us keep a stable platform while running transitions. It ensures that changes re-rendering `Dot` from above, won't interfere with D3 transitions.
-
-Not super important in our example because those changes never happen. But I had many interesting issues in this [animated typing example](https://swizec.com/blog/using-d3js-transitions-in-react/swizec/6797). We'll look at that one later.
-
-For the `render` method, we return an SVG `<circle>` element positioned at `(x, y)`, with a radius, an `onMouseOver` listener, and a style with the `fill` color depending on `state.colorize`.
-
-#### flash() – the transition
-
-When you mouse over one of the dots, its `flash()` method gets called as an event callback. This is where we transition to pops the circle bigger, then back to normal size.
-=======
 We initialize state in the component `constructor`. The quickest approach is to copy all `props` to `state`, even though we don't need all props to be in state.
 
 Normally, you want to avoid state and render all components from props. Functional principles, state is bad, and all that. But as [Freddy Rangel](https://twitter.com/frangel85) likes to say *"State is for props that change over time"*.
@@ -504,16 +320,11 @@ For the `render` method, we return an SVG `<circle>` element positioned at `(x, 
 #### flash() – the transition
 
 When you mouse over one of the dots, its `flash()` method gets called as an event callback. This is where we transition to pop the circle bigger then back to normal size.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ```javascript
   flash() {
     let node = d3.select(this.refs.circle);
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
     this.setState({colorize: true});
 
     node.transition()
@@ -530,24 +341,14 @@ When you mouse over one of the dots, its `flash()` method gets called as an even
 
 Here's what happens:
 
-<<<<<<< HEAD
-1. We `d3.select` the `<circle>` node. This enables D3 to take over the rendering of this particular DOM node
-=======
 1. We `d3.select` the `<circle>` node. This enables D3 to take over the rendering of this particular DOM node.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 2. We `setState` to enable colorization. Yes, this triggers a re-render.
 3. We start a `transition` that changes the `r` attribute to `20` pixels over a duration of `250` milliseconds.
 4. We add an `easeCubicOut` easing function, which makes the animation look more natural
 5. When the transition ends, we start another similar transition, but change `r` back to `5`.
-<<<<<<< HEAD
-6. When *that*'s done, we turn off colorization and trigger another re-render.
-
-If our transition didn't return things back to normal, I would use the `'end'` opportunity, to sync React component state with reality. Something like `this.setState({r: 20})`.
-=======
 6. When *that's* done, we turn off colorization and trigger another re-render.
 
 If our transition didn't return things back to normal, I would use the `'end'` opportunity to sync React component state with reality. Something like `this.setState({r: 20})`.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 #### get color() – the colorization
 
@@ -561,28 +362,16 @@ Colors follow a radial pattern even though `d3.interpolateWarm` takes a single a
 
 `x^2 + y^2 = r^2`
 
-<<<<<<< HEAD
-Calibrate a linear scale to translate between `[0, maxR^2]` and `[0, 1]`, then feed it `x^2 + y^2` and you get the `interpolateWarm` parameter. Magic :)
-=======
 Calibrate a linear scale to translate between `[0, maxR^2]` and `[0, 1]`, then feed it `x^2 + y^2`, and you get the `interpolateWarm` parameter. Magic :)
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ```javascript
   get color() {
     const { x, y, maxPos } = this.state;
-<<<<<<< HEAD
     
     const t = d3.scaleLinear()
                 .domain([0, 1.2*maxPos**2])
                 .range([0, 1]);
     
-=======
-
-    const t = d3.scaleLinear()
-                .domain([0, 1.2*maxPos**2])
-                .range([0, 1]);
-
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
     return d3.interpolateWarm(t(x**2 + y**2));
   }
 ```
@@ -590,11 +379,7 @@ Calibrate a linear scale to translate between `[0, maxR^2]` and `[0, 1]`, then f
 We calibrate the `t` scale to `1.2*maxPos**2` for two reasons. First, you want to avoid square roots because they're slow. Second, adding the `1.2` factor changes how the color scale behaves and makes it look better.
 
 At least I think so. Experiment ;)
-<<<<<<< HEAD
- 
-=======
 
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 ### More things to try
 
 There's a bunch of things you can improve about this example. I suggest you try them and see how it goes.
@@ -605,32 +390,6 @@ Another improvement could be rendering more circles to provide a tighter grid. T
 
 [https://twitter.com/Swizec/status/829590239458922496]
 
-<<<<<<< HEAD
-You could also add transitions to the first time a circle renders. But you need something called `ReactTransitionGroup` to achieve that and it breaks down with this many elements.
-
-Because enter/exit transitions make many data visualizations better, we're going to look at another example just for that. A typing animation where letters fly in and fall out as you type.
-
-{#
-# Enter/update/exit animation
-
-Now that you know how to use transitions, it's time to take it up a notch. Enter exit animation. 
-
-Enter/exit animations are the most common use of transitions. They're what happens when a new element enters or exits the picture. For instance in visualizations like this famous [Nuclear Detonation Timeline](https://www.youtube.com/watch?v=LLCF7vPanrY) by Isao Hashimoto. Each new Boom! flashes to look like an explosion.
-
-I don't know how Hashimoto did it, but with React&D3v4 you'd do it with enter/exit transitions. 
-
-Another favorite of mine, is this [animated alphabet](https://bl.ocks.org/mbostock/3808234) example by Mike Bostock, the creator of D3, that showcases enter/update/exit transitions.
-
-That's what we're going to build: An animated alphabet. New letters fall down and are green, updated letters move right or left, and deleted letters are red and fall down.
-
-You can play with a more advanced version [here](http://swizec.github.io/react-d3-enter-exit-transitions/). Same principle as the alphabet, but animates your typing.
-
-![Typing animation screenshot](images/es6v2/typing-screenshot.png)
-
-I wish I could embed a gif ... it's 2017 and this is an electronic book and I still can't embed animations. Silly isn't it?
-
-We're building the alphabet version because the [string diffing algorithm](https://swizec.com/blog/animated-string-diffing-with-react-and-d3/swizec/6952) is a pain to explain. I learned that the hard way when giving workshops on React and D3 ...
-=======
 You could also add transitions to the first time a circle renders. But you need something called `ReactTransitionGroup` to achieve that, and it breaks down with this many elements.
 
 Because enter/exit transitions make many data visualizations better, we're going to look at another example just for that. A typing animation where letters fly in and fall out as you type.
@@ -655,7 +414,6 @@ You can play with a more advanced version [here](http://swizec.github.io/react-d
 I wish I could embed a gif… it's 2017, and this is an electronic book, and I still can't embed animations. Silly, isn't it?
 
 We're building the alphabet version because the [string diffing algorithm](https://swizec.com/blog/animated-string-diffing-with-react-and-d3/swizec/6952) is a pain to explain. I learned that the hard way when giving workshops on React and D3…
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ![String diffing algorithm sketch](images/es6v2/string-diffing.png)
 
@@ -664,20 +422,12 @@ See? Easy on paper, but the code is long and weird. That, or I'm bad at implemen
 {#animated-alphabet}
 ## Animated alphabet
 
-<<<<<<< HEAD
-Our goal is to render a random subset of the alphabet. Every time the set updates old letters transition out, new letters transition in, updated letters transition into a new position. 
-=======
 Our goal is to render a random subset of the alphabet. Every time the set updates, old letters transition out, new letters transition in, and updated letters transition into a new position.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 We need two components:
 
  - `Alphabet`, which creates random lists of letters every 1.5 seconds, then maps through them to render `Letter` components
-<<<<<<< HEAD
- - `Letter`, which renders an SVG text element, and takes care of its own enter/update/exit transitions
-=======
  - `Letter`, which renders an SVG text element and takes care of its own enter/update/exit transitions
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 You can see the full code on GitHub [here](https://github.com/Swizec/react-d3-enter-exit-transitions/tree/alphabet).
 
@@ -712,11 +462,7 @@ class Alphabet extends Component {
 export default Alphabet;
 ```
 
-<<<<<<< HEAD
-We import our dependencies and define the `Alphabet` component. It holds a list of available letters in a static `letters` property, and an empty `alphabet` in local state. We'll need a `componentWillMount` and a `render` method as well.
-=======
 We import our dependencies and define the `Alphabet` component. It holds a list of available letters in a static `letters` property and an empty `alphabet` in local state. We'll need a `componentWillMount` and a `render` method as well.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 To showcase enter-update-exit transitions, we want to create a new alphabet every couple of seconds. That's easiest to do in `componentWillMount`:
 
@@ -762,11 +508,7 @@ We assume the parent component renders `<Alphabet>` inside an `<svg>` tag.
 
 #### The key property
 
-<<<<<<< HEAD
-The key property is how React identifies components. Pick wrong and you're gonna have a bad time. I spent many hours debugging and writing workarounds before I realized that basing the key on the index was a Bad Move™. *Obviously*, you want the letter to stay constant in each component and the index to change.
-=======
 The key property is how React identifies components. Pick wrong, and you're gonna have a bad time. I spent many hours debugging and writing workarounds before I realized that basing the key on the index was a Bad Move™. *Obviously*, you want the letter to stay constant in each component and the index to change.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 That's how x-axis transitions work. You're moving the letter into a specific place in the alphabet. You'll see what I mean when we look at the `Letter` component.
 
@@ -788,11 +530,7 @@ Many thanks to Michelle Tilley for writing about `ReactTransitionGroup` [on Stac
 
 ### The Letter component
 
-<<<<<<< HEAD
-Now we're ready for the component that can transition itself into and out of a visualization … without bothering anyone else *or* confusing React.
-=======
 Now we're ready for the component that can transition itself into and out of a visualization… without bothering anyone else *or* confusing React.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 The skeleton of our `Letter` component looks like this:
 
@@ -839,19 +577,11 @@ class Letter extends Component {
 export default Letter;
 ```
 
-<<<<<<< HEAD
-We start with some imports, and define a `Letter` component with a default state and a default transition. Yes, it feels weird to use `state` for coordinates and styling, but they're properties that change over time. State is the right place to put them.
-
-Defining a default transition saves us some typing later on. Shared transitions can also fix animation glitches with out-of-sync transitions. For that, we'd have to define our default transition in the `Alphabet` component, then pass it into `Letter` as part of props.
-
-All our magic values – default/final `y` coordinate, transition properties, etc. – are good candidates for props. That would make `Alphabet` more flexible, but add needless complexity to this chapter. I'll leave it as an exercise for the reader ;)
-=======
 We start with some imports and define a `Letter` component with a default state and a default transition. Yes, it feels weird to use `state` for coordinates and styling, but they're properties that change over time. State is the right place to put them.
 
 Defining a default transition saves us some typing later on. Shared transitions can also fix animation glitches with out-of-sync transitions. For that, we'd have to define our default transition in the `Alphabet` component, then pass it into `Letter` as part of props.
 
 All our magic values – default/final `y` coordinate, transition properties, etc. – are good candidates for props. That would make `Alphabet` more flexible but add needless complexity to this chapter. I'll leave it as an exercise for the reader ;)
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ### componentWillEnter
 
@@ -880,19 +610,11 @@ We use `d3.select` to turn our `letter` ref into a d3 selection, which enables u
 
 We keep our letter's `x` coordinate in `this.state` to avoid jumpiness. The `i` prop updates on each render, but we want to transition into the new position slowly. You'll see how that works in the `componentWillReceiveProps` section.
 
-<<<<<<< HEAD
-At this point our component is invisible and 60 pixels above the baseline. That's because of the default values for `fillOpacity` and `y` that we set earlier.
-
-To animate our component moving down and becoming visible, we use a d3 transition. 
-
-We start a new transition with `node.transition(this.transition)`, which uses settings from the default transition we defined earlier. Then we define what/how should change with `.attr` and `.style`. 
-=======
 At this point, our component is invisible and 60 pixels above the baseline. That's because of the default values for `fillOpacity` and `y` that we set earlier.
 
 To animate our component moving down and becoming visible, we use a d3 transition.
 
 We start a new transition with `node.transition(this.transition)`, which uses settings from the default transition we defined earlier. Then we define what/how should change with `.attr` and `.style`.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 The resulting transition operates directly on the DOM and doesn't tell React what's going on.
 
@@ -947,19 +669,11 @@ The update transition goes into `componentWillReceiveProps` like this:
 
 You know the pattern by now, don't you? Update state, do transition, sync state with reality after transition.
 
-<<<<<<< HEAD
-In this case, we change the `color`, then we move the letter into its new horizontal position. 
-
-We could have done all of this in `componentWillUpdate` as well.  However, we can't do it in `componentDidUpdate`. We need to know both the current index *and* the new index. It helps us decide whether to transition or not.
-
-There are instances when the component updates, but its horizontal position doesn't change. Every time we call `setState` for example.
-=======
 In this case, we change the `color`, then we move the letter into its new horizontal position.
 
 We could have done all of this in `componentWillUpdate` as well.  However, we can't do it in `componentDidUpdate`. We need to know both the current index *and* the new index. It helps us decide whether to transition or not.
 
 There are instances when the component updates but its horizontal position doesn't change. Every time, we call `setState` for example.
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 ### render
 
@@ -998,17 +712,9 @@ We have an `Alphabet` component that declaratively renders an animated alphabet.
 
 All you need now is a skeleton setup that renders an SVG element and uses the `Alphabet` component.
 
-<<<<<<< HEAD
-The key take aways are:
-=======
 The key takeaways are:
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
 
 - use d3 for transitions
 - use React to manage SVG elements
 - use ReactTransitionGroup to get more lifecycle events
-<<<<<<< HEAD
 - mimic d3's enter/update/exit pattern
-=======
-- mimic d3's enter/update/exit pattern
->>>>>>> a6192cc914d93e00aff8c2cd8865d3bc29fc78fa
