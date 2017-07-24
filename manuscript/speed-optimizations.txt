@@ -20,7 +20,7 @@ We'll start with canvas because it's the biggest speed improvement you can make.
 
 # Using canvas
 
-We've been using SVG to render our apps so far. SVG is great because it follows a familiar structure, offers infinitely scalable vector graphics, and works pretty much everywhere. Sure you can't use some fancy SVG features on all browsers, but the basics are solid.
+We've been using SVG to render our apps so far. SVG is great because it follows a familiar structure, offers infinitely scalable vector graphics, and works pretty much everywhere. Sure, you can't use some fancy SVG features on all browsers, but the basics are solid.
 
 However, SVG has a big flaw: it's slow.
 
@@ -802,21 +802,21 @@ class Physics {
     @observable height = 600;
     @observable marbles = [];
     timer = null;
-        
+
     @computed get initialPositions() {
- 
+
     }
 
     @action startGameLoop() {
-  
+
     }
 
     @action simulationStep() {
-  
+
     }
 
     @action shoot({ x, y, vx, vy }, i) {
-  
+
     }
 }
 ```
