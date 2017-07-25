@@ -1282,7 +1282,7 @@ One more step left to do. Use the whole dataset!
 
 Go into `src/DataHandling.js` and change one line:
 
-{crop-start: 95, crop-end: 106, format: javascript}
+{crop-start: 95, crop-end: 106, format: javascript, line-numbers: false}
 ![Switch to full dataset](code_samples/es6v2/DataHandling.js)
 
 We change the file name, and that's that. Full dataset locked and loaded. Dataviz ready to go.

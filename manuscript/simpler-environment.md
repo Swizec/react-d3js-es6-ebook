@@ -27,6 +27,7 @@ Great, you have node and you're ready to go.
 
 Run this command in a terminal:
 
+{caption: "Install create-react-app"}
 ```
 $ npm install -g create-react-app
 ```
@@ -45,6 +46,7 @@ Superb! You have `create-react-app`. Time to create an app and get started with 
 
 Run this in a terminal:
 
+{caption: "Create your project", line-numbers: false}
 ```
 $ create-react-app react-d3js-example
 ```
@@ -53,6 +55,7 @@ Congratulations! You just created a React app. *With* all the setup and the fuss
 
 Your next step is to run your app:
 
+{caption: "Start your dev server"}
 ```
 $ cd react-d3js-example
 $ npm start
@@ -98,12 +101,14 @@ There are a couple of libraries we're going to use often in this book: D3, Topoj
 
 You can install them like this:
 
+{caption: "Install dependencies", line-numbers: false}
 ```
 $ npm install --save d3 topojson lodash
 ```
 
 Additionally, we're using Bootstrap for default styling and String for string manipulation. You should install them as well.
 
+{caption: "Styling and string manipulation", line-numbers: false}
 ```
 $ npm install --save bootstrap string
 ```

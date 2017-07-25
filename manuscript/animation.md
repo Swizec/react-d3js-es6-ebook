@@ -41,6 +41,7 @@ I suggest you follow along on CodePen. Here's one I prepared for you earlier: [c
 
 We start with a skeleton: An empty `Ball` component, and an `App` component stubbed out to run the game loop.
 
+{caption: "Bouncy ball skeleton", line-numbers: false}
 ```javascript
 const Ball = ({ x, y }) => (
 
@@ -84,6 +85,7 @@ The default state sets our ball's `y` coordinate to `5` and its vertical speed �
 
 We can approximate the `Ball` component with a circle. No need to get fancy; we're focusing on the animations part.
 
+{caption: "A Ball is a circle", line-numbers: false}
 ```javascript
 const Ball = ({ x, y }) => (
   <circle cx={x} cy={y} r={5} />
@@ -98,6 +100,7 @@ It's these coordinates that we're going to play with to make the ball drop and b
 
 We need an SVG of appropriate height and a ball inside. All that goes in `App.render`.
 
+{caption: "Render ball", line-numbers: false}
 ```javascript
 class App extends Component {
 	// ...
@@ -121,6 +124,7 @@ A black ball should show up on your screen. Like this:
 
 To make the ball bounce, we need to start an infinite loop when our component first renders, change the ball's `y` coordinate on every iteration, and stop the loop when React unmounts our component. Wouldn't want to keep hogging resources, would we?
 
+{caption: "Change ball position at 60fps", line-numbers: false}
 ```javascript
 componentDidMount() {
     this.timer = d3.timer(() => this.gameLoop());
@@ -177,6 +181,7 @@ Modern browsers slow down JavaScript in tabs that aren't focused, on computers r
 
 We have to calculate how much time each frame took and adjust our physics.
 
+{caption: "Adjust for frame drops", line-numbers: false}
 ```javascript
 gameLoop() {
     let { y, vy, lastFrame } = this.state;
@@ -237,7 +242,9 @@ You can play with the code on CodePen [here](http://codepen.io/swizec/pen/QdVoOg
 
 The App component only needs  a `render` method that returns an SVG. Yes, that means it could've been a functional stateless component.
 
+{caption: "App render method", line-numbers: false}
 ```javascript
+class App extends Component {
   render() {
     const width = 600,
           N = 50,
@@ -257,6 +264,7 @@ The App component only needs  a `render` method that returns an SVG. Yes, that m
       </svg>
     )
   }
+}
 ```
 
 We're rendering a 600px by 600px SVG, with 50 nodes per row and column. We use D3's `scalePoint` for dot positioning because it does everything we need. It makes sure they're evenly spaced, gives them padding on the sides, and ensures coordinates are rounded numbers.
@@ -277,6 +285,7 @@ Notice that unlike thus far, we didn't mess about with `updateD3` and lifecycle 
 
 The Dot component has more moving parts. It needs a `constructor`, a transition callback – `flash`, a `color` getter, and a `render` method.
 
+{caption: "Dot component skeleton", line-numbers: false}
 ```javascript
 class Dot extends Component {
   constructor(props) {
@@ -321,6 +330,7 @@ For the `render` method, we return an SVG `<circle>` element positioned at `(x, 
 
 When you mouse over one of the dots, its `flash()` method gets called as an event callback. This is where we transition to pop the circle bigger then back to normal size.
 
+{caption: "Main Dot transition effect", line-numbers: false}
 ```javascript
   flash() {
     let node = d3.select(this.refs.circle);
@@ -364,6 +374,7 @@ Colors follow a radial pattern even though `d3.interpolateWarm` takes a single a
 
 Calibrate a linear scale to translate between `[0, maxR^2]` and `[0, 1]`, then feed it `x^2 + y^2`, and you get the `interpolateWarm` parameter. Magic :)
 
+{caption: "Radial coloring effect", line-numbers: false}
 ```javascript
   get color() {
     const { x, y, maxPos } = this.state;
@@ -388,7 +399,7 @@ We really should have taken the `r` parameter as a property on `<Dot>`, saved it
 
 Another improvement could be rendering more circles to provide a tighter grid. That doesn't work so well on CodePen, however. Breaks down with so many nodes. 😔
 
-[https://twitter.com/Swizec/status/829590239458922496]
+[Use this link to see a video](https://twitter.com/Swizec/status/829590239458922496)
 
 You could also add transitions to the first time a circle renders. But you need something called `ReactTransitionGroup` to achieve that, and it breaks down with this many elements.
 
@@ -417,7 +428,7 @@ We're building the alphabet version because the [string diffing algorithm](https
 
 ![String diffing algorithm sketch](images/es6v2/string-diffing.png)
 
-See? Easy on paper, but the code is long and weird. That, or I'm bad at implementing it. Either way, too tangential to explain here. You can [read the article on it](https://swizec.com/blog/animated-string-diffing-with-react-and-d3/swizec/6952).
+See? Easy on paper, but the code is long and weird. That, or I'm bad at implementing it. Either way, it's too tangential to explain here. You can [read the article on it](https://swizec.com/blog/animated-string-diffing-with-react-and-d3/swizec/6952).
 
 {#animated-alphabet}
 ## Animated alphabet
@@ -437,6 +448,7 @@ The `Alphabet` component holds a list of letters in local state and renders a co
 
 We start with a skeleton like this:
 
+{caption: "Alphabet skeleton", line-numbers: false}
 ```javascript
 // src/components/Alphabet.js
 import React, { Component } from 'react';
@@ -458,7 +470,6 @@ class Alphabet extends Component {
     }
 }
 
-
 export default Alphabet;
 ```
 
@@ -466,6 +477,7 @@ We import our dependencies and define the `Alphabet` component. It holds a list 
 
 To showcase enter-update-exit transitions, we want to create a new alphabet every couple of seconds. That's easiest to do in `componentWillMount`:
 
+{caption: "Alphabet game loop", line-numbers: false}
 ```javascript
 // src/components/Alphabet/index.js
     componentWillMount() {
@@ -485,6 +497,7 @@ Starting the interval in `componentWillMount` ensures it only runs when our Alph
 
 Our declarative transitions magic starts in the `render` method.
 
+{caption: "Letter rendering", line-numbers: false}
 ```javascript
 // src/components/Alphabet/index.js
     render() {
@@ -534,6 +547,7 @@ Now we're ready for the component that can transition itself into and out of a v
 
 The skeleton of our `Letter` component looks like this:
 
+{caption: "Letter component skeleton", line-numbers: false}
 ```javascript
 // src/components/Alphabet/Letter.js
 
@@ -587,6 +601,7 @@ All our magic values – default/final `y` coordinate, transition properties, et
 
 We start with the enter transition in `componentWillEnter`.
 
+{caption: "Enter transition", line-numbers: false}
 ```javascript
 // src/components/Alphabet/Letter.js
     componentWillEnter(callback) {
@@ -624,6 +639,7 @@ We can sync React's imagination with reality in a "transition is over" callback 
 
 The exit transition goes in `componentWillLeave` and follows the same principle, except in reverse. It looks like this:
 
+{caption: "Leave transition", line-numbers: false}
 ```javascript
 // src/components/Alphabet/
     componentWillLeave(callback) {
@@ -652,6 +668,7 @@ On second though, we might not need to update state in this case. The component 
 
 The update transition goes into `componentWillReceiveProps` like this:
 
+{caption: "Update transition", line-numbers: false}
 ```javascript
 // src/components/Alphabet/Letter.js
     componentWillReceiveProps(nextProps) {
@@ -681,6 +698,7 @@ After all that transition magic, you might be thinking *"Holy shit, how do I ren
 
 But we did the hard work. Rendering is straightforward:
 
+{caption: "Letter render method", line-numbers: false}
 ```javascript
 // src/components/Alphabet/Letter.js
     render() {
