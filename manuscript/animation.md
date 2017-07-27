@@ -426,7 +426,7 @@ I wish I could embed a gif… it's 2017, and this is an electronic book, and I s
 
 We're building the alphabet version because the [string diffing algorithm](https://swizec.com/blog/animated-string-diffing-with-react-and-d3/swizec/6952) is a pain to explain. I learned that the hard way when giving workshops on React and D3…
 
-![String diffing algorithm sketch](images/es6v2/string-diffing.png)
+![String diffing algorithm sketch](images/es6v2/string-diffing.jpg)
 
 See? Easy on paper, but the code is long and weird. That, or I'm bad at implementing it. Either way, it's too tangential to explain here. You can [read the article on it](https://swizec.com/blog/animated-string-diffing-with-react-and-d3/swizec/6952).
 
@@ -597,7 +597,7 @@ Defining a default transition saves us some typing later on. Shared transitions 
 
 All our magic values – default/final `y` coordinate, transition properties, etc. – are good candidates for props. That would make `Alphabet` more flexible but add needless complexity to this chapter. I'll leave it as an exercise for the reader ;)
 
-### componentWillEnter
+#### componentWillEnter
 
 We start with the enter transition in `componentWillEnter`.
 
@@ -635,7 +635,7 @@ The resulting transition operates directly on the DOM and doesn't tell React wha
 
 We can sync React's imagination with reality in a "transition is over" callback using `.on('end'`. We use `setState` to update component state, and trigger the main `callback`. React now knows this letter is done appearing.
 
-### componentWillLeave
+#### componentWillLeave
 
 The exit transition goes in `componentWillLeave` and follows the same principle, except in reverse. It looks like this:
 
@@ -664,7 +664,7 @@ The exit transition itself is an inverse of the enter transition. An exiting let
 
 On second though, we might not need to update state in this case. The component goes bye-bye anyway…
 
-### componentWillReceiveProps
+#### componentWillReceiveProps
 
 The update transition goes into `componentWillReceiveProps` like this:
 
@@ -692,7 +692,7 @@ We could have done all of this in `componentWillUpdate` as well.  However, we ca
 
 There are instances when the component updates but its horizontal position doesn't change. Every time, we call `setState` for example.
 
-### render
+#### render
 
 After all that transition magic, you might be thinking *"Holy shit, how do I render this!?"*. I don't blame ya!
 
@@ -722,7 +722,7 @@ We return an SVG `<text>` element rendered at an `(x, y)` position with a `color
 
 As mentioned, using state for `x`, `y`, `color`, and `fillOpacity` feels weird. It's the simplest way I've found to communicate between the `render` and lifecycle methods.
 
-## That's it
+### That's it
 
 Boom. We're done. You can play with a more complex version here: [http://swizec.github.io/react-d3-enter-exit-transitions/](http://swizec.github.io/react-d3-enter-exit-transitions/). Github won't let me host different branches separately.
 

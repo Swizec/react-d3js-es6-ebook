@@ -1316,7 +1316,7 @@ onMouseMove(event) {
 
 When we feed a change to `this.setState`, it triggers a re-render of the entire tree, our `memoizedCalc` function returns new values, and the final result is a dancing tree.
 
-![Dancing Pythagoras tree](pythagoras-dancing.gif)
+![Dancing Pythagoras tree](images/es6v2/pythagoras-dancing.gif)
 
 Beautious. 😍
 

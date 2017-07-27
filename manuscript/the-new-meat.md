@@ -147,7 +147,6 @@ Let's set up our `App` component first. That way you'll see results as soon data
 We start by importing our data loading method - `loadAllData` - and both D3 and Lodash. We'll need them later.
 
 {crop-start: 67, crop-end: 78, format: javascript, line-numbers: false}
-
 ![Import d3, lodash, and our data loader](code_samples/es6v2/App.js)
 
 You already know the normal imports. Importing with `{}` is how we import named exports, which lets us get multiple things from the same file. You'll see how the export side works in Step 2.
@@ -225,7 +224,6 @@ If you put a `console.log` in the `.await` callback above, you'll see a bunch of
 To tie them together and prepare a dictionary for `setState` back in the `App` component, we need to add a little big of logic. We're going to build a dictionary of county household incomes and remove any empty salaries.
 
 {crop-start: 63, crop-end: 90, format: javascript, line-numbers: false}
-
 ![Tie the datasets together](code_samples/es6v2/DataHandling.js)
 
 The first line should be one of those `cleanX` functions like we had above. I'm not sure how I missed it.
@@ -757,6 +755,7 @@ We use the same approach as before:
 
 All the interesting complexity goes into finding the richest city and county. That part looks like this:
 
+{caption: "Richest county calculation", line-numbers: false}
 ```javascript
 // src/components/Meta/Description.js
 get countyFragment() {
@@ -836,6 +835,7 @@ We also set up a `translate` SVG transform and the `medianLabel`. The return sta
 
 But how we get the `d` attribute for the path, that's interesting. We use a `line` generator from D3.
 
+{caption: "Line generator", line-numbers: false}
 ```javascript
 line = d3.line()([[0, 5],
                   [this.props.width, 5]]);
@@ -849,6 +849,7 @@ We're using `d3.line` in the most basic way possible, but it's really flexible. 
 
 Remember, we styled the `medianLine` when we did [histogram styles](#histogram-css) earlier.
 
+{caption: "Histogram css", line-numbers: false}
 ```css
 .mean text {
     font: 11px sans-serif;
@@ -929,7 +930,7 @@ And here's the downside of this approach. SVG doesn't know about element boundar
 
 See, it goes under the histogram. Let's fix that and add the `Controls` render while we're at it.
 
-{crop-start: 396, crop-end: 426, format: javascript, line-numbers: false}
+{caption: "Add opaque background to histogram", crop-start: 396, crop-end: 426, format: javascript, line-numbers: false}
 ![](code_samples/es6v2/App.js)
 
 Rectangle, `500` to the right, `0` from top, `600` wide and `500` tall, with a white background. It gives the histogram an opaque background, so it doesn't matter what the map is doing.
@@ -1200,6 +1201,7 @@ For everyone else, head over to Github, click the green `New Repository` button 
 
 It should be something like this:
 
+{caption: "Put code on github", line-numbers: false}
 ```
 $ git init
 $ git commit -m "My entire dataviz"
@@ -1213,12 +1215,14 @@ Every Github repository comes with an optional Github Pages setup. The easiest w
 
 Install it with this command:
 
+{caption: "Install gh-pages helper", line-numbers: false}
 ```
 $ npm install --save-dev gh-pages
 ```
 
 Add two lines to package.json:
 
+{caption: "Update package.json", line-numbers: false}
 ```json
 // package.json
 // markua-start-insert
