@@ -399,7 +399,7 @@ As an exercise, try to add another row of swatches, but rendered in reverse.
 
 # You're awesome
 
-You know the basics! You can take any D3 example from the internets and wrap it in a React component, *and* you know how to build React+D3 components from scratch. You're amazing. High five! 🖐
+You know the basics! You can take any D3 example from the internets and wrap it in a React component, *and* you know how to build React+D3 components from scratch. You're amazing. High five! :raised_hand_with_fingers_splayed:
 
 The rest of this book is about using these concepts and pushing them to the limits of practicality. We're going to build an interactive visualization of tech salaries compared to median household income. Why? Because it piqued my interest, and because it shows why you should call yourself an engineer, not a programmer or a developer. **You're an engineer**. Remember that.
 
@@ -416,7 +416,7 @@ Before I can set you loose on the world, we should talk about managing state. It
 
 I've shot myself in the foot *a lot*. Life gets harder and harder until one day you want to throw all your code away and embark on The Rewrite. That's how projects die.
 
-The Rewrite [killed Netscape](http://www.joelonsoftware.com/articles/fog0000000069.html). You probably don't even remember Netscape 😉
+The Rewrite [killed Netscape](http://www.joelonsoftware.com/articles/fog0000000069.html). You probably don't even remember Netscape :wink:
 
 Let's save you from that.
 
@@ -451,7 +451,7 @@ You can think of it like calling functions with new arguments. Because the funct
 
 Because your components are well-made and rely on their props to render, React's engine can optimize these changes. It can compare the component tree and decide which components to re-render and which to leave alone.
 
-Functional programming for HTML! 😎
+Functional programming for HTML! :sunglasses:
 
 The functional programming concepts we're relying on are called [referential transparency](https://en.wikipedia.org/wiki/Referential_transparency), [idempotent functions](https://en.wikipedia.org/wiki/Idempotence), and [functional purity](https://en.wikipedia.org/wiki/Pure_function). I suggest Googling them if you want to learn the theory behind it all.
 
@@ -494,8 +494,8 @@ You can read more about these ideas by Googling ["leaky abstractions"](https://e
 
 ---
 
-Congratz! You know everything you need to build visualizations with React and D3. 👏
+Congratz! You know everything you need to build visualizations with React and D3. :clap:
 
 This is the point in tech books where I run off and start building things on my own. Then I get frustrated, spend hours Googling for answers, and then remember, "Hey! Maybe I should read the rest of the book!"
 
-Reading the rest of the book helps. I'll show you how all this stuff fits together into a larger project 😊
+Reading the rest of the book helps. I'll show you how all this stuff fits together into a larger project.

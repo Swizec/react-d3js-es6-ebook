@@ -224,7 +224,7 @@ It tells the reducer to create `N` particles at `(x, y)` coordinates. You'll see
 
 Actions *must* have a `type`. Reducers use the type to decide what to do.
 
-[Our other actions](https://github.com/Swizec/react-particles-experiment/blob/svg-based-branch/src/actions/index.js) are `tickTime`, `tickerStarted`, `startParticles`, `stopParticles`, and `updateMousePos`. You can guess what they mean :)
+[Our other actions](https://github.com/Swizec/react-particles-experiment/blob/svg-based-branch/src/actions/index.js) are `tickTime`, `tickerStarted`, `startParticles`, `stopParticles`, and `updateMousePos`. You can guess what they mean :smile:
 
 Personally, I think this is the least elegant part of Redux. It might make sense in big applications, but it feels unnecessary for small apps.
 
@@ -373,7 +373,7 @@ The loop starts in two steps:
 
 Yes, that means we are asynchronously dispatching redux actions. I wrote this code before Redux thunks were a thing. With those, you would package `startTicker` as an action that can dispatch other actions.
 
-This works too, I promise :)
+This works too, I promise :smile:
 
 The `maybeCreateParticles` function itself isn't too interesting. It gets `(x, y)` coordinates from `store.mousePos`, checks the `generateParticles` flag – set by mousedown – and dispatches the `createParticles` action.
 
@@ -534,7 +534,7 @@ The first part – `CREATE_PARTICLES` – copies all current articles into a new
 
 This randomness is another Redux faux pas. Reducers are supposed to be functionally pure: produce the same result every time they are called with the same argument values. Randomness is inherently impure.
 
-We don't need our particle vectors to be deterministic, so I think this is fine. Let's say our universe is stochastic instead :)
+We don't need our particle vectors to be deterministic, so I think this is fine. Let's say our universe is stochastic instead :smile:
 
 {aside}
 Stochastic means that our universe/physic simulation is governed by probabilities. You can still model such a universe and reason about its behavior. A lot of real world physics is stochastic in nature.
@@ -544,7 +544,7 @@ You could also move all this logic into the action, which would keep the reducer
 
 The second part – `TIME_TICK` – copies the particles array, but not each particle itself. JavaScript passes arrays by reference, which means that changing `p.vector` in a `map` mutates existing data.
 
-This is bad from a Redux standpoint, but it’s not *too* bad unless you want to use time-traveling debugging. It works faster though :)
+This is bad from a Redux standpoint, but it’s not *too* bad unless you want to use time-traveling debugging. It works faster though :smile:
 
 We filter out any particles that have left the visible area. For the rest, we add the movement vector to their position. Then we change the `y` part of the vector using our `Gravity` constant.
 
@@ -562,7 +562,7 @@ Building this particle generator in React and Redux, I made three important disc
 
 ----
 
-There you go: Animating with React, Redux, and d3. Kind of a new superpower ;)
+There you go: Animating with React, Redux, and d3. Kind of a new superpower :wink:
 
 Here's the recap:
 

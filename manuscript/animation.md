@@ -17,7 +17,7 @@ We're going to start with an example or two in CodePen, then build something mor
 {#game-loop}
 # Using a game loop for rich animation
 
-I love game loops. It even sounds fun: "game loop". Maybe it's just that whenever I build a game loop, the thing I'm building is fun to play with. 🤔
+I love game loops. It even sounds fun: "game loop". Maybe it's just that whenever I build a game loop, the thing I'm building is fun to play with. :thinking_face:
 
 A game loop is an infinite loop where each iteration renders the next frame of your game or animation. You do your best to complete each iteration in 16 milliseconds, and your user gets smooth animation.
 
@@ -236,7 +236,7 @@ Let me show you how it works on a small example. We're drawing a field of 50 by 
 {#rainbow-snake}
 ## Rainbow snake
 
-You can play with the code on CodePen [here](http://codepen.io/swizec/pen/QdVoOg/). Follow along as I explain how it works. Tweak parameters and see what happens :)
+You can play with the code on CodePen [here](http://codepen.io/swizec/pen/QdVoOg/). Follow along as I explain how it works. Tweak parameters and see what happens :smile:
 
 ### App
 
@@ -372,7 +372,7 @@ Colors follow a radial pattern even though `d3.interpolateWarm` takes a single a
 
 `x^2 + y^2 = r^2`
 
-Calibrate a linear scale to translate between `[0, maxR^2]` and `[0, 1]`, then feed it `x^2 + y^2`, and you get the `interpolateWarm` parameter. Magic :)
+Calibrate a linear scale to translate between `[0, maxR^2]` and `[0, 1]`, then feed it `x^2 + y^2`, and you get the `interpolateWarm` parameter. Magic :smile:
 
 {caption: "Radial coloring effect", line-numbers: false}
 ```javascript
@@ -389,7 +389,7 @@ Calibrate a linear scale to translate between `[0, maxR^2]` and `[0, 1]`, then f
 
 We calibrate the `t` scale to `1.2*maxPos**2` for two reasons. First, you want to avoid square roots because they're slow. Second, adding the `1.2` factor changes how the color scale behaves and makes it look better.
 
-At least I think so. Experiment ;)
+At least I think so. Experiment :wink:
 
 ### More things to try
 
@@ -397,7 +397,7 @@ There's a bunch of things you can improve about this example. I suggest you try 
 
 We really should have taken the `r` parameter as a property on `<Dot>`, saved it in state as a, say, `baseR`, then made sure the transition returns our dot back to that instead of a magic `5` number. Peppering your code with magic numbers is often a bad idea.
 
-Another improvement could be rendering more circles to provide a tighter grid. That doesn't work so well on CodePen, however. Breaks down with so many nodes. 😔
+Another improvement could be rendering more circles to provide a tighter grid. That doesn't work so well on CodePen, however. Breaks down with so many nodes. :disappointed:
 
 [Use this link to see a video](https://twitter.com/Swizec/status/829590239458922496)
 

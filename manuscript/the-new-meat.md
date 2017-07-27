@@ -87,7 +87,7 @@ Let's define a default `state` and a `render` method that uses our `Preloader` c
 
 With modern ES6+ classes, we can define properties directly in the class without going through the constructor method. This makes our code cleaner and easier to read.
 
-You might be wondering whether `state` is now a class static property or if it's bound to `this` for each object. It works the way we need it to: bound to each `this` instance. I don't know *why* it works that way because it's hard to Google for these things when you can't remember the name, but I know it works. Tried and battle tested :)
+You might be wondering whether `state` is now a class static property or if it's bound to `this` for each object. It works the way we need it to: bound to each `this` instance. I don't know *why* it works that way because it's hard to Google for these things when you can't remember the name, but I know it works. Tried and battle tested :smile:
 
 We set `techSalaries` to an empty array, then in `render` check whether it's empty and render either the `Preloader` component or a blank `<div>`. Rendering your preloaders when there's no data makes sense even if you still need to build your data loading.
 
@@ -288,7 +288,7 @@ In the `render` method, we'll do three things:
 {crop-start: 146, crop-end: 183, format: javascript, line-numbers: false}
 ![Render the CountyMap component](code_samples/es6v2/App.js)
 
-We call our dataset `filteredTechSalaries` because we're going to add filtering in the [subchapter about adding user controls](#user-controls). Using the proper name now means less code to change later. The magic of foresight :)
+We call our dataset `filteredTechSalaries` because we're going to add filtering in the [subchapter about adding user controls](#user-controls). Using the proper name now means less code to change later. The magic of foresight :smile:
 
 We use `_.groupBy` to build a dictionary mapping each `countyID` to an array of salaries, and we use our `countyValue` method to build an array of counties for our map.
 
@@ -457,7 +457,7 @@ With the imports done, we can add `Histogram` to `App`'s render method.
 {crop-start: 205, crop-end: 235, format: javascript, line-numbers: false}
 ![Render Histogram in App](code_samples/es6v2/App.js)
 
-We render the `Histogram` component with a bunch of props. They specify the dimensions we want, positioning, and pass data to the component. We're using `filteredSalaries` even though we haven't set up the filtering yet. One less line of code to change later :)
+We render the `Histogram` component with a bunch of props. They specify the dimensions we want, positioning, and pass data to the component. We're using `filteredSalaries` even though we haven't set up the filtering yet. One less line of code to change later :smile:
 
 That's it. `App` is ready to render our `Histogram`.
 
@@ -653,7 +653,7 @@ At the end of this section, you'll have a full visualization of the shortened da
 
 We begin with the title because it shows up first.
 
-We start with an import in `App.js` and add it to the render method. You know the drill :)
+We start with an import in `App.js` and add it to the render method. You know the drill :smile:
 
 {crop-start: 241, crop-end: 275, format: javascript}
 ![Adding Title to main App component](code_samples/es6v2/App.js)
@@ -778,7 +778,7 @@ get countyFragment() {
 
 We group the dataset by county, then sort counties by their income delta. We look only at counties that are bigger than 1% of the entire dataset. And we define income delta as the difference between a county's median household income and the median tech salary in our dataset.
 
-Now that I think about it, this is not very efficient. We should've just looked for the maximum value. That would've been faster, but hey, it works :)
+Now that I think about it, this is not very efficient. We should've just looked for the maximum value. That would've been faster, but hey, it works :smile:
 
 We use basically the same process to get the best city.
 
@@ -804,14 +804,14 @@ We're using the [full-feature integration](#full-feature-integration) approach, 
 
 Inside `src/App.js`, we first have to add an import, then extract the median household value from state, and in the end, add `MedianLine` to the render method.
 
-Let's see if we can do it in a single code block :)
+Let's see if we can do it in a single code block :smile:
 
 {crop-start: 282, crop-end: 317, format: javascript, line-numbers: false}
 ![Adding MedianLine to App.js](code_samples/es6v2/App.js)
 
 You probably don't remember `medianIncomesByUSState` anymore. We set it up way back when [tying datasets together](#tie-datasets-together). It groups our salary data by US state.
 
-See, using good names helps :)
+See, using good names helps :smile:
 
 When rendering `MedianLine`, we give it sizing and positioning props, the dataset, a `value` accessor, and the median value to show. Yes, we can make it smart enough to calculate the median, but the added flexibility of a prop felt right.
 
@@ -822,7 +822,7 @@ The `MedianLine` component looks a lot like what you're already used to. Some im
 {crop-start: 5, crop-end: 32, format: javascript, line-numbers: false}
 ![MedianLine component stub](code_samples/es6v2/components/MedianLine.js)
 
-Standard stuff, right? You've seen it all before. Bear with me, please. I know you're great, but I gotta explain this for everyone else :)
+Standard stuff, right? You've seen it all before. Bear with me, please. I know you're great, but I gotta explain this for everyone else :smile:
 
 We have the base wiring for a D3-enabled component, and we set up a linear scale that we'll use for vertical positioning. The scale has a `domain` from `0` to `max` value in dataset and a range from `0` to height less margins.
 
@@ -914,7 +914,6 @@ We import the `Controls` component and add a default `salariesFilter` function t
 
 The rest of filtering setup happens in the render method.
 
-
 {crop-start: 362, crop-end: 390, format: javascript, line-numbers: false}
 ![Filtering data and updating map zoom in App render](code_samples/es6v2/App.js)
 
@@ -937,7 +936,7 @@ Rectangle, `500` to the right, `0` from top, `600` wide and `500` tall, with a w
 
 We render the `Controls` component just after `</svg>` because it's not an SVG component – it uses normal HTML. Unlike the other components, it needs our entire dataset as `data`. We use the `updateDataFilter` prop to say which callback function it should call when a new filter is ready.
 
-If this seems roundabout, I guess it kinda is. But it makes our app easier to componentize and keeps the code relatively unmessy. Imagine putting everything we've done so far in `App`. What a mess that'd be! :D
+If this seems roundabout, I guess it kinda is. But it makes our app easier to componentize and keeps the code relatively unmessy. Imagine putting everything we've done so far in `App`. What a mess that'd be! :laughing:
 
 ## Step 2: Build Controls component
 
@@ -947,7 +946,7 @@ It renders 3 rows of controls and builds filtering out of the singular choice ea
 
 In theory, it would be better for each `ControlRow` to return a function and for `Controls` to build a composed function out of them. It's a better abstraction, but I it's think harder to understand.
 
-We can live with a leaky abstraction and repetitive code, right? :)
+We can live with a leaky abstraction and repetitive code, right? :smile:
 
 To keep the book from getting repetitive, we're going to build everything for a `year` filter first. Then I'll show you how to add `USstate` and `jobTitle` filters as well. Once you have one working, the rest is easy.
 
@@ -1030,7 +1029,7 @@ We take the list of `toggleNames` from props and use Lodash's `zipObject` functi
 
 You might think this is unnecessary, but it makes our app faster. Instead of running the comparison function for each toggle on every render, we build the dictionary, then perform quick lookups when rendering. Yes, `===` is a fast operator even with the overhead of a function call, but what if it was more complex?
 
-Using appropriate data structures is a good habit. :)
+Using appropriate data structures is a good habit. :smile:
 
 In `componentWillReceiveProps`, we check if the `picked` value has changed, and if it has, we call `makePick` to mimic user action. This allows global app state to override local component state. It's what you'd expect in a unidirectional data flow architecture like the one we're using.
 
@@ -1120,7 +1119,7 @@ Two more rows of filters show up.
 
 ![All the filters](images/es6v2/all-filters.png)
 
-👏
+:clap:
 
 Again, if it didn't work, consult [the diff on GitHub](https://github.com/Swizec/react-d3js-step-by-step/commit/a45c33e172297ca1bbcfdc76733eae75779ebd7f).
 
@@ -1257,7 +1256,7 @@ We're going to poke around `public/index.html` for the first time. Add titles, T
 
 We add a `<title>` and a `canonical` URL. Titles configure what shows up in browser tabs, and the canonical URL is there to tell search engines that this is the main and most important URL for this piece of content. This is especially important for when people copy-paste your stuff and put it on other websites.
 
-But I messed up here and used the wrong URL. This knocks down rankings for the original version of this visualization, but oh well :)
+But I messed up here and used the wrong URL. This knocks down rankings for the original version of this visualization, but oh well :smile:
 
 In the body root tag, we add some copy-pasted text from our dataviz. You'll recognize the default title and description.
 

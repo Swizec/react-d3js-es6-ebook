@@ -2,7 +2,7 @@
 
 # Introduction #
 
-Hello new friend!
+Hello new friend! :wave:
 
 ![This is me, Swizec](images/es6v2/6300d21408f5e9f0c8f5698d266fb258.jpg)
 

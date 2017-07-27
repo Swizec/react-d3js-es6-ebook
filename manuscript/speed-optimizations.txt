@@ -6,7 +6,7 @@ You might never need any of the techniques discussed here. You already know how 
 
 Do you really need to save that tenth of a second at runtime and spend an extra hour of thinking every time there's a bug?
 
-Be honest. ;)
+Be honest. :wink:
 
 That said, there are cases where faster code is also easier to read. And there are cases where your visualization is so massive, that you need every ounce of oomph you can get.
 
@@ -769,7 +769,7 @@ As you can see, a MobX store is a JavaScript object. It has `@observable` values
 
 No complicated reducers and action generators, just JavaScript functions and properties. There's plenty going on behind the scenes, but we don't have to think about it.
 
-That's why I personally like MobX more than Redux. Feels easier to use :)
+That's why I personally like MobX more than Redux. Feels easier to use :smile:
 
 In the `Sprite` store, we have an `@observable sprite`. Changing this value will trigger a re-render in our `@observer` components that rely on it. Every marble in our case.
 
@@ -914,7 +914,7 @@ class Physics {
 
 `shoot` and `startGameLoop` are the simplest functions in our physics engine. `startGameLoop` creates the initial `marbles` array, and `shoot` updates a specific marble's coordinates and speed vector.
 
-Lovely :)
+Lovely :smile:
 
 #### simulationStep – where collisions collision
 
@@ -998,7 +998,7 @@ You can think of `simulationStep` as a function and a loop. At the bottom, there
 
 We iterate over the list of marbles, feed them into `moveMarble`, get new properties, and save them in the main marbles array. This might be unnecessary because of MobX. We *should* be able to change them inside the loop and rely on MobX observables to do the heavy lifting.
 
-I wonder why I did it like this 🤔 Maybe a leftover from before MobX…
+I wonder why I did it like this :thinking_face: Maybe a leftover from before MobX…
 
 ##### moveMarble
 
@@ -1042,7 +1042,7 @@ We're using [`d3-quadtree`](https://github.com/d3/d3-quadtree) for the quadtree 
 
 To avoid detecting each marble as colliding with itself, we take each marble out of our list before feeding the quadtree.
 
-Once we have a quadtree built out, we use `.find` to look for the nearest marble within `MarbleR*2` of the current marble. Which is exactly the one we're colliding with! :)
+Once we have a quadtree built out, we use `.find` to look for the nearest marble within `MarbleR*2` of the current marble. Which is exactly the one we're colliding with! :smile:
 
 **Handling collisions with marbles** involves math. The sort of thing you think you remember from high school, and suddenly realize you don't when the time comes to use it.
 
@@ -1086,7 +1086,7 @@ You can think of `[normx, normy]` as a vector that points from current marble to
 
 Then we calculate the [dot product](https://en.wikipedia.org/wiki/Dot_product) between our marble's speed vector and the collision direction vector. And we normalize it by distance. Multiplying distance by `2` accounts for there being two marbles in the collision. That extra `.3` made the simulation look better.
 
-I fiddled with it :)
+I fiddled with it :smile:
 
 Then we use the dot product scalar to adjust the marble's speed vector. Dividing by `2` takes into account that half the energy goes to the other marble. This is only true because we assume their masses are equal.
 
@@ -1318,7 +1318,7 @@ When we feed a change to `this.setState`, it triggers a re-render of the entire 
 
 ![Dancing Pythagoras tree](images/es6v2/pythagoras-dancing.gif)
 
-Beautious. 😍
+Beautious. :heart_eyes:
 
 But since this is a book, you probably can't see the gif move. I suggest looking at [this helpful version](https://github.com/Swizec/react-fractals/blob/master/react-tree.gif) on Github.
 
