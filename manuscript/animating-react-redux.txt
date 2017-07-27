@@ -49,7 +49,7 @@ None of them contain state, but `App` has to be a proper component so that we ca
 
 The `Particle` component is a circle. It looks like this:
 
-{caption: "Particle component"}
+{caption: "Particle component", line-numbers: false}
 ```javascript
 // src/components/Particles/Particle.jsx
 import React from 'react';
@@ -68,7 +68,7 @@ It takes `x` and `y` coordinates and returns an SVG circle.
 
 The `Particles` component isn't much smarter – it returns a list of circles wrapped in a grouping element, like this:
 
-{caption: "Particles list"}
+{caption: "Particles list", line-numbers: false}
 ```javascript
 // src/components/Particles/index.jsx
 import React from 'react';
@@ -95,7 +95,7 @@ We can take an array of `{id, x, y}` objects and render SVG circles. Now comes o
 
 The rendering part looks like this:
 
-{caption: "App component"}
+{caption: "App component", line-numbers: false}
 ```javascript
 // src/components/index.jsx
 
@@ -139,7 +139,7 @@ Oh, and we call `startTicker()` when a user clicks on our scene. No reason to ha
 
 To let users generate particles, we have to wire up some functions in `componentDidMount`. It looks like this:
 
-{caption: "Event listeners"}
+{caption: "Event listeners", line-numbers: false}
 ```javascript
 // src/components/index.jsx
 
@@ -205,7 +205,7 @@ Redux actions are a fancy way of saying *"Yo, a thing happened!"*. They're funct
 
 Our particle generator uses 6 actions. The most complicated one looks like this:
 
-{caption: "Actions"}
+{caption: "Actions", line-numbers: false}
 ```javascript
 // src/actions/index.js
 export const CREATE_PARTICLES = 'CREATE_PARTICLES';
@@ -244,7 +244,7 @@ I'm not sure this separation is necessary in small projects. Maintaining it can 
 
 The gist of our `AppContainer` looks like this:
 
-{caption: "Main container component"}
+{caption: "Main container component", line-numbers: false}
 ```javascript
 // src/containers/AppContainer.jsx
 import { connect } from 'react-redux';
@@ -306,7 +306,7 @@ That's why you should reserve context for passing the Redux store. All component
 
 Congratz, you know the basics! Now we need to define those callbacks so `App` can trigger actions. Most are boilerplate-y action wrappers. Like this:
 
-{caption: "Container-store communication"}
+{caption: "Container-store communication", line-numbers: false}
 ```javascript
 // src/containers/AppContainer.jsx
 class AppContainer extends Component {
@@ -335,7 +335,7 @@ Redux uses our action, goes to all our reducers, and asks *"Anything you wanna d
 
 We have to look at the `startTicker` callback before we can talk about reducers. It's where our particle generator really begins.
 
-{caption: "startTicker"}
+{caption: "startTicker", line-numbers: false}
 ```javascript
 // src/containers/AppContainer.jsx
 class AppContainer extends Component {
@@ -389,9 +389,9 @@ All of our logic goes in the reducer. [Dan Abramov says](http://redux.js.org/doc
 
 A "sum numbers" example would look like this:
 
-{caption: "Reducer concept"}
+{caption: "Reducer concept", line-numbers: false}
 ```javascript
-let sum = [1,2,3,4].reduce(sum, n => sum+n, 0);
+let sum = [1,2,3,4].reduce((sum, n) => sum+n, 0);
 ```
 
 For each number, take the previous sum and add the number.
@@ -402,7 +402,7 @@ To keep the example code simple, we'll put everything into the same reducer and 
 
 Let's start with the basics:
 
-{caption: "Redux reducer basic state"}
+{caption: "Redux reducer basic state", line-numbers: false}
 ```javascript
 // src/reducers/index.js
 const Gravity = 0.5,
@@ -446,7 +446,7 @@ Our reducer doesn't change anything yet. You should always return at least the s
 
 For most actions, our reducer updates a single value. Like this:
 
-{caption: "Reducer big switch"}
+{caption: "Reducer big switch", line-numbers: false}
 ```javascript
 // src/reducers/index.js
 function particlesApp(state = initialState, action) {
@@ -482,7 +482,7 @@ You can also use a library like [immutable.js](https://facebook.github.io/immuta
 
 Those state updates were boilerplate. The important ones are each tick of the game loop and creating new particles. They look like this:
 
-{caption: "The core particles logic"}
+{caption: "The core particles logic", line-numbers: false}
 ```javascript
 // src/reducers/index.js
 function particlesApp(state = initialState, action) {

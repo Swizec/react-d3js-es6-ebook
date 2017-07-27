@@ -108,6 +108,7 @@ If anything looks weird or doesn't work, I've prepared a helpful [GitHub branch]
 
 You should go into your particle generator directory, install Konva and react-konva, and then make the changes below. Trying things out is better than just reading my code ;)
 
+{caption: "Install Konva", line-numbers: false}
 ```
 $ npm install --save konva react-konva
 ```
@@ -122,7 +123,7 @@ Our changes start in `src/components/index.jsx`. We have to throw away the `<svg
 
 You can think of a Konva stage as a Canvas element with a bunch of helper methods attached. Some of them Konva uses internally; others are exposed as an API. Functions like exporting to an image file, detecting intersections, etc.
 
-{caption: "Import Konva and set the stage"}
+{caption: "Import Konva and set the stage", line-numbers: false}
 ```javascript
 // src/components/index.jsx
 
@@ -169,7 +170,7 @@ Because the new approach renders a flat image, and because we don't care about i
 
 The new `Particles` component looks like this:
 
-{caption: "Sprite-based Particles component"}
+{caption: "Sprite-based Particles component", line-numbers: false}
 ```javascript
 // src/components/Particles.jsx
 
@@ -219,7 +220,7 @@ export default Particles;
 
 #### componentDidMount
 
-{caption: "componentDidMount code"}
+{caption: "componentDidMount code", line-numbers: false}
 ```javascript
 // src/components/Particles.jsx
 
@@ -253,7 +254,7 @@ You might be thinking that it's unsafe to copy references to rendered elements i
 
 #### drawParticle
 
-{caption: "drawParticle code"}
+{caption: "drawParticle code", line-numbers: false}
 ```javascript
 // src/components/Particles.jsx
 
@@ -273,7 +274,7 @@ We use the whole sprite, corner `(0, 0)` to corner `(128, 128)`. That's how big 
 
 #### componentDidUpdate
 
-{caption: "componentDidUpdate code"}
+{caption: "componentDidUpdate code", line-numbers: false}
 ```javascript
 // src/components/Particles.jsx
 
@@ -310,7 +311,7 @@ You can open your browser console to see how long it takes to draw a frame. That
 
 #### render
 
-{caption: "render code"}
+{caption: "render code", line-numbers: false}
 ```javascript
 // src/components/Particles.jsx
 
@@ -364,14 +365,14 @@ About two years ago, decorators got very close to becoming an official spec, the
 
 You can think of decorators as function wrappers. Instead of something like this:
 
-{caption: "Decoratorless function wrapping"}
+{caption: "Decoratorless function wrapping", line-numbers: false}
 ```javascript
 inject('store', ({ store }) => <div>A thing with {store.value}</div>);
 ```
 
 You can write something like this:
 
-{caption: "Function wrapping with decorators"}
+{caption: "Function wrapping with decorators", line-numbers: false}
 ```javascript
 @inject('store')
 ({ store }) => <div>A thing with {store.value}</div>
@@ -387,7 +388,7 @@ Because decorators aren't in the JavaScript spec, we have to tweak how we start 
 
 You should start a new project like this:
 
-{caption: "Create the billiards game project"}
+{caption: "Create the billiards game project", line-numbers: false}
 ```
 $ create-react-app billiards-game --scripts-version custom-react-scripts
 ```
@@ -398,7 +399,7 @@ The addition of `--scripts-version custom-react-scripts` employs @kitze's [custo
 
 We enable them in the `.env` file. Add this line:
 
-{caption: "Add to .env settings"}
+{caption: "Add to .env settings", line-numbers: false}
 ```
 // billiards-game/.env
 // ...
@@ -409,7 +410,7 @@ No installation necessary. I think `custom-react-scripts` uses the `transform-de
 
 Before we begin, you should install the other dependencies as well:
 
-{caption: "Install libraries"}
+{caption: "Install libraries", line-numbers: false}
 ```
 $ npm install --save konva react-konva mobx mobx-react d3-timer d3-scale d3-quadtree
 ```
@@ -461,7 +462,7 @@ Let's start with `App` and work our way down.
 
 Our `App` component doesn't do much. It imports our MobX stores, triggers sprite loading, and starts the game loop.
 
-{caption: "The App component"}
+{caption: "The App component", line-numbers: false}
 ```javascript
 // src/components/App.js
 
@@ -512,7 +513,7 @@ Even though `MarbleList` is an important component that basically renders the wh
 
 Like this:
 
-{caption: "MarbleList component"}
+{caption: "MarbleList component", line-numbers: false}
 ```javascript
 // src/components/MarbleList.js
 
@@ -567,7 +568,7 @@ Each `Marble` component renders a single marble and handles dragging and droppin
 
 The component looks like this:
 
-{caption: "Marble component"}
+{caption: "Marble component", line-numbers: false}
 ```javascript
 // src/components/Marble.js
 
@@ -631,7 +632,7 @@ That said, I would recommend using explicit `@actions` in larger projects.
 
 Here's what the dragging callbacks look like.
 
-{caption: "Dragging callbacks"}
+{caption: "Dragging callbacks", line-numbers: false}
 ```javascript
 // src/components/Marble.js
 
@@ -704,7 +705,7 @@ To use this, we need two things:
 
 The first is a `MarbleDefinitions` dictionary. We used it in `Marble` component's render method.
 
-{caption: "MarbleDefinitions dictionary"}
+{caption: "MarbleDefinitions dictionary", line-numbers: false}
 ```javascript
 // src/logic/Sprite.js
 
@@ -731,7 +732,7 @@ All values were painstakingly assembled by hand. You're welcome.
 
 The MobX store that loads our sprite into memory and helps us use it looks like this:
 
-{caption: "Sprite store"}
+{caption: "Sprite store", line-numbers: false}
 ```javascript
 // src/logic/Sprite.js
 
@@ -791,7 +792,7 @@ The general approach goes like this:
 
 The [whole Physics store](https://github.com/Swizec/declarative-canvas-react-konva/blob/master/src/logic/Physics.js) is some 120 lines of code, so I won't share it all at once. Here's what its skeleton looks like:
 
-{caption: "Physics skeleton"}
+{caption: "Physics skeleton", line-numbers: false}
 ```javascript
 // src/logic/Physics.js
 
@@ -826,7 +827,7 @@ Let's walk through.
 
 #### initialPositions
 
-{caption: "initialPositions function"}
+{caption: "initialPositions function", line-numbers: false}
 ```javascript
 // src/logic/Physics.js
 class Physics {
@@ -886,7 +887,7 @@ In the end, we add an `id` to each marble. We're using index as the id, that's t
 
 #### shoot and startGameLoop
 
-{caption: "shoot and startGameLoop functions"}
+{caption: "shoot and startGameLoop functions", line-numbers: false}
 ```javascript
 // src/logic/Physics.js
 class Physics {
@@ -921,7 +922,7 @@ Here comes the fun part. The one with our game loop.
 
 I've also made a video of all this. [Watch it on YouTube](https://www.youtube.com/watch?v=H84fmXjTElM). It involves hand-drawn sketches that explain the math, and I think that's neat.
 
-{caption: "Full simulationStep function"}
+{caption: "Full simulationStep function", line-numbers: false}
 ```javascript
 
 @action simulationStep() {
@@ -983,7 +984,7 @@ That's a lot of code 😅. Let's break it down.
 
 You can think of `simulationStep` as a function and a loop. At the bottom, there is a `.forEach` that applies a `moveMarble` function to each marble.
 
-{caption: "Loop through marbles"}
+{caption: "Loop through marbles", line-numbers: false}
 ```javascript
     this.marbles.forEach((marble, i) => {
         const { x, y, vx, vy } = moveMarble(marble);
@@ -1009,6 +1010,7 @@ I wonder why I did it like this 🤔 Maybe a leftover from before MobX…
 
 **Handling collisions with walls happens** in two lines of code. One per coordinate.
 
+{caption: "Detecting wall collisions", line-numbers: false}
 ```javascript
 let _vx = ((x+vx < MarbleR) ? -vx : (x+vx > width-MarbleR) ? -vx : vx)*.99,
     _vy = ((y+vy < MarbleR) ? -vy : (y+vy > height-MarbleR) ? -vy : vy)*.99;
@@ -1024,6 +1026,7 @@ A quadtree is a good way to subdivide space into areas. It lets us answer the qu
 Checking every marble with every other marble produces 81 comparisons. Versus 2 comparisons using a quadtree.
 {/aside}
 
+{caption: "Finding collision candidates", line-numbers: false}
 ```javascript
 // nearest marble is a collision candidate
 const subdividedSpace = quadtree().extent([[-1, -1],
@@ -1045,6 +1048,7 @@ Once we have a quadtree built out, we use `.find` to look for the nearest marble
 
 The code looks like this:
 
+{caption: "Handling marble collisions", line-numbers: false}
 ```javascript
 if (candidate) {
 
@@ -1127,6 +1131,7 @@ We're using a `<Pythagoras>` component for each square and its two children, a D
 
 The `<Pythagoras>` component looks like this:
 
+{caption: "Recursive <Pythagoras> component", line-numbers: false}
 ```
 const Pythagoras = ({ w, x, y, heightFactor, lean, left, right, lvl, maxlvl }) => {
     if (lvl >= maxlvl || w < 1) {
@@ -1185,6 +1190,7 @@ Most of this code deals with passing arguments onwards to children, which isn't 
 
 I don't _really_ understand this math, but I sort of know where it's coming from. It's the [sine law](https://en.wikipedia.org/wiki/Law_of_sines) applied correctly. The part I failed at miserably [when I tried](https://swizec.com/blog/fractals-react/swizec/7233).
 
+{caption: "Trigonometry that moves our fractal", line-numbers: false}
 ```
 const memoizedCalc = function () {
     const memo = {};
@@ -1231,6 +1237,7 @@ This, however, would be tricky to implement. A lot more computation, I think.
 
 Inside [`App.js`](https://github.com/Swizec/react-fractals/blob/master/src/App.js), we add a mouse event listener. We use D3's because it gives us SVG-relative position calculation out of the box. With React's, we'd have to do the hard work ourselves.
 
+{caption: "Reacting to mouse movement", line-numbers: false}
 ```
 // App.js
 state = {
@@ -1287,6 +1294,7 @@ The `lean` parameter tells us which way the tree is leaning and by how much, the
 
 That happens in `onMouseMove`:
 
+{caption: "Moving the fractal as user moves mouse", line-numbers: false}
 ```
 onMouseMove(event) {
 	const [x, y] = d3mouse(this.refs.svg),
@@ -1340,6 +1348,7 @@ In `package.json`, he added `preact`, `preact-compat`, and preact -compat clones
 
 He changed the functional stateless `Pythagoras` component into a stateful component to enable async rendering.
 
+{caption: "Change <Pythagoras> to a class", line-numbers: false}
 ```
 // src/Pythagoras.js
 export default class {
@@ -1351,6 +1360,7 @@ export default class {
 
 And enabled debounced asynchronous rendering:
 
+{caption: "Debounce rendering", line-numbers: false}
 ```
 // src/index.js
 import { options } from 'preact';
@@ -1379,6 +1389,7 @@ From there, the main changes are to the imports – React becomes Inferno – 
 
 He also had to change a string-based ref into a callback ref. Inferno doesn't do string-based refs for performance reasons, and we need refs so we can use D3 to detect mouse position on SVG.
 
+{caption: "Change ref to callback", line-numbers: false}
 ```
 // src/App.js
 
