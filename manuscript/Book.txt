@@ -1,7 +1,10 @@
 introduction.txt
-better-environment.md
 the-meat-start.txt
-the-meat.txt
+simpler-environment.md
+the-new-meat.md
+animation.md
 animating-react-redux.txt
+speed-optimizations.txt
 conclusion.txt
-appendix.txt
+appendixA.md
+appendixB.txt
