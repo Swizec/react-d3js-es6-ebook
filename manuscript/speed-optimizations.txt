@@ -180,7 +180,7 @@ import { FastLayer } from 'react-konva';
 class Particles extends Component {
     componentDidMount() {
         this.canvas = this.refs.layer.canvas._canvas;
-        this.context = this.canvas.getContext('2d');
+        this.canvasContext = this.canvas.getContext('2d');
 
         this.sprite = new Image();
         this.sprite.src = 'http://i.imgur.com/m5l6lhr.png';
@@ -189,14 +189,14 @@ class Particles extends Component {
     drawParticle(particle) {
         let { x, y } = particle;
 
-        this.context.drawImage(this.sprite, 0, 0, 128, 128, x, y, 15, 15);
+        this.canvasContext.drawImage(this.sprite, 0, 0, 128, 128, x, y, 15, 15);
     }
 
     componentDidUpdate() {
         let particles = this.props.particles;
 
         console.time('drawing');
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         for (let i = 0; i < particles.length; i++) {
             this.drawParticle(particles[i]);
@@ -227,7 +227,7 @@ export default Particles;
 // ...
 componentDidMount() {
     this.canvas = this.refs.layer.canvas._canvas;
-    this.context = this.canvas.getContext('2d');
+    this.canvasContext = this.canvas.getContext('2d');
 
     this.sprite = new Image();
     this.sprite.src = 'http://i.imgur.com/m5l6lhr.png';
@@ -240,7 +240,7 @@ This is a lifecycle hook that React calls when our component first renders. We u
 
 Thanks to JavaScript's permissiveness, we can use it anyway.
 
-`this.context` is a reference to our canvas's CanvasRenderingContext2D. It's the interface we use to draw basic shapes, perform transformations, etc. Context is basically the only part of canvas you ever interact with as a developer.
+`this.canvasContext` is a reference to our canvas's CanvasRenderingContext2D. It's the interface we use to draw basic shapes, perform transformations, etc. Context is basically the only part of canvas you ever interact with as a developer.
 
 Why it can't be just Canvas, I don't know.
 
@@ -262,7 +262,7 @@ You might be thinking that it's unsafe to copy references to rendered elements i
 drawParticle(particle) {
     let { x, y } = particle;
 
-    this.context.drawImage(this.sprite, 0, 0, 128, 128, x, y, 15, 15);
+    this.canvasContext.drawImage(this.sprite, 0, 0, 128, 128, x, y, 15, 15);
 }
 ```
 
@@ -283,7 +283,7 @@ componentDidUpdate() {
     let particles = this.props.particles;
 
     console.time('drawing');
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     for (let i = 0; i < particles.length; i++) {
         this.drawParticle(particles[i]);
@@ -298,7 +298,7 @@ Yes, we're moving rendering out of the `render` method and into `componentDidUpd
 
 Here's how it works:
 
-1. `this.context.clearRect` clears the entire canvas from coordinate `(0, 0)` to coordinate `(width, height)`. We delete everything and make the canvas transparent.
+1. `this.canvasContext.clearRect` clears the entire canvas from coordinate `(0, 0)` to coordinate `(width, height)`. We delete everything and make the canvas transparent.
 2. We iterate our `particles` list with a `for` loop and call `drawParticle` on each element.
 
 Clearing and redrawing the canvas is faster than moving individual particles. For loops are faster than `.map` or any other form of iteration. I tested.
