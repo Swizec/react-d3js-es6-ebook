@@ -1,4 +1,4 @@
-<<<<<<< HEAD:manuscript/appendixA.md
+
 # Appendixes #
 
 {#appendixA}
@@ -8,12 +8,10 @@ If you already know how to set up the perfect development environment for modern
 
 If you don't know and you don't care about this right now: Use the starter project that came with the book. It's what you would get after following this chapter.
 
-=======
 {#the-environment}
 # A good work environment
 If you already know how to set up the perfect development environment for modern JavaScript, go ahead and skip this section. Otherwise, keep reading.
 
->>>>>>> master:manuscript/better-environment.md
 A good work environment helps us get the most out of our time. We're after three things:
 
 * code should re-compile when we change a file
