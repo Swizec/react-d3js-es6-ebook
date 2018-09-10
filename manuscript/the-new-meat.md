@@ -105,7 +105,7 @@ They'll make the fonts look better, help with layouting, and make buttons look l
 
 We add them in `src/index.js`.
 
-{crop-start: 5, crop-end: 18, format: javascript, line-numbers: false}
+{crop-start: 5, crop-end: 17, format: javascript, line-numbers: false}
 ![Add bootstrap in index.js](code_samples/es6v2/index.js)
 
 Another benefit of using Webpack: `import`-ing stylesheets. These imports turn into `<style>` tags with CSS in their body at runtime.
@@ -122,7 +122,7 @@ If you don't, try comparing your changes to this [diff on Github](https://github
 
 Great! We have a preloader. Time to load some data.
 
-We'll use D3's built-in data loading methods and tie their callbacks into React's component lifecycle. You could talk to a REST API in the same way. Neither D3 nor React care what the datasource is.
+We'll use D3's built-in data loading methods and tie their promises into React's component lifecycle. You could talk to a REST API in the same way. Neither D3 nor React care what the datasource is.
 
 First, you need the data files. I scraped the tech salary info from [h1bdata.info](http://h1bdata.info/), the median household incomes from the US census datasets, and US map data from Mike Bostock's github repositories. I used some elbow grease and python scripts to tie the datasets together.
 
@@ -130,13 +130,7 @@ You can read about the scraping on my blog [here](https://swizec.com/blog/place-
 
 ## Step 0: Get the data
 
-You should download the 6 datafiles from [the step-by-step repository on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/8819d9c38b4aef0a0c569e493f088ff9c3bfdf33). Put them in the `public/data` directory in your project.
-
-First, you need the data files. I scraped the tech salary info from [h1bdata.info](http://h1bdata.info/), the median household incomes from the US census datasets, and US map data from Mike Bostock's Github repositories. I used some elbow grease and python scripts to tie the datasets together.
-
-You can read about the scraping on my blog [here](https://swizec.com/blog/place-names-county-names-geonames/swizec/7083), [here](https://swizec.com/blog/facts-us-household-income/swizec/7075), and [here](https://swizec.com/blog/livecoding-24-choropleth-react-js/swizec/7078). But it's not the subject of this book.
-
-You should download the 6 data files from [the step-by-step repository on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/8819d9c38b4aef0a0c569e493f088ff9c3bfdf33). Put them in the `public/data` directory in your project.
+You should download the 6 datafiles from [my step-by-step repository on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/8819d9c38b4aef0a0c569e493f088ff9c3bfdf33). Put them in the `public/data` directory in your project.
 
 The quickest way to download each file is to click `View`, then right-click `Raw` and `Save Link As`.
 
@@ -206,11 +200,13 @@ Now that we have our data parsing functions, we can use D3 to load the data with
 
 Here you can see another ES6 trick: default argument values. If `callback` is false, we set it to `_.noop` - a function that does nothing. This lets us later call `callback()` without worrying whether it was given as an argument.
 
-`d3.queue` lets us call multiple asynchronous functions and wait for them all to finish. By default, it runs all functions in parallel, but that's configurable through an argument - `d3.queue(1)` for one at a time, `2` for two, etc. In our case, without an argument, it runs all tasks in parallel.
+In version 5, D3 updated its data loading methods to use promises instead of callbacks. You can load a single file using `d3.csv("filename").then(data => ....`. The promise resolves with your data, or throws an error.
 
-We define 5 tasks to run with `.defer` then wait for them to finish with `.await`. The tasks themselves are D3's data loading functions that fire an Ajax request to the specified URL, parse the data into a JavaScript dictionary, and use the given row parsing function to polish the result.
+Each `d3.csv` call makes a fetch request, parses the fetched CSV file into an array of JavaScript dictionaries, and passes each row through the provided cleanup function. We pass all median incomes through `cleanIncomes`, salaries through `cleanSalary` and so on.
 
-For instance, `.defer(d3.csv, 'data/county-median-incomes.csv', cleanIncomes)` uses `d3.csv` to make an Ajax request to `data/county-median-incomes.csv`, parses the CSV file into an array of JavaScript dictionaries, and uses `cleanIncomes` to further parse each row the way we specified earlier.
+To load multiple files like, we use `Promise.all` and give it a list of unresolved promises. When they're resolved, our `.then` gets a list of results.
+
+We destructure the array into our respective datasets and carry on tying them together.
 
 D3 supports formats like `json`, `csv`, `tsv`, `text`, and `xml` out of the box. You can make it work with custom data sources through the underlying `request` API.
 
@@ -219,7 +215,7 @@ PS: we're using the shortened salary dataset to make page reloads faster while b
 {#tie-datasets-together}
 ## Step 4: Tie the datasets together
 
-If you put a `console.log` in the `.await` callback above, you'll see a bunch of data. Each argument - `us`, `countyNames`, `medianIncomes`, `techSalaries`, `USstateNames` - holds the entire parsed dataset from the corresponding file.
+If you put a `console.log` in the `.then` callback above, you'll see a bunch of data. Each argument - `us`, `countyNames`, `medianIncomes`, `techSalaries`, `USstateNames` - holds the entire parsed dataset from the corresponding file.
 
 To tie them together and prepare a dictionary for `setState` back in the `App` component, we need to add a little big of logic. We're going to build a dictionary of county household incomes and remove any empty salaries.
 

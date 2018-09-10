@@ -46,22 +46,22 @@ const cleanUSStateName = (d) => ({
 //
 // src/DataHandling.js
 export const loadAllData = (callback = _.noop) => {
-    d3.queue()
-      .defer(d3.json, 'data/us.json')
-      .defer(d3.csv, 'data/us-county-names-normalized.csv')
-      .defer(d3.csv, 'data/county-median-incomes.csv', cleanIncomes)
-      .defer(d3.csv, 'data/h1bs-2012-2016-shortened.csv', cleanSalary)
-      .defer(d3.tsv, 'data/us-state-names.tsv', cleanUSStateName)
-      .await((error, us, countyNames, medianIncomes, techSalaries, USstateNames) => {
+    Promise.all([
+        d3.json("data/us.json"),
+        d3.csv("data/us-county-names-normalized.csv"),
+        d3.csv("data/county-median-incomes.csv", cleanIncomes),
+        d3.csv("data/h1bs-2012-2016-shortened.csv", cleanSalary),
+        d3.tsv("data/us-state-names.tsv", cleanUSStateName)
+    ]).then(([us, countyNames, medianIncomes, techSalaries, USstateNames]) => {
 
-      });
+    });
 };
 
 //
 // Example 3
 //
 // src/DataHandling.js
-.await((error, us, countyNames, medianIncomes, techSalaries, USstateNames) => {
+]).then(([us, countyNames, medianIncomes, techSalaries, USstateNames]) => {
     countyNames = countyNames.map(({ id, name }) => ({id: Number(id),
                                                       name: name}));
 
