@@ -5,19 +5,19 @@ We're going to build this:
 
 ![](images/es6v2/full-dataviz.png)
 
-It's an interactive visualization app with a choropleth map and a histogram comparing tech salaries with median household income in the area. Users can filter by three different parameters – year, job title, and US state – to get a more detailed view.
+An interactive visualization dashboard app with a choropleth map and a histogram comparing tech salaries to median household income in the area. Users can filter by year, job title, or US state to get a better view.
 
 ![](images/es6v2/interaction-dataviz.png)
 
 It's going to be great.
 
-At this point, I assume you've used `create-react-app` to set up your environment. Check the [getting started](#getting-started) section if you haven't. I'll also assume you've read the [basics chapter](#the-meat-start). I'm still going to explain what we're doing, but knowing the basics helps.
+At this point, I assume you've used `create-react-app` to set up your environment. Check the [getting started](#getting-started) section if you haven't. I'm also assuming you've read the [basics chapter](#the-meat-start). I'm still going to explain what we're doing, but knowing the basics helps.
 
 I suggest you follow along, keep `npm start` running, and watch your visualization change in real time as you code. It's rewarding as hell.
 
 If you get stuck, you can use my [react-d3js-step-by-step Github repo](https://github.com/Swizec/react-d3js-step-by-step) to jump between steps. The [9 tags](https://github.com/Swizec/react-d3js-step-by-step/releases) correspond to the code at the end of each step. Download the first tag and run `npm install` to skip the initial setup.
 
-If you want to see how this project evolved over 22 months, check [the original repo](https://github.com/Swizec/h1b-software-salaries). The [create-react-app](https://github.com/Swizec/h1b-software-salaries/tree/create-react-app) branch has the code you're about to build.
+If you want to see how this project evolved over 22 months, check [the original repo](https://github.com/Swizec/h1b-software-salaries). The [modern-code](https://github.com/Swizec/h1b-software-salaries/tree/modern-code) branch has the code you're about to build.
 
 # Show a Preloader
 
@@ -30,9 +30,11 @@ Our preloader is a screenshot of the final result. Usually you'd have to wait un
 
 We're using a screenshot of the final result because the full dataset takes a few seconds to load, parse, and render. It looks better if visitors see something informative while they wait.
 
+React Suspense is about to make building preloaders a whole lot better. Adapting to the user's network speed, built-in preload functionality, stuff like that. More on that in the chapter on React Suspense and Time Slicing.
+
 Make sure you've installed [all dependencies](#install-dependencies) and that `npm start` is running.
 
-We're building the preloader in 4 steps:
+We're building our preloader in 4 steps:
 
 1. Get the image
 2. Make the `Preloader` component
@@ -41,57 +43,154 @@ We're building the preloader in 4 steps:
 
 ## Step 1: Get the image
 
-Download [my screenshot from Github](https://raw.githubusercontent.com/Swizec/react-d3js-step-by-step/798ec9eca54333da63b91c66b93339565d6d582a/src/assets/preloading.png) and save it in `src/assets/preloading.png`. It goes in the `src/assets/` directory because we're going to `import` it in JavaScript (which makes it part of our source code), and I like to put non-JavaScript files in `assets`. It keeps the project organized.
+Download [my screenshot from Github](https://raw.githubusercontent.com/Swizec/react-d3js-step-by-step/798ec9eca54333da63b91c66b93339565d6d582a/src/assets/preloading.png) and save it in `src/assets/preloading.png`. It goes in the `src/assets/` directory because we're going to `import` it in JavaScript (which makes it part of our source code), and I like to put non-JavaScript files in `assets`. Keeps the project organized.
 
 ## Step 2: Preloader component
 
-The `Preloader` is a component that pretends it's the `App` and renders a static title, description, and a screenshot of our end result. It goes in `src/components/Preloader.js`.
+Our `Preloader` is a small component that pretends it's the `App` and renders a static title, description, and a screenshot of the end result. It goes in `src/components/Preloader.js`.
 
 We'll put all of our components in `src/components/`.
 
 We start the component off with some imports, an export, and a functional stateless component that returns an empty div element.
 
-{crop-start: 5, crop-end: 17, format: javascript, line-numbers: false}
-![Preloader skeleton](code_samples/es6v2/components/Preloader.js)
+{format: javascript, line-numbers: false, caption: "Preloader skeleton"}
+```
+// src/components/Preloader.js
 
-We `import` React (which we need to make JSX syntax work) and the `PreloaderImg` for our image. We can import images because of the Webpack configuration that comes with `create-react-app`. The image loader puts a file path in the `PreloaderImg` constant.
+import React from "react";
 
-At the bottom, we `export default Preloader` so that we can use it in `App.js` as `import Preloader`. I like to use default exports when the file exports a single thing and named exports when we have multiple. You'll see that play out in the rest of this project.
+import PreloaderImg from "../preloading.png";
+
+const Preloader = () => (
+    <div className="App container">
+
+    </div>
+);
+
+export default Preloader;
+```
+
+We `import` React (which we need to make JSX syntax work) and the `PreloaderImg` for our image. We can import images because of the Webpack configuration that comes with `create-react-app`. The webpack image loader returns a URL that we put in the `PreloaderImg` constant.
+
+At the bottom, we `export default Preloader` so that we can use it in `App.js` as `import Preloader`. Default exports are great when your file exports a single object, named exports when you have multiple. You'll see that play out in the rest of this project.
 
 The `Preloader` function takes no props (because we don't need any) and returns an empty `div`. Let's fill it in.
 
-{crop-start: 22, crop-end: 39, format: javascript, line-numbers: false}
-![Preloader content](code_samples/es6v2/components/Preloader.js)
+{format: javascript, line-numbers: false, caption: "Preloader content"}
+```
+// src/components/Preloader.js
 
-We're cheating again because I copy-pasted that from the finished example. You wouldn't have anywhere to get this yet.
+const Preloader = () => (
+    <div className="App container">
+        <h1>The average H1B in tech pays $86,164/year</h1>
+        <p className="lead">
+            Since 2012 the US tech industry has sponsored 176,075 H1B work
+            visas. Most of them paid <b>$60,660 to $111,668</b> per year (1
+            standard deviation).{" "}
+            <span>
+                The best city for an H1B is <b>Kirkland, WA</b> with an average
+                individual salary <b>$39,465 above local household median</b>.
+                Median household salary is a good proxy for cost of living in an
+                area.
+            </span>
+        </p>
+        <img
+            src={PreloaderImg}
+            style={{ width: "100%" }}
+            alt="Loading preview"
+        />
+        <h2 className="text-center">Loading data ...</h2>
+    </div>
+);
+```
 
-The code itself looks like plain HTML. We have the usual tags - `h1`, `p`, `b`, `img`, and `h2`. That's what I like about using JSX. It feels familiar.
+A little cheating with grabbing copy from the future, but that's okay. In real life you'd use some temporary text, then fill it in later.
+
+The code itself looks like HTML. We have the usual tags - `h1`, `p`, `b`, `img`, and `h2`. That's what I like about JSX: it's familiar. Even if you don't know React, you can guess what's going on here.
 
 But look at the `img` tag: the `src` attribute is dynamic, defined by `PreloaderImg`, and the `style` attribute takes an object, not a string. That's because JSX is more than HTML; it's JavaScript. You can put any JavaScript entity you need in those props.
 
-That will be one of the cornerstones of our sample project.
+That will be a cornerstone of our project.
 
 ## Step 3: Update App
 
-To use our new `Preloader` component, we have to edit `src/App.js`. Let's start by removing the defaults that came with `create-react-app` and importing our `Preloader` component.
+We use our new Preloader component in App – `src/App.js`. Let's remove the `create-react-app` defaults and import our `Preloader` component.
 
-{crop-start: 5, crop-end: 35, format: javascript, line-numbers: false}
-![Revamp App.js](code_samples/es6v2/App.js)
+{format: javascript, line-numbers: false, caption: "Revamp App.js"}
+```
+// src/App.js
 
-We removed the logo and style imports, added an import for `Preloader`, and gutted everything out of the `App` class. It's a great starting point for a default app, but it's served its purpose.
+import React from 'react';
+// markua-start-delete
+import logo from './logo.svg';
+import './App.css';
+// markua-end-delete
+
+// markua-start-insert
+import Preloader from './components/Preloader';
+// markua-end-insert
+
+class App extends React.Component {
+    // markua-start-delete
+  render() {
+    return (
+      <div className="App">
+        <div className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <h2>Welcome to React</h2>
+        </div>
+        <p className="App-intro">
+          To get started, edit <code>src/App.js</code> and save to reload.
+        </p>
+      </div>
+    );
+  }
+    // markua-end-delete
+}
+
+export default App;
+```
+
+We removed the logo and style imports, added an import for `Preloader`, and gutted the `App` class. It's great for a default app, but we don't need that anymore.
 
 Let's define a default `state` and a `render` method that uses our `Preloader` component when there's no data.
 
-{crop-start: 40, crop-end: 62, format: javascript, line-numbers: false}
-![Render the preloader](code_samples/es6v2/App.js)
+{format: javascript, line-numbers: false, caption: "Render our preloader"}
+```
+// src/App.js
 
-With modern ES6+ classes, we can define properties directly in the class without going through the constructor method. This makes our code cleaner and easier to read.
+class App extends React.Component {
+    // markua-start-insert
+    state = {
+        techSalaries: []
+    }
 
-You might be wondering whether `state` is now a class static property or if it's bound to `this` for each object. It works the way we need it to: bound to each `this` instance. I don't know *why* it works that way because it's hard to Google for these things when you can't remember the name, but I know it works. Tried and battle tested :smile:
+    render() {
+        const { techSalaries } = this.state;
+        
+        if (techSalaries.length < 1) {
+            return (
+                <Preloader />
+            );
+        }
 
-We set `techSalaries` to an empty array, then in `render` check whether it's empty and render either the `Preloader` component or a blank `<div>`. Rendering your preloaders when there's no data makes sense even if you still need to build your data loading.
+        return (
+            <div className="App">
 
-If you have `npm start` running, your preloader should show up on screen.
+            </div>
+        );
+    }
+    // markua-end-insert
+}
+```
+
+Nowadays we can define properties directly in the class body without a constructor method. It's not part of the official JavaScript standard yet, but most React codebases use this pattern.
+
+Properties defined this way are bound to each instance of our components so they have the correct `this` value. Late you'll see we can use this shorthand to neatly define event handlers.
+
+We set `techSalaries` to an empty array by default. In `render` we use object destructuring to take `techSalaries` out of component state, `this.state`, and check whether it's empty. When `techSalaries` is empty our component renders the preloader, otherwise an empty div.
+
+If your `npm start` is running, the preloader should show up on your screen.
 
 ![Preloader without Bootstrap styles](images/es6v2/preloader-without-styles-screenshot.png)
 
@@ -99,20 +198,40 @@ Hmm… that's not very pretty. Let's fix it.
 
 ## Step 4: Load Bootstrap styles
 
-We're going to use Bootstrap styles to avoid reinventing the wheel. We're ignoring their JavaScript widgets and the amazing integration built by the [react-bootstrap](http://react-bootstrap.github.io/) team. All we need are the stylesheets.
+We're going to use Bootstrap styles to avoid reinventing the wheel. We're ignoring their JavaScript widgets and the amazing integration built by the [react-bootstrap](http://react-bootstrap.github.io/) team. Just the stylesheets please.
 
-They'll make the fonts look better, help with layouting, and make buttons look like buttons.
+They'll make our fonts look better, help with layouting, and make buttons look like buttons. We *could* use styled components, but writing our own styles detracts from this tutorial.
 
-We add them in `src/index.js`.
+We load stylesheets in `src/index.js`.
 
-{crop-start: 5, crop-end: 17, format: javascript, line-numbers: false}
-![Add bootstrap in index.js](code_samples/es6v2/index.js)
+{format: javascript, line-numbers: false, caption: "Add Bootstrap in index.js"}
+```
+// src/index.js
 
-Another benefit of using Webpack: `import`-ing stylesheets. These imports turn into `<style>` tags with CSS in their body at runtime.
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+// markua-start-insert
+import 'bootstrap/dist/css/bootstrap.css';
+// markua-end-insert
 
-This is also a good opportunity to see how simple the `index.js` file is. It requires our `App` and uses `ReactDOM` to render it into the page. That's it.
+ReactDOM.render(
+  <App />,
+  document.getElementById('root')
+);
+```
 
-You should now see your beautiful preloader on screen.
+Another benefit of Webpack: `import`-ing stylesheets. These imports turn into `<style>` tags with CSS in their body at runtime.
+
+This is also a good opportunity to see how `index.js` works to render our app 👇
+
+1. loads `App` and React
+2. loads styles
+3. Uses `ReactDOM` to render `<App />` into the DOM
+
+That's it. 
+
+Your preloader screen should look better now.
 
 ![Preloader screenshot](images/es6v2/preloader-screenshot.png)
 
@@ -124,13 +243,15 @@ Great! We have a preloader. Time to load some data.
 
 We'll use D3's built-in data loading methods and tie their promises into React's component lifecycle. You could talk to a REST API in the same way. Neither D3 nor React care what the datasource is.
 
-First, you need the data files. I scraped the tech salary info from [h1bdata.info](http://h1bdata.info/), the median household incomes from the US census datasets, and US map data from Mike Bostock's github repositories. I used some elbow grease and python scripts to tie the datasets together.
+First, you need some data. 
+
+Our dataset comes from a few sources. Tech salaries are from [h1bdata.info](http://h1bdata.info), median household incomes come from the US census data, and I got US geo map info from Mike Bostock's github repositories. Some elbow grease and python scripts tied them all together.
 
 You can read about the scraping on my blog [here](https://swizec.com/blog/place-names-county-names-geonames/swizec/7083), [here](https://swizec.com/blog/facts-us-household-income/swizec/7075), and [here](https://swizec.com/blog/livecoding-24-choropleth-react-js/swizec/7078). But it's not the subject of this book.
 
 ## Step 0: Get the data
 
-You should download the 6 datafiles from [my step-by-step repository on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/8819d9c38b4aef0a0c569e493f088ff9c3bfdf33). Put them in the `public/data` directory in your project.
+Download the 6 data files from [my step-by-step repository on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/8819d9c38b4aef0a0c569e493f088ff9c3bfdf33). Put them in your `public/data` directory.
 
 The quickest way to download each file is to click `View`, then right-click `Raw` and `Save Link As`.
 
@@ -138,75 +259,125 @@ The quickest way to download each file is to click `View`, then right-click `Raw
 
 Let's set up our `App` component first. That way you'll see results as soon data loading starts to work.
 
-We start by importing our data loading method - `loadAllData` - and both D3 and Lodash. We'll need them later.
+Start by importing our data loading method - `loadAllData` - and both D3 and Lodash. We'll need them later.
 
-{crop-start: 67, crop-end: 78, format: javascript, line-numbers: false}
-![Import d3, lodash, and our data loader](code_samples/es6v2/App.js)
+{format: javascript, line-numbers: false, caption: "Import D3, lodash, and our loading method"}
+```
+// src/App.js
+import React from 'react';
+// markua-start-insert
+import * as d3 from 'd3';
+import _ from 'lodash';
+// markua-end-insert
 
-You already know the normal imports. Importing with `{}` is how we import named exports, which lets us get multiple things from the same file. You'll see how the export side works in Step 2.
+import Preloader from './components/Preloader';
+// markua-start-insert
+import { loadAllData } from './DataHandling';
+// markua-end-insert
+```
 
-{crop-start: 79, crop-end: 91, format: javascript, line-numbers: false}
-![Initiate data loading in App.js](code_samples/es6v2/App.js)
+You already know about default imports. Importing with `{}` is how we import named exports. That lets us get multiple things from the same file. You'll see the export side in Step 2.
 
-We initiate data loading inside the `App` class's `componentWillMount` lifecycle hook. It fires right before React mounts our component into the DOM. Seems like a good place to start loading data, but some say it's an anti-pattern.
+{format: javascript, line-numbers: false, caption: "Initiate data loading in App.js"}
+```
+// src/App.js
+class App extends React.Component {
+    state = {
+        countyNames: [],
+        // markua-start-insert
+        medianIncomes: [],
+        techSalaries: [],
+    };
 
-I like tying it to component mount when using the [basic architecture](#basic-architecture), and in a more render agnostic place when using Redux or MobX for state management.
+    componentDidMount() {
+        loadAllData(data => this.setState(data));
+    }
+    // markua-end-insert
+```
 
-To initiate data loading, we call the `loadAllData` function, which we're defining next, then use `this.setState` in a callback. This updates `App`'s state and triggers a re-render, which updates our entire visualization via props.
+We initiate data loading inside the `componentDidMount` lifecycle hook. It fires when React first mounts our component into the DOM.
 
-We also took this opportunity to add two more entries to our `state`: `countyNames`, and `medianIncomes`.
+I like to tie data loading to component mounts because it means you aren't making requests you'll never use. In a bigger app, you'd use Redux, MobX, or similar to decouple loading from rendering. Many reasons why.
 
-Let's add a "Data loaded" indicator to the `render` method. That way we'll know when data loading works.
+To load our data, we call the `loadAllData` function, then use `this.setState` in the callback. This updates `App`'s state and triggers a re-render, which updates our entire visualization via props.
 
-{crop-start: 94, crop-end: 112, format: javascript, line-numbers: false}
-![Data loaded indicator](code_samples/es6v2/App.js)
+Yes, it *would* be better to make `loadAllData` return a promise instead of expecting a callback. That was giving me trouble for some reason and it doesn't matter right now anyway.
 
-We added the `container` class to the main `<div>` and added an `<h1>` tag to show how many datapoints were loaded. The `{}` pattern denotes a dynamic value in JSX. You've seen this in props so far, but it works in tag bodies as well.
+We also add two more entries to our `state`: `countyNames`, and `medianIncomes`. Defining what's in your component state in advance makes your code easier to read. People, including you, know what to expect.
 
-With all of this done, you should see an error overlay.
+Let's change the `render` method to show a message when our data finishes loading.
+
+{format: javascript, line-numbers: false, caption: "Show when data loads"}
+```
+// src/App.js
+	render() {
+     const { techSalaries } = this.state;
+     	
+     if (techSalaries.length < 1) {
+         return (
+             <Preloader />
+         );
+      }
+
+    return (
+        // markua-start-delete
+        <div className="App">
+        // markua-end-delete
+        // markua-start-insert
+        <div className="App container">
+            <h1>Loaded {techSalaries.length} salaries</h1>
+        // markua-end-insert
+        </div>
+    );
+}
+```
+
+We added a `container` class to the main `<div>` and an `<h1>` tag that shows how many datapoints there are. You can use any valid JavaScript in curly braces `{}` and JSX will evaluate it. By convention we only use that ability to calculate display values.
+
+You should now get an error overlay.
 
 ![DataHandling.js not found error overlay](images/es6v2/datahandling-error.png)
 
-These nice error overlays come with `create-react-app`. They make it so you never have to check the terminal where `npm start` is running. A big improvement thanks to the React team at Facebook.
+These nice error overlays come with `create-react-app` and make your code easier to debug. No hunting around in the terminal to see compilation errors.
 
 Let's build that file and fill it with our data loading logic.
 
 ## Step 2: Prep data parsing functions
 
-We're putting data loading logic in a file separate from `App.js` because it's a bunch of functions that work together and don't have much to do with the `App` component.
+We're putting data loading logic in a separate file from `App.js` because it's a bunch of functions that work together and don't have much to do with the `App` component itself.
 
-We start the file with two imports and four data parsing functions:
+We start with two imports and four data parsing functions:
 
 - `cleanIncomes`, which parses each row of household income data
 - `dateParse`, which we use for parsing dates
 - `cleanSalary`, which parses each row of salary data
 - `cleanUSStateName`, which parses US state names
 
-{crop-start: 5, crop-end: 43, format: javascript, line-numbers: false}
+{crop-start: 5, crop-end: 48, format: javascript, line-numbers: false}
 ![Data parsing functions](code_samples/es6v2/DataHandling.js)
 
 You'll see those `d3` and `lodash` imports a lot.
 
-The data parsing functions all follow the same approach: Take a row of data as `d`, return a dictionary with nicer key names, and cast any numbers or dates into appropriate formats. They all come in as strings.
+Our data parsing functions all follow the same approach: Take a row of data as `d`, return a dictionary with nicer key names, cast any numbers or dates into appropriate formats. They all start as strings.
 
-Doing the parsing and the nicer key names now makes the rest of our codebase simpler because we don't have to deal with this all the time. For example, `entry.job_title` is nicer to read and type than `entry['job title']`.
+Doing all this parsing now, keeps the rest of our codebase clean. Handling data is always messy. You want to contain that mess as much as possible.
 
 ## Step 3: Load the datasets
 
-Now that we have our data parsing functions, we can use D3 to load the data with Ajax requests.
+Now we can use D3 to load our data with fetch requests.
 
-{crop-start: 47, crop-end: 58, format: javascript, line-numbers: false}
+{crop-start: 52, crop-end: 64, format: javascript, line-numbers: false}
 ![Data loading](code_samples/es6v2/DataHandling.js)
 
-Here you can see another ES6 trick: default argument values. If `callback` is false, we set it to `_.noop` - a function that does nothing. This lets us later call `callback()` without worrying whether it was given as an argument.
+Here you can see another ES6 trick: default argument values. If `callback` is falsey, we set it to `_.noop` - a function that does nothing. This lets us later call `callback()` without worrying whether it's defined.
 
 In version 5, D3 updated its data loading methods to use promises instead of callbacks. You can load a single file using `d3.csv("filename").then(data => ....`. The promise resolves with your data, or throws an error.
 
-Each `d3.csv` call makes a fetch request, parses the fetched CSV file into an array of JavaScript dictionaries, and passes each row through the provided cleanup function. We pass all median incomes through `cleanIncomes`, salaries through `cleanSalary` and so on.
+If you're on D3v4 and can't upgrade, you'll have to import from `d3-fetch`.
 
-To load multiple files like, we use `Promise.all` and give it a list of unresolved promises. When they're resolved, our `.then` gets a list of results.
+Each `d3.csv` call makes a fetch request, parses the fetched CSV file into an array of JavaScript dictionaries, and passes each row through the provided cleanup function. We pass all median incomes through `cleanIncomes`, salaries through `cleanSalary`, etc.
 
-We destructure the array into our respective datasets and carry on tying them together.
+To load multiple files, we use `Promise.all` with a list of unresolved promises. Once resolved, our `.then` handler gets a list of results. We use array destructuring to expand that list into our respective datasets before running some more logic to tie them together.
 
 D3 supports formats like `json`, `csv`, `tsv`, `text`, and `xml` out of the box. You can make it work with custom data sources through the underlying `request` API.
 
@@ -215,22 +386,20 @@ PS: we're using the shortened salary dataset to make page reloads faster while b
 {#tie-datasets-together}
 ## Step 4: Tie the datasets together
 
-If you put a `console.log` in the `.then` callback above, you'll see a bunch of data. Each argument - `us`, `countyNames`, `medianIncomes`, `techSalaries`, `USstateNames` - holds the entire parsed dataset from the corresponding file.
+If you add a `console.log` to the `.then` callback above, you'll see a bunch of data. Each argument - `us`, `countyNames`, `medianIncomes`, `techSalaries`, `USstateNames` - holds a parsed dataset from the corresponding file.
 
-To tie them together and prepare a dictionary for `setState` back in the `App` component, we need to add a little big of logic. We're going to build a dictionary of county household incomes and remove any empty salaries.
+To tie them together and prepare a dictionary for `setState` back in the `App` component, we need to add some logic. We're building a dictionary of county household incomes and removing any empty salaries.
 
-{crop-start: 63, crop-end: 90, format: javascript, line-numbers: false}
-![Tie the datasets together](code_samples/es6v2/DataHandling.js)
+{crop-start: 68, crop-end: 92, format: javascript, line-numbers: false}
+![Tie our datasets together](code_samples/es6v2/DataHandling.js)
 
-The first line should be one of those `cleanX` functions like we had above. I'm not sure how I missed it.
+Building the income map looks weird because of indentation, but it's not that bad. We `filter` the `medianIncomes` array to discard any incomes whose `countyName` we can't find. I made sure they were all unique when I built the datasets.
 
-Then we have the county median income map building. It looks like weird code because of the indentation, but it's not that bad. We `filter` the `medianIncomes` array to discard any incomes whose `countyName` we can't find. I made sure all the names are unique when I was building the datasets.
+We walk through the filtered array with a `forEach`, find the correct `countyID`, and add each entry to `medianIncomesMap`. When we're done, we have a large dictionary that maps county ids to their household income data.
 
-We use `forEach` to walk through the filtered array, find the correct `countyID`, and add the entry to `medianIncomesMap`. When we're done, we have a large dictionary that maps county ids to their household income data.
+Then we filter `techSalaries` to remove any empty values where the `cleanSalaries` function returned `null`. That happens when a salary is either undefined or absurdly high.
 
-At the end, we filter `techSalaries` to remove any empty values - the `cleanSalaries` function returns `null` when a salary is either undefined or absurdly high.
-
-Then we call `callback` with a dictionary of the new datasets. To make future access quicker, we use `_.groupBy` to build dictionary maps of counties by county name and by US state.
+When our data is ready, we call our `callback` with a dictionary of the new datasets. To make future access quicker, we use `_.groupBy` to build dictionary maps of counties by county name and by US state.
 
 You should now see how many salary entries the shortened dataset contains.
 
@@ -241,17 +410,19 @@ If that didn't work, try comparing your changes to this [diff on Github](https:/
 {#choropleth-map}
 # Render a choropleth map of the US
 
-Now that we have our data, it's time to start drawing pictures - a choropleth map. That's a map that uses colored geographical areas to encode data.
+With our data in hand, it's time to draw some pictures. A choropleth map will show us the best places to be in tech.
 
-In this case, we're going to show the delta between median household salary in a statistical county and the average salary of a single tech worker on a visa. The darker the blue, the higher the difference.
+We're showing the delta between median household salary in a statistical county and the average salary of a single tech worker on a visa. The darker the blue, the higher the difference.
+
+The more a single salary can out-earn an entire household, the better off you are.
 
 ![Choropleth map with shortened dataset](images/es6v2/choropleth-map-shortened-dataset.png)
 
-There's a lot of gray on this map because the shortened dataset doesn't span that many counties. There's going to be plenty in the full choropleth too, but not as much as there is here.
+There's a lot of gray on this map because the shortened dataset doesn't have that many counties. Full dataset is going to look better, I promise.
 
-Turns Out™ immigration visa opportunities for techies aren't evenly distributed throughout the country. Who knew?
+Turns out immigration visa opportunities for techies aren't evenly distributed throughout the country. Who knew?
 
-Just like before, we're going to start with changes in our `App` component, then build the new bit. This time, a `CountyMap` component spread into three files:
+Just like before, we're going to start with changes in our `App` component, then build the new bit. This time, a `CountyMap` component spread over three files:
 
 - `CountyMap/index.js`, to make imports easier
 - `CountyMap/CountyMap.js`, for overall map logic
@@ -264,7 +435,7 @@ You might guess the pattern already: add an import, add a helper method or two, 
 {crop-start: 119, crop-end: 126, format: javascript, line-numbers: false}
 ![Import CountyMap component](code_samples/es6v2/App.js)
 
-That imports the `CountyMap` component from `components/CountyMap/`. Until we're done, your browser should show an error overlay about some file or another not existing.
+That imports the `CountyMap` component from `components/CountyMap/`. Your browser will show an error overlay about some file or another until we're done.
 
 In the `App` class itself, we add a `countyValue` method. It takes a county entry and a map of tech salaries, and it returns the delta between median household income and a single tech salary.
 
@@ -275,48 +446,89 @@ We use `this.state.medianIncomes` to get the median household salary and the `te
 
 `countyID` specifies the county and `value` is the delta that our choropleth displays.
 
-In the `render` method, we'll do three things:
+In the `render` method, we'll:
 
  - prep a list of county values
  - remove the "data loaded" indicator
  - render the map
 
-{crop-start: 146, crop-end: 183, format: javascript, line-numbers: false}
-![Render the CountyMap component](code_samples/es6v2/App.js)
+{format: javascript, line-numbers: false, caption: "Render the CountyMap component}
+```
+// src/App.js
+render() {
+    if (techSalaries.length < 1) {
+        return (
+            <Preloader />
+        );
+    }
+
+    // markua-start-insert
+    const filteredSalaries = techSalaries,
+          filteredSalariesMap = _.groupBy(filteredSalaries, 'countyID'),
+          countyValues = countyNames.map(
+              county => this.countyValue(county, filteredSalariesMap)
+          ).filter(d => !_.isNull(d));
+
+    let zoom = null;
+    // markua-end-insert
+
+      return (
+          <div className="App container">
+            // markua-start-delete
+            <h1>Loaded {techSalaries.length} salaries</h1>
+            // markua-end-delete
+            // markua-start-insert
+            <svg width="1100" height="500">
+                <CountyMap usTopoJson={usTopoJson}
+                           USstateNames={USstateNames}
+                           values={countyValues}
+                           x={0}
+                           y={0}
+                           width={500}
+                           height={500}
+                           zoom={zoom} />
+            </svg>
+            // markua-end-insert
+          </div>
+      );
+  }
+```
 
 We call our dataset `filteredTechSalaries` because we're going to add filtering in the [subchapter about adding user controls](#user-controls). Using the proper name now means less code to change later. The magic of foresight :smile:
 
 We use `_.groupBy` to build a dictionary mapping each `countyID` to an array of salaries, and we use our `countyValue` method to build an array of counties for our map.
 
-We set `zoom` to `null` for now. This will also come into effect later.
+We set `zoom` to `null` for now. We'll use this later.
 
-In the `return` statement, we remove the "data loaded" indicator, and we add an `<svg>` element that's `1100` pixels wide and `500` pixels high. Inside, we put the `CountyMap` component with a bunch of properties. Some dataset stuff, some sizing and positioning stuff.
+In the `return` statement, we remove our "data loaded" indicator, and add an `<svg>` element that's `1100` pixels wide and `500` pixels high. Inside, we place the `CountyMap` component with a bunch of properties. Some dataset stuff, some sizing and positioning stuff.
 
 ## Step 2: CountyMap/index.js
 
-We use `index.js` for one reason alone: to make imports and debugging easier. I learned this lesson the hard way so you don't have to.
+We make `index.js` for just reason: to make imports and debugging easier. I learned this lesson the hard way so you don't have to.
 
 {format: javascript, line-numbers: false, line-numbers: false}
 ![CountyMap index.js](code_samples/es6v2/components/CountyMap/index.js)
 
-We export the default import from `./CountyMap.js`. That's it.
+Re-export the default import from `./CountyMap.js`. That's it.
 
-This allows us to import `CountyMap` from the directory without knowing about internal file structure. We *could* put all the code in this `index.js` file, but then stack traces are hard to read.
+This allows us to import `CountyMap` from the directory without knowing about internal file structure. We *could* put all the code in this `index.js` file, but that makes debugging harder. You'll have plenty of index.js files in your project.
 
-Putting a lot of code into `<directory>/index.js` files means that when you're looking at a stack trace, or opening different source files inside the browser, they're all going to be named `index.js`. Life is easier when components live inside a file named the same as the component you're using.
+Having a lot of code in `<directory>/index.js` is a common pattern in new projects. But when you're looking at a stack trace, source files in the browser, or filenames in your editor, you'll wish every component lived in a file of the same name.
 
 ## Step 3: CountyMap/CountyMap.js
 
-Now here comes the fun part - declaratively drawing a map. You'll see why I love using React for dataviz.
+Here comes the fun part - declaratively drawing a map. You'll see why I love using React for dataviz.
 
-We're using the [full-feature integration](#full-feature-integration) and a lot of D3 magic for maps. I'm always surprised by how little code it takes to draw a map with D3.
+We're using the [full-feature integration](#full-feature-integration) approach and a lot of D3 maps magic. Drawing a map with D3 I'm always surprised how little code it takes.
 
-Start with the imports: React, D3, lodash, topojson, the County component.
+Start with the imports: React, D3, lodash, topojson, County component.
 
 {crop-start: 5, crop-end: 12, format: javascript, line-numbers: false}
 ![Import CountyMap dependencies](code_samples/es6v2/components/CountyMap/CountyMap.js)
 
-Out of these, we haven't built `County` yet, and you haven't seen `topojson` before. It's a way of defining geographical data with JSON. We're going to use the `topojson` library to translate our geographical datasets into GeoJSON, which is another way of defining geo data with JSON.
+Out of these, we haven't built `County` yet, and you haven't seen `topojson` before. 
+
+TopoJSON is a geographical data format based on JSON. We're using the `topojson` library to translate our geographical datasets into GeoJSON, which is another way of defining geo data with JSON.
 
 I don't know why there are two, but TopoJSON produces smaller files, and GeoJSON can be fed directly into D3's geo functions. ¯\\_(ツ)_/¯
 
@@ -324,38 +536,120 @@ Maybe it's a case of [competing standards](https://xkcd.com/927/).
 
 ### Constructor
 
-Let's stub out the `CountyMap` component then fill it in with logic.
+We stub out the `CountyMap` component then fill it in with logic.
 
-{crop-start: 13, crop-end: 40, format: javascript, line-numbers: false}
-![CountyMap stub](code_samples/es6v2/components/CountyMap/CountyMap.js)
+{format: javascript, line-numbers: false, caption: "CountyMap stub"}
+```
+// src/components/CountyMap/CountyMap.js
+class CountyMap extends Component {
+    constructor(props) {
+        super(props);
 
-We'll set up default D3 state in `constructor` and keep it up to date in `updateD3`. To avoid repetition, we call `updateD3` in the constructor as well.
+        this.state = {
+        }
+    }
+
+    static getDerivedStateFromProps(props, state) {
+
+    }
+
+    render() {
+        const { usTopoJson } = this.props;
+        
+        if (!usTopoJson) {
+            return null;
+        }else{
+            return (
+
+            );
+        }
+    }
+}
+
+export default CountyMap;
+```
+
+We'll set up default D3 state in `constructor` and keep it up to date with `getDerivedStateFromProps`.
 
 We need three D3 objects to build a choropleth map: a geographical projection, a path generator, and a quantize scale for colors.
 
-{crop-start: 46, crop-end: 59, format: javascript, line-numbers: false}
-![D3 objects for a map](code_samples/es6v2/components/CountyMap/CountyMap.js)
+{format: javascript, line-numbers: false, caption: "D3 objects for a map"}
+```
+// src/components/CountyMap/CountyMap.js
+class CountyMap extends React.Component {
+    constructor(props) {
+        super(props);
 
-You might remember geographical projections from high school geography. They map a sphere to a flat surface. We use `geoAlbersUsa` because it's made specifically to draw maps of the USA.
+        const projection = d3.geoAlbersUsa().scale(1280);
 
-You can see the other projections D3 offers on the [d3-geo Github page](https://github.com/d3/d3-geo#projections).
+        this.state = {
+            geoPath: d3.geoPath().projection(projection),
+            quantize: d3.scaleQuantize().range(d3.range(9)),
+            projection
+        };
+    }
+```
 
-The `geoPath` generator takes a projection and returns a function that generates the `d` attribute of `<path>` elements. This is the most general way to specify SVG shapes. I won't go into explaining the `d` here, but it's [an entire DSL](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d).
+You might remember geographical projections from high school. They map a sphere to a flat surface. We use `geoAlbersUsa` because it's made specifically for maps of the USA.
 
-`quantize` is a D3 scale. We've dealt with the basics of scales in the [D3 Axis example](#blackbox-axis). This one splits a domain into 9 quantiles and assigns them specific values from the `range`.
+D3 offers many other projections. You can see them on [d3-geo's Github page](https://github.com/d3/d3-geo#projections).
+
+A `geoPath` generator takes a projection and returns a function that generates the `d` attribute of `<path>` elements. This is the most general way to specify SVG shapes. I won't go into explaining the `d` here, but it's [an entire language](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d) for describing shapes.
+
+`quantize` is a D3 scale. We've talked about the basics of scales in the [D3 Axis example](#blackbox-axis). This one splits a domain into 9 quantiles and assigns them specific values from the `range`.
 
 Let's say our domain goes from 0 to 90. Calling the scale with any number between 0 and 9 would return 1. 10 to 19 returns 2 and so on. We'll use it to pick colors from an array.
 
-### updateD3
+### getDerivedStateFromProps
 
-Keeping all of this up-to-date is easy, but we'll make it harder by adding a zoom feature. It won't work until we implement the filtering, but hey, we'll already have it by then! :D
+Keeping our geo path and quantize scale up to date is simple, but we'll make it harder by adding a zoom feature. It won't work until we build the filtering, but hey, we'll already have it by then! :D
 
-{crop-start: 65, crop-end: 93, format: javascript, line-numbers: false}
-![CountyMap updateD3](code_samples/es6v2/components/CountyMap/CountyMap.js)
+{format: javascript, line-numbers: false, caption: "CountyMap getDerivedStateFromProps"}
+```
+		// src/components/CountyMap/CountyMap.js
+    static getDerivedStateFromProps(props, state) {
+        let { projection, quantize, geoPath } = state;
+
+        projection
+            .translate([props.width / 2, props.height / 2])
+            .scale(props.width * 1.3);
+
+        if (props.zoom && props.usTopoJson) {
+            const us = props.usTopoJson,
+                USstatePaths = topojson.feature(us, us.objects.states).features,
+                id = _.find(props.USstateNames, { code: props.zoom }).id;
+
+            projection.scale(props.width * 4.5);
+
+            const centroid = geoPath.centroid(_.find(USstatePaths, { id: id })),
+                translate = projection.translate();
+
+            projection.translate([
+                translate[0] - centroid[0] + props.width / 2,
+                translate[1] - centroid[1] + props.height / 2
+            ]);
+        }
+
+        if (props.values) {
+            quantize.domain([
+                d3.quantile(props.values, 0.15, d => d.value),
+                d3.quantile(props.values, 0.85, d => d.value)
+            ]);
+        }
+
+        return {
+            ...state,
+            projection,
+            quantize
+        };
+    }
+```
 
 There's a lot going on here.
 
-The first part is okay. It `translates` (moves) the projection to the center of our drawing area and sets a scale property. The value was discovered experimentally and is different for every projection.
+We destructure `projection`, `quantize`, and `geoPath` out of component state. These are the D3 object we're about to update.
+
+First up is the projection. We translate (move) it to the center of our drawing area and set the scale property. You have to play around with this value until you get a nice result because it's different for every projection.
 
 Then we do some weird stuff if `zoom` is defined.
 
@@ -365,119 +659,216 @@ The calculation in `.translate()` helps us align the center point of our `zoom` 
 
 While all of this is going on, we also tweak the `.scale` property to make the map bigger. This creates a zooming effect.
 
-At the end of the `updateD3` function, we update the quantize scale's domain with new values. Using `d3.quantile` lets us offset the scale to produce a more interesting map. The values were discovered experimentally - they cut off the top and bottom of the range because there isn't much there. This brings higher contrast to the richer middle of the range.
+After all that, we update the quantize scale's domain with new values. Using `d3.quantile` lets us offset the scale to produce a more interesting map. Again, I discovered these values through experiment - they cut off the top and bottom of the range because there isn't much there. This brings higher contrast to the richer middle of the range.
+
+With our D3 objects updated, we return a new derived state. *Technically* you don't have to do this but you should. Due to how JavaScript works, you already updated D3 objects in place, but you should pretend `this.state` is immutable and return a new copy.
+
+Overall that makes your code easier to understand and closer to React principles.
 
 ### render
 
-After all of that work, the `render` method is a breeze. We prep the data then loop through it and render `County` elements.
+After all that hard work, the `render` method is a breeze. We prep our data then loop through it and render a `County` element for each entry.
 
-{crop-start: 95, crop-end: 128, format: javascript, line-numbers: false}
-![CountyMap render](code_samples/es6v2/components/CountyMap/CountyMap.js)
+{format: javascript, line-numbers: false, caption: "CountyMap render"}
+```
+    render() {
+        const { geoPath, quantize } = this.state,
+            { usTopoJson, values, zoom } = this.props;
 
-We use the topojson library to grab data out of the `usTopoJson` dataset. `.mesh` calculates a mesh for US states - a thin line around the edges. `.feature` calculates the features for each county - fill in with color.
+        if (!usTopoJson) {
+            return null;
+        } else {
+            const us = usTopoJson,
+                USstatesMesh = topojson.mesh(
+                    us,
+                    us.objects.states,
+                    (a, b) => a !== b
+                ),
+                counties = topojson.feature(us, us.objects.counties).features;
 
-Mesh and feature aren't tied to states or counties by the way. It's just a matter of what you get back: borders or flat areas. What you need depends on what you're building.
+            const countyValueMap = _.fromPairs(
+                values.map(d => [d.countyID, d.value])
+            );
 
-We use `_.fromPairs` to build a dictionary that maps county identifiers to their values. Building it beforehand makes our code faster. You can read some details about the speed optimizations [here](https://swizec.com/blog/optimizing-react-choropleth-map-rendering/swizec/7302).
+            return (
+                <g>
+                    {counties.map(feature => (
+                        <County
+                            geoPath={geoPath}
+                            feature={feature}
+                            zoom={zoom}
+                            key={feature.id}
+                            quantize={quantize}
+                            value={countyValueMap[feature.id]}
+                        />
+                    ))}
 
-As promised, all we have to do in the `return` statement is loop through the list of `counties` and render `County` components. Each gets a bunch of attributes and will return a `<path>` element that looks like a specific county.
+                    <path
+                        d={geoPath(USstatesMesh)}
+                        style={{
+                            fill: "none",
+                            stroke: "#fff",
+                            strokeLinejoin: "round"
+                        }}
+                    />
+                </g>
+            );
+        }
+    }
+```
 
-For the US state borders, we use a single `<path>` element and use `this.geoPath` to generate the `d` property.
+We use destructuring to save all relevant props and state in constants, then use the TopoJSON library to grab data out of the `usTopoJson` dataset.
+
+`.mesh` calculates a mesh for US states – a thin line around the edges. `.feature` calculates feature for each count – fill in with color.
+
+Mesh and feature aren't tied to US states or counties by the way. It's just a matter of what you get back: borders or flat areas. What you need depends on what you're building.
+
+We use Lodash's `_.fromPairs` to build a dictionary that maps county identifiers to their values. Building it beforehand makes our code faster. You can read some details about the speed optimizations [here](https://swizec.com/blog/optimizing-react-choropleth-map-rendering/swizec/7302).
+
+As promised, the `return` statement loops through the list of `counties` and renders `County` components. Each gets a bunch of attributes and returns a `<path>` element that looks like a specific county.
+
+For US state borders, we render a single `<path>` element and use `geoPath` to generate the `d` attribute.
 
 ## Step 4: CountyMap/County.js
 
-The `County` component itself is built out of two parts: imports and color constants, and a component that returns a `<path>`. We did all the hard calculation work in `CountyMap`.
+The `County` component is built from two parts: imports and color constants, and a component that returns a `<path>`. All the hard calculation happens in `CountyMap`.
 
 {crop-start: 5, crop-end: 22, format: javascript, line-numbers: false}
 ![Imports and color constants](code_samples/es6v2/components/CountyMap/County.js)
 
-We import React and lodash, then define some color constants. I got the `ChoroplethColors` from some example online, and `BlankColor` is a pleasant gray.
+We import React and Lodash, and define some color constants. I got the `ChoroplethColors` from some example online, and `BlankColor` is a pleasant gray.
 
-Now we need the `County` component itself.
+Now we need the `County` component.
 
 {crop-start: 27, crop-end: 53, format: javascript, line-numbers: false}
 ![County component](code_samples/es6v2/components/CountyMap/County.js)
 
-The `render` method uses the `quantize` scale to pick the right color and returns a `<path>` element. `geoPath` generates the `d` attribute, we set style to `fill` the color, and we give our path a `title`.
+The `render` method uses a `quantize` scale to pick the right color and returns a `<path>` element. `geoPath` generates the `d` attribute, we set style to `fill` the color, and we give our path a `title`.
 
-`shouldComponentUpdate` is more interesting. It's a React lifecycle method that lets us specify which prop changes are relevant to our component re-rendering.
+`shouldComponentUpdate` is more interesting. It's a React lifecycle method that lets you specify which prop changes are relevant to component re-rendering.
 
-`CountyMap` passes complex props - `quantize`, `geoPath`, and `feature` - which are pass-by-reference instead of pass-by-value. That means React can't see when they produce different values, just when they are different instances.
+`CountyMap` passes complex props - `quantize`, `geoPath`, and `feature`. They're pass-by-reference instead of pass-by-value. That means React can't see when their output changes unless you make completely new copies.
 
 This can lead to all 3,220 counties re-rendering every time a user does anything. But they only have to re-render if we change the map zoom or if the county gets a new value.
 
-Using `shouldComponentUpdate` like this we can go from 3,220 DOM updates to the order of a few hundred. Big improvement in speed.
+Using `shouldComponentUpdate` like this we can go from 3,220 DOM updates to a few hundred. Big speed improvement
 
 ---
 
-And with that, your browser should show you a map.
+Your browser should now show a map.
 
 ![Choropleth map with shortened dataset](images/es6v2/choropleth-map-shortened-dataset.png)
 
-Turns out tech job visas just aren't that well distributed geographically. Most counties come out grey even with the full dataset.
+Tech work visas just aren't that evenly distributed. Even with the full dataset most counties are gray.
 
 If that didn't work, consult [this diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/f4c1535e9c9ca4982c8f3c74cff9f739eb08c0f7).
 
 {#histogram-of-salaries}
 # Render a Histogram of salaries
 
-Knowing the median salary is great and all, but it doesn't tell you much about what you can expect. You need to know the distribution to see if it's more likely you'll get 140k or 70k.
+Knowing median salaries is great and all, but it doesn't tell you much about what you can expect. You need to know the distribution to see if it's more likely you'll get 140k or 70k.
 
 That's what histograms are for. Give them a bunch of data, and they show its distribution. We're going to build one like this:
 
 ![Basic histogram](images/es6v2/basic-histogram.png)
 
-In the shortened dataset, 35% of tech salaries fall between $60k and $80k, 26% between $80k and $100k etc. Throwing a random dice using this as your [random distribution](https://en.wikipedia.org/wiki/Probability_distribution), you're far more likely to get 60k-80k than 120k-140k. Turns out this is a great way to gauge situations.
+In the shortened dataset, 35% of tech salaries fall between $60k and $80k, 26% between $80k and $100k etc. Throwing a weighed dice with this [random distribution](https://en.wikipedia.org/wiki/Probability_distribution), you're far more likely to get 60k-80k than 120k-140k. It's a great way to gauge situations.
 
-It's where fun statistics like "More people die from vending machines than shark attacks" come from. Which are you afraid of, vending machines or sharks? Stats say your answer should be [heart disease](https://www.cdc.gov/nchs/fastats/deaths.htm). ;)
+It's where statistics like "More people die from vending machines than shark attacks" come from. Which are you afraid of, vending machines or sharks? Stats say your answer should be [heart disease](https://www.cdc.gov/nchs/fastats/deaths.htm). ;)
 
-Anyway, let's build a histogram. We'll start with changes in `App.js`, make a `Histogram` component using the [full-feature approach](#full-feature-integration), then add an `Axis` using the [blackbox HOC approach](#blackbox-hoc). We're also going to add some CSS, finally.
+We'll start our histogram with some changes in `App.js`, make a `Histogram` component using the [full-feature approach](#full-feature-integration), add an `Axis` using the [blackbox HOC approach](#blackbox-hoc), and finally add some styling.
 
 ## Step 1: Prep App.js
 
-You know the drill, don't you? Import some stuff, add it to the `render()` method in our `App` component.
+You know the drill, don't you? Import some stuff, add it to the `render()` method in the `App` component.
 
-{crop-start: 190, crop-end: 204, format: javascript, line-numbers: false}
-![Histogram imports](code_samples/es6v2/App.js)
+{format: javascript, line-numbers: false, caption: "Histogram imports"}
+```
+// src/App.js
+import _ from 'lodash';
 
-We import `App.css` and the `Histogram` component. That's what I love about using Webpack - you can import CSS in JavaScript. We got the setup with `create-react-app`.
+// markua-start-insert
+import './style.css';
+// markua-end-insert
 
-There are different schools of thought about how CSS should be used. Some say each component should have its own CSS files and that that's the whole reason we want JS-based imports anyway. Others think we shouldn't use CSS at all and should do styling in JavaScript.
+import Preloader from './components/Preloader';
+import { loadAllData } from './DataHandling';
 
-Personally, I don't know. I like the idea of components coming with their own styling, but I find that makes them less reusable. Apps often want to specify their own styling.
+import CountyMap from './components/CountyMap';
+// markua-start-insert
+import Histogram from './components/Histogram';
+// markua-end-insert
+```
 
-Maybe a combination of default per-component styling and app-level overrides? Depends on your use case, I guess.
+We import `style.css` and the `Histogram` component. That's what I love about Webpack - you can import CSS in JavaScript. We got the setup with `create-react-app`.
 
-With the imports done, we can add `Histogram` to `App`'s render method.
+There are competing schools of thought about styling React apps. Some say each component should come with its own CSS files, some think it should be in large per-app CSS files, many think CSS-in-JS is the way to go.
+
+Personally I like to use CSS for general cross-component styling and styled-components for more specific styles. We're using CSS in this project because it works and means we don't have to learn yet another dependency.
+
+After the imports, we can render our `Histogram` in the `App` component.
 
 {crop-start: 205, crop-end: 235, format: javascript, line-numbers: false}
 ![Render Histogram in App](code_samples/es6v2/App.js)
 
-We render the `Histogram` component with a bunch of props. They specify the dimensions we want, positioning, and pass data to the component. We're using `filteredSalaries` even though we haven't set up the filtering yet. One less line of code to change later :smile:
+We render the `Histogram` component with a bunch of props. They specify the dimensions we want, positioning, and pass data to the component. We're using `filteredSalaries` even though we haven't set up any filtering yet. One less line of code to change later 👌
 
 That's it. `App` is ready to render our `Histogram`.
 
-Your browser should now show an error complaining about missing files.
+You should now see an error about missing files. That's normal.
 
 {#histogram-css}
 ## Step 2: CSS changes
 
-As mentioned, opinions vary on the best way to do styling in React apps. Some say stylesheets per component, some say styling inside JavaScript, others swear by global app styling.
+As mentioned, opinions vary on the best approach to styling React apps. Some say stylesheets per component, some say styling inside JavaScript, others swear by global app styling.
 
-The truth is somewhere in between. Do what best fits your project and team. We're going to stick to global stylesheets because it's the simplest.
+The truth is somewhere in between. Do what fits your project and your team. We're using global stylesheets because it's the simplest.
 
-Start by emptying out `src/App.css`. All that came with `create-react-app` must go. We don't need it.
+Create a new file `src/style.css` and add these 29 lines:
 
-Then add these 29 lines:
+{format: css, line-numbers: false, caption: "style.css stylesheet"}
+```
+.histogram .bar rect {
+    fill: steelblue;
+    shape-rendering: crispEdges;
+}
 
-{crop-start: 4, crop-end: 33, format: css, line-numbers: false}
-![App.css stylesheet](code_samples/es6v2/App.css)
+.histogram .bar text {
+    fill: #fff;
+    font: 12px sans-serif;
+}
 
-We won't go into details about CSS here. Many better books have been written about it.
+button {
+    margin-right: .5em;
+    margin-bottom: .3em !important;
+}
 
-Generally speaking, we're making `.histogram` rectangles – the bars – blue, and labels white `12px` font. `button`s and `.row`s have some spacing. This is for the user controls we'll add. And the `.mean` line is a dotted grey with grey `11px` text.
+.row {
+    margin-top: 1em;
+}
 
-Yes, this is more CSS than we need for just the histogram. We're already here, so we might as well add it.
+.mean text {
+    font: 11px sans-serif;
+    fill: grey;
+}
+
+.mean path {
+    stroke-dasharray: 3;
+    stroke: grey;
+    stroke-width: 1px;
+}
+```
+
+We won't go into details about the CSS here. Many better books have been written about it.
+
+In broad strokes:
+
+- we're making `.histogram` rectangles – the bars – blue
+- labels white `12px` font 
+- `button`s and `.row`s have some spacing
+- the `.mean` line is a dotted grey with gray `11px` text.
+
+More CSS than we need for just the histogram, but we're already here so might as well write it now.
 
 Adding our CSS before building the Histogram means it's going to look beautiful the first time around.
 
@@ -486,57 +877,101 @@ Adding our CSS before building the Histogram means it's going to look beautiful 
 We're following the [full-feature integration](#full-feature-integration) approach for our Histogram component. React talks to the DOM, D3 calculates the props.
 
 We'll use two components:
-1. `Histogram` handles the general layout, dealing with D3, and translating raw data into a histogram
+1. `Histogram` makes the general layout, dealing with D3, and translating raw data into a histogram
 2. `HistogramBar` draws a single bar and labels it
 
-Let's start with the basics: a `Histogram` directory and an `index.js` file. It makes importing easier while keeping our code organized. I like to use dirs for components made out of multiple files.
+Let's start with the basics: a `Histogram` directory and an `index.js` file. Keeps our code organized and imports easy. I like to use directories for components made of multiple files.
 
 {crop-start: 5, crop-end: 8, format: javascript, line-numbers: false}
 ![Histogram index.js](code_samples/es6v2/components/Histogram/index.js)
 
-Import `Histogram` from `./Histogram` and export it as the `default` export. You could do it with a re-export: `export { default } from './Histogram'`. I'm not sure why I picked the long way. It's not *that* much more readable.
+Import `Histogram` from `./Histogram` and export it as the `default` export. You could do it with a re-export: `export { default } from './Histogram'`. Not sure why I picked the long way. A dash more readable?
 
-Great, now we need the `Histogram.js` file. We start with some imports, a default export, and a stubbed out `Histogram` class.
+Great, now we need the `Histogram.js` file. Start with some imports, a default export, and a stubbed out `Histogram` class.
 
-{crop-start: 5, crop-end: 33, format: javascript, line-numbers: false}
-![Histogram component stub](code_samples/es6v2/components/Histogram/Histogram.js)
+{format: javascript, line-numbers: false, caption: "Histogram component stub"}
+```
+// src/components/Histogram/Histogram.js
+import React from "react";
+import * as d3 from "d3";
 
-We need React and D3, and we set up `Histogram`. The `constructor` calls React's base constructor using `super()` and defers to `updateD3` to init default D3 properties. `componentWillReceiveProps` defers to `updateD3` to ensure D3 state stays in sync with React, and we'll use `makeBar` and `render` to render the SVG.
+class Histogram extends React.Component {
+    state = {
+        histogram: d3.histogram(),
+        widthScale: d3.scaleLinear(),
+        yScale: d3.scaleLinear()
+    };
 
-{class: discussion}
-{blurb}
-A note about D3 imports: D3v4 is split into multiple packages. We're using a `*` import here to get everything because that's easier to use. You should import specific packages when possible. It leads to smaller compiled code sizes and makes it easier for you and others to see what each file is using.
-{/blurb}
+    static getDerivedStateFromProps(props, state) {
+        let { histogram, widthScale, yScale } = state;
 
-### constructor
+        return {
+            ...state,
+            histogram,
+            widthScale,
+            yScale
+        };
+    }
 
-Now we should add D3 object initialization to the `constructor`. We need a D3 histogram and two scales: one for chart width and one for vertical positioning.
+    makeBar = (bar, N) => {
+        const { yScale, widthScale } = this.state;
 
-{crop-start: 38, crop-end: 49, format: javascript, line-numbers: false}
-![D3 initialization in Histogram constructor](code_samples/es6v2/components/Histogram/Histogram.js)
+    };
 
-We've talked about scales before. Put in a number, get out a number. In this case, we're using linear scales for sizing and positioning.
+    render() {
+        const { histogram, yScale } = this.state,
+            { x, y, data, axisMargin } = this.props;
+            
+        return null;
+    }
+}
+```
 
-`d3.histogram` is new in D3v4. It's a generator that takes a dataset and returns a histogram-shaped dataset. It's an array of arrays where the top level are bins and meta data and the children are "values in this bin".
+We import React and D3, and set up `Histogram`.
 
-You might know it as `d3.layout.histogram` from D3v3. I think the updated API is easier to use. You'll see what I mean in the `updateD3` method.
+Default `state` for our D3 objects: histogram, widthScale, and yScale. An empty `getDerivedStateFromProps` to keep them updated, `makeBar` to help us render each bar, and `render` returning null for now.
 
-### updateD3
+### getDerivedStateFromProps
 
-{crop-start: 54, crop-end: 73, format: javascript, line-numbers: false}
-![updateD3 method in Histogram](code_samples/es6v2/components/Histogram/Histogram.js)
+{format: javascript, line-numbers: false, caption: "getDerivedStateFromProps in Histogram"}
+```
+// src/components/Histogram/Histogram.js
+    static getDerivedStateFromProps(props, state) {
+        let { histogram, widthScale, yScale } = state;
 
-First, we configure the `histogram` generator. We use `thresholds` to specify how many bins we want and `value` to specify a value accessor function. We get both from props passed into the `Histogram` component.
+        histogram.thresholds(props.bins).value(props.value);
 
-In our case, that's 20 bins, and the value accessor returns each data point's `base_salary`.
+        const bars = histogram(props.data),
+            counts = bars.map(d => d.length);
 
-Then we call `this.histogram` on our dataset and use a `.map` to get an array of bins and count how many values went in each. We need them to configure our scales.
+        widthScale
+            .domain([d3.min(counts), d3.max(counts)])
+            .range([0, props.width - props.axisMargin]);
 
-If you print the result of `this.histogram()`, you'll see an array structure where each entry holds metadata about the bin and the values it contains.
+        yScale
+            .domain([0, d3.max(bars, d => d.x1)])
+            .range([props.height - props.y - props.bottomMargin, 0]);
+
+        return {
+            ...state,
+            histogram,
+            widthScale,
+            yScale
+        };
+    }
+```
+
+First, we configure the `histogram` generator. `thresholds` specify how many bins we want and `value` specifies the value accessor function. We get both from props passed into the `Histogram` component.
+
+In our case that makes 20 bins, and the value accessor returns each data point's `base_salary`.
+
+We feed the data prop into our histogram generator, and count how many values are in each bin with a `.map` call. We need those to configure our scales.
+
+If you print the result of `histogram()`, you'll see an array structure where each entry holds metadata about the bin and the values it contains.
 
 ![console.log(this.histogram())](images/es6v2/histogram-data-screenshot.png)
 
-We use this data to set up our scales.
+Let's use this info to set up our scales.
 
 `widthScale` has a range from the smallest (`d3.min`) bin to the largest (`d3.max`), and a range of `0` to width less a margin. We'll use it to calculate bar sizes.
 
@@ -546,12 +981,29 @@ Now let's render this puppy.
 
 ### render
 
-{crop-start: 78, crop-end: 92, format: javascript, line-numbers: false}
-![Histogram.render](code_samples/es6v2/components/Histogram/Histogram.js)
+{format: javascript, line-numbers: false, caption: "Histogram.render"}
+```
+// src/components/Histogram/Histogram.js
+class Histogram extends React.Component {
+    // ...
+    render() {
+        const { histogram, yScale } = this.state,
+            { x, y, data, axisMargin } = this.props;
 
-We set up a `translate` SVG transform and run our histogram generator. Yes, that means we're running it twice for every update, once in `updateD3` and once in `render`.
+        const bars = histogram(data);
 
-I tested making it more efficient, and I didn't see much improvement in overall performance. It did make the code more complex, though.
+        return (
+            <g className="histogram" transform={`translate(${x}, ${y})`}>
+                <g className="bars">
+                    {bars.map(this.makeBar))}
+                </g>
+            </g>
+        );
+    }
+}
+```
+
+We take everything we need out of `state` and `props` with destructuring, call `histogram()` on our data to get a list of bars, and render.
 
 Our render method returns a `<g>` grouping element transformed to the position given in props and walks through the `bars` array, calling `makeBar` for each. Later, we're going to add an `Axis` as well.
 
@@ -559,10 +1011,31 @@ This is a great example of React's declarativeness. We have a bunch of stuff, an
 
 ### makeBar
 
-`makeBar` is a function that takes a histogram bar's metadata and returns a `HistogramBar` component. We use it to make the declarative loop more readable.
+`makeBar` is a function that takes a histogram bar's metadata and returns a `HistogramBar` component. We use it to make our declarative loop more readable.
 
-{crop-start: 98, crop-end: 114, format: javascript, line-numbers: false}
-![Histogram.makeBar](code_samples/es6v2/components/Histogram/Histogram.js)
+{format: javascript, line-numbers: false, caption: "Histogram.makeBar"}
+```
+// src/components/Histogram/Histogram.js
+class Histogram extends React.Component {
+    // ...
+    makeBar = bar => {
+        const { yScale, widthScale } = this.state;
+
+        let percent = (bar.length / this.props.data.length) * 100;
+
+        let props = {
+            percent: percent,
+            x: this.props.axisMargin,
+            y: yScale(bar.x1),
+            width: widthScale(bar.length),
+            height: yScale(bar.x0) - yScale(bar.x1),
+            key: "histogram-bar-" + bar.x0
+        };
+
+        return <HistogramBar {...props} />;
+    };
+}
+```
 
 See, we're calculating `props` and feeding them into `HistogramBar`. Putting it in a separate function just makes the `.map` construct in `render` easier to read. There's a lot of props to calculate.
 
@@ -572,18 +1045,18 @@ Setting the `key` prop is important. React uses it to tell the bars apart and on
 
 ## Step 4: HistogramBar (sub)component
 
-Before we can see the histogram, we need another component: `HistogramBar`. We *could* have shoved all of it in the `makeBar` function, but I think it makes sense to keep it separate.
+Before our histogram shows up, we need another component: `HistogramBar`. We *could* have shoved all of it in the `makeBar` function, but it makes sense to keep separate. Better future flexibility.
 
-I like to put subcomponents like this in the same file as the main component. You can put it in its own file, if you feel that's cleaner. You'll have to add an `import` if you do that.
+I like keeping small subcomponents like this in the same file as their parent. They don't work on their own so there's no reusability benefit from keeping them separate. And they're small enough that separating them doesn't help readability either.
 
 {crop-start: 120, crop-end: 150, format: javascript, line-numbers: false}
 ![HistogramBar component](code_samples/es6v2/components/Histogram/Histogram.js)
 
-As far as functional stateless components go, this one's pretty long. Most of it goes into deciding how much precision to render in the label, so it's okay.
+Pretty long for a functional component. Most of it goes into deciding how much precision to render in the label, so it's okay.
 
-We start with an SVG translate – you'll see this a few more times – and a default `label`. Then we update the label based on the bar size and its value.
+We start with an SVG translate and a default `label`. Then we update the label based on the bar size and its value.
 
-When we have a label we like, we return a `<g>` grouping element with a rectangle and a text. They’re both positioned based on the `width` and `height` of the bar.
+When we have a label we like, we return a `<g>` grouping element with a rectangle and a text. Both positioned based on the `width` and `height` of the bar.
 
 You should now see a histogram.
 
@@ -595,12 +1068,34 @@ Our histogram is pretty, but it needs an axis to be useful. You've already learn
 
 ### D3blackbox
 
-We start with the D3blackbox higher order component. Same as before, except we put it in `src/components`. Then again, I should probably just suck it up and make an npm package for it.
+We start with the D3blackbox higher order component. Same as before, except we put it in `src/components`. 
 
-{crop-start: 5, crop-end: 18, format: javascript, line-numbers: false}
-![D3blackbox HOC](code_samples/es6v2/components/D3blackbox.js)
+{format: javascript, line-numbers: false, caption: "D3blackbox HOC"}
+```
+import React from "react";
 
-Take a `D3render` function, call it on `componentDidMount` and `componentDidUpdate` to keep things in sync, and render a positioned anchor element for `D3render` to hook into.
+export default function D3blackbox(D3render) {
+    return class Blackbox extends React.Component {
+        anchorRef = React.createRef();
+
+        componentDidMount() {
+            D3render.call(this);
+        }
+        componentDidUpdate() {
+            D3render.call(this);
+        }
+
+        render() {
+            const { x, y } = this.props;
+            return (
+                <g transform={`translate(${x}, ${y})`} ref={this.anchorRef} />
+            );
+        }
+    };
+}
+```
+
+Take a `D3render` function, call it on `componentDidMount` and `componentDidUpdate`, and render a positioned anchor element for `D3render` to hook into.
 
 ### Axis component
 
