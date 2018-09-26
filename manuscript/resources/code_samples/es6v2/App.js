@@ -327,7 +327,7 @@ import MedianLine from './components/MedianLine';
 import Controls from './components/Controls';
 // markua-end-insert
 
-class App extends Component {
+class App extends React.Component {
     state = {
         // ...
         medianIncomes: [],
@@ -342,7 +342,7 @@ class App extends Component {
     // ...
 
     // markua-start-insert
-    updateDataFilter(filter, filteredBy) {
+    updateDataFilter = (filter, filteredBy) => {
         this.setState({
             salariesFilter: filter,
             filteredBy: filteredBy
@@ -394,7 +394,7 @@ class App extends Component {
 // Example 10
 //
 // src/App.js
-class App extends Component {
+class App extends React.Component {
     // ...
 
     render() {
@@ -417,8 +417,8 @@ class App extends Component {
                 </svg>
 
                 // markua-start-insert
-                <Controls data={this.state.techSalaries}
-                          updateDataFilter={this.updateDataFilter.bind(this)} />
+                <Controls data={techSalaries}
+                          updateDataFilter={this.updateDataFilter} />
                 // markua-end-insert
             </div>
         )
