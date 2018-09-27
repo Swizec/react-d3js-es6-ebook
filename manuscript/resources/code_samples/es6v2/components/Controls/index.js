@@ -103,7 +103,7 @@ class Controls extends Component {
 class Controls extends Component {
     // ...
     render() {
-        const data = this.props.data;
+        const { data } = this.props;
 
         const years = new Set(data.map(d => d.submit_date.getFullYear())),
               // markua-start-insert
@@ -116,19 +116,19 @@ class Controls extends Component {
                 <ControlRow data={data}
                             toggleNames={Array.from(years.values())}
                             picked={this.state.year}
-                            updateDataFilter={this.updateYearFilter.bind(this)}
+                            updateDataFilter={this.updateYearFilter}
                             />
 
             // markua-start-insert
                 <ControlRow data={data}
                             toggleNames={Array.from(jobTitles.values())}
                             picked={this.state.jobTitle}
-                            updateDataFilter={this.updateJobTitleFilter.bind(this)} />
+                            updateDataFilter={this.updateJobTitleFilter} />
 
                 <ControlRow data={data}
                             toggleNames={Array.from(USstates.values())}
                             picked={this.state.USstate}
-                            updateDataFilter={this.updateUSstateFilter.bind(this)}
+                            updateDataFilter={this.updateUSstateFilter}
                             capitalize="true" />
                 // markua-end-insert
             </div>

@@ -1599,116 +1599,253 @@ If this seems roundabout ... I've seen worse. The callbacks approach makes our a
 
 ## Step 2: Build Controls component
 
-The `Controls` component builds our filter function and `filteredBy` dictionary based on what the user clicks.
+The `Controls` component builds our filter function and `filteredBy` dictionary based on user choices.
 
-It renders 3 rows of controls and builds filtering out of the singular choice each row reports. That makes the `Controls` component kind of repetitive, but that's okay.
+`Controls` renders 3 rows of buttons and builds filtering out of the choice made on each row. That makes `Controls` kind of repetitive, but that's okay.
 
-In theory, it would be better for each `ControlRow` to return a function and for `Controls` to build a composed function out of them. Better abstraction, but harder to understand.
-
-To keep this book shorter, we're going to build everything for a `year` filter first. Then I'll show you how to add `USstate` and `jobTitle` filters as well. Once you have one working, the rest is easy.
+To keep this book shorter, we're going to build everything for a `year` filter first. Then I'll explain how to add `USstate` and `jobTitle` filters on a higher level. Once you have one working, the rest follows that same pattern.
 
 Make a `Controls` directory in `src/components/` and let's begin. The main `Controls` component goes in your `index.js` file.
 
 ### Stub Controls
 
-{crop-start: 5, crop-end: 35, format: javascript, line-numbers: false}
-![Controls stubbed for year filter](code_samples/es6v2/components/Controls/index.js)
+{format: javascript, line-numbers: false, caption: "Controls stubbed for year filter"}
+```
+// src/components/Controls/index.js
+import React from "react";
 
-We start with some imports and a `Controls` class. Inside, we define default `state` with an always-true `yearFilter` and an asterisk for `year`.
+import ControlRow from "./ControlRow";
 
-We also need an `updateYear` function, which we'll use to update the filter, a `reportUpdateUpTheChain` function called in `componentDidUpdate`, a `shouldComponentUpdate` check, and a `render` method.
+class Controls extends React.Component {
+    state = {
+        yearFilter: () => true,
+        year: "*"
+    };
 
-Yes, we could have put everything in `reportUpdateUpTheChain` into `componentDidUpdate`. It's separate because the name is more descriptive that way. I was experimenting with some optimizations that didn't pan out, but I decided to keep the name.
+    componentDidMount() {
 
-I'll explain how it works and why we need `shouldComponentUpdate` after we implement the logic.
+    }
+
+    updateYearFilter = (year, reset) => {
+        let filter = d => d.submit_date.getFullYear() === year;
+
+        if (reset || !year) {
+            filter = () => true;
+            year = "*";
+        }
+
+        this.setState(
+            {
+                yearFilter: filter,
+                year: year
+            },
+            () => this.reportUpdateUpTheChain()
+        );
+    };
+
+    updateUSstateFilter = (USstate, reset) => {
+       
+    }
+
+    render() {
+        const { data } = this.props;
+    }
+}
+
+export default Controls;
+```
+
+We start with some imports and a `Controls` class-based component. Inside, we define default `state` with an always-true `yearFilter` and an asterisk for `year`.
+
+We also need an `updateYearFilter` function, which we'll use to update the filter, a `reportUpdateUpTheChain` function, and a `render` method. We're using `reportUpdateUpTheChain` to bubble updates to our parent component. It's a simpler alternative to using React Context or a state management library.
 
 ### Filter logic
 
-{crop-start: 41, crop-end: 71, format: javascript, line-numbers: false}
-![Year filtering logic in Controls](code_samples/es6v2/components/Controls/index.js)
+{format: javascript, line-numbers: false, caption: "year filtering logic in Controls"}
+```
+// src/components/Controls/index.js
+class Controls extends React.Component {
+    // ...
+    updateYearFilter = (year, reset) => {
+        let filter = d => d.submit_date.getFullYear() === year;
 
-When a user picks a year, the `ControlRow` components calls our `updateYearFilter` function where we build a new partial filter function. The `App` component uses it inside a `.filter` call, so we have to return `true` for elements we want to keep and `false` for elements we don't.
+        if (reset || !year) {
+            filter = () => true;
+            year = "*";
+        }
+
+        this.setState(
+            {
+                yearFilter: filter,
+                year: year
+            },
+            () => this.reportUpdateUpTheChain()
+        );
+    };
+}
+```
+
+`updateYearFilter` is a callback we pass into `ControlRow`. When a user picks a year, their action triggers this function.
+
+When that happens, we create a new partial filter function. The `App` component uses it inside a `.filter` call like you saw earlier. We have to return `true` for elements we want to keep and `false` for elements we don't.
 
 Comparing `submit_date.getFullYear()` with `year` achieves that.
 
-We use the `reset` argument to reset filters back to defaults, which allows users to unselect an option.
+The `reset` argument lets us reset filters back to defaults. Enables users to unselect options.
 
-When we have the `year` and `filter`, we update component state with `this.setState`. This triggers a re-render and calls the `componentDidUpdate` method, which calls `reportUpdateUpTheChain`.
+When we have the `year` and `filter`, we update component state with `this.setState`. This triggers a re-render and calls `reportUpdateUpTheChain` afterwards. Great use-case for the little known setState callback :)
 
 `reportUpdateUpTheChain` then calls `this.props.updateDataFilter`, which is a callback method on `App`. We defined it earlier – it needs a new filter method and a `filteredBy` dictionary.
 
-The code looks tricky because we're playing with higher order functions. We're making a new arrow function that takes a dictionary of filters as an argument and returns a new function that `&&`s them all. We invoke it immediately with `this.state` as the argument.
+{language: javascript, line-numbers: false, caption: "reportUpdateUpTheChain method"}
+```
+// src/components/Controls/index.js
+class Controls extends React.Component {
+    // ...
+    reportUpdateUpTheChain() {
+        window.location.hash = [
+            this.state.year || "*"
+        ].join("-");
+
+        this.props.updateDataFilter(
+            (filters => {
+                return d =>
+                    filters.yearFilter(d)
+            })(this.state),
+            {
+                year: this.state.year
+            }
+        );
+    }
+}
+```
+
+Building the filter method looks tricky because we're composing multiple functions. The new arrow function takes a dictionary of filters as an argument and returns a new function that `&&`s them all. We invoke it immediately with `this.state` as the argument.
 
 It looks silly when there's just one filter, but I promise it makes sense.
 
-Now, because we used `this.setState` to trigger a callback up component stack, and because that callback triggers a re-render in `App`, which might trigger a re-render down here… because of that, we need `shouldComponentUpdate`. It prevents infinite loops. React isn't smart enough on its own because we're using complex objects in `state`.
-
-{aside}
-JavaScript's equality check compares objects on the reference level. So `{a: 1} == {a: 1}` returns `false` because the operands are different objects even though they look the same.
-{/aside}
-
 ### Render
 
-Great, we have the logic. We should render the rows of controls we've been talking about.
+Great, we have the filter logic. Let's render those rows of controls we've been talking about.
 
-{crop-start: 77, crop-end: 96, format: javascript, line-numbers: false}
-![Render the year ControlRow](code_samples/es6v2/components/Controls/index.js)
+{format: javascript, line-numbers: false, caption: "Render the year ControlRow"}
+```
+// src/components/Controls/index.js
+class Controls extends React.Component {
+    // ...
+    render() {
+        const { data } = this.props;
 
-This is once more generalized code, but it's used for a single example: the `year` filter.
+        const years = new Set(data.map(d => d.submit_date.getFullYear()));
 
-We build a `Set` of years in our dataset, then render a `ControlRow` using props to give it our `data`, a set of `toggleNames`, a callback to update the filter, and which entry is `picked` right now. This enables us to maintain the data-flows-down, events-bubble-up architecture we've been using.
+        return (
+            <div>
+                <ControlRow
+                    data={data}
+                    toggleNames={Array.from(years.values())}
+                    picked={this.state.year}
+                    updateDataFilter={this.updateYearFilter}
+                />
+            </div>
+        );
+    }
+}
+```
 
-If you don't know about `Set`s, they're new ES6 data structures that ensure every entry is unique. Just like a mathematical set. They're supposed to be pretty fast.
+Once more, this is generalized code used for a single example: the `year` filter.
+
+We build a `Set` of distinct years in our dataset, then render a `ControlRow` using props to give it our `data`, a set of `toggleNames`, a callback to update the filter, and which entry is `picked` right now. Also known as the controlled component pattern, it enables us to maintain the data-flows-down, events-bubble-up architecture.
+
+If you don't know about `Set`s, they're an ES6 data structure that ensures every entry is unique. Just like a mathematical set. They're pretty fast.
 
 ## Step 3: Build ControlRow component
 
-Now let's build the `ControlRow` component. It renders a row of controls and ensures that only one at a time is selected.
+Let's build the `ControlRow` component. It renders a row of controls and ensures only one at a time is selected.
 
 We'll start with a stub and go from there.
 
-{crop-start: 5, crop-end: 28, format: javascript, line-numbers: false}
-![ControlRow stub](code_samples/es6v2/components/Controls/ControlRow.js)
+{format: javascript, line-numbers: false, caption: "ControlRow stub"}
+```
+// src/components/Controls/ControlRow.js
+import React from "react";
 
-We start with imports, big surprise, then make a stub with 5 methods. Can you guess what they are?
+import Toggle from "./Toggle";
 
-- `componentWillMount` sets up some initial state that needs props
-- `componentWillReceiveProps` calls `makePick` if a pick is set from above
+class ControlRow extends React.Component {
+    makePick = (picked, newState) => {
+ 
+    };
+
+    _addToggle(name) {
+    }
+
+    render() {
+        const { toggleNames } = this.props;
+    }
+}
+
+export default ControlRow;
+```
+
+We start with imports, big surprise, then make a stub with 3 methods. Can you guess what they are?
+
 - `makePick` is the `Toggle` click callback
 - `_addToggle` is a rendering helper method
 - `render` renders a row of buttons
 
-{crop-start: 56, crop-end: 77, format: javascript, line-numbers: false}
-![State setup](code_samples/es6v2/components/Controls/ControlRow.js)
+{format: javascript, line-numbers: false, caption: "makePick implementation"}
+```
+// src/components/Controls/ControlRow.js
 
-React triggers the `componentWillMount` lifecycle hook right before it first renders our component. Mounts it into the DOM, if you will. This is a opportunity for any last minute state setup.
+class ControlRow extends React.Component {
+    makePick = (picked, newState) => {
+        // if newState is false, we want to reset
+        this.props.updateDataFilter(picked, !newState);
+    };
+```
 
-We take the list of `toggleNames` from props and use Lodash's `zipObject` function to create a dictionary that we save in `state`. Keys are toggle names, and values are booleans that tell us whether a particular toggle is currently picked.
+`makePick` calls the data filter update and passes in the new value and whether we want to unselect. Pretty simple right?
 
-You might think this is unnecessary, but it makes our app faster. Instead of running the comparison function for each toggle on every render, we build the dictionary, then perform quick lookups when rendering. Yes, `===` is a fast operator even with the overhead of a function call, but what if it was more complex?
+{format: javascript, line-numbers: false, caption: "Render a row of controls"}
+```
+// src/components/Controls/ControlRow.js
+class ControlRow extends React.Component {
+    // ...
 
-Using appropriate data structures is a good habit. :smile:
+    _addToggle(name) {
+        let key = `toggle-${name}`,
+            label = name;
 
-In `componentWillReceiveProps`, we check if the `picked` value has changed, and if it has, we call `makePick` to mimic user action. This allows global app state to override local component state. It's what you'd expect in a unidirectional data flow architecture like the one we're using.
+        if (this.props.capitalize) {
+            label = label.toUpperCase();
+        }
 
-{crop-start: 33, crop-end: 50, format: javascript, line-numbers: false}
-![makePick implementation](code_samples/es6v2/components/Controls/ControlRow.js)
+        return (
+            <Toggle
+                label={label}
+                name={name}
+                key={key}
+                value={this.props.picked === name}
+                onClick={this.makePick}
+            />
+        );
+    }
 
-`makePick` changes `state.toggleValues` when the user clicks a toggle. It takes two arguments: a toggle name and the new value.
+    render() {
+        const { toggleNames } = this.props;
 
-We use Lodash's `mapValues` to iterate the `name: boolean` dictionary and construct a new one with updated values. Everything that isn't `picked` gets set to `false`, and the one `picked` item becomes `true` if `newState` is `true`.
+        return (
+            <div className="row">
+                <div className="col-md-12">
+                    {toggleNames.map(name => this._addToggle(name))}
+                </div>
+            </div>
+        );
+    }
+}
+```
 
-You're right if you think this is unnecessary. We could have just changed the current picked element to `false` and the new one to `true`. But I'm not entirely certain React would pick up on that. Play around and test it out :)
-
-Next, we have a case of a misleading comment. We're calling `props.updateDataFilter` to communicate filter changes up the chain. The comment is talking about `!newState` and why it's not `newState`. → because the 2nd argument in `updateDataFilter` is called `reset`. We're only resetting filters if `newState` is false since that means a toggle was unclicked without a new one being selected.
-
-Does that make sense? It's hard to explain without waving my arms around.
-
-With `this.setState`, we update state and trigger a re-render, which highlights a new button as being selected.
-
-{crop-start: 83, crop-end: 114, format: javascript, line-numbers: false}
-![Render a row of controls](code_samples/es6v2/components/Controls/ControlRow.js)
-
-Rendering happens in two functions: `_addToggle`, which is a helper, and `render`, which is the main render.
+Rendering comes in two functions: `_addToggle`, which is a helper, and `render`, which is the main render.
 
 In `render`, we set up two `div`s with Bootstrap classes. The first is a `row`, and the second is a full-width column. I tried using a column for each button, but it was annoying to manage and used too much space.
 
@@ -1724,28 +1861,46 @@ Let's build it.
 
 ## Step 4: Build Toggle component
 
-The last piece of the puzzle – the Toggle component. A button that turns on and off.
+Last piece of the puzzle – the Toggle component. A button that turns on and off.
 
-{crop-start: 5, crop-end: 28, format: javascript, line-numbers: false}
-![Toggle component](code_samples/es6v2/components/Controls/Toggle.js)
+{format: javascript, line-numbers: false, caption: "Toggle component"}
+```
+// src/components/Controls/Toggle.js
+import React from "react";
 
-As always, we start with the imports, and extend React's base Component to make a new one. Small components like this are often perfect candidates for functional stateless components, but we need the click handler.
+const Toggle = ({ label, name, value, onClick }) => {
+    let className = "btn btn-default";
 
-`handleClick` calls the `onClick` callback given in props, using the `name` and `!value` to identify this button and toggle its value.
+    if (value) {
+        className += " btn-primary";
+    }
 
-`render` sets up a Bootstrap classname: `btn` and `btn-default` make an element look like a button, and the conditional `btn-primary` makes it blue. If you're not familiar with Bootstrap classes, you should check [their documentation](http://getbootstrap.com/).
+    return (
+        <button className={className} onClick={() => onClick(name, !value)}>
+            {label}
+        </button>
+    );
+};
 
-Then we render a `<button>` tag and, well, that's it. A row of year filters appears in the browser.
+export default Toggle;
+```
+
+Import React to enable JSX and make a functional `Toggle` component. It's fully controlled and takes event handlers as callbacks in props. No need for a class.
+
+We set up a Bootstrap classname: `btn` and `btn-default` make an element look like a button, the conditional `btn-primary` makes it blue. If you're not familiar with Bootstrap classes, you should check [their documentation](http://getbootstrap.com/).
+
+Then we render a `<button>` tag and, well, that's it. A row of year filters appears in the browser. `onClick` passes 
 
 ![A row of year filters](images/es6v2/year-filter-row.png)
 
-Our shortened dataset only spans 2012 and 2013. The full dataset goes up to 2016.
+Click on a button and the `onClick` handler passes a toggle'd value to its parent via the `onClick` callback. This triggers an update in `Controls`, which calls `reportUpdateUpTheChain`, which in turn updates state in `App` and re-renders our button with the new value toggling its color on or off.
+
 
 If that didn't work, consult this [diff on GitHub](https://github.com/Swizec/react-d3js-step-by-step/commit/a45c33e172297ca1bbcfdc76733eae75779ebd7f).
 
 ## Step 5: Add US state and Job Title filters
 
-With all that done, we can now add two more filters: US states and job titles. Our `App` component is already set up to use them, so we just have to add them to the `Controls` component.
+With all that done, we can add two more filters: US states and job titles. Our `App` component is already set up to use them, so we just have to add them to the `Controls` component.
 
 We'll start with the `render` method, then handle the parts I said earlier would look repetitive.
 
@@ -1754,21 +1909,91 @@ We'll start with the `render` method, then handle the parts I said earlier would
 
 Ok, this part is plenty repetitive, too.
 
-We created new sets for `jobTitles` and `USstates`, then we rendered two more `ControlRow` elements with appropriate attributes. They get `toggleNames` for building the buttons, `picked` to know which is active, an `updateDataFilter` callback, and we tell US states to render capitalized.
+We created new sets for `jobTitles` and `USstates`, then rendered two more `ControlRow` elements with appropriate attributes. They get `toggleNames` for building the buttons, `picked` to know which is active, an `updateDataFilter` callback, and we tell US states to render capitalized.
 
 The implementations of those `updateDataFilter` callbacks follow the same pattern as `updateYearFilter`.
 
-{crop-start: 143, crop-end: 181, format: javascript, line-numbers: false}
-![New updateDataFilter callbacks](code_samples/es6v2/components/Controls/index.js)
+{format: javascript, line-numbers: false, caption: "new updateDataFilter callbacks"}
+```
+// src/components/Controls/index.js
 
-Yes, they're basically the same as `updateYearFilter`. THe only difference is a changed `filter` function and using different keys in `setState()`.
+class Controls extends React.Component {
+    state = {
+        yearFilter: () => true,
+        jobTitleFilter: () => true,
+        USstateFilter: () => true,
+        year: "*",
+        USstate: "*",
+        jobTitle: "*"
+    };
+
+    updateJobTitleFilter = (title, reset) => {
+        let filter = d => d.clean_job_title === title;
+
+        if (reset || !title) {
+            filter = () => true;
+            title = "*";
+        }
+
+        this.setState(
+            {
+                jobTitleFilter: filter,
+                jobTitle: title
+            },
+            () => this.reportUpdateUpTheChain()
+        );
+    };
+
+    updateUSstateFilter = (USstate, reset) => {
+        let filter = d => d.USstate === USstate;
+
+        if (reset || !USstate) {
+            filter = () => true;
+            USstate = "*";
+        }
+
+        this.setState(
+            {
+                USstateFilter: filter,
+                USstate: USstate
+            },
+            () => this.reportUpdateUpTheChain()
+        );
+    };
+    
+    // ..
+}
+
+export default Controls;
+```
+
+Yes, they're basically the same as `updateYearFilter`. The only difference is a changed `filter` function and using different keys in `setState()`.
 
 Why separate functions then? No need to get fancy. It would've made the code harder to read.
 
 Our last step is to add these new keys to the `reportUpdateUpTheChain` function.
 
-{crop-start: 187, crop-end: 209, format: javascript, line-numbers: false}
-![Add new filters to main state update](code_samples/es6v2/components/Controls/index.js)
+{format: javascript, line-numbers: false, caption: "Add new filters to main state update"}
+```
+// src/components/Controls/index.js
+
+class Controls extends React.Component {
+    reportUpdateUpTheChain() {
+        this.props.updateDataFilter(
+            (filters => {
+                return d =>
+                    filters.yearFilter(d) &&
+                    filters.jobTitleFilter(d) &&
+                    filters.USstateFilter(d);
+            })(this.state),
+            {
+                USstate: this.state.USstate,
+                year: this.state.year,
+                jobTitle: this.state.jobTitle
+            }
+        );
+    }
+```
 
 We add them to the filter condition with `&&` and expand the `filteredBy` argument.
 
@@ -1779,21 +2004,6 @@ Two more rows of filters show up.
 :clap:
 
 Again, if it didn't work, consult [the diff on GitHub](https://github.com/Swizec/react-d3js-step-by-step/commit/a45c33e172297ca1bbcfdc76733eae75779ebd7f).
-
-# A small speed optimization
-
-We're expecting a big dataset, and we're recalculating our data *and* redrawing hundreds of map elements all the time. We can fix this situation with a carefully placed `shouldComponentUpdate` to avoid updates when it shouldn't.
-
-It goes in the main `App` component and performs a quick check for changes in the filters.
-
-{crop-start: 432, crop-end: 452, format: javascript, line-numbers: false}
-![shouldComponentUpdate in App.js](code_samples/es6v2/App.js)
-
-We take current salaries and filters from `state` and compare them with future state, `nextState`. To guess changes in the salary data, we compare lengths, and to see changes in filters, we compare values for each key.
-
-This comparison works well enough and makes the visualization faster by avoiding unnecessary re-renders.
-
-You shouldn't really notice any particular change with the shortened dataset, but if things break, consult the [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/b58218eb2f18d6ce9a789808394723ddd433ee1d).
 
 # Rudimentary routing
 
@@ -1807,24 +2017,56 @@ Imagine this. A user finds your dataviz, clicks around, and finds an interesting
 
 *"Wow! Kim Kardashian just posted a new snap with her dog."*
 
-Let's help our intrepid user out and make the dataviz linkable. We should store the current `filteredBy` state in the URL and be able to restore from a link.
+Let's help our intrepid user out and make our dataviz linkable. We should store the current `filteredBy` state in the URL and be able to restore from a link.
 
 There are many ways to achieve this. [ReactRouter](https://github.com/ReactTraining/react-router) comes to mind, but the quickest is to implement our own rudimentary routing. We'll add some logic to manipulate and read the URL hash.
 
-THe easiest place to put this logic is next to the existing filter logic inside the `Controls` component. Better places exist from a "low-down components shouldn't play with global stuff" perspective, but that's okay.
+The easiest place to put this logic is next to the existing filter logic inside the `Controls` component. Better places exist from a "low-down components shouldn't play with global state" perspective, but that's okay.
 
-{crop-start: 215, crop-end: 243, format: javascript, line-numbers: false}
-![Adding rudimentary routing](code_samples/es6v2/components/Controls/index.js)
+{crop-start: 215, crop-end: 243, format: javascript, line-numbers: false, caption: "Add rudimentary routing"}
+```
+// src/components/Controls/index.js
 
-We use the `componentDidMount` lifecycle hook to read the URL when our component first renders on the page. Presumably when the page loads, but it could be later. It doesn't really matter *when*, just that we update our filter the first chance we get.
+class Controls extends React.Component {
+    // ..
 
-`window.location.hash` gives us the hash part of the URL and we clean it up and split it into three parts: `year`, `USstate`, and `jobTitle`. If the URL is `localhost:3000/#2013-CA-manager`, then `year` becomes `2013`, `USstate` becomes `CA`, and `jobTitle` becomes `manager`.
+    componentDidMount() {
+        let [year, USstate, jobTitle] = window.location.hash
+            .replace("#", "")
+            .split("-");
 
-We make sure each value is valid and use our existing filter update callbacks to update the visualization. Just like it was the user clicking a button.
+        if (year !== "*" && year) {
+            this.updateYearFilter(Number(year));
+        }
+        if (USstate !== "*" && USstate) {
+            this.updateUSstateFilter(USstate);
+        }
+        if (jobTitle !== "*" && jobTitle) {
+            this.updateJobTitleFilter(jobTitle);
+        }
+    }
+    
+    // ..
+    reportUpdateUpTheChain() {
+        window.location.hash = [
+            this.state.year || "*",
+            this.state.USstate || "*",
+            this.state.jobTitle || "*"
+        ].join("-");
 
-In `componentDidUpdate`, we now update the URL hash as well as call `reportUpdateUpTheChain`. Updating the hash just takes assigning a new value to `window.location.hash`.
+        // ..
+    }
+```
 
-You should now see the URL changing as you click around.
+We use the `componentDidMount` lifecycle hook to read the URL when `Controls` first render on our page. Presumably when the page loads, but it could be later. It doesn't really matter *when*, just that we update our filter the first chance we get.
+
+`window.location.hash` gives us the hash part of the URL. We clean it up and split it into three parts: `year`, `USstate`, and `jobTitle`. If the URL is `localhost:3000/#2013-CA-manager`, then `year` becomes `2013`, `USstate` becomes `CA`, and `jobTitle` becomes `manager`.
+
+We make sure each value is valid and use our existing filter update callbacks to update the visualization. Just as if it was the user clicking a button.
+
+In `reportUpdateUpTheChain`, we make sure to update the URL hash. Assigning a new value to `window.location.hash` takes care of that.
+
+You should see the URL changing as you click around.
 
 ![Changing URL hash](images/es6v2/changing-url.png)
 
@@ -1834,7 +2076,7 @@ If it doesn't work at all, consult the [diff on Github](https://github.com/Swize
 
 # Prep for launch
 
-You've built a great visualization. Congratz! It's time to put it online and share with the world.
+You've built a great visualization. Congratz! Time to put it online and share with the world.
 
 To do that, we're going to use Github Pages because our app is a glorified static website. There's no backend, so all we need is something to serve our HTML, JavaScript, and CSV. Github Pages is perfect for that.
 
@@ -1865,7 +2107,7 @@ $ git remote add origin git://github ...
 $ git push origin -u master
 ```
 
-If you've been git-ing locally without pushing, then you need only the `git remote add` and `git push origin` commands. This puts your code on Github. Great idea for anything you don't want to lose if your computer craps out.
+If you've been git-ing locally without pushing, then you only need the `git remote add` and `git push origin` commands. This puts your code on Github. Great idea for anything you don't want to lose if your computer craps out.
 
 Every Github repository comes with an optional Github Pages setup. The easiest way for us to use it is with the `gh-pages` npm module.
 
@@ -1913,8 +2155,6 @@ We're going to poke around `public/index.html` for the first time. Add titles, T
 
 We add a `<title>` and a `canonical` URL. Titles configure what shows up in browser tabs, and the canonical URL is there to tell search engines that this is the main and most important URL for this piece of content. This is especially important for when people copy-paste your stuff and put it on other websites.
 
-But I messed up here and used the wrong URL. This knocks down rankings for the original version of this visualization, but oh well :smile:
-
 In the body root tag, we add some copy-pasted text from our dataviz. You'll recognize the default title and description.
 
 As soon as React loads, these get overwritten with our preloader, but it's good to have them here for any search engines that aren't running JavaScript yet. I think both Google and Bing are capable of running our React app and getting text from there, but you never know.
@@ -1938,7 +2178,7 @@ Now when somebody shares your dataviz on Twitter or Facebook, it's going to look
 
 ## Full dataset
 
-One more step left to do. Use the whole dataset!
+One more step left. Use the whole dataset!
 
 Go into `src/DataHandling.js` and change one line:
 
@@ -1949,7 +2189,7 @@ We change the file name, and that's that. Full dataset locked and loaded. Datavi
 
 # Launch!
 
-To show your dataviz to the world, make sure you've committed all changes. Using `git status` shows you anything you've forgotten.
+To show your dataviz to the world, make sure you've committed all changes. Using `git status` shows you anything you missed.
 
 Then run:
 
@@ -1965,8 +2205,8 @@ And you're ready to go. Your visualization is online. My URL is `https://swizec.
 
 ![Deployed dataviz](images/es6v2/deployed-dataviz.png)
 
-Congratz! You've built and deployed your first React and D3v4 dataviz. You're amazing \o/
+Congratz! You've built and deployed your first React and D3 dataviz. You're amazing \o/
 
-Thanks for following along with the meaty part of my book. You're now well equipped to make cool things.
+Thanks for following along with the meaty part of my book. You're now well equipped to build cool things.
 
 In the next section, we're going to look at building animations.
