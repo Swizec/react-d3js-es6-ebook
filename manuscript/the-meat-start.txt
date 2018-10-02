@@ -3,11 +3,12 @@
 {#the-meat-start}
 # Visualizing data with React and d3.js #
 
-Welcome to the main part of React + D3v4. We're going to talk a little theory, learn some principles, and then get our hands dirty with a few examples. Through this book you're going to build:
+Welcome to the main part of React + D3 2018. We're going to talk a little theory, learn some principles, then get our hands dirty with some examples. Through this book you're going to build:
 
-- [A few small components in Codepen](#basic-approach)
+- [A few small components in Codesandbox](#basic-approach)
 - [A choropleth map](#choropleth-map)
 - [An interactive histogram](#histogram-of-salaries)
+- [A bouncing ball](#bouncing-ball)
 - [A rainbow snake](#rainbow-snake)
 - [An animated alphabet](#animated-alphabet)
 - [A simple particle generator with Redux](#animating-react-redux)
@@ -15,23 +16,31 @@ Welcome to the main part of React + D3v4. We're going to talk a little theory, l
 - [Billiards simulation with MobX and canvas](#billiards-simulation)
 - [A dancing fractal tree](#fractal-tree)
 
-Looks random, right? Bear with me.
+Looks random, right? Bear with me. Examples build on each other. 
 
-Examples build on each other in complexity. **The first** teaches you how to make a static data visualization component and shows you an approach to declarative data visualization. **The second** adds interactivity and components interacting with each other in order to teach you about a simple approach to state management. **The third** shows you how to use transitions to build simple animations. **The fifth** shows you complex transitions with entering and exiting components. **The fifth** shows you how to do complex animation using a game loop principle. **The sixth, seventh, and eighth** show you how to approach speed optimization to smoothly animate thousands of elements.
+The first few examples teach you about static data visualizations and the basics of merging React and D3 using two different approaches.
 
-Throughout our examples, we're going to use **React 15**, compatible with **React 16 Fiber**, **D3v4**, and **ES6+**. In the particle generator, we're also going to use **Redux** to drive the game loop and **Konva** for canvas manipulation. The billiards simulation uses **MobX** so you can compare it to Redux and learn both.
+The choropleth and histogram visualizations teach you about interactivity and components working together.
 
-Don't worry if you're not comfortable with ES6 syntax yet. By the end of this book, you're gonna love it!
+You learn about game loop and transition animations through two types of bouncing balls. Followed by more complex enter/exit transitions with an animated alphabet.
 
-Until then, here's an interactive cheatsheet: [es6cheatsheet.com](https://es6cheatsheet.com/). It uses code samples to compare the ES5 way with the ES6 way so you can brush up quickly.
+We look at how far we can push React's performance with a simple particle generator and a dancing fractal tree. A billiards game helps us learn about complex canvas manipulation.
 
-In the interest of looking towards the future, we'll check out **Preact** and **Inferno** in the final fractal example. They're new React-like libraries that promise better performance and smaller file sizes. Their creators – Jason Miller and Dominic Gannaway - graciously forked my fractal tree example and built the same thing in their respective libraries. Thank you!
+Throughout these examples, we're going to use **React 16**, compatible with **React 17**, **D3v5**, and modern **ES6+** JavaScript syntax. The particle generator also uses **Redux** for the game loop and the billiards simulation uses MobX. We use **Konva** for complex canvas stuff.
+
+That way you can build experience in large portions of the React ecosystem so you can choose what you like best.
+
+Don't worry, if you're not comfortable with modern JavaScript syntax just yet. By the end of this book, you're gonna love it!
+
+Until then, here's an interactive cheatsheet: [es6cheatsheet.com](https://es6cheatsheet.com/). It uses runnable code samples to compare the ES5 way with the ES6 way so you can brush up quickly.
+
+To give you a taste of React alternatives, we'll check out **Preact**, **Inferno**, and **Vue** in the fractal tree example. They're component-based UI frameworks similar to React. Preact is tiny, Inferno is fast, and Vue is about as popular as React.
 
 ----
 
-Before we begin our examples, let's talk about how React and D3 fit together and how we're going to structure our apps. If you prefer to get your hands dirty first and ask questions later, skip this section and jump to the examples.
+Before we begin with examples, let's talk about how React and D3 fit together and how we're going to structure our apps. If you prefer to get your hands dirty first and ask questions later, skip this section and jump to the examples.
 
-This section is split into five chapters:
+This section comes in five chapters:
 
 - [Basic Approach](#basic-approach)
 - [Blackbox Components](#blackbox-components)
@@ -42,7 +51,7 @@ This section is split into five chapters:
 {#basic-approach}
 # The basic approach
 
-Our visualizations are going to use SVG - an XML-based image format that lets us describe images in terms of mathematical shapes. For example, the source code of an 800x600 SVG image with a rectangle looks like this:
+Our visualizations are going to use SVG – an XML-based image format that lets us describe images in terms of mathematical shapes. For example, the source code of an 800x600 SVG image with a rectangle looks like this:
 
 {caption: "SVG rectangle", line-numbers: false}
 ```html
@@ -51,7 +60,7 @@ Our visualizations are going to use SVG - an XML-based image format that lets us
 </svg>
 ```
 
-These four lines create an SVG image with a black rectangle at coordinates `(50, 20)` that is 100x200 pixels large. Black fill with no borders is default for all SVG shapes.
+These four lines create an SVG image with a black rectangle at coordinates `(50, 20)` that is 100x200 pixels large. Black fill with no borders is default for SVG shapes.
 
 SVG is perfect for data visualization on the web because it works in all browsers, renders without blurring or artifacts on all screens, and supports animation and user interaction. You can see examples of interaction and animation later in this book.
 
@@ -59,7 +68,7 @@ But SVG can get slow when you have many thousands of elements on screen. We're g
 
 ----
 
-Another nice feature of SVG is that it's just a dialect of XML - nested elements describe structure, attributes describe the details. They're the same principles that HTML uses.
+Another nice feature of SVG is that it's just a dialect of XML - nested elements describe structure, attributes describe the details. Same principles that HTML uses.
 
 That makes React's rendering engine particularly suited for SVG. Our 100x200 rectangle from before looks like this as a React component:
 
@@ -76,12 +85,12 @@ To use this rectangle component in a picture, you'd use a component like this:
 ```
 const Picture = () => (
     <svg width="800" height="600">
-	<Rectangle />
+        <Rectangle />
     </svg>
 );
 ```
 
-You're right. This looks like tons of work for a static rectangle. But look closely. Even if you know nothing about React and JSX, you can look at that code and see that it's a `Picture` of a `Rectangle`.
+Sure looks like tons of work for a static rectangle. But look closely! Even if you know nothing about React and JSX, you can look at that code and see that it's a `Picture` of a `Rectangle`.
 
 Compare that to a pure D3 approach:
 
@@ -97,7 +106,7 @@ d3.select("svg")
   .attr("y", 20);
 ```
 
-It's elegant, it's declarative, and it looks like function call soup. It doesn't scream *"Rectangle in an SVG"* to me as much as the React example does.
+It's elegant, it's declarative, and it looks like function call soup. It doesn't scream *"Rectangle in an SVG"* to as much as the React version does.
 
 You have to take your time and read the code carefully: first, we `select` the `svg` element, then we add attributes for `width` and `height`. After that, we `append` a `rect` element and set its attributes for `width`, `height`, `x`, and `y`.
 
@@ -110,20 +119,22 @@ Those 8 lines of code create HTML that looks like this:
 </svg>
 ```
 
-Would've been easier to just write the HTML, right? Yes, for static images, you're better off using Photoshop or something then exporting to SVG.
+Would've been easier to just write the HTML, right? Yes, for static images, you're better off using Photoshop or Sketch then exporting to SVG.
 
-Either way, dealing with the DOM is not D3's strong suit. There's a lot of typing, code that's hard to read, it's slow when you have thousands of elements, and it's often hard to keep track of which elements you're changing. D3's enter-update-exit cycle is great in theory, but I personally never found it easy to use.
+Dealing with the DOM is not D3's strong suit. There's a lot of typing, code that's hard to read, it's slow when you have thousands of elements, and it's often hard to keep track of which elements you're changing. D3's enter-update-exit cycle is great in theory, but most people struggle trying to wrap their head around it.
 
-If you don't completely understand what I just said, don't worry. We'll cover the enter-update-exit cycle in the animations example. Don't worry about D3 either. **I know it's hard**. I've written two books about it, and I still spend as much time reading the docs as writing the code. There's much to learn, and I'll explain everything as we go along.
+If you don't understand what I just said, don't worry. We'll cover the enter-update-exit cycle in the animations example. 
 
-D3's strong suit is its ability to do everything other than the DOM. There are many statistical functions, great support for data manipulation, and a bunch of built-in data visualizations. **D3 can calculate anything for us. All we have to do is draw it out.**
+Don't worry about D3 either. **It's hard!** I've written two books about D3, and I still spend as much time reading the docs as writing the code. The library is huge and there's much to learn. I'll explain everything as we go along.
 
-That's why we're going to follow this approach:
+D3's strong suit is its ability to do everything except the DOM. There are statistical functions, great support for data manipulation, a bunch of built-in data visualizations, magic around transitions and animation ... **D3 can calculate anything for you. All you have to do is draw it out.**
+
+That's why our general approach sounds like this in a nutshell:
 
 * React owns the DOM
 * D3 calculates properties
 
-This way, we can leverage React for SVG structure and rendering optimizations and D3 for all its mathematical and visualization functions.
+We leverage React for SVG structure and rendering optimizations; D3 for its mathematical and visualization functions.
 
 Now let's look at two different ways to put them together: blackbox and full-feature.
 
