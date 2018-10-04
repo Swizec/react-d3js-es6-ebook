@@ -38,18 +38,323 @@ To give you a taste of React alternatives, we'll check out **Preact**, **Inferno
 
 ----
 
-Before we begin with examples, let's talk about how React and D3 fit together and how we're going to structure our apps. If you prefer to get your hands dirty first and ask questions later, skip this section and jump to the examples.
+Let's talk about how React and D3 fit together. If there's just one chapter you should read, this is the one. It explains how things work and fit together. Takes you from beginning to being able to figure out the rest on your own.
 
-This section comes in five chapters:
+Although you should still play with the bigger examples. They're fun.
 
-- [Basic Approach](#basic-approach)
-- [Blackbox Components](#blackbox-components)
-- [Full Feature Integration](#full-feature-integration)
+This section has five chapters:
+
+- [A quick intro to D3](#d3-quick-intro)
+- [How React makes D3 easier](#basic-approach)
+- [When should you use an existing library? Which one?](#existing-libraries)
+- [Quickly integrate any D3 code in your React project with Blackbox Components](#blackbox-components)
+- [Build scalable dataviz components with full integration](#full-feature-integration)
 - [State Handling Architecture](#state-handling-architecture)
 - [Structuring your React App](#structuring-your-app)
 
+{#d3-quick-intro}
+# A quick intro to D3
+
+D3 is the best library out there for custom data visualization. It comes with a rich ecosystem of functions for almost anything you can think of. From simple medians, to automatic axis generators, and force diagrams.
+
+Most data visualization you see on the web is built with D3. The New York Times uses it, Guardian uses it, r/dataisbeautiful is full of it.
+
+Learning D3 from scratch is where life gets tricky.
+
+There are several gotchas that trip you up and make examples look like magic. You've probably noticed this, if you ever looked at an example project built with D3. They're full of spaghetti code, global variables, and often aren't made to be maintainable.
+
+Most examples are just one-off toys after all. It's art.
+
+A lot of dataviz that *isn't* art, is charts and graphs. You'll often find that using D3 to build those, is too complicated. D3 gives you more power than you need.
+
+If you want charts, I suggest using a charting library. 
+
+Where many charting libraries fall short is customization. The API is limited, you can't do everything you want, and it gets easier to just build it yourself.
+
+A lot of what you end up doing in real life is finding a D3 example that looks like what you want to build and adapting it. That's why you should learn at least some D3.
+
+But D3 is hard to read. Take this barchart code, for example 👇
+
+{caption: "Barchart in pure D3", line-numbers: false}
+```javascript
+d3.tsv("data.tsv", function(d) {
+  d.frequency = +d.frequency;
+  return d;
+}, function(error, data) {
+  if (error) throw error;
+
+  x.domain(data.map(function(d) { return d.letter; }));
+  y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
+
+  g.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+
+  g.append("g")
+      .attr("class", "axis axis--y")
+      .call(d3.axisLeft(y).ticks(10, "%"))
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", "0.71em")
+      .attr("text-anchor", "end")
+      .text("Frequency");
+
+  g.selectAll(".bar")
+    .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.letter); })
+      .attr("y", function(d) { return y(d.frequency); })
+      .attr("width", x.bandwidth())
+      .attr("height", function(d) { return height - y(d.frequency); });
+});
+```
+
+Can you tell what's going on? I'd need to read it pretty carefully.
+
+Which brings us to 👇
+
+## 3 key insights that help you learn D3.js from scratch
+
+Somebody once asked me how to learn D3.js from scratch. I quipped that it took me writing a book to really learn it. It's one hell of a library.
+
+Most people don't go that far. They don't have to. 
+
+You start with a problem, find similar examples, do some copy pasta, tweak until it works and end up with a working visualization you don't understand. You'd be surprised how few engineers actually understand how their D3 data visualization works.
+
+Fear not! There are just 3 key concepts you have to grok. Then you can understand every D3 example out there. 😱
+
+### 1) Data manipulation vs. DOM manipulation
+
+All D3 examples are split into two parts: 
+
+1. Data manipulation
+2. DOM manipulation 
+
+First you prep your values, then you render.
+
+You have to go through many examples to notice what's going on. Inference learning is hard. Most beginners miss this pattern and it makes D3 look more confusing than it is.
+
+Let's take an example from [D3's docs](https://github.com/d3/d3/wiki/Gallery), a bar chart with a hover effect.
+
+[screenshot]
+
+You can [try it online](https://cdn.rawgit.com/mbostock/3885304/raw/a91f37f5f4b43269df3dbabcda0090310c05285d/index.html). When you hover on a bar, it changes color. Pretty neat.
+
+Mike Bostock, the creator of D3, built this chart in 43 lines of code. Here they are 👇
+
+{caption: "Example D3 barchart", line-numbers: false}
+```javascript
+var svg = d3.select("svg"),
+    margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = +svg.attr("width") - margin.left - margin.right,
+    height = +svg.attr("height") - margin.top - margin.bottom;
+
+var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+    y = d3.scaleLinear().rangeRound([height, 0]);
+
+var g = svg.append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.tsv("data.tsv", function(d) {
+  d.frequency = +d.frequency;
+  return d;
+}, function(error, data) {
+  if (error) throw error;
+
+  x.domain(data.map(function(d) { return d.letter; }));
+  y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
+
+  g.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+
+  g.append("g")
+      .attr("class", "axis axis--y")
+      .call(d3.axisLeft(y).ticks(10, "%"))
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", "0.71em")
+      .attr("text-anchor", "end")
+      .text("Frequency");
+
+  g.selectAll(".bar")
+    .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.letter); })
+      .attr("y", function(d) { return y(d.frequency); })
+      .attr("width", x.bandwidth())
+      .attr("height", function(d) { return height - y(d.frequency); });
+});
+```
+
+There are two parts to this code: Data manipulation and DOM manipulation.
+
+{caption: "Data manipulation code", line-numbers: false}
+```javascript
+var // ..,
+    margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = +svg.attr("width") - margin.left - margin.right,
+    height = +svg.attr("height") - margin.top - margin.bottom;
+
+var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+    y = d3.scaleLinear().rangeRound([height, 0]);
+
+// ...
+
+d3.tsv("data.tsv", function(d) {
+  d.frequency = +d.frequency;
+  return d;
+}, function(error, data) {
+  if (error) throw error;
+
+  x.domain(data.map(function(d) { return d.letter; }));
+  y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
+
+// ...
+});
+```
+
+Bostock here first prepares his data: 
+
+- some sizing variables (`margin`, `width`, `height`)
+- two scales to help with data-to-coordinates conversion (`x, y`)
+- loads his dataset (`d3.tsv`) and updates his scales' domains
+
+In the DOM manipulation part, he puts shapes and objects into an SVG. This is the part that shows up in your browser.
+
+{caption: "DOM manipulation code", line-numbers: false}
+```javascript
+var svg = d3.select("svg"),
+    // ..
+    
+// ..
+
+var g = svg.append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// ..
+  g.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+
+  g.append("g")
+      .attr("class", "axis axis--y")
+      .call(d3.axisLeft(y).ticks(10, "%"))
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", "0.71em")
+      .attr("text-anchor", "end")
+      .text("Frequency");
+
+  g.selectAll(".bar")
+    .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.letter); })
+      .attr("y", function(d) { return y(d.frequency); })
+      .attr("width", x.bandwidth())
+      .attr("height", function(d) { return height - y(d.frequency); });
+});
+```
+
+DOM manipulation in D3 happens via D3 selections. They're a lot like jQuery `$(something)`. This is the part we're doing with React later on.
+
+Here Bostock does a few things
+
+- selects the `<svg>` node (`d3.select`)
+- appends a grouping `<g>` node (`.append`) with an SVG positioning attribute (translate)
+- adds a bottom axis by appending a `<g>`, moving it, then calling `d3.axisBottom` on it. D3 has built-in axis generators
+- adds a left axis using the same approach but rotating the ticks
+- appends a text label "Frequency" to the left axis
+- uses `selectAll.data` to make a virtual selection of `.bar` nodes and attach some data, then for every new data value (.enter), appends a `<rect>` node and gives it attributes
+
+That last part is where people get lost. It looks like magic. Even to me.
+
+It's a declarative approach to rendering data. Works great, hard to understand. That's why we'll do it in React instead :)
+
+You can think of `.enter` as a loop over your data. Everything chained after `.enter` is your loop's body. Sort of like doing `data.map(d => append(rect).setManyAttributes())`
+
+That function executes for any *new* data "entering" your visualization. There's also `.exit` for anything that's dropping out, and `.update` for anything that's changing.
+
+### 2) Scales
+
+Scales are D3's most versatile concept. They help you translate between two different spaces. Like, mathematical spaces.
+
+They're like the mathematical functions you learned about in school. A domain maps to a range using some sort of formula.
+
+![A basic function](https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Function_color_example_3.svg/440px-Function_color_example_3.svg.png)
+
+Colored shapes in the domain map to colors in the range. No formula for this one. That makes it an ordinal scale.
+
+```javascript
+let shapes = d3.scaleOrdinal()
+	.domain(['red', 'orange', ...)
+	.range(['red', 'orange', ...)
+```
+
+[Play with scales on CodeSandbox](codesandbox://intro-to-d3/scales)
+
+Once you have this scale, you can use it to translate from shapes to colors. `shapes('red triangle')` returns `'red'` for example.
+
+Many different types of scales exist. Linear, logarithmic, quantize, etc. Any basic transformation you can think of exists. The rest you can create by writing custom scales.
+
+You're most often going to use scales to turn your data values into coordinates. But other use-cases exist.
+
+### 3) D3 layouts
+
+Sure `.enter.append` looks like magic, but D3 layouts are the real mind=blown of the D3 ecosystem. They take your input data and return a full-featured visualization thing.
+
+For example, a force layout using forces between nodes to place them on the screen.
+
+![Force layout](images/2018/force-layout.png)
+
+Or a circle packing layout that neatly packs circles.
+
+![Circle packing layout](images/2018/circle-packing-layout.png)
+
+I don't know the maths that goes into most of these. And that's the point, you shouldn't have to!
+
+Here's a key insight about the magic of layouts: They're the data part.
+
+You take a `forceLayout` and feed it your data. It returns an object with a `tick` event callback.
+
+```javascript
+var simulation = d3.forceSimulation()
+    .force("link", d3.forceLink().id(function(d) { return d.id; }))
+    .force("charge", d3.forceManyBody())
+    .force("center", d3.forceCenter(width / 2, height / 2));
+```
+
+This `simulation` now handles everything *about* rendering your nodes. Changes their positions on every `tick` callback, figures out how often to change stuff, etc.
+
+But it is up to you to render them. A layout handles your dataviz in the abstract. You're in control of the rendering.
+
+For a force layout, you have to update the DOM on every tick of the animation. For circle packing, you render it once.
+
+Once you grok this, all the fancy visualizations out there start making sense. Also means you can use these fancy layouts in React 🙌
+
+## Recap
+
+There's a lot more D3 can do, but those are the 3 key insights you need to understand any example you find in the wild.
+
+1. Code is split into data and DOM manipulation
+2. Scales are great and used a lot
+3. You're always in control of rendering
+
+Then you can start using D3's more advanced features like maps and axes and shape generators and geo computations and data loading and transitions and user interactions.
+
+There's a lot. We're not going to cover it all but you can find it and learn how to use it when you need to.
+
 {#basic-approach}
-# The basic approach
+# How React makes D3 easier
 
 Our visualizations are going to use SVG – an XML-based image format that lets us describe images in terms of mathematical shapes. For example, the source code of an 800x600 SVG image with a rectangle looks like this:
 
@@ -138,24 +443,31 @@ We leverage React for SVG structure and rendering optimizations; D3 for its math
 
 Now let's look at two different ways to put them together: blackbox and full-feature.
 
+{#existing-libraries}
+# When should you use an existing library? Which one?
+
 {#blackbox-components}
 # Blackbox Components
 
 Blackbox components are the simplest way to integrate D3 and React. You can think of them as wrappers around D3 visualizations.
 
-You can take any D3 example from the internets or your brain, wrap it in a thin React component, and it Just Works™. Yes, we go against what I just said and let D3 control a small part of the DOM tree.
+With the blackbox approach, you can take any D3 example from the internets or your brain, wrap it in a React component, and it Just Works™. This is great when you're in a hurry, but comes with a big caveat: You're letting D3 control some of the DOM.
 
-We throw away most of React's power, but we gain a quick way to get things working.
+D3 controlling the DOM is *okay*, but it means React can't help you there. That's why it's called a Blackbox – React can't see inside.
 
-I call the approach *"blackbox"* because React's engine can't see inside your component, can't help with rendering, and has no idea what's going on. From this point onward in the DOM tree, you are on your own. It sounds scary, but it's okay if you're careful.
+No render engine, no tree diffing, no dev tools to inspect what's going. Just a blob of DOM elements.
+
+Okay for small components or when you're prototyping, but I've had people come to my workshops and say *"We built our whole app with the blackbox approach. It takes a few seconds to re-render when you click something. Please help"*
+
+🤔
 
 Here's how it works:
 - React renders an anchor element
 - D3 hijacks it and puts stuff in
 
-You have to manually re-render on props and state changes. You're also throwing away and recreating your component's entire DOM on each re-render.
+You manually re-render on props and state changes. Throwing away and rebuilding the entire DOM subtree on each render. With complex visualizations this becomes a huge hit on performance.
 
-Manual re-rendering is not as annoying as it sounds, but the inefficiency can get pretty bad with complex visualizations. Use this technique sparingly.
+Use this technique sparingly.
 
 {#blackbox-axis}
 ## A quick blackbox example - a D3 axis
@@ -166,7 +478,7 @@ They don't *look* difficult, but there are many tiny details you have to get _ju
 
 D3's axis generator takes a scale and some configuration to render an axis for us. The code looks like this:
 
-{caption: "A pure D3 axis",line-numbers: false, format: javascript}
+{caption: "Vanilla D3 axis",line-numbers: false, format: javascript}
 ```
 const scale = d3.scaleLinear()
 		.domain([0, 10])
@@ -179,11 +491,13 @@ d3.select('svg')
   .call(axis);
 ```
 
+You can [try it out on CodeSandbox](https://codesandbox.io/s/v6ovkow8q3).
+
 If this code doesn't make any sense, don't worry. There's a bunch of D3 to learn, and I'll help you out. If it's obvious, you're a pro! This book will be much quicker to read.
 
-We start with a linear scale that has a domain `[0, 10]` and a range `[0, 200]`. You can think of scales as mathematical functions that map a domain to a range. In this case, calling `scale(0)` returns `0`, `scale(5)` returns `100`, `scale(10)` returns `200`. Just like middle school mathematics.
+We start with a linear scale that has a domain `[0, 10]` and a range `[0, 200]`. Scales are like mathematical functions that map a domain to a range. In this case, calling `scale(0)` returns `0`, `scale(5)` returns `100`, `scale(10)` returns `200`. Just like a linear function from math class – y = kx + n.
 
-We create an axis generator with `axisBottom`, which takes a `scale` and is going to generate a `bottom` oriented axis – numbers below the line. You can also tweak settings for the number of ticks, their sizing, and their spacing.
+We create an axis generator with `axisBottom`, which takes a `scale` and creates a `bottom` oriented axis – numbers below the line. You can also change settings for the number of ticks, their sizing, spacing, and so on.
 
 Equipped with an `axis` generator, we `select` the `svg` element, append a grouping element, use a `transform` attribute to move it `10`px to the right and `30`px down, and invoke the generator with `.call()`.
 
@@ -191,7 +505,7 @@ It creates a small axis:
 
 ![Simple axis](images/es6v2/simple-axis.png)
 
-You can play around with this example on CodePen [here](https://codepen.io/swizec/pen/YGoYBM). Try changing the scale type.
+Play around with it on [Codesandbox](https://codepen.io/swizec/pen/YGoYBM). Change the scale type, play with axis orientation. Use `.ticks` on the axis to change how many show up. Have some fun :)
 
 ## A quick blackbox example - a React+D3 axis
 
@@ -200,83 +514,95 @@ Now let's say we want to use that same axis code but as a React component. The s
 {caption: "React blackbox axis", line-numbers: false, format: javascript}
 ```
 class Axis extends Component {
-	componentDidMount() { this.renderAxis() }
-	componentDidUpdate() { this.renderAxis() }
+	gRef = React.createRef();
+		
+	componentDidMount() { this.d3render() }
+	componentDidUpdate() { this.d3render() }
 
-	renderAxis() {
+	d3render() {
 		const scale = d3.scaleLinear()
 	                  .domain([0, 10])
-                   .range([0, 200]);
+	                  .range([0, 200]);
     	const axis = d3.axisBottom(scale);
 
-		d3.select(this.refs.g)
+		d3.select(this.gRef)
 		  .call(axis);  
 	}
 
 	render() {
-    	return <g transform="translate(10, 30)" ref="g" />
+    	return <g transform="translate(10, 30)" ref={this.gRef} />
 	}
 }
 ```
 
-Oh man! So much code! Is this really worth it? Yes, for the other benefits of using React in your dataviz. You'll see :)
+So much code! Worth it for the other benefits of using React in your dataviz. You'll see :)
 
-We created an `Axis` component that extends React base `Component` class. We can't use functional stateless components because we need lifecycle hooks. More on those later.
+We created an `Axis` component that extends React's base `Component` class. We can't use functional components because we need lifecycle hooks. 
 
-Our component has a `render` method, which returns a grouping element (`g`) moved 10px to the right and 30px down using the `transform` attribute. Same as before.
+Our component has a `render` method. It returns a grouping element (`g`) moved 10px to the right and 30px down using the `transform` attribute. Same as before.
 
-We added a `ref` attribute, which lets us reference elements in our component via `this.refs`. This makes D3 integration cleaner, and it probably works with React-native. I haven't tried yet.
+A React ref saved in `this.gRef` and passed into our `<g>` element with `ref` lets us talk to the DOM node directly. We need this to hand over rendering control to D3.
 
-The body of `renderAxis` should look familiar. It's where we put code from the pure D3 example. Scale, axis, select, call. There's no need to append a grouping element; we're already there with `this.refs.g`.
+The `d3render` method looks familiar. It's the same code we used in the vanilla D3 example. Scale, axis, select, call. Only difference is that instead of selecting `svg` and appending a `g` element, we select the `g` element rendered by React and use that.
 
-For the manual re-rendering part, we call `renderAxis` in `componentDidUpdate` and `componentDidMount`. This ensures that our axis re-renders every time React's engine decides to render our component. On state and prop changes usually.
+We use `componentDidUpdate` and `componentDidMoutn` to keep our render up to date. Ensures that our axis re-renders every time React's engine decides to render our component.
 
-That wasn't so bad, was it? You can try it out on CodePen [here](https://codepen.io/swizec/pen/qazxPz).
+That wasn't so bad, was it? 
 
-To make our axis more useful, we could get the scale and axis orientation from props. We'll do that for scales in our bigger project.
+[Try it out on Codesandbox](https://codesandbox.io/s/3xy2jr1y5m).
+
+You can make the axis more useful by getting positioning, scale, and orientation from props. We'll do that in our big project.
+
+### Practical exercise
+
+Try implementing those as an exercise. Make the axis more reusable with some carefully placed props.
+
+Here's my solution, if you get stuck 👉 [https://codesandbox.io/s/5ywlj6jn4l](https://codesandbox.io/s/5ywlj6jn4l)
 
 {#blackbox-hoc}
 # A D3 blackbox higher order component – HOC
 
-After the blackbox axis example above, you'd be right to think something like *"Dude, that looks like it's gonna get hella repetitive. Do I really have to do all that every time?"*
+After that example you might think this is hella tedious to implement every time. You'd be right!
 
-Yes, you do. But! We can make it easier with a higher order component - a HOC.
+Good thing you can abstract it all away with a higher order component – a HOC. Now this is something I should open source (just do it already), but I want to show you how it works so you can learn about the HOC pattern.
 
-Higher order components are one of the best ways to improve your React code. When you see more than a few components sharing similar code, it's time for a HOC. In our case, that shared code would be:
+Higher order components are great when you see multiple React components sharing similar code. In our case, that shared code is:
 
 - rendering an anchor element
 - calling D3's render on updates
 
-With a HOC, we can abstract that away into something called a [class factory](https://en.wikipedia.org/wiki/Factory_method_pattern). It's an old concept coming back in vogue now that JavaScript has classes.
+With a HOC, we can abstract that away into a sort of [object factory](https://en.wikipedia.org/wiki/Factory_method_pattern). It's an old concept making a comeback now that JavaScript has classes.
 
-You can think of it as a function that takes some params and creates a class – a React component. Another way to think about HOCs is that they're React components wrapping other React components and a function that makes it easy.
+Think of our HOC as a function that takes some params and creates a class – a React component. Another way to think about HOCs is that they're React components wrapping other React components and a function that makes it easy.
 
-Let's build a HOC for D3 blackbox integration. We'll use it in the main example project.
-
-A `D3blackbox` HOC looks like this:
+A HOC for D3 blackbox integration, called `D3blackbox`, looks like like this:
 
 {caption: "React blackbox HOC", line-numbers: false, format: javascript}
 ```
 function D3blackbox(D3render) {
 	return class Blackbox extends React.Component {
+		anchor = React.createRef();
+		
 		componentDidMount() { D3render.call(this); }
 		componentDidUpdate() { D3render.call(this) }
 
 		render() {
 	    const { x, y } = this.props;
-	    return <g transform={`translate(${x}, ${y})`} ref="anchor" />;
+	    return <g transform={`translate(${x}, ${y})`} ref={this.anchor} />;
 		}
 	}
 }
 ```
 
-You'll recognize most of that code from earlier. We have a `componentDidMount` and`componentDidUpdate` lifecycle hooks that call `D3render` on component updates. This used to be called `renderAxis`. `render` renders a grouping element as an anchor into which D3 can put its stuff.
+You'll recognize most of that code from earlier. 
 
-Because `D3render` is no longer a part of the component, we have to use `.call` to give it the scope we want: this class, or rather `this` instance of the `Backbone` class.
+We have `componentDidMount` and`componentDidUpdate` lifecycle hooks that call `D3render` on component updates. `render` renders a grouping element as an anchor with a ref so D3 can use it to render stuff into.
 
-We've also made some changes to make `render` more flexible. Instead of hardcoding the `translate()` transformation, we take `x` and `y` props. `{ x, y } = this.props` takes `x` and `y` out of `this.props` using object decomposition, and we used ES6 string templates for the `transform` attribute.
+Because `D3render` is no longer a part of our component, we have to use `.call` to give it the scope we want: this class, or rather `this` instance of the `Blackbox` class.
 
-Consult the [ES6 cheatsheet](https://es6cheatsheet.com/) for details on that.
+We've also made some changes that make `render` more flexible. Instead of hardcoding the `translate()` transformation, we take `x` and `y` props. `{ x, y } = this.props` takes `x` and `y` out of `this.props` using object decomposition, and we used ES6 string templates for the `transform` attribute.
+
+Consult the [ES6 cheatsheet](https://es6cheatsheet.com/) for details on the syntax.
 
 Using our new `D3blackbox` HOC to make an axis looks like this:
 
@@ -288,16 +614,19 @@ const Axis = D3blackbox(function () {
 	            .range([0, 200]);
     const axis = d3.axisBottom(scale);
 
-    d3.select(this.refs.anchor)
+    d3.select(this.anchor)
       .call(axis);    
 });
 ```
 
-It’s the same code as we had in `renderAxis` before. The only difference is that the function is wrapped in a `D3blackbox` call. This turns it into a React component.
+You know this code! We copy pasted our axis rendering code from before, wrapped it in a function, and passed it into `D3blackbox`. Now it's a React component.
 
-I'm not 100% whether wrapping a function in a React component counts as a real HOC, but let's roll with it. More proper HOCs are React components wrapped in components.
+Play with this example on [Codesandbox, here](https://codesandbox.io/s/5v21r0wo4x).
 
-You can play with this example on Codepen [here](https://codepen.io/swizec/pen/woNjVw).
+{#magic-trick}
+## D3blackbox magic trick – render anything in 30 seconds
+
+fasfasdf
 
 {#full-feature-integration}
 # Full-feature Integration
