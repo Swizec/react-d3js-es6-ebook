@@ -644,7 +644,7 @@ If you have to customize an existing library, or build your own for the team, th
 {#blackbox-components}
 # Quickly integrate any D3 code in your React project with Blackbox Components
 
-Blackbox components are the simplest way to integrate D3 and React. You can think of them as wrappers around D3 visualizations.
+Blackbox components are the quickest way to integrate D3 and React. You can think of them as wrappers around D3 visualizations.
 
 With the blackbox approach, you can take any D3 example from the internets or your brain, wrap it in a React component, and it Just Works™. This is great when you're in a hurry, but comes with a big caveat: You're letting D3 control some of the DOM.
 
@@ -971,111 +971,286 @@ But like I said, don't use this in production. It's great for quick prototypes, 
 {#full-feature-integration}
 # Build scalable dataviz components with full integration
 
-As useful as blackbox components are, we need something better to really leverage React's rendering engine. We're going to look at full-feature integration where React does the rendering and D3 calculates the props.
+As useful as blackbox components are, we need something better if we want to leverage React's rendering engine. The blackbox approach in particular struggles with scale. The more charts and graphs and visualizations on your screen, the slower it gets.
 
-To do that, we're going to follow a 3-part pattern:
-- set up D3 objects as class properties
-- update D3 objects when component updates
-- output SVG in `render()`
+Someone once came to my workshop and said *"We used the blackbox approach and it takes several seconds to re-render our dashboard on any change. I'm here to learn how to do it better."*
+
+In our full-feature integration, React does the rendering and D3 calculates the props.
+
+Our goal  is to build controlled components that listen to their props and reconcile that with D3's desire to use a lot of internal state.
+
+There are two situations we can find ourselves in:
+
+1. We know for a fact our component's props never change
+2. We think props could change
 
 It's easiest to show you with an example.
 
-Let's build a rectangle that changes color based on prop values. We'll render a few of them to make a color scale.
+Let's build a scatterplot step by step. Take a random array of two-dimensional data, render in a loop. Make magic.
 
-Yes, it looks like a trivial example, but color-as-information is an important concept in data visualization. We're going to use it later to build a choropleth map of household income in the US.
+Something like this 👇
 
-I suggest following along in Codepen for now. [Here's one I set up for you](https://codepen.io/swizec/pen/oYNvpQ). It contains the final solution, so you can follow along and nod your head. I'll explain each part.
+![A simple scatterplot](images/2018/scatterplot.png)
 
-## A color scale
+You've already built the axes! Copy pasta time.
 
-We start with a `Swatch` component that draws a rectangle and fills it with a color.
+## Props don't change
 
-{caption: "Swatch component", line-numbers: false, format: javascript}
+Ignoring props changes makes our life easier, but the component less flexible and reusable. Great when you know in advance that there are features you don't ned to support.
+
+Like, no filtering your data or changing component size 👉 means your D3 scales don't have to change.
+
+When our props don't change, we follow a 2-step integration process:
+
+* set up D3 objects as class properties
+* output SVG in `render()`
+
+We don't have to worry about updating D3 objects on prop changes. Work done 👌
+
+### An unchanging scatterplot
+
+We're building a scatterplot of random data. You can see the [final solution on CodeSandbox](https://codesandbox.io/s/1zlp4jv494)
+
+Here's the approach 👇
+
+- stub out the basic setup
+- generate random data
+- stub out Scatterplot
+- set up D3 scales
+- render circles for each entry
+- add axes
+
+I recommend creating a new CodeSandbox, or starting a new app with create-react-app. They should work the same.
+
+#### Basic setup
+
+Make sure you have `d3` added as a dependency. Then add imports in your `App.js` file.
+
+{caption: "Import files in App.js", line-numbers: false}
+```javascript
+// ./App.js
+
+import * as d3 from "d3";
+import Scatterplot from "./Scatterplot";
 ```
-const Swatch = ({ color, width, x }) => (
-	<rect width={width}
-			  height="20"
-			  x={x}
-			  y="0"
-			  style={{fill: color}} />
+
+Add an `<svg>` and render a Scatterplot in the render method. This will throw an error because we haven't defined the Scatterplot yet and that's okay.
+
+{caption: "Render Scatterplot in App.js", line-numbers: false}
+```javascript
+// ./App.js
+
+function App() {
+  return (
+    <div className="App">
+      <h1>Hello CodeSandbox</h1>
+      <h2>Start editing to see some magic happen!</h2>
+      <svg width="800" height="800">
+        <Scatterplot x={50} y={50} width={300} height={300} data={data} />
+      </svg>
+    </div>
+  );
+}
+```
+
+CodeSandbox adds most of that code by default. If you're using create-react-app, your App component has different markup. That's okay too.
+
+We added this part:
+
+```javascript
+<svg width="800" height="800">
+	<Scatterplot x={50} y={50} width={300} height={300} data={data} />
+</svg>
+```
+
+An `<svg>` drawing area with a width and a height. Inside, a `<Scatterplot` that's positioned at `(50, 50)` and is 300px tall and wide. We'll have to listen to those props when building the Scatterplot.
+
+It also accepts data.
+
+#### Random data
+
+We're using a line of code to generate data for our scatterplot. Put it in App.js. Either globally or within the App  function. Doesn't matter because this is an example.
+
+{caption: "Generate random data", line-numbers: false}
+```javascript
+const data = d3.range(100)
+							 .map(_ => [Math.random(), Math.random()]);
+```
+
+`d3.range` returns a counting array from 0 to 100. Think `[1,2,3,4 ...]`.
+
+We iterate over this array and return a pair of random numbers for each entry. These will be our X and Y coordinates.
+
+#### Scatterplot
+
+Our scatterplot goes in a new `Scatterplot.js` file. Starts with imports and an empty React component.
+
+{caption: "Scatterplot stub", line-numbers: false}
+```javascript
+// ./Scatterplot.js
+import React from "react";
+import * as d3 from "d3";
+
+class Scatterplot extends React.Component {
+
+  render() {
+    const { x, y, data, height } = this.props;
+
+    return (
+      <g transform={`translate(${x}, ${y})`}>
+ 
+      </g>
+    );
+  }
+}
+
+export default Scatterplot;
+```
+
+Import dependencies, create a `Scatterplot` component, render a grouping element moved to the correct `x` and `y` position. Nothing too strange yet.
+
+#### D3 scales
+
+Now we define D3 scales as component properties. We're using the class field syntax that's common in React projects.
+
+Technically a Babel plugin, but comes by default with CodeSandbox React projects and create-react-app setup. As far as I can tell, it's a common way to write React components.
+
+{caption: "Add D3 scales", line-numbers: false}
+```javascript
+// ./Scatterplot.js
+class Scatterplot extends React.Component {
+  xScale = d3
+    .scaleLinear()
+    .domain([0, 1])
+    .range([0, this.props.width]);
+  yScale = d3
+    .scaleLinear()
+    .domain([0, 1])
+    .range([this.props.height, 0]);
+```
+
+We're defining `this.xScale` and `this.yScale` as linear scales. Their domains go from 0 to 1 because that's what Math.random returns and their ranges describe the size of our scatterplot component.
+
+Idea being that these two scales will help us take those tiny variations in datapoint coordinates and explode them up to the full size of our scatterplot. Without this, they'd overlap and we wouldn't see anything.
+
+#### Circles for each entry
+
+Rendering our data points is a matter of looping over the data and rendering a `<circle>` for each entry. Using our scales to define positioning.
+
+{caption: "Loop through data and render circles", line-numbers: false}
+```javascript
+// ./Scatterplot.js
+
+return (
+  <g transform={`translate(${x}, ${y})`}>
+    {data.map(([x, y]) => (
+      <circle cx={this.xScale(x)} cy={this.yScale(y)} r="5" />
+    ))}
+  </g>
 );
 ```
 
-Looks like our earlier components, doesn't it? It's exactly the same: a functional stateless component that draws a `rect` element with some attributes - dimensions, position, and `fill` style.
+In the `return` statement of our `render` render method, we add a `data.map` with an iterator method. This method takes our datapoint, uses array destructuring to get `x` and `y` coordinates, then uses our scales to define `cx` and `cy` attributes on a `<circle>` element.
 
-Note that `style` is a dictionary, so we specify it with double curly braces: outer braces for a dynamic value, inner braces for a dictionary.
+#### Add axes
 
-Then we need a `Colors` component. It follows the full-featured integration structure: D3 objects as properties, an `updateD3` function, plus some wiring for updates and rendering.
+You can reuse axes from our earlier exercise. Or copy mine from [the CodeSandbox](https://codesandbox.io/s/1zlp4jv494)
 
-{caption: "Colors component, pt1", line-numbers: false, format: javascript}
-```
-class Colors extends Component {
-    colors = d3.schemeCategory20;
-    width = d3.scaleBand()
-				      .domain(d3.range(20));
-```
+Mine take a scale and orientation as props, which makes them more flexible. Means we can use the same component for both the vertical and horizontal axis on our Scatterplot.
 
-We start by inheriting from `Component` and defining defaults for D3 objects. `this.colors` is one of [D3's predefined color scales](https://github.com/d3/d3-scale/blob/master/README.md#schemeCategory10). `schemeCategory20` is a scale of 20 colors designed for categorization. It seemed like a good example, and you're welcome to try others.
+Put the axis code in `Axis.js`, then augment the Scatterplot like this 👇
 
-`this.width` is a D3 scale designed for producing bands, `d3.scaleBand`. As mentioned earlier, scales map domains to ranges. We know our domain is 20 colors, so we can statically set the domain as `[1, 2, 3, ..., 20]` with `d3.range(20)`.
+{caption: "Add axes to Scatterplot", line-numbers: false}
+```javascript
+import Axis from "./Axis";
 
-`d3.range` generates a counting array, by the way. We'll use that often.
+// ...
 
-We'll use `this.width` to calculate widths and positions of our color swatches. Here's a picture from D3 docs to help you visualize what `scaleBand` does:
-
-![Band Scale from D3 docs](https://raw.githubusercontent.com/d3/d3-scale/master/img/band.png)
-
-Unlike the domain, our range is dynamic so that we can use props to define the width of our color scale. This makes the component more reusable.
-
-{caption: "Colors component, pt2", line-numbers: false, format: javascript}
-```
-componentWillMount() {
-    this.updateD3(this.props);
-}
-
-componentWillUpdate(newProps) {
-    this.updateD3(newProps);
-}
-
-updateD3(props) {
-    this.width.range([0, props.width]);
-}
+return (
+  <g transform={`translate(${x}, ${y})`}>
+    {data.map(([x, y]) => (
+      <circle cx={this.xScale(x)} cy={this.yScale(y)} r="5" />
+    ))}
+    <Axis x={0} y={0} scale={this.yScale} type="Left" />
+    <Axis x={0} y={height} scale={this.xScale} type="Bottom" />
+  </g>
+);
 ```
 
-`componentWillMount` and `componentWillUpdate` are component lifecycle hooks. Can you guess when they run?
+Vertical axis takes the vertical `this.yScale` scale, orients to the `Left` and we position it top left. The horizontal axis takes the horizontal `this.xScale` scale, orients to the `Bottom`, and we render it bottom left.
 
-`componentWillMount` runs just before React's engine inserts our component into the DOM, and `componentWillUpdate` runs just before React updates it. That happens on any prop change or `setState` call.
+Your Scatterplot should now look like this
 
-Both of them call our `updateD3` method with the new value of props. We use it to update `this.width` scale's range. Doing so keeps the internal state of D3 objects in sync with React's reality. Without it, our component might render stale data.
+![Rendered basic scatterplot](images/2018/scatterplot-basic.png)
 
-Finally, we render a set of color swatches.
+## Props might update
 
-{caption: "Colors component, pt3", line-numbers: false, format: javascript}
+When our props might update, the story is a little different. Since we're using D3 objects to calculate our SVG properties, we have to make sure those objects are updated *before* we render.
+
+If you do it in `componentDidUpdate`, you will render a stale visualization.
+
+We follow a 3-step pattern:
+
+*   set up D3 objects in component state
+*   update D3 objects in `getDerivedStateFromProps`
+*   output SVG in `render()`
+
+`getDerivedStateFromProps` is the new lifecycle hook that replaces `componentWillX` that we used to have. Officially discouraged, it is the best tool we have to make sure D3 state is updated *before* we render.
+
+Because `getDerivedStateFromProps` is called on every component render, not just when our props actually change, it's a good idea to use it only with `React.PureComponent` and to make sure we aren't recalculating stuff too often.
+
+Use memoization helpers, check for actual changes before updating, stuff like that.
+
+#### Practical exercise
+
+Update our scatterplot so it can deal with resizing and updating data.
+
+Steps 👇
+
+- add an interaction that resizes the scatterplot
+- move scales to state
+- update scales in `getDerivedStateFromProps`
+- use `PureComponent`
+- add data changes
+
+[Here's my solution](https://codesandbox.io/s/ll9kp8or0l)
+
+## Making our component more flexible with render props
+
+Our scatterplot doesn't look quite as nice as my screenshot earlier. That's because it's using regular SVG circles with no styling.
+
+What if we wanted to render beautiful circles? Or stars? Or maybe something else entirely?
+
+We can use render props to give users of our scatterplot component the power to define how they want datapoints to render. 😱
+
+You can think of it as a sort of inversion of control, another buzzword I've heard is "slots", or renderless components. The idea is that one of our props accepts a React component.
+
+We then use that prop to render our datapoints.
+
+It looks a little like this 👇
+
+```jsx
+<Scatterplot
+	x={10} y={10}
+	data={data}
+	datapoint={(props) => <Datapoint {...props} />}
+>
 ```
-render() {
-	return (
-		<g>
-	    {d3.range(20).map(i => (
-	        <Swatch color={this.colors[i]}
-	                width={this.width.step()}
-	                x={this.width(i)} />
-	     ))}
-		</g>
-	)
-}
-```
 
-We create a grouping element to fulfill React's one child per component requirement, then render 20 swatches in a loop. Each gets a `color` from `this.colors` and a `width` and `x` from `this.width`.
+What's more, we can add interactions and other useful stuff to our `<Datapoint>` and `<Scatterplot>` doesn't have to know anything about it. All the scatterplot cares about is rendering two axes and a bunch of datapoints.
 
-After inserting into the DOM with `ReactDOM`, we get a series of 20 colorful rectangles.
+### Practical exercise
 
-![20 color swatches](images/es6v2/color-swatches.png)
+Let's use the render prop approach to make our scatterplot more reusable.
 
-Try changing the `width="400"` property of `<Colors />`. You'll see D3's `scaleBand` and our update wiring ensure the color strip renders correctly. For more fun, try changing the `Colors` component so it takes the color scale as a prop, then rendering multiple instances of `<Colors />` side-by-side.
+Steps 👇
 
-Here's the playground again: [CodePen](https://codepen.io/swizec/pen/oYNvpQ)
+- accept a render prop
+- use it to render datapoints
+- make datapoint component look nice
+- add a mouseover effect
 
-As an exercise, try to add another row of swatches, but rendered in reverse.
+[Here's my solution](https://codesandbox.io/s/j73xlyr8v5)
 
 # You're awesome
 
