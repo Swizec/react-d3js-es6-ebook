@@ -1185,45 +1185,176 @@ Your Scatterplot should now look like this
 
 ## Props might update
 
-When our props might update, the story is a little different. Since we're using D3 objects to calculate our SVG properties, we have to make sure those objects are updated *before* we render.
+The story is a little different when our props might update. Since we're using D3 objects to calculate SVG properties, we have to make sure those objects are updated *before* we render.
 
-If you do it in `componentDidUpdate`, you will render a stale visualization.
+No problem in React 15: Update in `componentWillUpdate`. But since React 16.3 we've been told never to use that again. Causes problems for modern async rendering.
 
-We follow a 3-step pattern:
+The official recommended solution is that anything that used to go in `componentWillUpdate`, can go in `componentDidUpdate`. But not so fast! 
+
+Updating D3 objects in `componentDidUpdate` would mean our visualization always renders one update behind. Stale renders! 😱
+
+The new `getDerivedStateFromProps` to the rescue. Our integration follows a 3-step pattern:
 
 *   set up D3 objects in component state
 *   update D3 objects in `getDerivedStateFromProps`
 *   output SVG in `render()`
 
-`getDerivedStateFromProps` is the new lifecycle hook that replaces `componentWillX` that we used to have. Officially discouraged, it is the best tool we have to make sure D3 state is updated *before* we render.
+`getDerivedStateFromProps` is officially discouraged, and yet the best tool we have to make sure D3 state is updated *before* we render.
 
-Because `getDerivedStateFromProps` is called on every component render, not just when our props actually change, it's a good idea to use it only with `React.PureComponent` and to make sure we aren't recalculating stuff too often.
+Because React calls `getDerivedStateFromProps` on every component render, not just when our props actually change, you should avoid recalculating complex things too often. Use memoization helpers, check for changes before updating, stuff like that.
 
-Use memoization helpers, check for actual changes before updating, stuff like that.
+### An updateable scatterplot
 
-#### Practical exercise
+Let's update our scatterplot so it can deal with resizing and updating data. 
 
-Update our scatterplot so it can deal with resizing and updating data.
-
-Steps 👇
+3 steps 👇
 
 - add an interaction that resizes the scatterplot
 - move scales to state
 - update scales in `getDerivedStateFromProps`
-- use `PureComponent`
-- add data changes
 
-[Here's my solution](https://codesandbox.io/s/ll9kp8or0l)
+You can see [my final solution on CodeSandbox](https://codesandbox.io/s/ll9kp8or0l). I recommend you follow along updating your existing code.
 
-## Making our component more flexible with render props
+#### Resize scatterplot on click
 
-Our scatterplot doesn't look quite as nice as my screenshot earlier. That's because it's using regular SVG circles with no styling.
+To test our scatterplot's adaptability, we have to add an interaction: Resize the scatterplot on click.
+
+That change happens in `App.js`. Click on the `<svg>`, reduce width and height by 30%.
+
+Move sizing into App state and add an `onClick` handler.
+
+{caption: "Sizing into state and click handler", line-numbers: false}
+```javascript
+// App.js
+class App extends React.Component {
+  state = {
+    width: 300,
+    height: 300
+  };
+
+  onClick = () => {
+    const { width, height } = this.state;
+    this.setState({
+      width: width * 0.7,
+      height: height * 0.7
+    });
+  };
+
+  render() {
+    const { width, height } = this.state;
+```
+
+We changed our App component from a function to a class, added `state` with default `width` and `height`, and an `onClick` method that reduces size by 30%. The `render` method reads `width` and `height` from state.
+
+Now gotta change rendering to listen to these values and fire the `onClick` handler.
+
+{caption: "Use state in rendering", line-numbers: false}
+```javascript
+// App.js
+
+<svg width="800" height="800" onClick={this.onClick}>
+  <Scatterplot
+    x={50}
+    y={50}
+    width={width}
+    height={height}
+    data={data}
+  />
+</svg>
+```
+
+Similar rendering as before. We have an `<svg>` that contains a `<Scatterplot>`. The svg fires `this.onClick` on click events and the scatterplot uses our `width` and `height` values for its props.
+
+If you try this code now, you should see a funny effect where axes move, but the scatterplot doesn't resize.
+
+![Axes move, scatterplot doesn't resize](images/2018/not-resizing-scatterplot.png)
+
+Peculiar isn't it? Try to guess why.
+
+#### Move scales to state
+
+The horizontal axis moves because it's render at `height` vertical coordinate. Datapoints don't move because the scales that position them are calculated once – on component mount.
+
+First step to keeping scales up to date is to move them from component values into state.
+
+{caption: "Move scales into state", line-numbers: false}
+```javascript
+// Scatterplot.js
+class Scatterplot extends React.Component {
+  state = {
+    xScale: d3
+      .scaleLinear()
+      .domain([0, 1])
+      .range([0, this.props.width]),
+    yScale: d3
+      .scaleLinear()
+      .domain([0, 1])
+      .range([this.props.height, 0])
+  };
+```
+
+Same scale definition code we had before. Linear scales, domain from 0 to 1, using props for ranges. But now they're wrapped in a `state = {}` object and it's `xScale: d3 ...` instead of `xScale = d3 ...`.
+
+Our render function should use these as well. Small change:
+
+{caption: "Render function uses state scales", line-numbers: false}
+```javascript
+// Scatterplot.js
+	render() {
+    const { x, y, data, height } = this.props,
+      { yScale, xScale } = this.state;
+
+    return (
+      <g transform={`translate(${x}, ${y})`}>
+        {data.map(([x, y]) => <circle cx={xScale(x)} cy={yScale(y)} r="5" />)}
+```
+
+We use destructuring to take our scales from state, then use them when mapping over our data. 
+
+Clicking on the SVG produces the same result as before, but we're almost there. Just one more step.
+
+#### Update scales in `getDerivedStateFromProps`
+
+Last step is to update our scales' ranges in `getDerivedStateFromProps`. This method runs every time React touches our component for any reason.
+
+{caption: "Update scales", line-numbers: false}
+```javascript
+// Scatterplot.js
+class Scatterplot extends React.PureComponent {
+	// ..
+  static getDerivedStateFromProps(props, state) {
+    const { yScale, xScale } = state;
+
+    yScale.range([props.height, 0]);
+    xScale.range([0, props.width]);
+
+    return {
+      ...state,
+      yScale,
+      xScale
+    };
+  }
+```
+
+Take scales from state, update ranges with new values, return new state. Nice and easy.
+
+Notice that `getDerivedStateFromProps` is a static method shared by all instances of our Scatterplot component. You have no reference to a `this` and have to calculate new state purely from the `props` and `state` passed into your method.
+
+It's a lot like a Redux reducer, if that helps you think about it. If you don't know what Redux reducers are, don't worry. Just remember to return a new version of component state.
+
+Your Scatterplot should now update its size on every click.
+
+![Scatterplot resizes](images/2018/scatterplot-resizes.png)
+
+## Making our components more flexible with render props
+
+Our scatterplot doesn't look quite as nice as the earlier screenshot. Regular SVG circles with no styling just can't match up.
 
 What if we wanted to render beautiful circles? Or stars? Or maybe something else entirely?
 
 We can use render props to give users of our scatterplot component the power to define how they want datapoints to render. 😱
 
-You can think of it as a sort of inversion of control, another buzzword I've heard is "slots", or renderless components. The idea is that one of our props accepts a React component.
+Think of it as a sort of inversion of control. Another common buzzword are "slots", or renderless components. The idea is that one of our props accepts a React component.
 
 We then use that prop to render our datapoints.
 
@@ -1239,26 +1370,122 @@ It looks a little like this 👇
 
 What's more, we can add interactions and other useful stuff to our `<Datapoint>` and `<Scatterplot>` doesn't have to know anything about it. All the scatterplot cares about is rendering two axes and a bunch of datapoints.
 
-### Practical exercise
-
 Let's use the render prop approach to make our scatterplot more reusable.
 
 Steps 👇
 
-- accept a render prop
+- pass in a render prop
 - use it to render datapoints
 - make datapoint component look nice
-- add a mouseover effect
 
-[Here's my solution](https://codesandbox.io/s/j73xlyr8v5)
+You can see [my solution on CodeSandbox](https://codesandbox.io/s/j73xlyr8v5). I recommend you follow along with your existing code.
+
+### Pass in a render prop
+
+React components are Just JavaScript. Either a JSX function call or a function that returns some JSX.
+
+That means we can pass them into components via props. Let's do that in App.js
+
+{caption: "Pass render prop into Scatterplot", line-numbers: false}
+```javascript
+// App.js
+
+import Datapoint from "./Datapoint";
+
+//..
+<svg width="800" height="800" onClick={this.onClick}>
+  <Scatterplot
+    x={50}
+    y={50}
+    width={width}
+    height={height}
+    data={data}
+    datapoint={({ x, y }) => <Datapoint x={x} y={y} />}
+  />
+</svg>
+```
+
+For extra flexibility and readability we're wrapping our `<Datapoint>` component in another function that accepts `x` and `y` coordinates. This is a common pattern you'll see with render props 👉 it gives you the ability to pass in props from both the rendering component and the component that's setting the render prop.
+
+Say we wanted Datapoint to know something about our App *and* our Scatterplot. The scatterplot calls this function with coordinates. We pass those into `<Datapoint>`. And because the method is defined inside App, we could pass-in anything that's defined in the App. Like perhaps `data`.
+
+Your code will start throwing an error now. Datapoint isn't defined. Don't worry, it's coming soon.
+
+### Use render prop to render datapoints
+
+To use our new `datapoint` render prop, we have to change how we render the scatterplot. Instead of returning a `<circle>` for each iteration of the dataset, we're calling a function passed in from props.
+
+{caption: "Accept a render prop", line-numbers: false}
+```javascript
+// Scatterplot.js
+  render() {
+    const { x, y, data, height, datapoint } = this.props,
+      { yScale, xScale } = this.state;
+
+    return (
+      <g transform={`translate(${x}, ${y})`}>
+        {data.map(([x, y]) => datapoint({ 
+		        x: xScale(x), 
+		        y: yScale(y) 
+		    }))}
+```
+
+We take the `datapoint` function from props and call it in `data.map` making sure to pass in `x` and `y` as an object. Calling functions with objects like this is a common JavaScript pattern to fake named arguments.
+
+### Make datapoint component look nice
+
+We've got all the rendering, now all we need is the `<Datapoint`  component itself. That goes in a new `Datapoint.js` file.
+
+{caption: "Datapoint file", line-numbers: false}
+```javascript
+import React from "react";
+import styled from "styled-components";
+
+const Circle = styled.circle`
+  fill: steelblue;
+  fill-opacity: .7;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+`;
+
+class Datapoint extends React.Component {
+  render() {
+    const { x, y } = this.props;
+
+    return (
+      <Circle
+        cx={x}
+        cy={y}
+        r={3}
+      />
+    );
+  }
+}
+
+export default Datapoint;
+```
+
+I'm using styled-components to define the CSS for my Datapoint. You can use whatever you prefer. I like styled components because they're a good balance between CSS-in-JS and normal CSS syntax.
+
+The component itself renders a styled circle using props for positioning and a radius of 3 pixels.
+
+![Finished scatterplot](scatterplot-finished.png)
+
+For an extra challenge, try rendering circle radius from state and changing datapoint size on mouse over. Make the scatterplot interactive.
 
 # You're awesome
 
-You know the basics! You can take any D3 example from the internets and wrap it in a React component, *and* you know how to build React+D3 components from scratch. You're amazing. High five! :raised_hand_with_fingers_splayed:
+You know the basics! 
 
-The rest of this book is about using these concepts and pushing them to the limits of practicality. We're going to build an interactive visualization of tech salaries compared to median household income. Why? Because it piqued my interest, and because it shows why you should call yourself an engineer, not a programmer or a developer. **You're an engineer**. Remember that.
+You can take any D3 example from the internets and wrap it in a React component, *and* you know how to build React+D3 components from scratch. You're amazing. High five! 🖐
 
-Throughout the example, you'll learn more details of D3, tidbits from React, and the animation chapter is going to blow your mind. It's gonna be fun!
+The rest of this book is about using these concepts and pushing them to the limits of practicality. We're going to build an interactive visualization of tech salaries compared to median household income. 
+
+Why? Because it piqued my interest, and because it shows why you should call yourself an engineer, not a programmer or a developer. **You're an engineer**. Remember that.
+
+Throughout the example, you'll learn more details of D3, tidbits from React, and the animation chapter is going to blow your mind. 
+
+Super fun!
 
 ![Default view](images/es6v2/full-dataviz.png)
 
@@ -1349,7 +1576,7 @@ You can read more about these ideas by Googling ["leaky abstractions"](https://e
 
 ---
 
-Congratz! You know everything you need to build visualizations with React and D3. :clap:
+Congratz! You know everything you need to build visualizations with React and D3. 👏
 
 This is the point in tech books where I run off and start building things on my own. Then I get frustrated, spend hours Googling for answers, and then remember, "Hey! Maybe I should read the rest of the book!"
 
