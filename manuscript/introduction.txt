@@ -114,7 +114,7 @@ class App ...
 
 Commands that you should run in the terminal start with an `$` symbol, like this:
 
-{line-numbers: false}
+{line-numbers: off}
 ```
 $ npm start
 ```

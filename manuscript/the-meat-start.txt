@@ -75,7 +75,7 @@ A lot of what you end up doing in real life is finding a D3 example that looks l
 
 But D3 is hard to read. Take this barchart code, for example 👇
 
-{caption: "Barchart in pure D3", line-numbers: false}
+{caption: "Barchart in pure D3", line-numbers: off}
 ```javascript
 d3.tsv("data.tsv", function(d) {
   d.frequency = +d.frequency;
@@ -145,7 +145,7 @@ You can [try it online](https://cdn.rawgit.com/mbostock/3885304/raw/a91f37f5f4b4
 
 Mike Bostock, the creator of D3, built this chart in 43 lines of code. Here they are 👇
 
-{caption: "Example D3 barchart", line-numbers: false}
+{caption: "Example D3 barchart", line-numbers: off}
 ```javascript
 var svg = d3.select("svg"),
     margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -195,7 +195,7 @@ d3.tsv("data.tsv", function(d) {
 
 There are two parts to this code: Data manipulation and DOM manipulation.
 
-{caption: "Data manipulation code", line-numbers: false}
+{caption: "Data manipulation code", line-numbers: off}
 ```javascript
 var // ..,
     margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -228,7 +228,7 @@ Bostock here first prepares his data:
 
 In the DOM manipulation part, he puts shapes and objects into an SVG. This is the part that shows up in your browser.
 
-{caption: "DOM manipulation code", line-numbers: false}
+{caption: "DOM manipulation code", line-numbers: off}
 ```javascript
 var svg = d3.select("svg"),
     // ..
@@ -358,7 +358,7 @@ There's a lot. We're not going to cover it all but you can find those advanced f
 
 Our visualizations are going to use SVG – an XML-based image format that lets us describe images in terms of mathematical shapes. For example, the source code of an 800x600 SVG image with a rectangle looks like this:
 
-{caption: "SVG rectangle", line-numbers: false}
+{caption: "SVG rectangle", line-numbers: off}
 ```html
 <svg width="800" height="600">
     <rect width="100" height="200" x="50" y="20" />
@@ -377,7 +377,7 @@ Another nice feature of SVG is that it's just a dialect of XML - nested elements
 
 That makes React's rendering engine particularly suited for SVG. Our 100x200 rectangle from before looks like this as a React component:
 
-{caption: "A simple rectangle in React", line-numbers: false, format: javascript}
+{caption: "A simple rectangle in React", line-numbers: off, format: javascript}
 ```
 const Rectangle = () => (
     <rect width="100" height="200" x="50" y="20" />
@@ -386,7 +386,7 @@ const Rectangle = () => (
 
 To use this rectangle component in a picture, you'd use a component like this:
 
-{caption: "Rect component in a picture", line-numbers: false, format: javascript}
+{caption: "Rect component in a picture", line-numbers: off, format: javascript}
 ```
 const Picture = () => (
     <svg width="800" height="600">
@@ -399,7 +399,7 @@ Sure looks like tons of work for a static rectangle. But look closely! Even if y
 
 Compare that to a pure D3 approach:
 
-{caption: "A static rectangle in d3.js", line-numbers: false, format: javascript}
+{caption: "A static rectangle in d3.js", line-numbers: off, format: javascript}
 ```
 d3.select("svg")
   .attr("width", 800)
@@ -417,7 +417,7 @@ You have to take your time and read the code carefully: first, we `select` the `
 
 Those 8 lines of code create HTML that looks like this:
 
-{caption: "HTML of a rectangle", line-numbers: false, format: javascript}
+{caption: "HTML of a rectangle", line-numbers: off, format: javascript}
 ```
 <svg width="800" height="600">
     <rect width="100" height="200" x="50" y="20" />
@@ -472,7 +472,7 @@ Victory offers low level components for basic charting and reimplements a lot of
 
 Here's what it takes to implement a Barchart using Victory.js. [You can try it on CodeSandbox](https://codesandbox.io/s/3v3q013x36)
 
-{caption: "Bar chart in Victory.js", line-numbers: false}
+{caption: "Bar chart in Victory.js", line-numbers: off}
 ```javascript
 const data = [
   { quarter: 1, earnings: 13000 },
@@ -505,7 +505,7 @@ Recharts is like a more colorful Victory. A pile of charting components, some cu
 
 Here's what it takes to implement a Barchart using Recharts. [You can try it on CodeSandbox](https://codesandbox.io/s/mmkrjl7qxp)
 
-{code-samples: "Bar chart in Recharts", line-numbers: false}
+{code-samples: "Bar chart in Recharts", line-numbers: off}
 ```javascript
 const data = [
   { quarter: 1, earnings: 13000 },
@@ -541,7 +541,7 @@ Nivo is another attempt to give you a set of basic charting components. Comes wi
 
 Here's what it takes to implement a Barchart using Nivo. [You can try it on CodeSandbox](https://codesandbox.io/s/n1wwkvq24)
 
-{caption: "Bar chart in Nivo", line-numbers: false}
+{caption: "Bar chart in Nivo", line-numbers: off}
 ```javascript
 const data = [
   { quarter: 1, earnings: 13000 },
@@ -576,7 +576,7 @@ That's why I recommend teams use VX when they need to get started quickly.
 
 Here's what it takes to implement a Barchart using Nivo. [You can try it on CodeSandbox](https://codesandbox.io/s/k5853pryrv)
 
-{caption: "Bar chart built in VX", line-numbers: false}
+{caption: "Bar chart built in VX", line-numbers: off}
 ```javascript
 const data = [
   { quarter: 1, earnings: 13000 },
@@ -673,7 +673,7 @@ They don't *look* difficult, but there are many tiny details you have to get _ju
 
 D3's axis generator takes a scale and some configuration to render an axis for us. The code looks like this:
 
-{caption: "Vanilla D3 axis",line-numbers: false, format: javascript}
+{caption: "Vanilla D3 axis",line-numbers: off, format: javascript}
 ```
 const scale = d3.scaleLinear()
 		.domain([0, 10])
@@ -706,7 +706,7 @@ Play around with it on [Codesandbox](https://codepen.io/swizec/pen/YGoYBM). Chan
 
 Now let's say we want to use that same axis code but as a React component. The simplest way is to use a blackbox component approach like this:
 
-{caption: "React blackbox axis", line-numbers: false, format: javascript}
+{caption: "React blackbox axis", line-numbers: off, format: javascript}
 ```
 class Axis extends Component {
 	gRef = React.createRef();
@@ -772,7 +772,7 @@ Think of our HOC as a function that takes some params and creates a class – a 
 
 A HOC for D3 blackbox integration, called `D3blackbox`, looks like like this:
 
-{caption: "React blackbox HOC", line-numbers: false, format: javascript}
+{caption: "React blackbox HOC", line-numbers: off, format: javascript}
 ```
 function D3blackbox(D3render) {
 	return class Blackbox extends React.Component {
@@ -801,7 +801,7 @@ Consult the [ES6 cheatsheet](https://es6cheatsheet.com/) for details on the synt
 
 Using our new `D3blackbox` HOC to make an axis looks like this:
 
-{caption: "React blackbox HOC", line-numbers: false, format: javascript}
+{caption: "React blackbox HOC", line-numbers: off, format: javascript}
 ```
 const Axis = D3blackbox(function () {
     const scale = d3.scaleLinear()
@@ -837,7 +837,7 @@ With your HOC ready, create a new file in CodeSandbox. Call it `Barchart.js`.
 
 Add your imports:
 
-{caption: "Import dependencies", line-numbers: false}
+{caption: "Import dependencies", line-numbers: off}
 ```javascript
 import React from 'react';
 import D3blackbox from './D3blackbox';
@@ -848,7 +848,7 @@ This gives you React, our HOC, and D3.
 
 Now right-click view code on that barchart and copy the code. Wrap it in a `D3blackbox` call. Like this:
 
-{caption: "Wrap D3 code in D3blackbox", line-numbers: false}
+{caption: "Wrap D3 code in D3blackbox", line-numbers: off}
 ```javascript
 const Barchart = D3blackbox(function () {
 	var svg = d3.select("svg"),
@@ -902,7 +902,7 @@ export default Barchart;
 
 That should throw some errors. We have to change the `d3.select` and get `width` and `height` from props.
 
-{caption: "Change where D3 renders", line-numbers: false}
+{caption: "Change where D3 renders", line-numbers: off}
 ```javascript
 const Barchart = D3blackbox(function () {
   // markua-start-delete
@@ -929,7 +929,7 @@ We also replaced reading width and height from the SVG element to getting them f
 
 Next step is to change where our barchart gets its data. Gotta use the public URL.
 
-{caption: "Change data URL", line-numbers: false}
+{caption: "Change data URL", line-numbers: off}
 ```javascript
 //markua-start-delete
 d3.tsv("data.tsv", function(d) {
@@ -954,7 +954,7 @@ That's it. You now have a Barchart component that renders the example barchart f
 
 You can use it like this 👇 I recommend adding this code to the main App component that CodeSandbox creates for you.
 
-{caption: "Use the Barchart", line-numbers: false}
+{caption: "Use the Barchart", line-numbers: off}
 ```javascript
 import Barchart from './Barchart';
 
@@ -1026,7 +1026,7 @@ I recommend creating a new CodeSandbox, or starting a new app with create-react-
 
 Make sure you have `d3` added as a dependency. Then add imports in your `App.js` file.
 
-{caption: "Import files in App.js", line-numbers: false}
+{caption: "Import files in App.js", line-numbers: off}
 ```javascript
 // ./App.js
 
@@ -1036,7 +1036,7 @@ import Scatterplot from "./Scatterplot";
 
 Add an `<svg>` and render a Scatterplot in the render method. This will throw an error because we haven't defined the Scatterplot yet and that's okay.
 
-{caption: "Render Scatterplot in App.js", line-numbers: false}
+{caption: "Render Scatterplot in App.js", line-numbers: off}
 ```javascript
 // ./App.js
 
@@ -1071,7 +1071,7 @@ It also accepts data.
 
 We're using a line of code to generate data for our scatterplot. Put it in App.js. Either globally or within the App  function. Doesn't matter because this is an example.
 
-{caption: "Generate random data", line-numbers: false}
+{caption: "Generate random data", line-numbers: off}
 ```javascript
 const data = d3.range(100)
 							 .map(_ => [Math.random(), Math.random()]);
@@ -1085,7 +1085,7 @@ We iterate over this array and return a pair of random numbers for each entry. T
 
 Our scatterplot goes in a new `Scatterplot.js` file. Starts with imports and an empty React component.
 
-{caption: "Scatterplot stub", line-numbers: false}
+{caption: "Scatterplot stub", line-numbers: off}
 ```javascript
 // ./Scatterplot.js
 import React from "react";
@@ -1115,7 +1115,7 @@ Now we define D3 scales as component properties. We're using the class field syn
 
 Technically a Babel plugin, but comes by default with CodeSandbox React projects and create-react-app setup. As far as I can tell, it's a common way to write React components.
 
-{caption: "Add D3 scales", line-numbers: false}
+{caption: "Add D3 scales", line-numbers: off}
 ```javascript
 // ./Scatterplot.js
 class Scatterplot extends React.Component {
@@ -1137,7 +1137,7 @@ Idea being that these two scales will help us take those tiny variations in data
 
 Rendering our data points is a matter of looping over the data and rendering a `<circle>` for each entry. Using our scales to define positioning.
 
-{caption: "Loop through data and render circles", line-numbers: false}
+{caption: "Loop through data and render circles", line-numbers: off}
 ```javascript
 // ./Scatterplot.js
 
@@ -1160,7 +1160,7 @@ Mine take a scale and orientation as props, which makes them more flexible. Mean
 
 Put the axis code in `Axis.js`, then augment the Scatterplot like this 👇
 
-{caption: "Add axes to Scatterplot", line-numbers: false}
+{caption: "Add axes to Scatterplot", line-numbers: off}
 ```javascript
 import Axis from "./Axis";
 

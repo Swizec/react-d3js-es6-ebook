@@ -53,7 +53,7 @@ We'll put all of our components in `src/components/`.
 
 We start the component off with some imports, an export, and a functional stateless component that returns an empty div element.
 
-{format: javascript, line-numbers: false, caption: "Preloader skeleton"}
+{format: javascript, line-numbers: off, caption: "Preloader skeleton"}
 ```
 // src/components/Preloader.js
 
@@ -76,7 +76,7 @@ At the bottom, we `export default Preloader` so that we can use it in `App.js` a
 
 The `Preloader` function takes no props (because we don't need any) and returns an empty `div`. Let's fill it in.
 
-{format: javascript, line-numbers: false, caption: "Preloader content"}
+{format: javascript, line-numbers: off, caption: "Preloader content"}
 ```
 // src/components/Preloader.js
 
@@ -116,7 +116,7 @@ That will be a cornerstone of our project.
 
 We use our new Preloader component in App – `src/App.js`. Let's remove the `create-react-app` defaults and import our `Preloader` component.
 
-{format: javascript, line-numbers: false, caption: "Revamp App.js"}
+{format: javascript, line-numbers: off, caption: "Revamp App.js"}
 ```
 // src/App.js
 
@@ -155,7 +155,7 @@ We removed the logo and style imports, added an import for `Preloader`, and gutt
 
 Let's define a default `state` and a `render` method that uses our `Preloader` component when there's no data.
 
-{format: javascript, line-numbers: false, caption: "Render our preloader"}
+{format: javascript, line-numbers: off, caption: "Render our preloader"}
 ```
 // src/App.js
 
@@ -204,7 +204,7 @@ They'll make our fonts look better, help with layouting, and make buttons look l
 
 We load stylesheets in `src/index.js`.
 
-{format: javascript, line-numbers: false, caption: "Add Bootstrap in index.js"}
+{format: javascript, line-numbers: off, caption: "Add Bootstrap in index.js"}
 ```
 // src/index.js
 
@@ -261,7 +261,7 @@ Let's set up our `App` component first. That way you'll see results as soon data
 
 Start by importing our data loading method - `loadAllData` - and both D3 and Lodash. We'll need them later.
 
-{format: javascript, line-numbers: false, caption: "Import D3, lodash, and our loading method"}
+{format: javascript, line-numbers: off, caption: "Import D3, lodash, and our loading method"}
 ```
 // src/App.js
 import React from 'react';
@@ -280,7 +280,7 @@ You already know about default imports. Importing with `{}` is how we import nam
 
 Don't worry about the missing `DataHandling` file. It's coming soon.
 
-{format: javascript, line-numbers: false, caption: "Initiate data loading in App.js"}
+{format: javascript, line-numbers: off, caption: "Initiate data loading in App.js"}
 ```
 // src/App.js
 class App extends React.Component {
@@ -309,7 +309,7 @@ We also add two more entries to our `state`: `countyNames`, and `medianIncomes`.
 
 Let's change the `render` method to show a message when our data finishes loading.
 
-{format: javascript, line-numbers: false, caption: "Show when data loads"}
+{format: javascript, line-numbers: off, caption: "Show when data loads"}
 ```
 // src/App.js
 	render() {
@@ -355,7 +355,7 @@ We start with two imports and four data parsing functions:
 - `cleanSalary`, which parses each row of salary data
 - `cleanUSStateName`, which parses US state names
 
-{crop-start: 5, crop-end: 48, format: javascript, line-numbers: false}
+{crop-start: 5, crop-end: 48, format: javascript, line-numbers: off}
 ![Data parsing functions](code_samples/es6v2/DataHandling.js)
 
 You'll see those `d3` and `lodash` imports a lot.
@@ -368,7 +368,7 @@ Doing all this parsing now, keeps the rest of our codebase clean. Handling data 
 
 Now we can use D3 to load our data with fetch requests.
 
-{crop-start: 52, crop-end: 64, format: javascript, line-numbers: false}
+{crop-start: 52, crop-end: 64, format: javascript, line-numbers: off}
 ![Data loading](code_samples/es6v2/DataHandling.js)
 
 Here you can see another ES6 trick: default argument values. If `callback` is undefined, we set it to `_.noop` - a function that does nothing. This lets us later call `callback()` without worrying whether it's defined.
@@ -392,7 +392,7 @@ If you add a `console.log` to the `.then` callback above, you'll see a bunch of 
 
 To tie them together and prepare a dictionary for `setState` back in the `App` component, we need to add some logic. We're building a dictionary of county household incomes and removing any empty salaries.
 
-{crop-start: 68, crop-end: 92, format: javascript, line-numbers: false}
+{crop-start: 68, crop-end: 92, format: javascript, line-numbers: off}
 ![Tie our datasets together](code_samples/es6v2/DataHandling.js)
 
 Building the income map looks weird because of indentation, but it's not that bad. We `filter` the `medianIncomes` array to discard any incomes whose `countyName` we can't find. I made sure they were all unique when I built the datasets.
@@ -434,14 +434,14 @@ Just like before, we're going to start with changes in our `App` component, then
 
 You might guess the pattern already: add an import, add a helper method or two, update `render`.
 
-{crop-start: 119, crop-end: 126, format: javascript, line-numbers: false}
+{crop-start: 119, crop-end: 126, format: javascript, line-numbers: off}
 ![Import CountyMap component](code_samples/es6v2/App.js)
 
 That imports the `CountyMap` component from `components/CountyMap/`. Your browser will show an error overlay about some file or another until we're done.
 
 In the `App` class itself, we add a `countyValue` method. It takes a county entry and a map of tech salaries, and it returns the delta between median household income and a single tech salary.
 
-{crop-start: 129, crop-end: 144, format: javascript, line-numbers: false}
+{crop-start: 129, crop-end: 144, format: javascript, line-numbers: off}
 ![App.countyValue method](code_samples/es6v2/App.js)
 
 We use `this.state.medianIncomes` to get the median household salary and the `techSalariesMap` input to get salaries for a specific census area. Then we use `d3.median` to calculate the median value for salaries and return a two-element dictionary with the result.
@@ -454,7 +454,7 @@ In the `render` method, we'll:
  - remove the "data loaded" indicator
  - render the map
 
-{format: javascript, line-numbers: false, caption: "Render the CountyMap component}
+{format: javascript, line-numbers: off, caption: "Render the CountyMap component}
 ```
 // src/App.js
 render() {
@@ -510,7 +510,7 @@ In the `return` statement, we remove our "data loaded" indicator, and add an `<s
 
 We make `index.js` for just reason: to make imports and debugging easier. I learned this lesson the hard way so you don't have to.
 
-{format: javascript, line-numbers: false, line-numbers: false}
+{format: javascript, line-numbers: off, line-numbers: off}
 ![CountyMap index.js](code_samples/es6v2/components/CountyMap/index.js)
 
 Re-export the default import from `./CountyMap.js`. That's it.
@@ -527,7 +527,7 @@ We're using the [full-feature integration](#full-feature-integration) approach a
 
 Start with the imports: React, D3, lodash, topojson, County component.
 
-{crop-start: 5, crop-end: 12, format: javascript, line-numbers: false}
+{crop-start: 5, crop-end: 12, format: javascript, line-numbers: off}
 ![Import CountyMap dependencies](code_samples/es6v2/components/CountyMap/CountyMap.js)
 
 Out of these, we haven't built `County` yet, and you haven't seen `topojson` before. 
@@ -542,7 +542,7 @@ Maybe it's a case of [competing standards](https://xkcd.com/927/).
 
 We stub out the `CountyMap` component then fill it in with logic.
 
-{format: javascript, line-numbers: false, caption: "CountyMap stub"}
+{format: javascript, line-numbers: off, caption: "CountyMap stub"}
 ```
 // src/components/CountyMap/CountyMap.js
 class CountyMap extends Component {
@@ -577,7 +577,7 @@ We'll set up default D3 state in `constructor` and keep it up to date with `getD
 
 We need three D3 objects to build a choropleth map: a geographical projection, a path generator, and a quantize scale for colors.
 
-{format: javascript, line-numbers: false, caption: "D3 objects for a map"}
+{format: javascript, line-numbers: off, caption: "D3 objects for a map"}
 ```
 // src/components/CountyMap/CountyMap.js
 class CountyMap extends React.Component {
@@ -608,7 +608,7 @@ Let's say our domain goes from 0 to 90. Calling the scale with any number betwee
 
 Keeping our geo path and quantize scale up to date is simple, but we'll make it harder by adding a zoom feature. It won't work until we build the filtering, but hey, we'll already have it by then! :D
 
-{format: javascript, line-numbers: false, caption: "CountyMap getDerivedStateFromProps"}
+{format: javascript, line-numbers: off, caption: "CountyMap getDerivedStateFromProps"}
 ```
 		// src/components/CountyMap/CountyMap.js
     static getDerivedStateFromProps(props, state) {
@@ -673,7 +673,7 @@ Overall that makes your code easier to understand and closer to React principles
 
 After all that hard work, the `render` method is a breeze. We prep our data then loop through it and render a `County` element for each entry.
 
-{format: javascript, line-numbers: false, caption: "CountyMap render"}
+{format: javascript, line-numbers: off, caption: "CountyMap render"}
 ```
     render() {
         const { geoPath, quantize } = this.state,
@@ -737,14 +737,14 @@ For US state borders, we render a single `<path>` element and use `geoPath` to g
 
 The `County` component is built from two parts: imports and color constants, and a component that returns a `<path>`. All the hard calculation happens in `CountyMap`.
 
-{crop-start: 5, crop-end: 22, format: javascript, line-numbers: false}
+{crop-start: 5, crop-end: 22, format: javascript, line-numbers: off}
 ![Imports and color constants](code_samples/es6v2/components/CountyMap/County.js)
 
 We import React and Lodash, and define some color constants. I got the `ChoroplethColors` from some example online, and `BlankColor` is a pleasant gray.
 
 Now we need the `County` component.
 
-{crop-start: 27, crop-end: 53, format: javascript, line-numbers: false}
+{crop-start: 27, crop-end: 53, format: javascript, line-numbers: off}
 ![County component](code_samples/es6v2/components/CountyMap/County.js)
 
 The `render` method uses a `quantize` scale to pick the right color and returns a `<path>` element. `geoPath` generates the `d` attribute, we set style to `fill` the color, and we give our path a `title`.
@@ -786,7 +786,7 @@ We'll start our histogram with some changes in `App.js`, make a `Histogram` comp
 
 You know the drill, don't you? Import some stuff, add it to the `render()` method in the `App` component.
 
-{format: javascript, line-numbers: false, caption: "Histogram imports"}
+{format: javascript, line-numbers: off, caption: "Histogram imports"}
 ```
 // src/App.js
 import _ from 'lodash';
@@ -812,7 +812,7 @@ Personally I like to use CSS for general cross-component styling and styled-comp
 
 After the imports, we can render our `Histogram` in the `App` component.
 
-{crop-start: 205, crop-end: 235, format: javascript, line-numbers: false}
+{crop-start: 205, crop-end: 235, format: javascript, line-numbers: off}
 ![Render Histogram in App](code_samples/es6v2/App.js)
 
 We render the `Histogram` component with a bunch of props. They specify the dimensions we want, positioning, and pass data to the component. We're using `filteredSalaries` even though we haven't set up any filtering yet. One less line of code to change later 👌
@@ -830,7 +830,7 @@ The truth is somewhere in between. Do what fits your project and your team. We'r
 
 Create a new file `src/style.css` and add these 29 lines:
 
-{format: css, line-numbers: false, caption: "style.css stylesheet"}
+{format: css, line-numbers: off, caption: "style.css stylesheet"}
 ```
 .histogram .bar rect {
     fill: steelblue;
@@ -886,14 +886,14 @@ We'll use two components:
 
 Let's start with the basics: a `Histogram` directory and an `index.js` file. Keeps our code organized and imports easy. I like to use directories for components made of multiple files.
 
-{crop-start: 5, crop-end: 8, format: javascript, line-numbers: false}
+{crop-start: 5, crop-end: 8, format: javascript, line-numbers: off}
 ![Histogram index.js](code_samples/es6v2/components/Histogram/index.js)
 
 Import `Histogram` from `./Histogram` and export it as the `default` export. You could do it with a re-export: `export { default } from './Histogram'`. Not sure why I picked the long way. A dash more readable?
 
 Great, now we need the `Histogram.js` file. Start with some imports, a default export, and a stubbed out `Histogram` class.
 
-{format: javascript, line-numbers: false, caption: "Histogram component stub"}
+{format: javascript, line-numbers: off, caption: "Histogram component stub"}
 ```
 // src/components/Histogram/Histogram.js
 import React from "react";
@@ -937,7 +937,7 @@ Default `state` for our D3 objects: histogram, widthScale, and yScale. An empty
 
 ### getDerivedStateFromProps
 
-{format: javascript, line-numbers: false, caption: "getDerivedStateFromProps in Histogram"}
+{format: javascript, line-numbers: off, caption: "getDerivedStateFromProps in Histogram"}
 ```
 // src/components/Histogram/Histogram.js
     static getDerivedStateFromProps(props, state) {
@@ -985,7 +985,7 @@ Now let's render this puppy.
 
 ### render
 
-{format: javascript, line-numbers: false, caption: "Histogram.render"}
+{format: javascript, line-numbers: off, caption: "Histogram.render"}
 ```
 // src/components/Histogram/Histogram.js
 class Histogram extends React.Component {
@@ -1017,7 +1017,7 @@ This is a great example of React's declarativeness. We have a bunch of stuff, an
 
 `makeBar` is a function that takes a histogram bar's metadata and returns a `HistogramBar` component. We use it to make our declarative loop more readable.
 
-{format: javascript, line-numbers: false, caption: "Histogram.makeBar"}
+{format: javascript, line-numbers: off, caption: "Histogram.makeBar"}
 ```
 // src/components/Histogram/Histogram.js
 class Histogram extends React.Component {
@@ -1053,7 +1053,7 @@ Before our histogram shows up, we need another component: `HistogramBar`. We *co
 
 I like keeping small subcomponents like this in the same file as their parent. They don't work on their own so there's no reusability benefit from keeping them separate. And they're small enough that separating them doesn't help readability either.
 
-{crop-start: 120, crop-end: 150, format: javascript, line-numbers: false}
+{crop-start: 120, crop-end: 150, format: javascript, line-numbers: off}
 ![HistogramBar component](code_samples/es6v2/components/Histogram/Histogram.js)
 
 Pretty long for a functional component. Most of it goes into deciding how much precision to render in the label, so it's okay.
@@ -1074,7 +1074,7 @@ Our histogram is pretty, but it needs an axis to be useful. You've already learn
 
 We start with the D3blackbox higher order component. Same as before, except we put it in `src/components`. 
 
-{format: javascript, line-numbers: false, caption: "D3blackbox HOC"}
+{format: javascript, line-numbers: off, caption: "D3blackbox HOC"}
 ```
 import React from "react";
 
@@ -1105,7 +1105,7 @@ Take a `D3render` function, call it on `componentDidMount` and `componentDidUpda
 
 With `D3blackbox`, we can reduce the `Axis` component to a wrapped function. We're implementing the `D3render` method.
 
-{format: javascript, line-numbers: false, caption: "Axis component using D3blackbox"}
+{format: javascript, line-numbers: off, caption: "Axis component using D3blackbox"}
 ```
 import * as d3 from "d3";
 import D3blackbox from "../D3blackbox";
@@ -1136,7 +1136,7 @@ To render our new `Axis`, we add it to the `Histogram` component. It's a two ste
 1. Import `Axis` component
 2. Render it
 
-{format: javascript, line-numbers: false, caption: "Import and render Axis"}
+{format: javascript, line-numbers: off, caption: "Import and render Axis"}
 ```
 // src/components/Histogram/Histogram.js
 import React, { Component } from 'react';
@@ -1254,7 +1254,7 @@ Before we begin the `Title` component, there are a few things to take care of. O
 
 We make a `components/Meta` directory and add an `index.js`. It makes importing easier.
 
-{format: javascript, line-numbers: false, caption: "Meta index.js"}
+{format: javascript, line-numbers: off, caption: "Meta index.js"}
 ```
 // src/components/Meta/index.js
 export { default as Title } from './Title'
@@ -1275,7 +1275,7 @@ I know, it's confusing. They look like the same sentence turned around. Notice t
 
 We start with imports, a stub, and a default export.
 
-{crop-start: 5, crop-end: 29, format: javascript, line-numbers: false}
+{crop-start: 5, crop-end: 29, format: javascript, line-numbers: off}
 ![Title component stub](code_samples/es6v2/components/Meta/Title.js)
 
 We import only what we need from D3's `d3-scale` and `d3-array` packages. I consider this best practice until you're importing so much that it gets messy to look at.
@@ -1291,7 +1291,7 @@ In the `Title` component, we have 4 getters and a render. Getters are ES6 functi
 
 We can implement `yearsFragment`, `USstateFragment`, and `format` in one code sample. They're short.
 
-{crop-start: 35, crop-end: 55, format: javascript, line-numbers: false}
+{crop-start: 35, crop-end: 55, format: javascript, line-numbers: off}
 ![3 short getters in Title](code_samples/es6v2/components/Meta/Title.js)
 
 In both `yearsFragment` and `USstateFragment`, we get the appropriate value from Title's `filteredBy` prop, then return a string with the value or an empty string.
@@ -1302,7 +1302,7 @@ We rely on D3's built-in number formatters to build `format`. Linear scales have
 
 The `jobTitleFragment` getter is conceptually no harder than `yearsFragment` and `USstateFragment`, but it comes with a few more conditionals.
 
-{crop-start: 61, crop-end: 91, format: javascript, line-numbers: false}
+{crop-start: 61, crop-end: 91, format: javascript, line-numbers: off}
 ![Title.jobTitleFragment](code_samples/es6v2/components/Meta/Title.js)
 
 We're dealing with the `(jobTitle, year)` combination. Each influences the other when building the fragment for a total 4 different options.
@@ -1311,7 +1311,7 @@ We're dealing with the `(jobTitle, year)` combination. Each influences the other
 
 We put all this together in the `render` method. A conditional decides which of the two situations we're in, and we return an `<h2>` tag with the right text.
 
-{crop-start: 96, crop-end: 123, format: javascript, line-numbers: false}
+{crop-start: 96, crop-end: 123, format: javascript, line-numbers: off}
 ![Title.render](code_samples/es6v2/components/Meta/Title.js)
 
 Calculate the mean value using `d3.mean` with a value accessor, turn it into a pretty number with `this.format`, then use one of two string patterns to make a `title`.
@@ -1341,7 +1341,7 @@ We use the same approach as before:
 
 All the interesting complexity goes into finding the richest city and county. That part looks like this:
 
-{caption: "Richest county calculation", line-numbers: false}
+{caption: "Richest county calculation", line-numbers: off}
 ```javascript
 // src/components/Meta/Description.js
 get countyFragment() {
@@ -1390,7 +1390,7 @@ Inside `src/App.js`, we first have to add an import, then extract the median hou
 
 Let's see if we can do it in a single code block :smile:
 
-{crop-start: 282, crop-end: 317, format: javascript, line-numbers: false}
+{crop-start: 282, crop-end: 317, format: javascript, line-numbers: off}
 ![Adding MedianLine to App.js](code_samples/es6v2/App.js)
 
 You probably don't remember `medianIncomesByUSState` anymore. We set it up way back when [tying datasets together](#tie-datasets-together). It groups our salary data by US state.
@@ -1403,7 +1403,7 @@ When rendering `MedianLine`, we give it sizing and positioning props, the datase
 
 The `MedianLine` component looks similar to what you've seen so far. Some imports, a `constructor` that sets up D3 objects, an `updateD3` method that keeps them in sync, and a `render` method that outputs SVG.
 
-{ format: javascript, line-numbers: false, caption: "MedianLine component stub"}
+{ format: javascript, line-numbers: off, caption: "MedianLine component stub"}
 ```
 // src/components/MedianLine.js
 
@@ -1430,7 +1430,7 @@ We have some imports, a functional `MedianLine` component that takes our props, 
 
 Everything we need to render the line, fits into this function.
 
-{format: javascript, line-numbers: false, caption: "MedianLine render"}
+{format: javascript, line-numbers: off, caption: "MedianLine render"}
 ```
 // src/components/MedianLine.js
 
@@ -1471,7 +1471,7 @@ A `translate` SVG transform helps us position our line and label. We use it all 
 
 Building the `d` attribute for the path, that's interesting. We use a `line` generator from D3.
 
-{caption: "Line generator", line-numbers: false}
+{caption: "Line generator", line-numbers: off}
 ```javascript
 line = d3.line()([[0, 5], [width, 5]]);
 ```
@@ -1482,7 +1482,7 @@ That makes it span the entire width and leaves 5px for the label. We're using a 
 
 Remember, we already styled `medianLine` when we built [histogram styles](#histogram-css) earlier.
 
-{caption: "Histogram css", line-numbers: false}
+{caption: "Histogram css", line-numbers: off}
 ```css
 .mean text {
     font: 11px sans-serif;
@@ -1540,14 +1540,14 @@ All right, you know the drill. Add imports, tweak some things, add to render. We
 
 The white rectangle makes it so the zoomed-in map doesn't cover up the histogram. I'll explain when we get there.
 
-{crop-start: 323, crop-end: 356, format: javascript, line-numbers: false}
+{crop-start: 323, crop-end: 356, format: javascript, line-numbers: off}
 ![Imports and filter updates in App.js](code_samples/es6v2/App.js)
 
 We import the `Controls` component and add a default `salariesFilter` function to `this.state`. The `updateDataFilter` method passes the filter function and `filteredBy` dictionary from arguments to App state. We'll use it as a callback in `Controls`.
 
 The rest of filtering setup happens in the render method.
 
-{format: javascript, line-numbers: false, caption: "Filtering data and updating map zoom in App render"}
+{format: javascript, line-numbers: off, caption: "Filtering data and updating map zoom in App render"}
 ```
 // src/App.js
 class App extends React.Component {
@@ -1592,7 +1592,7 @@ And here's the downside of this approach. SVG doesn't know about element boundar
 
 See, it goes under the histogram. Let's fix that and add the `Controls` render while we're at it.
 
-{caption: "Add opaque background to histogram", crop-start: 396, crop-end: 426, format: javascript, line-numbers: false}
+{caption: "Add opaque background to histogram", crop-start: 396, crop-end: 426, format: javascript, line-numbers: off}
 ![](code_samples/es6v2/App.js)
 
 Rectangle, `500` to the right, `0` from top, `600` wide and `500` tall, with a white background. Gives the histogram an opaque background, so it doesn't matter what the map is doing.
@@ -1613,7 +1613,7 @@ Make a `Controls` directory in `src/components/` and let's begin. The main `Cont
 
 ### Stub Controls
 
-{format: javascript, line-numbers: false, caption: "Controls stubbed for year filter"}
+{format: javascript, line-numbers: off, caption: "Controls stubbed for year filter"}
 ```
 // src/components/Controls/index.js
 import React from "react";
@@ -1665,7 +1665,7 @@ We also need an `updateYearFilter` function, which we'll use to update the filte
 
 ### Filter logic
 
-{format: javascript, line-numbers: false, caption: "year filtering logic in Controls"}
+{format: javascript, line-numbers: off, caption: "year filtering logic in Controls"}
 ```
 // src/components/Controls/index.js
 class Controls extends React.Component {
@@ -1701,7 +1701,7 @@ When we have the `year` and `filter`, we update component state with `this.setSt
 
 `reportUpdateUpTheChain` then calls `this.props.updateDataFilter`, which is a callback method on `App`. We defined it earlier – it needs a new filter method and a `filteredBy` dictionary.
 
-{language: javascript, line-numbers: false, caption: "reportUpdateUpTheChain method"}
+{language: javascript, line-numbers: off, caption: "reportUpdateUpTheChain method"}
 ```
 // src/components/Controls/index.js
 class Controls extends React.Component {
@@ -1732,7 +1732,7 @@ It looks silly when there's just one filter, but I promise it makes sense.
 
 Great, we have the filter logic. Let's render those rows of controls we've been talking about.
 
-{format: javascript, line-numbers: false, caption: "Render the year ControlRow"}
+{format: javascript, line-numbers: off, caption: "Render the year ControlRow"}
 ```
 // src/components/Controls/index.js
 class Controls extends React.Component {
@@ -1768,7 +1768,7 @@ Let's build the `ControlRow` component. It renders a row of controls and ensures
 
 We'll start with a stub and go from there.
 
-{format: javascript, line-numbers: false, caption: "ControlRow stub"}
+{format: javascript, line-numbers: off, caption: "ControlRow stub"}
 ```
 // src/components/Controls/ControlRow.js
 import React from "react";
@@ -1797,7 +1797,7 @@ We start with imports, big surprise, then make a stub with 3 methods. Can you gu
 - `_addToggle` is a rendering helper method
 - `render` renders a row of buttons
 
-{format: javascript, line-numbers: false, caption: "makePick implementation"}
+{format: javascript, line-numbers: off, caption: "makePick implementation"}
 ```
 // src/components/Controls/ControlRow.js
 
@@ -1810,7 +1810,7 @@ class ControlRow extends React.Component {
 
 `makePick` calls the data filter update and passes in the new value and whether we want to unselect. Pretty simple right?
 
-{format: javascript, line-numbers: false, caption: "Render a row of controls"}
+{format: javascript, line-numbers: off, caption: "Render a row of controls"}
 ```
 // src/components/Controls/ControlRow.js
 class ControlRow extends React.Component {
@@ -1867,7 +1867,7 @@ Let's build it.
 
 Last piece of the puzzle – the Toggle component. A button that turns on and off.
 
-{format: javascript, line-numbers: false, caption: "Toggle component"}
+{format: javascript, line-numbers: off, caption: "Toggle component"}
 ```
 // src/components/Controls/Toggle.js
 import React from "react";
@@ -1908,7 +1908,7 @@ With all that done, we can add two more filters: US states and job titles. Our `
 
 We'll start with the `render` method, then handle the parts I said earlier would look repetitive.
 
-{crop-start: 102, crop-end: 137, format: javascript, line-numbers: false}
+{crop-start: 102, crop-end: 137, format: javascript, line-numbers: off}
 ![Adding two more rows to Controls](code_samples/es6v2/components/Controls/index.js)
 
 Ok, this part is plenty repetitive, too.
@@ -1917,7 +1917,7 @@ We created new sets for `jobTitles` and `USstates`, then rendered two more `Cont
 
 The implementations of those `updateDataFilter` callbacks follow the same pattern as `updateYearFilter`.
 
-{format: javascript, line-numbers: false, caption: "new updateDataFilter callbacks"}
+{format: javascript, line-numbers: off, caption: "new updateDataFilter callbacks"}
 ```
 // src/components/Controls/index.js
 
@@ -1977,7 +1977,7 @@ Why separate functions then? No need to get fancy. It would've made the code har
 
 Our last step is to add these new keys to the `reportUpdateUpTheChain` function.
 
-{format: javascript, line-numbers: false, caption: "Add new filters to main state update"}
+{format: javascript, line-numbers: off, caption: "Add new filters to main state update"}
 ```
 // src/components/Controls/index.js
 
@@ -2027,7 +2027,7 @@ There are many ways to achieve this. [ReactRouter](https://github.com/ReactTrain
 
 The easiest place to put this logic is next to the existing filter logic inside the `Controls` component. Better places exist from a "low-down components shouldn't play with global state" perspective, but that's okay.
 
-{crop-start: 215, crop-end: 243, format: javascript, line-numbers: false, caption: "Add rudimentary routing"}
+{crop-start: 215, crop-end: 243, format: javascript, line-numbers: off, caption: "Add rudimentary routing"}
 ```
 // src/components/Controls/index.js
 
@@ -2103,7 +2103,7 @@ For everyone else, head over to Github, click the green `New Repository` button 
 
 It should be something like this:
 
-{caption: "Put code on github", line-numbers: false}
+{caption: "Put code on github", line-numbers: off}
 ```
 $ git init
 $ git commit -m "My entire dataviz"
@@ -2117,14 +2117,14 @@ Every Github repository comes with an optional Github Pages setup. The easiest w
 
 Install it with this command:
 
-{caption: "Install gh-pages helper", line-numbers: false}
+{caption: "Install gh-pages helper", line-numbers: off}
 ```
 $ npm install --save-dev gh-pages
 ```
 
 Add two lines to package.json:
 
-{caption: "Update package.json", line-numbers: false}
+{caption: "Update package.json", line-numbers: off}
 ```json
 // package.json
 // markua-start-insert
@@ -2154,7 +2154,7 @@ And they're easy to set up. No excuse.
 
 We're going to poke around `public/index.html` for the first time. Add titles, Twitter cards, Facebook Open Graph things, and so on.
 
-{crop-start: 3, crop-end: 30, format: html, line-numbers: false}
+{crop-start: 3, crop-end: 30, format: html, line-numbers: off}
 ![Basic SEO](code_samples/es6v2/index.html)
 
 We add a `<title>` and a `canonical` URL. Titles configure what shows up in browser tabs, and the canonical URL is there to tell search engines that this is the main and most important URL for this piece of content. This is especially important for when people copy-paste your stuff and put it on other websites.
@@ -2165,7 +2165,7 @@ As soon as React loads, these get overwritten with our preloader, but it's good 
 
 To make social media embeds look great, we'll use [Twitter card](https://dev.twitter.com/cards/types/summary-large-image) and [Facebook OpenGraph](https://developers.facebook.com/docs/sharing/webmasters) meta tags. I think most other websites just rely on these since most people use them. They go in the `<head>` of our HTML.
 
-{crop-start: 34, crop-end: 64, format: javascript, line-numbers: false}
+{crop-start: 34, crop-end: 64, format: javascript, line-numbers: off}
 ![Add FB and Twitter cards](code_samples/es6v2/index.html)
 
 Much of this code is repetitive. Both Twitter and Facebook want the same info, but they're stubborn and won't read each other's formats. You can copy all of this, but make sure to change `og:url`, `og:site_name`, `article:publisher`, `fb:admins`, `og:image`, `twitter:site`, `twitter:image`, and `twitter:creator`. They're specific to you.
@@ -2186,7 +2186,7 @@ One more step left. Use the whole dataset!
 
 Go into `src/DataHandling.js` and change one line:
 
-{crop-start: 95, crop-end: 106, format: javascript, line-numbers: false}
+{crop-start: 95, crop-end: 106, format: javascript, line-numbers: off}
 ![Switch to full dataset](code_samples/es6v2/DataHandling.js)
 
 We change the file name, and that's that. Full dataset locked and loaded. Dataviz ready to go.
