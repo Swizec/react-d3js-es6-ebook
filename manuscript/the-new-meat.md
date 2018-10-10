@@ -59,7 +59,7 @@ We start the component off with some imports, an export, and a functional statel
 
 import React from "react";
 
-import PreloaderImg from "../preloading.png";
+import PreloaderImg from "../assets/preloading.png";
 
 const Preloader = () => (
     <div className="App container">
@@ -72,7 +72,7 @@ export default Preloader;
 
 We `import` React (which we need to make JSX syntax work) and the `PreloaderImg` for our image. We can import images because of the Webpack configuration that comes with `create-react-app`. The webpack image loader returns a URL that we put in the `PreloaderImg` constant.
 
-At the bottom, we `export default Preloader` so that we can use it in `App.js` as `import Preloader`. Default exports are great when your file exports a single object, named exports when you have multiple. You'll see that play out in the rest of this project.
+At the bottom, we `export default Preloader` so that we can use it in `App.js` as `import Preloader`. Default exports are great when your file exports a single object. Named exports when you want to export multiple items. You'll see that play out in the rest of this project.
 
 The `Preloader` function takes no props (because we don't need any) and returns an empty `div`. Let's fill it in.
 
@@ -108,7 +108,7 @@ A little cheating with grabbing copy from the future, but that's okay. In real l
 
 The code itself looks like HTML. We have the usual tags - `h1`, `p`, `b`, `img`, and `h2`. That's what I like about JSX: it's familiar. Even if you don't know React, you can guess what's going on here.
 
-But look at the `img` tag: the `src` attribute is dynamic, defined by `PreloaderImg`, and the `style` attribute takes an object, not a string. That's because JSX is more than HTML; it's JavaScript. You can put any JavaScript entity you need in those props.
+But look at the `img` tag: the `src` attribute is dynamic, defined by `PreloaderImg`, and the `style` attribute takes an object, not a string. That's because JSX is more than HTML; it's JavaScript. Think of props as function arguments – any valid JavaScript fits.
 
 That will be a cornerstone of our project.
 
@@ -278,6 +278,8 @@ import { loadAllData } from './DataHandling';
 
 You already know about default imports. Importing with `{}` is how we import named exports. That lets us get multiple things from the same file. You'll see the export side in Step 2.
 
+Don't worry about the missing `DataHandling` file. It's coming soon.
+
 {format: javascript, line-numbers: false, caption: "Initiate data loading in App.js"}
 ```
 // src/App.js
@@ -348,7 +350,7 @@ We're putting data loading logic in a separate file from `App.js` because it's a
 
 We start with two imports and four data parsing functions:
 
-- `cleanIncomes`, which parses each row of household income data
+- `cleanIncome`, which parses each row of household income data
 - `dateParse`, which we use for parsing dates
 - `cleanSalary`, which parses each row of salary data
 - `cleanUSStateName`, which parses US state names
@@ -369,13 +371,13 @@ Now we can use D3 to load our data with fetch requests.
 {crop-start: 52, crop-end: 64, format: javascript, line-numbers: false}
 ![Data loading](code_samples/es6v2/DataHandling.js)
 
-Here you can see another ES6 trick: default argument values. If `callback` is falsey, we set it to `_.noop` - a function that does nothing. This lets us later call `callback()` without worrying whether it's defined.
+Here you can see another ES6 trick: default argument values. If `callback` is undefined, we set it to `_.noop` - a function that does nothing. This lets us later call `callback()` without worrying whether it's defined.
 
 In version 5, D3 updated its data loading methods to use promises instead of callbacks. You can load a single file using `d3.csv("filename").then(data => ....`. The promise resolves with your data, or throws an error.
 
 If you're on D3v4 and can't upgrade, you'll have to import from `d3-fetch`.
 
-Each `d3.csv` call makes a fetch request, parses the fetched CSV file into an array of JavaScript dictionaries, and passes each row through the provided cleanup function. We pass all median incomes through `cleanIncomes`, salaries through `cleanSalary`, etc.
+Each `d3.csv` call makes a fetch request, parses the fetched CSV file into an array of JavaScript dictionaries, and passes each row through the provided cleanup function. We pass all median incomes through `cleanIncome`, salaries through `cleanSalary`, etc.
 
 To load multiple files, we use `Promise.all` with a list of unresolved promises. Once resolved, our `.then` handler gets a list of results. We use array destructuring to expand that list into our respective datasets before running some more logic to tie them together.
 
@@ -412,7 +414,7 @@ If that didn't work, try comparing your changes to this [diff on Github](https:/
 
 With our data in hand, it's time to draw some pictures. A choropleth map will show us the best places to be in tech.
 
-We're showing the delta between median household salary in a statistical county and the average salary of a single tech worker on a visa. The darker the blue, the higher the difference.
+We're showing the delta between median household salary in a statistical county and the average salary of an individual tech worker on a visa. The darker the blue, the higher the difference.
 
 The more a single salary can out-earn an entire household, the better off you are.
 
@@ -456,6 +458,8 @@ In the `render` method, we'll:
 ```
 // src/App.js
 render() {
+		const { countyNames, usTopoJson, techSalaries, } = this.state;
+		
     if (techSalaries.length < 1) {
         return (
             <Preloader />
