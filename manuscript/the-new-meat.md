@@ -458,7 +458,7 @@ In the `render` method, we'll:
 ```
 // src/App.js
 render() {
-		const { countyNames, usTopoJson, techSalaries, } = this.state;
+		const { countyNames, usTopoJson, USstateNames, techSalaries, } = this.state;
 		
     if (techSalaries.length < 1) {
         return (
