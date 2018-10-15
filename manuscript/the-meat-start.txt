@@ -1511,11 +1511,15 @@ Let's save you from that.
 {#basic-architecture}
 ## Basic architecture
 
-![The basic architecture](images/es6v2/architecture.jpg)
+![Unidirectional data flow](images/2018/unidirectionalflow.png)
 
-We're using a unidirectional data flow architecture with a single source of truth. That means you always know what to expect.
+We're using a unidirectional data flow architecture with a single source of truth. That means you always know what to expect. Think of your app as a giant circle.
 
-The main App component holds state for your entire application. Anything that multiple components should be aware of lives here. This state flows down the hierarchy via props. Changes happen via callbacks, also passed down through props.
+Data goes from your source of truth into your components. Events go from your components into your source of truth. All in one direction
+
+![The basic architecture](images/2018/architecture.png)
+
+Our main App component holds state for your entire application. Anything that multiple components should be aware of lives here. This state flows down the hierarchy via props. Changes happen via callbacks, also passed down through props.
 
 Like this 👇
 
@@ -1531,7 +1535,7 @@ This looks roundabout, but it's amazing. Far better than worrying about parts of
 
 When a user clicks one of our controls, a `Toggle`, it invokes a callback. This in turn invokes a callback on `ControlRow`, which invokes a callback on `Controls`, which invokes a callback on `App`.
 
-![Callback chain](images/es6v2/architecture_callbacks.jpg)
+![Callback chain](images/2018/architecture_callbacks.png)
 
 With each hop, the nature of our callback changes. `Toggle`  tells `ControlRow` which entry was toggled, `ControlRow` tells `Controls` how to update the data filter function, and `Controls` gives `App` a composite filter built from all the controls. You'll see how that works in the next chapter.
 
@@ -1539,7 +1543,7 @@ All you have to remember right now is that callbacks evolve from passing low-lev
 
 When the final callback is invoked, `App` updates its repository of truth – `this.state` – and communicates the change back down the chain via props. No additional wiring needed on your part. React's got you covered. 
 
-![Data flows down](images/es6v2/architecture_dataflow.jpg)
+![Data flows down](images/2018/architecture_dataflow.jpg)
 
 You can think of it like calling functions with new arguments. Because the functions – components – render the UI, your interface updates.
 
