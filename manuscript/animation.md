@@ -1,33 +1,63 @@
 # Animation #
 
-Welcome to the animation section. This is where the real fun begins. Demos that look cool and impress your friends.
+Welcome to the animation section. This is where the real fun begins. Demos that look cool, impress your friends, and sound good at the dinner table.
+
+At my dinner table at least ...
 
 ![](images/es6v2/puking-rainbows.png)
 
-You already know how React and D3 work together, so these demos are going to go faster. You know that we're using React for rendering SVG and D3 for calculating props. You know how to make your dataviz interactive and how to handle oodles of data.
+You already know how React and D3 work together, so these examples are going to go faster. You know that we're using React for rendering SVG and D3 for calculating props. You know how to make your dataviz interactive and how to handle oodles of data.
 
-Now you're going to learn how to make it dance. Time to build smooth transitions between states, build complex animations, and interact with the user in real-time. 60 frames per second, baby!
+Now you're going to learn how to make it dance. Smooth transitions between states, complex animations, interacting with users in real-time. 60 frames per second, baby!
 
-Our general approach to animation goes like this: Render from state → Change state 60 times per second. Animation!
+Animation looks like this in a nutshell:
 
-We're going to use two different ways of changing state so often. The first follows a game loop principle, which gives you more control, but is more tedious. The second uses D3 transitions, which is quicker to build, but gives you less control.
+- render something
+- change it 60 times per second
 
-We're going to start with an example or two in CodePen, then build something more involved. But don't worry, no more big huge projects like the [tech salary visualization](#salary-visualization)
+When that happens humans perceive smooth motion. You can go as low as 24 frames per second, like old TVs used to, but that often looks jaggeddy on modern monitors.
+
+You're about to learn two different approaches to building these animations. Using game loops and using transitions.
+
+1. Game loops give you more control
+2. Transitions are easier to implement
+
+We're starting with an example or two in CodeSandbox, then building some bigger stuff. No more big huge projects like the [tech salary visualization](#salary-visualization), though. Takes too long to set up and doesn't focus on animation.
 
 {#game-loop}
 # Using a game loop for rich animation
 
-I love game loops. It even sounds fun: "game loop". Maybe it's just that whenever I build a game loop, the thing I'm building is fun to play with. :thinking_face:
+Game loops are fun! They're my favorite. They even sound fun: "game loop". Doesn't it sound fun to go build a game loop? Maybe it's because I've always used game loops when building something fun to play with.
 
-A game loop is an infinite loop where each iteration renders the next frame of your game or animation. You do your best to complete each iteration in 16 milliseconds, and your user gets smooth animation.
+At its core, a game loop is an infinite loop where each iteration renders the next frame of your animation.
 
-As you can imagine, our challenge is to cram all the physics and rendering into those 16 milliseconds. The more elements you're rendering, the harder it gets.
+The concept comes from the video game industry. At some point they realized that building game engines is much easier when you think about each frame as its own static representation of your game state.
 
-## A bouncing ball
+You take every object in the game and render it. Then you throw it all away, make small adjustments, and render again.
+
+This turns out to be both faster to run and easier to implement than diffing scenes and figuring out what moves and what doesn't. Of course as you get more objects on the screen it becomes silly to re-render the immovable background every time.
+
+But you don't have to worry about that. That's React's job. 
+
+React can figure out a diff between hierarchical representations of your scene and re-render the appropriate objects.
+
+That's a hard engineering problem, but you can think of it this way:
+
+1. Render a DOM from state
+2. Change some values in state
+3. Trigger a re-render
+
+Make those state changes fast enough and you get 60 frames per second. The hard part then becomes thinking about your movement as snapshots in time.
+
+When something speeds up, what does that mean for changes in its position?
+
+## A bouncing ball game loop example
 
 Let's get our feet wet with my favorite childhood example: a bouncing ball.
 
-I must have built dozens of them back in my [Turbo Pascal](https://en.wikipedia.org/wiki/Turbo_Pascal) days using [BGI](https://en.wikipedia.org/wiki/Borland_Graphics_Interface). Yes, those Turbo Pascal and BGI are from the 80's. No, I'm not that old. I just started young and with old equipment. Coding for DOS is easier when you're a kid than coding for Windows 95.
+I must have built dozens of them back in my [Turbo Pascal](https://en.wikipedia.org/wiki/Turbo_Pascal) days using [BGI](https://en.wikipedia.org/wiki/Borland_Graphics_Interface). Endless afternoons playing with different parameters in my bouncy ball examples. 
+
+Yes, those Turbo Pascal and BGI are from the 80's. No, I'm not that old. I started young and with old equipment. Coding for DOS is easier when you're a kid than coding for Windows 95.
 
 Here is a screenshot of our bouncing ball:
 
@@ -35,186 +65,261 @@ Here is a screenshot of our bouncing ball:
 
 Exciting, isn't it? Took me five tries to catch it. Future examples will look better as screenshots, I promise.
 
-I suggest you follow along on CodePen. Here's one I prepared for you earlier: [click me](http://codepen.io/swizec/pen/WRzqvK?editors=0010)
+I suggest you follow along on CodeSandbox. Here's one I prepared for you earlier: [click me](https://codesandbox.io/s/rrwz67jl04)
 
-### Step 1: stub it out
+### Step 1: stub out App and Ball
 
-We start with a skeleton: An empty `Ball` component, and an `App` component stubbed out to run the game loop.
+We start with a skeleton: An `App` component rendering a `BouncingBall` component inside an SVG, and a `Ball` component.
 
-{caption: "Bouncy ball skeleton", line-numbers: false}
+{caption: "App component", line-numbers: false}
 ```javascript
-const Ball = ({ x, y }) => (
+// index.js
+import React from "react";
+import { render } from "react-dom";
 
+import BouncingBall from "./BouncingBall";
+
+const App = () => (
+  <div>
+    <svg width="800" height="600">
+      <BouncingBall max_h={600} />
+    </svg>
+  </div>
 );
 
-const MAX_H = 750;
+render(<App />, document.getElementById("root"));
+```
 
-class App extends Component {
+App imports dependencies, imports `BouncingBall`, renders it all into a `root` DOM node. CodeSandbox gives us most of this code by default.
+
+{caption: "Ball component", line-numbers: false}
+```javascript
+// Ball.js
+import React from "react";
+
+const Ball = ({ x, y }) => <circle cx={x} cy={y} r="5" />;
+
+export default Ball;
+```
+
+We're calling it a ball, but eh it's a just a circle. You can make this more fun if you want. Right now it's a black SVG circle that renders at a specified `x, y` coordinate with a radius of `5` pixels.
+
+It's these coordinates that we're going to play with to make the ball drop and bounce. Each time, React is going to re-render and move our ball to its new coordinates. Because we change them so quickly, it looks like the ball is animated. You'll see.
+
+---
+
+Those are the boring components. The animation game loop fun happens in `BouncingBall`.
+
+### Step 2: Stub out BouncingBall
+
+We encapsulate everything in this component so that `App` doesn't have to know about the details of our animation. App declaratively renders a bouncing ball and that's it.
+
+{caption: "BouncingBall component stub", line-numbers: false}
+```javascript
+import React, { Component } from "react";
+import * as d3 from "d3";
+
+class BouncingBall extends Component {
   constructor() {
     super();
 
     this.state = {
       y: 5,
       vy: 0
-    }
+    };
   }
 
   componentDidMount() {
     // start game loop
+    this.timer = d3.timer(this.gameLoop);
   }
-  
+
   componentWillUnmount() {
     // stop loop
+    this.timer.stop();
   }
-  
-  gameLoop() {
-    // move ball
+
+  gameLoop = () => {
+    // move ball by vy
+    // increase vy to accelerate
   }
-  
+
   render() {
-    // render svg
+    // render Ball at position y
+    return <g />;
   }
 }
+
+export default BouncingBall;
 ```
 
-Nothing renders yet. CodePen complains about missing code and unexpected tokens.
+Nothing renders yet and we're set up to get started.
 
-The default state sets our ball's `y` coordinate to `5` and its vertical speed – `vy` – to `0`. Initial speed zero, initial position top. Perfect for a big drop.
+We start with default state: vertical position `y=5`, vertical speed `vy=0`.
 
-### Step 2: The Ball
+`componentDidMount` fires off a d3 timer and `componentWillUnmount` stops it so we don't have unwanted code running in the background. The timer calls `this.gameLoop` every 16 milliseconds, which translates to about 60 frames per second.
 
-We can approximate the `Ball` component with a circle. No need to get fancy; we're focusing on the animations part.
+D3 timers work like JavaScript's own `setInterval`, but their implementation is more robust. They use `requestAnimationFrame` to save computer resources when possible, and default to `setInterval` otherwise.
 
-{caption: "A Ball is a circle", line-numbers: false}
-```javascript
-const Ball = ({ x, y }) => (
-  <circle cx={x} cy={y} r={5} />
-);
-```
-
-Our `Ball` renders at `(x, y)` and has a radius of 5 pixels. The CSS paints it black.
-
-It's these coordinates that we're going to play with to make the ball drop and bounce. Each time, React is going to re-render and move our ball to its new coordinates. Because we change them so quickly, it looks like the ball is animated. You'll see.
+Unlike `setInterval` timers are also synced so their frames match up, can be restarted, stopped, etc. You should default to favoring `d3.timer` over `setInterval` or hacking your own `requestAnimationFrame` implementation.
 
 ### Step 3: Rendering
 
-We need an SVG of appropriate height and a ball inside. All that goes in `App.render`.
+To render our Ball we have to tweak BouncingBall's `render` method. A small change. Try it yourself first.
 
 {caption: "Render ball", line-numbers: false}
 ```javascript
+// BouncingBall.js
+import Ball from "./Ball"
+
 class App extends Component {
 	// ...
-  render() {
-    return (
-      <svg width="100%" height={MAX_H}>
-        <Ball x={50} y={this.state.y} />
-      </svg>
-    )
+	render() {
+    // render Ball at position y
+    return <g><Ball x={10} y={this.state.y} /></g>
   }
 }
 ```
 
-We're using `MAX_H`, which is set to 750, because a falling ball needs a lot of room to bounce up and down. You've thrown bouncy balls in a small apartment before, haven't you? It's terrifying.
+Import our `Ball` component, render it at `x=10` and use `this.state.y` for the vertical coordinate.
 
-A black ball should show up on your screen. Like this:
+A black ball shows up on your screen. Like this:
 
 ![Black ball](images/es6v2/bouncing-ball.png)
 
 ### Step 4: The Game Loop
 
-To make the ball bounce, we need to start an infinite loop when our component first renders, change the ball's `y` coordinate on every iteration, and stop the loop when React unmounts our component. Wouldn't want to keep hogging resources, would we?
+Our game loop is already running. It's that `d3.timer` we started on component mount.
 
-{caption: "Change ball position at 60fps", line-numbers: false}
+What do you think we should do every time `gameLoop` is called?
+
+Move the ball. Accelerate. Bounce it back. 🏀
+
+The physics is tricky to think about. Few students at my workshops figure this one out and that's the point: Game loop gives you control. All the control.
+
+{caption: "Bouncy ball at 60fps", line-numbers: false}
 ```javascript
-componentDidMount() {
-    this.timer = d3.timer(() => this.gameLoop());
-    this.gameLoop();
-}
-
-componentWillUnmount() {
-    this.timer.stop();
-}
-
-gameLoop() {
+// BouncingBall.js
+	componentDidMount() {
+	    // start game loop
+	    this.timer = d3.timer(this.gameLoop);
+	}
+	
+	componentWillUnmount() {
+	    this.timer.stop();
+	}
+	
+	gameLoop = () => {
     let { y, vy } = this.state;
 
-    if (y > MAX_H) {
-        vy = -vy*.87;
+    if (y > this.props.max_h) {
+      vy = -vy * .87;
     }
 
     this.setState({
-        y: y+vy,
-        vy: vy+0.3
+      y: y + vy,
+      vy: vy + 0.3
     })
-}
+  }
 ```
 
-We start a new `d3.timer` when our App mounts, then stop it when App unmounts. This way we can be sure there aren't any infinite loops running that we can't see.
+Our `gameLoop` method is called every 16 milliseconds give or take. Sometimes more, if the computer is busy, low on batter, or the tab is left inactive for too long
 
-You can read details about D3 timers in [d3-timer documentation](https://github.com/d3/d3-timer). The tl;dr version is that they're a lot like JavaScript's native `setInterval`, but pegged to `requestAnimationFrame`. That makes them smoother and friendlier to browser's CPU throttling features.
+Bounce physics go like this: 
 
-It basically means our game loop executes every time the browser is ready to repaint. Every 16 milliseconds, give or take.
+- add vertical speed, `vy`, to position, `y`
+- increased `vy` by amount of acceleration
+- if position is more than max, bounce
+- bounce means invert speed
+- bounce means energy loss, reduce speed by 13%
 
-We simulate bounce physics in the `gameLoop` function. With each iteration, we add vertical speed to vertical position and increase the speed.
+High school physics my friend. You might not remember. 
 
-Remember high school? `v = v0 + g*t`. Speed equals speed plus acceleration multiplied by time. Our acceleration is gravity, and our time is "1 frame".
+Speed tells you how much an object moves per unit of time. Our speed starts at 5 pixels per frame.
 
-And acceleration is measured in meters per second per second. Basically, the increase in speed observed every second. Real gravity is 10m/s^2, our factor is `0.3`. I discovered it when playing around. That's what looked natural.
+Acceleration tells you how much speed increases per unit of time. Gravity makes you fall 10 meters per second faster every second. Our gravity looks best at 0.3 pixels per frame.
 
-For the bounce, we look at the `y` coordinate and compare with `MAX_H`. When it's over, we invert the speed vector and multiply with the bounce factor. Again, discovered experimentally when the animation looked natural.
+Bounce is what really breaks people's brains.
 
-Tweak the factors to see how they affect your animation. Changing the `0.3` value should make gravity feel stronger or weaker, and changing the `0.87` value should affect how high the ball bounces.
+I think it's one of Newton's laws? Or a derivation from there. Bouncing means balls maintain the same speed, but change direction. Our wall is perpendicular to the path of travel, so the speed inverts.
 
-Notice that we never look at minimum height to make the ball start falling back down. There's no need. Add `0.3` to a negative value often enough and it turns positive.
+We add some energy loss to make the bounce more realistic.
 
-Here's a CodePen with the [final bouncy ball code](http://codepen.io/swizec/pen/bgvEvp?editors=0010).
+Gravity acceleration points the same downwards direction as always. Except now it's slowing down the ball instead of speeding it up.
+
+Eventually speed reaches zero and the ball starts falling again.
+
+![Magic](https://media.giphy.com/media/12NUbkX6p4xOO4/giphy.gif)
+
+Here's a CodeSandbox with the [final bouncy ball code](https://codesandbox.io/s/o4vk8zkn96).
+
+Experiment with multiple balls. Start them at different heights. Play with different factors in those equations. It's fun if you're a nerd like me.
 
 ### Step 5: Correcting for time
 
-If you run the CodePen a few times, you'll notice two bugs. The first is that sometimes our ball gets trapped at the bottom of the bounce. We won't fix this one; it's tricky.
+If you run the CodeSandbox a few times, you'll notice two bugs. 
 
-The second is that when you slow down your computer, the ball starts lagging. That's not how things behave in real life.
+1) Sometimes our ball gets trapped at the bottom of the bounce. We won't fix this one; it's tricky.
+
+2) When you slow down your computer, the ball lags. That's not how things behave in real life.
 
 We're dealing with dropped frames.
 
-Modern browsers slow down JavaScript in tabs that aren't focused, on computers running off battery power, when batteries get low… there's many reasons in the pile. I don't know all of them. If we want our animation to look smooth, we have to account for these effects.
+Modern browsers slow down JavaScript in tabs that aren't focused, on computers running off batteries, when batteries get low… many different reasons. To make our animation silky smooth, we have to take this into account.
 
-We have to calculate how much time each frame took and adjust our physics.
+That involves calculating how many frames we dropped and adjusting our physics.
 
 {caption: "Adjust for frame drops", line-numbers: false}
 ```javascript
-gameLoop() {
+// BouncingBall.js
+  gameLoop = () => {
     let { y, vy, lastFrame } = this.state;
-    
-    if (y > MAX_H) {
-        vy = -vy*.87;
-    }
-    
+
     let frames = 1;
-    
+
     if (lastFrame) {
-        frames = (d3.now()-lastFrame)/(1000/60);
+      frames = (d3.now() - lastFrame) / (1000 / 60);
     }
-    
+
+    for (let i = 0; i < frames; i++) {
+      if (y > this.props.max_h) {
+        vy = -vy * 0.87;
+      }
+
+      y = y + vy;
+      vy = vy + 0.3;
+    }
+
     this.setState({
-        y: y+vy*frames,
-        vy: vy+0.3*frames,
-        lastFrame: d3.now()
-    })
-}
+      y,
+      vy,
+      lastFrame: d3.now()
+    });
+  };
+
 ```
 
 We add `lastFrame` to game state and set it with `d3.now()`. This gives us a high resolution timestamp that's pegged to `requestAnimationFrame`. D3 guarantees that every `d3.now()` called within the same frame gets the same timestamp.
 
 `(d3.now()-lastFrame)/16` tells us how many frames were meant to have happened since last iteration. Most of the time, this value will be `1`.
 
-We use it as a multiplier for the physics calculations. Our physics should look correct now regardless of browser throttling.
+We use `frames` to simulate as many frames as we need in a quick loop. Run the same calculations with the same height checks. This simulates the missing frames and makes our animation look smooth.
 
-Unfortunately, these fixes exacerbate the "ball stuck at bottom" bug. It happens when the ball goes below `MAX_H` and doesn't have enough bounce to get back above `MAX_H` in a single frame.
+Try it out on CodeSandbox: [click me for time-fixed bouncy ball](https://codesandbox.io/s/8n3p6720wl)
 
-You can fix it with a flag of some sort. Only bounce, if you haven't bounced in the last N frames. Something like that.
+## Game loop recap
 
-I suggest you play with it on CodePen: [click me for time-fixed bouncy ball](http://codepen.io/swizec/pen/NdYNKj?editors=0010)
+You now know how to build a game loop and use it to run custom animations. 👏
+
+- render from state
+- change state 60 times per second
+- reason about movement in snapshots
+- deal with dropped frames
+- complete control
+
+Complete control is nice, but the mental acrobatics are not. Getting game loops just right is hard.
+
+And that's why I recommend transitions in most cases. Transitions can handle all of that for you out of the box.
 
 # Using transitions for simple animation
 
