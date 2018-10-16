@@ -9,7 +9,7 @@ Welcome to the main part of React + D3 2018. We're going to talk a little theory
 - [A choropleth map](#choropleth-map)
 - [An interactive histogram](#histogram-of-salaries)
 - [A bouncing ball](#bouncing-ball)
-- [A rainbow snake](#rainbow-snake)
+- [A swipe transition](#swipe-transition)
 - [An animated alphabet](#animated-alphabet)
 - [A simple particle generator with Redux](#animating-react-redux)
 - [A particle generator pushed to 20,000 elements with canvas](#canvas-react-redux)

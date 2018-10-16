@@ -323,25 +323,38 @@ And that's why I recommend transitions in most cases. Transitions can handle all
 
 # Using transitions for simple animation
 
-Game loops are great when you need fine-grained control. But what if you just want an element to animate a little bit when a user does something? You don't care about the details; you just want a little flourish.
+Game loops are great for fine-grained control. And when all you need is a little flourish on user action, that's where transitions shine.
 
-That's where transitions come in.
+No details, just keyframes.
 
-Transitions are a way to animate SVG elements by saying *"I want this property to change to this new value and take this long to do it"*. And you can use easing functions to make it look better.
+Transitions let you animate SVG elements by saying *"I want this property to change to this new value and take this long to do so"*.
 
-I won't go into details about *why* easing functions are important, but they make movement look more natural. You can read more about it in Disney's [12 Basic Principles of Animation](https://en.wikipedia.org/wiki/12_basic_principles_of_animation).
+Start-end keyframes are the simplest. You define the starting position. Start a transition. Define the end position. D3 figures out the rest. Everything from calculating the perfect rate of change to match your start and end values and your duration, to *what* to change and handling dropped frames.
 
-The two we can achieve with easing functions are:
+Quite magical.
 
-1. Squash and Stretch
-6. Slow In Slow Out
+You can also sequence transitions to create complex keyframe-based animation. Each new transition definition is like a new keyframe. D3 figures out the rest.
 
-Let me show you how it works on a small example. We're drawing a field of 50 by 50 circles that "flash" when touched. The end result looks like there's a snake following your cursor.
+Better yet, you can use easing functions to make your animation look more natural. Make rate of change follow a mathematical curve to create smooth natural movement.
 
-{#rainbow-snake}
-## Rainbow snake
+You can read more about the *why* of easing functions in Disney's [12 Basic Principles of Animation](https://en.wikipedia.org/wiki/12_basic_principles_of_animation). Bottom line is that it makes your animation feel natural.
 
-You can play with the code on CodePen [here](http://codepen.io/swizec/pen/QdVoOg/). Follow along as I explain how it works. Tweak parameters and see what happens :smile:
+*How* they work is hard to explain. You can grok part of it in my [Custom transition tweens](https://swizec.com/blog/silky-smooth-piechart-transitions-react-d3js/swizec/8258) article.
+
+But don't worry about it. All you have to know is that many easing functions exist. [easings.net](https://easings.net/) lists the common ones. D3 implements everything on that list.
+
+![Common easing functions](images/2018/easings.net.png)
+
+Let's try an example: A swipe transition.
+
+{#swipe-transition}
+## Swipe transition
+
+Our goal is to build a declarative component fully controlled by props. We pass in the `x` coordinate and the coordinate figures out the rest.
+
+We shouldn't care about the transition or how long it takes. That's up to the component. We just change the `x`.
+
+You can see it in action [on CodeSandbox, here](https://codesandbox.io/s/618mr9r6nr). Tweak params, see what happens. Follow along as I explain how it works.
 
 ### App
 
