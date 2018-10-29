@@ -285,10 +285,10 @@ Don't worry about the missing `DataHandling` file. It's coming soon.
 // src/App.js
 class App extends React.Component {
     state = {
-        countyNames: [],
+        techSalaries: [],
         // markua-start-insert
         medianIncomes: [],
-        techSalaries: [],
+				countyNames: [],
     };
 
     componentDidMount() {
@@ -458,7 +458,9 @@ In the `render` method, we'll:
 ```
 // src/App.js
 render() {
-		const { countyNames, usTopoJson, techSalaries, } = this.state;
+    // markua-start-insert
+    const { countyNames, usTopoJson, techSalaries, } = this.state;
+    // markua-end-insert
 		
     if (techSalaries.length < 1) {
         return (
@@ -476,26 +478,26 @@ render() {
     let zoom = null;
     // markua-end-insert
 
-      return (
-          <div className="App container">
-            // markua-start-delete
-            <h1>Loaded {techSalaries.length} salaries</h1>
-            // markua-end-delete
-            // markua-start-insert
-            <svg width="1100" height="500">
-                <CountyMap usTopoJson={usTopoJson}
-                           USstateNames={USstateNames}
-                           values={countyValues}
-                           x={0}
-                           y={0}
-                           width={500}
-                           height={500}
-                           zoom={zoom} />
-            </svg>
-            // markua-end-insert
-          </div>
-      );
-  }
+		return (
+		  <div className="App container">
+		    // markua-start-delete
+		    <h1>Loaded {techSalaries.length} salaries</h1>
+		    // markua-end-delete
+		    // markua-start-insert
+		    <svg width="1100" height="500">
+		        <CountyMap usTopoJson={usTopoJson}
+		                   USstateNames={USstateNames}
+		                   values={countyValues}
+		                   x={0}
+		                   y={0}
+		                   width={500}
+		                   height={500}
+		                   zoom={zoom} />
+		    </svg>
+		    // markua-end-insert
+		  </div>
+		);
+}
 ```
 
 We call our dataset `filteredTechSalaries` because we're going to add filtering in the [subchapter about adding user controls](#user-controls). Using the proper name now means less code to change later. The magic of foresight :smile:
@@ -774,7 +776,7 @@ Knowing median salaries is great and all, but it doesn't tell you much about wha
 
 That's what histograms are for. Give them a bunch of data, and they show its distribution. We're going to build one like this:
 
-![Basic histogram](images/es6v2/basic-histogram.png)
+![Basic histogram](images/2018/basic-histogram.png)
 
 In the shortened dataset, 35% of tech salaries fall between $60k and $80k, 26% between $80k and $100k etc. Throwing a weighed dice with this [random distribution](https://en.wikipedia.org/wiki/Probability_distribution), you're far more likely to get 60k-80k than 120k-140k. It's a great way to gauge situations.
 
@@ -881,17 +883,22 @@ Adding our CSS before building the Histogram means it's going to look beautiful 
 We're following the [full-feature integration](#full-feature-integration) approach for our Histogram component. React talks to the DOM, D3 calculates the props.
 
 We'll use two components:
+
 1. `Histogram` makes the general layout, dealing with D3, and translating raw data into a histogram
 2. `HistogramBar` draws a single bar and labels it
 
 Let's start with the basics: a `Histogram` directory and an `index.js` file. Keeps our code organized and imports easy. I like to use directories for components made of multiple files.
 
-{crop-start: 5, crop-end: 8, format: javascript, line-numbers: false}
-![Histogram index.js](code_samples/es6v2/components/Histogram/index.js)
+{caption: "Re-export Histogram", format: javascript, line-numbers: false}
+```
+export { default } from "./Histogram";
+```
 
-Import `Histogram` from `./Histogram` and export it as the `default` export. You could do it with a re-export: `export { default } from './Histogram'`. Not sure why I picked the long way. A dash more readable?
+Import and re-export the histogram componenet from `./Histogram`. This way you can keep your histogram code in a file called Histogram and pretend the directory itself is exporting it.
 
-Great, now we need the `Histogram.js` file. Start with some imports, a default export, and a stubbed out `Histogram` class.
+Great way to group files that belong together without exposing your directory's internal structure.
+
+Now we need the `Histogram.js` file. Start with some imports, a default export, and a stubbed out `Histogram` class.
 
 {format: javascript, line-numbers: false, caption: "Histogram component stub"}
 ```
@@ -917,7 +924,7 @@ class Histogram extends React.Component {
         };
     }
 
-    makeBar = (bar, N) => {
+    makeBar = bar => {
         const { yScale, widthScale } = this.state;
 
     };
@@ -1051,10 +1058,47 @@ Setting the `key` prop is important. React uses it to tell the bars apart and on
 
 Before our histogram shows up, we need another component: `HistogramBar`. We *could* have shoved all of it in the `makeBar` function, but it makes sense to keep separate. Better future flexibility.
 
-I like keeping small subcomponents like this in the same file as their parent. They don't work on their own so there's no reusability benefit from keeping them separate. And they're small enough that separating them doesn't help readability either.
+You can write small components like this in the same file as their main component. They're not reusable since they fit a specific use-case, and they're small enough so your files don't get too crazy.
 
-{crop-start: 120, crop-end: 150, format: javascript, line-numbers: false}
-![HistogramBar component](code_samples/es6v2/components/Histogram/Histogram.js)
+But in the interest of readability, let's make a `HistogramBar` file.
+
+{caption: "HistogramBar component", line-numbers: false}
+```javascript
+// src/components/Histogram/HistogramBar.js
+import React from "react";
+
+const HistogramBar = ({ percent, x, y, width, height }) => {
+    let translate = `translate(${x}, ${y})`,
+        label = percent.toFixed(0) + "%";
+
+    if (percent < 1) {
+        label = percent.toFixed(2) + "%";
+    }
+
+    if (width < 20) {
+        label = label.replace("%", "");
+    }
+
+    if (width < 10) {
+        label = "";
+    }
+
+    return (
+        <g transform={translate} className="bar">
+            <rect
+                width={width}
+                height={height - 2}
+                transform="translate(0, 1)"
+            />
+            <text textAnchor="end" x={width - 5} y={height / 2 + 3}>
+                {label}
+            </text>
+        </g>
+    );
+};
+
+export default HistogramBar;
+```
 
 Pretty long for a functional component. Most of it goes into deciding how much precision to render in the label, so it's okay.
 
@@ -1062,9 +1106,18 @@ We start with an SVG translate and a default `label`. Then we update the label b
 
 When we have a label we like, we return a `<g>` grouping element with a rectangle and a text. Both positioned based on the `width` and `height` of the bar.
 
+Make sure to import `HistogramBar` in the main `Histogram` file.
+
+{caption: "HistogramBar import", line-numbers: false}
+```javascript
+// src/components/Histogram/Histogram.js
+
+import HistogramBar from './HistogramBar'
+```
+
 You should now see a histogram.
 
-![Histogram without axis](images/es6v2/histogram-without-axis.png)
+![Histogram without axis](images/2018/histogram-without-axis.png)
 
 ## Step 5: Axis HOC
 
@@ -1164,7 +1217,7 @@ class Histogram extends Component {
                 <Axis x={axisMargin-3}
                       y={0}
                       data={bars}
-                      scale={this.yScale} />
+                      scale={yScale} />
                 // markua-end-insert
             </g>
         );
@@ -1261,9 +1314,13 @@ export { default as Title } from './Title'
 export { default as Description } from './Description';
 ```
 
-Using re-exports does look better than the roundabout way we used in `Histogram/index.js`. Lesson learned.
+We have to name our `Title` and `Description` re-exports because you can't have two default exports.
 
-You need the `USStatesMap` file too. It translates US state codes to full names. You should [get it from Github](https://github.com/Swizec/react-d3js-step-by-step/blob/4f94fcd1c3caeb0fc410636243ca99764e27c5e6/src/components/Meta/USStatesMap.js) and save it as `components/Meta/USStatesMap.js`.
+#### Get the USStatesMap file
+
+You need the `USStatesMap` file. 
+
+It's a big dictionary that translates US state codes to full names. You can [get it from Github](https://github.com/Swizec/react-d3js-step-by-step/blob/4f94fcd1c3caeb0fc410636243ca99764e27c5e6/src/components/Meta/USStatesMap.js) and save it as `components/Meta/USStatesMap.js`.
 
 We'll use it when creating titles and descriptions.
 
@@ -1302,7 +1359,37 @@ We rely on D3's built-in number formatters to build `format`. Linear scales have
 
 The `jobTitleFragment` getter is conceptually no harder than `yearsFragment` and `USstateFragment`, but it comes with a few more conditionals.
 
-{crop-start: 61, crop-end: 91, format: javascript, line-numbers: false}
+{caption: "Title.jobTitleFragment", line-numbers: false}
+```javascript
+// src/components/Meta/Title.js
+
+class Title extends Component {
+    // ...
+    get jobTitleFragment() {
+        const { jobTitle, year } = this.props.filteredBy;
+        let title = "";
+
+        if (jobTitle === "*") {
+            if (year === "*") {
+                title = "The average H1B in tech pays";
+            } else {
+                title = "The average tech H1B paid";
+            }
+        } else {
+            title = `Software ${jobTitle}s on an H1B`;
+            if (year === "*") {
+                title += " make";
+            } else {
+                title += " made";
+            }
+        }
+
+        return title;
+    }
+    // ...
+}
+```
+
 ![Title.jobTitleFragment](code_samples/es6v2/components/Meta/Title.js)
 
 We're dealing with the `(jobTitle, year)` combination. Each influences the other when building the fragment for a total 4 different options.
@@ -1318,7 +1405,7 @@ Calculate the mean value using `d3.mean` with a value accessor, turn it into a p
 
 And a title appears.
 
-![Dataviz with title](images/es6v2/dataviz-with-title.png)
+![Dataviz with title](images/2018/dataviz-with-title.png)
 
 If it doesn't, consult [this diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/4f94fcd1c3caeb0fc410636243ca99764e27c5e6).
 
@@ -1368,9 +1455,29 @@ This code is not super efficient, but it gets the job done. We could optimize by
 
 Similar code handles finding the best city.
 
-If you follow along the [description Github diff](https://github.com/Swizec/react-d3js-step-by-step/commit/032fe6e988b903b6d86a60d2f0404456785e180f), or copy pasta, your visualization should now have a description.
+### render the description
 
-![Dataviz with Title and Description](images/es6v2/dataviz-with-description.png)
+I recommend copying the [`Description` component from GitHub](https://github.com/Swizec/react-d3js-step-by-step/commit/032fe6e988b903b6d86a60d2f0404456785e180f). Most of it has little to do with React and data visualization. It's all about combining sentence fragments based on props.
+
+You then render the Description like this:
+
+{caption: "Render Description component", line-numbers: false}
+```javascript
+// src/components/App.js
+
+import { Title, Description } from "./components/Meta";
+
+// ..
+
+<Description
+    data={filteredSalaries}
+    allData={techSalaries}
+    filteredBy={filteredBy}
+    medianIncomesByCounty={this.state.medianIncomesByCounty}
+/>
+```
+
+![Dataviz with Title and Description](images/2018/dataviz-with-description.png)
 
 Another similar component is the `GraphDescription`. It shows a small description on top of each chart that explains how to read the picture. Less "Here's a key takeaway", more "color means X".
 
@@ -1519,7 +1626,7 @@ It's a set of filters for users to slice and dice our visualization. The shorten
 
 We're using the [architecture we discussed](#basic-architecture) earlier to make it work. Clicking buttons updates a filter function and communicates it all the way up to the `App` component. `App` then uses it to update `this.state.filteredSalaries`, which triggers a re-render and updates our dataviz.
 
-![Architecture sketch](images/es6v2/architecture_callbacks.jpg)
+![Architecture sketch](images/2018/architecture_callbacks.jpg)
 
 We're building controls in 4 steps, top to bottom:
 
@@ -1646,11 +1753,7 @@ class Controls extends React.Component {
             () => this.reportUpdateUpTheChain()
         );
     };
-
-    updateUSstateFilter = (USstate, reset) => {
-       
-    }
-
+    
     render() {
         const { data } = this.props;
     }

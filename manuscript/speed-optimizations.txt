@@ -1,38 +1,49 @@
 # Speed optimizations #
 
-Welcome to the section on speed optimizations. This is where we make our code harder to read and faster to run.
+Welcome to the speed optimization chapter. This is where we make our code harder to read and faster to run.
 
-You might never need any of the techniques discussed here. You already know how to build performant data visualization components. For 99% of applications, plain code that's easy to read and understand is plenty fast.
+You might never need any techniques discussed here. You already know how to build performant data visualization components. For 99% of applications, plain code that's easy to read and understand is faster than fast code that's hard to read.
 
-Do you really need to save that tenth of a second at runtime and spend an extra hour of thinking every time there's a bug?
+You and your team spend most of your time reading code. Optimize for that. The faster you can code, the faster your system as a whole. Leave runtime optimization to React and ist ecosystem for as long as you can get away with.
 
-Be honest. :wink:
+I mean, do you really need to save that tenth of a second at runtime if it means an extra hour of head scratching every time there's a bug?
+
+Be honest. 😉
 
 That said, there are cases where faster code is also easier to read. And there are cases where your visualization is so massive, that you need every ounce of oomph you can get.
 
 For the most part, we're going to talk about three things:
 
 - using Canvas to speed up rendering
-- using React-like libraries to speed up the core library
+- using React-like libraries to speed up the core rendering engine
 - avoiding unnecessary computation and redraws
+- reaching for WebGL when even Canvas isn't fast enough
 
-We'll start with Canvas because it's the biggest speed improvement you can make.
+We'll start with Canvas because it's the best bang for buck improvement you can make.
 
 # Using canvas
 
-We've been using SVG to render our apps so far. SVG is great because it follows a familiar structure, offers infinitely scalable vector graphics, and works pretty much everywhere. Sure, you can't use some fancy SVG features on all browsers, but the basics are solid.
+So far we've been rendering our visualizations with SVG. SVG is great because it follows a familiar structure, offers infinitely scalable vector graphics, and works everywhere. Yes there are some advanced SVG features you can't use everywhere, but the core is solid.
 
 However, SVG has a big flaw: it's slow.
 
-Anything more than a few hundred SVG nodes and your browser will struggle. Especially if you want to animate those thousands of elements.
+Anything more than a few hundred SVG nodes and your browser starts to struggle. Especially if those thousands of elements move around.
 
-A panelist at ForwardJS once asked me, *"But why would you want that?"*. It was my first time participating in a panel, and my answer sucked. What I  *should* have said was, *"Because there have been thousands of UFO sightings, there are thousands of counties in the US, millions of taxi rides, hundreds of millions of people having this or that datapoint. And you want to show change over time."*
+A web animation panel moderator at ForwardJS once asked me, *"But why would you want thousands of SVG elements?"*. 
 
-That's the real answer. Sometimes, when you're visualizing some data, you have a lot of data. The data changes over time, and animation is the best way to show changes over time.
+It was my first time participating in a panel, stage lights shining upon me, a mildly disinterested audience staring into their phones ... so I bombed: *"Errr ... because you can?"*.
+
+![](images/2018/stage_lights.jpg)
+
+What I  *should* have said was: *"Because there have been thousands of UFO sightings, there are thousands of counties in the US, millions of taxi rides, hundreds of millions of people having this or that datapoint. And you want to show change over time."*
+
+That's the real answer.
+
+Sometimes, when you're visualizing data, you have a lot of data. The data changes over time. Animation is the best way to show changes over time.
 
 Once upon a time, I worked on a [D3 video course](https://www.packtpub.com/web-development/mastering-d3js-video) for Packt and used UFO sightings as an example. At peak UFO sighting, right before smartphones become a thing, the animation takes up to 2 seconds to redraw a single frame.
 
-It's terrible.
+Terrible.
 
 So if SVG is slow and you need to animate thousands of elements, what are you to do? HTML5 Canvas.
 
