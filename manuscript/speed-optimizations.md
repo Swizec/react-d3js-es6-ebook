@@ -35,7 +35,7 @@ A web animation panel moderator at ForwardJS once asked me, *"But why would you 
 
 It was my first time participating in a panel, stage lights shining upon me, a mildly disinterested audience staring into their phones ... I bombed: *"Errr ... because you can?"*.
 
-![](images/2018/stage_lights.jpg)
+![](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/stage_lights.jpg)
 
 What I  *should* have said was: *"Because there have been thousands of UFO sightings, there are thousands of counties in the US, millions of taxi rides, hundreds of millions of people having this or that datapoint. And you want to show change over time."*
 
@@ -359,7 +359,7 @@ You can even do it as an overlay. Have an SVG for your graphs and charts, overla
 {#billiards-simulation}
 ## Build a declarative billiards simulation with MobX, Canvas, and Konva
 
-![Billiards game](images/es6v2/billiards-start.png)
+![Billiards game](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/billiards-start.png)
 
 We're building a small game. You have 11 glass balls – marbles, if you will. Grab one, throw it at the others, watch them bounce around. There is no score, but it looks cool, and it's a fun way to explore how Konva and React give you interactive Canvas features.
 
@@ -711,7 +711,7 @@ Now that we know how rendering works, we need to load our sprite. It's an icon s
 
 Here's what it looks like:
 
-![Marbles sprite](images/es6v2/monster-marbles-sprite-sheets.jpg)
+![Marbles sprite](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/monster-marbles-sprite-sheets.jpg)
 
 To use this sprite, we need two things:
 
@@ -1127,7 +1127,7 @@ I know Uber uses Preact for their Uber lite mobile app.
 
 To show you how these speed improvements look in real life, I've devised a stress test. A [pythagorean fractal tree](https://en.wikipedia.org/wiki/Pythagoras_tree_(fractal) that moves around when you move your mouse.
 
-![Pythagorean tree](images/es6v2/pythagorean-tree.png)
+![Pythagorean tree](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/pythagorean-tree.png)
 
 It's a great stress test because a render like this is the worst case scenario for tree-based rendering. You have 2048 SVG nodes, deeply nested, that all change props and re-render with every change.
 
@@ -1199,7 +1199,7 @@ We break out of recursion when we get too deep or try to draw an invisible squar
 
 Most of this code deals with passing props  to children, which isn't the most elegant approach, but it works. The rest is about positioning branches so corners match up.
 
-![Corners matching up](images/es6v2/pythagoras-corners-match-up.png)
+![Corners matching up](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/pythagoras-corners-match-up.png)
 
 #### The math
 
@@ -1331,7 +1331,7 @@ onMouseMove(event) {
 
 When we feed a change to `this.setState`, it triggers a re-render of the entire tree, our `memoizedCalc` function returns new values, and the final result is a dancing tree.
 
-![Dancing Pythagoras tree](images/es6v2/pythagoras-dancing.gif)
+![Dancing Pythagoras tree](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/pythagoras-dancing.gif)
 
 Beautious. :heart_eyes:
 
@@ -1347,7 +1347,7 @@ We're focusing on React-like libraries, so here's a rundown of changes required 
 
 Implemented by Jason Miller, creator of Preact. [Full code on Github](https://github.com/developit/preact-fractals)
 
-![](images/es6v2/preact-pythagora.gif)
+![](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/preact-pythagora.gif)
 
 Jason used the `preact-compat` layer to make Preact pretend that it's React. This might impact performance.
 

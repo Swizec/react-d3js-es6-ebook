@@ -3,11 +3,11 @@
 
 We're going to build this:
 
-![](images/es6v2/full-dataviz.png)
+![](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/full-dataviz.png)
 
 An interactive visualization dashboard app with a choropleth map and a histogram comparing tech salaries to median household income in the area. Users can filter by year, job title, or US state to get a better view.
 
-![](images/es6v2/interaction-dataviz.png)
+![](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/interaction-dataviz.png)
 
 It's going to be great.
 
@@ -21,7 +21,7 @@ If you want to see how this project evolved over 22 months, check [the original 
 
 # Show a Preloader
 
-![Preloader screenshot](images/es6v2/preloader-screenshot.png)
+![Preloader screenshot](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/preloader-screenshot.png)
 
 Our preloader is a screenshot of the final result. Usually you'd have to wait until the end of the project to make that, but I'll just give you mine. Starting with the preloader makes sense for two reasons:
 
@@ -192,7 +192,7 @@ We set `techSalaries` to an empty array by default. In `render` we use object de
 
 If your `npm start` is running, the preloader should show up on your screen.
 
-![Preloader without Bootstrap styles](images/es6v2/preloader-without-styles-screenshot.png)
+![Preloader without Bootstrap styles](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/preloader-without-styles-screenshot.png)
 
 Hmm… that's not very pretty. Let's fix it.
 
@@ -233,7 +233,7 @@ That's it.
 
 Your preloader screen should look better now.
 
-![Preloader screenshot](images/es6v2/preloader-screenshot.png)
+![Preloader screenshot](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/preloader-screenshot.png)
 
 If you don't, try comparing your changes to this [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/798ec9eca54333da63b91c66b93339565d6d582a).
 
@@ -338,7 +338,7 @@ We added a `container` class to the main `<div>` and an `<h1>` tag that shows ho
 
 You should now get an error overlay.
 
-![DataHandling.js not found error overlay](images/es6v2/datahandling-error.png)
+![DataHandling.js not found error overlay](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/datahandling-error.png)
 
 These nice error overlays come with `create-react-app` and make your code easier to debug. No hunting around in the terminal to see compilation errors.
 
@@ -405,7 +405,7 @@ When our data is ready, we call our `callback` with a dictionary of the new data
 
 You should now see how many salary entries the shortened dataset contains.
 
-![Data loaded screenshot](images/es6v2/data-loaded-screenshot.png)
+![Data loaded screenshot](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/data-loaded-screenshot.png)
 
 If that didn't work, try comparing your changes to this [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/9f113cdd3bc18535680cb5a4e87a3fd45743c9ae).
 
@@ -418,7 +418,7 @@ We're showing the delta between median household salary in a statistical county 
 
 The more a single salary can out-earn an entire household, the better off you are.
 
-![Choropleth map with shortened dataset](images/es6v2/choropleth-map-shortened-dataset.png)
+![Choropleth map with shortened dataset](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/choropleth-map-shortened-dataset.png)
 
 There's a lot of gray on this map because the shortened dataset doesn't have that many counties. Full dataset is going to look better, I promise.
 
@@ -763,7 +763,7 @@ Using `shouldComponentUpdate` like this we can go from 3,220 DOM updates to a fe
 
 Your browser should now show a map.
 
-![Choropleth map with shortened dataset](images/es6v2/choropleth-map-shortened-dataset.png)
+![Choropleth map with shortened dataset](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/choropleth-map-shortened-dataset.png)
 
 Tech work visas just aren't that evenly distributed. Even with the full dataset most counties are gray.
 
@@ -776,7 +776,7 @@ Knowing median salaries is great and all, but it doesn't tell you much about wha
 
 That's what histograms are for. Give them a bunch of data, and they show its distribution. We're going to build one like this:
 
-![Basic histogram](images/2018/basic-histogram.png)
+![Basic histogram](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/basic-histogram.png)
 
 In the shortened dataset, 35% of tech salaries fall between $60k and $80k, 26% between $80k and $100k etc. Throwing a weighed dice with this [random distribution](https://en.wikipedia.org/wiki/Probability_distribution), you're far more likely to get 60k-80k than 120k-140k. It's a great way to gauge situations.
 
@@ -980,7 +980,7 @@ We feed the data prop into our histogram generator, and count how many values ar
 
 If you print the result of `histogram()`, you'll see an array structure where each entry holds metadata about the bin and the values it contains.
 
-![console.log(this.histogram())](images/es6v2/histogram-data-screenshot.png)
+![console.log(this.histogram())](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/histogram-data-screenshot.png)
 
 Let's use this info to set up our scales.
 
@@ -1117,7 +1117,7 @@ import HistogramBar from './HistogramBar'
 
 You should now see a histogram.
 
-![Histogram without axis](images/2018/histogram-without-axis.png)
+![Histogram without axis](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/histogram-without-axis.png)
 
 ## Step 5: Axis HOC
 
@@ -1228,7 +1228,7 @@ We import our `Axis` and add it to the `render` method with some props. It takes
 
 An axis appears.
 
-![Basic histogram with axis](images/es6v2/basic-histogram.png)
+![Basic histogram with axis](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/basic-histogram.png)
 
 If that didn't work, try comparing your changes to this [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/02a40899e348587a909e97e8f18ecf468e2fe218).
 
@@ -1244,7 +1244,7 @@ We're adding a dynamic title and description, and a median line on the histogram
 
 At the end of this section, you'll have a full visualization of the shortened dataset.
 
-![Full visualization without user controls](images/es6v2/dataviz-without-controls.png)
+![Full visualization without user controls](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/dataviz-without-controls.png)
 
 ## Dynamic title
 
@@ -1405,7 +1405,7 @@ Calculate the mean value using `d3.mean` with a value accessor, turn it into a p
 
 And a title appears.
 
-![Dataviz with title](images/2018/dataviz-with-title.png)
+![Dataviz with title](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/dataviz-with-title.png)
 
 If it doesn't, consult [this diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/4f94fcd1c3caeb0fc410636243ca99764e27c5e6).
 
@@ -1477,13 +1477,13 @@ import { Title, Description } from "./components/Meta";
 />
 ```
 
-![Dataviz with Title and Description](images/2018/dataviz-with-description.png)
+![Dataviz with Title and Description](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/dataviz-with-description.png)
 
 Another similar component is the `GraphDescription`. It shows a small description on top of each chart that explains how to read the picture. Less "Here's a key takeaway", more "color means X".
 
 You can follow this [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/37b5222546c3f8f58f3147ce0bef6a3c1afe1b47) to implement it. Same approach as `Title` and `Description`.
 
-![Dataviz with all descriptions](images/es6v2/dataviz-with-all-descriptions.png)
+![Dataviz with all descriptions](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/dataviz-with-all-descriptions.png)
 
 ## Median household line
 
@@ -1607,7 +1607,7 @@ The `stroke-dasharray` is what makes it dashed. `3` means each `3px` dash is fol
 
 You should see a median household salary line overlaid on your histogram.
 
-![Median line over histogram](images/es6v2/dataviz-with-everything.png)
+![Median line over histogram](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/dataviz-with-everything.png)
 
 Almost everyone in tech makes more than an entire median household. Crazy, huh? I think it is.
 
@@ -1620,13 +1620,13 @@ Now comes the fun part. All that extra effort we put into making our components 
 
 Here's what we're building:
 
-![User controlled filters](images/es6v2/controls.png)
+![User controlled filters](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/controls.png)
 
 It's a set of filters for users to slice and dice our visualization. The shortened dataset gives you 2 years, 12 job titles, and 50 US states. You'll get 5+ years and many more job titles with the full dataset.
 
 We're using the [architecture we discussed](#basic-architecture) earlier to make it work. Clicking buttons updates a filter function and communicates it all the way up to the `App` component. `App` then uses it to update `this.state.filteredSalaries`, which triggers a re-render and updates our dataviz.
 
-![Architecture sketch](images/2018/architecture_callbacks.jpg)
+![Architecture sketch](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/architecture_callbacks.jpg)
 
 We're building controls in 4 steps, top to bottom:
 
@@ -1637,7 +1637,7 @@ We're building controls in 4 steps, top to bottom:
 
 We'll go through the files linearly. That makes them easier for me to explain and easier for you to understand, but that also means there's going to be a long period where all you're seeing is an error like this:
 
-![Controls error during coding](images/es6v2/controls-error.png)
+![Controls error during coding](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/controls-error.png)
 
 If you want to see what's up during this process, remove an import or two and maybe a thing from render. For instance, it's complaining about `ControlRow` in this screenshot. Remove the `ControlRow` import on top and delete `<ControlRow ... />` from render. The error goes away, and you see what you're doing.
 
@@ -1691,11 +1691,11 @@ We add a `.filter` call to `filteredSalaries`, which uses our `salariesFilter` m
 
 We built the `CountyMap` component to focus on a given US state. Finding the centroid of a polygon, re-centering the map, and increasing the sizing factor. It creates a nice zoom effect.
 
-![Zoom effect](images/es6v2/zoom-effect.png)
+![Zoom effect](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/zoom-effect.png)
 
 And here's the downside of this approach. SVG doesn't know about element boundaries. It just renders stuff.
 
-![Zoom without white rectangle](images/es6v2/zoom-without-rectangle.png)
+![Zoom without white rectangle](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/zoom-without-rectangle.png)
 
 See, it goes under the histogram. Let's fix that and add the `Controls` render while we're at it.
 
@@ -1962,7 +1962,7 @@ Inside the divs, we map over all toggles and use `_addToggle` to render each of 
 
 Your browser should continue showing an error, but it should change to talking about the `Toggle` component instead of `ControlRow`.
 
-![](images/es6v2/toggle-error.png)
+![](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/toggle-error.png)
 
 Let's build it.
 
@@ -1998,7 +1998,7 @@ We set up a Bootstrap classname: `btn` and `btn-default` make an element look li
 
 Then we render a `<button>` tag and, well, that's it. A row of year filters appears in the browser. `onClick` passes 
 
-![A row of year filters](images/es6v2/year-filter-row.png)
+![A row of year filters](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/year-filter-row.png)
 
 Click on a button and the `onClick` handler passes a toggle'd value to its parent via the `onClick` callback. This triggers an update in `Controls`, which calls `reportUpdateUpTheChain`, which in turn updates state in `App` and re-renders our button with the new value toggling its color on or off.
 
@@ -2106,7 +2106,7 @@ We add them to the filter condition with `&&` and expand the `filteredBy` argume
 
 Two more rows of filters show up.
 
-![All the filters](images/es6v2/all-filters.png)
+![All the filters](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/all-filters.png)
 
 :clap:
 
@@ -2175,7 +2175,7 @@ In `reportUpdateUpTheChain`, we make sure to update the URL hash. Assigning a ne
 
 You should see the URL changing as you click around.
 
-![Changing URL hash](images/es6v2/changing-url.png)
+![Changing URL hash](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/changing-url.png)
 
 There's a bug with some combinations in 2013 that don't have enough data. It will go away when we use the full dataset.
 
@@ -2281,7 +2281,7 @@ You're also going to need a thumbnail image. I made mine by taking a screenshot 
 
 Now when somebody shares your dataviz on Twitter or Facebook, it's going to look something like this:
 
-![Dataviz Twitter card](images/es6v2/twitter-card.png)
+![Dataviz Twitter card](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/twitter-card.png)
 
 ## Full dataset
 
@@ -2306,11 +2306,11 @@ $ npm run deploy
 
 You'll see a bunch of output:
 
-![Deploy output](images/es6v2/npm-run-deploy.png)
+![Deploy output](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/npm-run-deploy.png)
 
 And you're ready to go. Your visualization is online. My URL is `https://swizec.github.io/react-d3js-step-by-step/`, yours is different. Visit it and you'll see what you've built. Share it and others will see it too.
 
-![Deployed dataviz](images/es6v2/deployed-dataviz.png)
+![Deployed dataviz](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/deployed-dataviz.png)
 
 Congratz! You've built and deployed your first React and D3 dataviz. You're amazing \o/
 
