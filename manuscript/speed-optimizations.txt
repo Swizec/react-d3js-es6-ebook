@@ -2,15 +2,17 @@
 
 Welcome to the speed optimization chapter. This is where we make our code harder to read and faster to run.
 
-You might never need any techniques discussed here. You already know how to build performant data visualization components. For 99% of applications, plain code that's easy to read and understand is faster than fast code that's hard to read.
+You might never need any techniques discussed here. 
 
-You and your team spend most of your time reading code. Optimize for that. The faster you can code, the faster your system as a whole. Leave runtime optimization to React and ist ecosystem for as long as you can get away with.
+You already know how to build performant data visualization components. For 99% of applications, plain code that's easy to read and understand is faster than fast code that's hard to read.
 
-I mean, do you really need to save that tenth of a second at runtime if it means an extra hour of head scratching every time there's a bug?
+You and your team spend most of your time reading code. Optimize for that. The faster you can code, the faster your system can evolve. Leave runtime optimization to React and its ecosystem of library authors for as long as you can get away with.
+
+Do you really need to save that tenth of a second at runtime if it means an extra hour of head scratching every time there's a bug?
 
 Be honest. 😉
 
-That said, there are cases where faster code is also easier to read. And there are cases where your visualization is so massive, that you need every ounce of oomph you can get.
+That said, there *are* cases where faster code is also easier to read. And there are cases where your visualization is so massive, that you need every ounce of oomph you can get.
 
 For the most part, we're going to talk about three things:
 
@@ -23,7 +25,7 @@ We'll start with Canvas because it's the best bang for buck improvement you can 
 
 # Using canvas
 
-So far we've been rendering our visualizations with SVG. SVG is great because it follows a familiar structure, offers infinitely scalable vector graphics, and works everywhere. Yes there are some advanced SVG features you can't use everywhere, but the core is solid.
+So far we've been rendering our visualizations with SVG. SVG is great because it follows a familiar structure, offers infinitely scalable vector graphics, and works everywhere. There are *some* advanced SVG features you can't use everywhere, but the core is solid.
 
 However, SVG has a big flaw: it's slow.
 
@@ -31,7 +33,7 @@ Anything more than a few hundred SVG nodes and your browser starts to struggle. 
 
 A web animation panel moderator at ForwardJS once asked me, *"But why would you want thousands of SVG elements?"*. 
 
-It was my first time participating in a panel, stage lights shining upon me, a mildly disinterested audience staring into their phones ... so I bombed: *"Errr ... because you can?"*.
+It was my first time participating in a panel, stage lights shining upon me, a mildly disinterested audience staring into their phones ... I bombed: *"Errr ... because you can?"*.
 
 ![](images/2018/stage_lights.jpg)
 
@@ -39,7 +41,7 @@ What I  *should* have said was: *"Because there have been thousands of UFO sight
 
 That's the real answer.
 
-Sometimes, when you're visualizing data, you have a lot of data. The data changes over time. Animation is the best way to show changes over time.
+Sometimes, when you're visualizing data, you have a lot of data. The data changes over time. Animation is the best way to show change over time.
 
 Once upon a time, I worked on a [D3 video course](https://www.packtpub.com/web-development/mastering-d3js-video) for Packt and used UFO sightings as an example. At peak UFO sighting, right before smartphones become a thing, the animation takes up to 2 seconds to redraw a single frame.
 
@@ -51,17 +53,23 @@ So if SVG is slow and you need to animate thousands of elements, what are you to
 
 Unlike SVG, HTML5 Canvas lets you draw rasterized images. This means you're no longer operating at the level of shapes because you're working with pixels on the screen.
 
-With SVG, you tell the browser *what* you want to render. With Canvas, you tell the browser *how* you want to render. The browser doesn't know what you're doing; it just gets a field of pixel colors and renders them as an image.
+With SVG and other vector formats, you tell the browser *what* you want to render. With Canvas and other raster formats, you tell the browser *how* you want to render. The browser doesn't know what you're doing; it gets a field of pixel colors and renders them as an image.
 
-As a result, browsers can use the GPU to render Canvas. With a bit of care, you can do almost anything you want, even on a mobile phone.
+That's much faster for computers to handle. In some cases browsers can even use hardware acceleration – the GPU – to render HTML5 Canvas elements. With a bit of care, you can do almost anything you want, even on a mobile phone.
 
-Phones these days have amazing GPUs and kind of terrible CPUs. That's why I'd almost suggest going straight to Canvas for any sort of complex animation. Mobile traffic accounts for, what, like 60% or even 70% of web traffic these days?
+Phones these days have amazing GPUs and kind of terrible CPUs in comparison. The CPU burns more battery, works slower, warms up your phone more, etc.
 
-Now, you might be thinking this sounds complicated. How do you know which pixel should do what when you're rendering with Canvas? Sounds like a lot of work.
+If SVG wasn't so easy to use, I'd almost suggest going straight to Canvas for any sort of complex animation. Mobile traffic is, what, 60% to 70% of web traffic these days?
+
+## Isn't that too hard?
+
+You might think all this pixel stuff sounds complicated. We've stayed in shape and component land so far. We didn't care about any pixels or rendering details. Draw a rectangle and a wild rectangle appears.
+
+How do you know which pixel should do what when you render with Canvas?
 
 HTML5 Canvas does offer some shape primitives. It has circles and rectangles and things like that, but they suffer from the same problem that SVG does. The browser has to use your CPU to calculate those, and at around 10,000 elements, things break down.
 
-Notice that 10,000 elements is still a hell of a lot more than the 3,000 or so that SVG gives you.
+10,000 elements is still a hell of a lot more than the 3,000 or so that SVG gives you.
 
 If your app allows it, you can use sprites: Tiny images copy-pasted on the Canvas as bytestreams. I have yet to find an upper bound for those. My JavaScript became the bottleneck :D
 
@@ -69,15 +77,17 @@ But I'm getting ahead of myself. We'll talk about sprites later.
 
 ## The trouble with HTML5 Canvas
 
-The tricky thing about HTML5 Canvas is that the API is low level and that canvas is flat. As far as your JavaScript and React code are concerned, it's a flat image. It could be anything.
+The tricky thing with HTML5 Canvas is that the API is low level and that canvas is flat. As far as your JavaScript and React code are concerned, it's a flat image. It could be anything.
 
-There's no structure, which makes it difficult to detect clicks on elements, interactions between elements, when something covers something else, how the user interacts with your stuff and things like that. You have to move most of that logic into your data store and manually keep track.
+The lack of structure makes it difficult to detect clicks on elements, interactions between shapes, when something covers something else, how the user interacts with your stuff and so on Anything that requires understanding what's rendered.
+
+You have to move most of that logic into your data store and manually keep track.
 
 As you can imagine, this becomes cumbersome. And you still can't detect user interaction because all you get is *"User clicked on  coordinate (x, y). Have fun."*
 
-At the same time, the low level API makes abstractions difficult. You can't create components for "this is a map" or "histogram goes here". You're always down to circles and rectangles and basic shapes at best.
+At the same time, the low level API makes abstractions difficult. You can't create components for "this is a map" or "histogram goes here". You're always down to circles and rectangles and basic shapes.
 
-Your code can soon start looking much like the D3.js spaghetti we wanted to avoid in the first place.
+Your code soon looks like the D3.js spaghetti we tried to avoid in the first place.
 
 # Declarative HTML5 Canvas with Konva and react-konva
 
@@ -93,7 +103,7 @@ That.
 
 It's exactly what we need to push our animated React apps to thousands of elements without spending too much time thinking about the *how* of rendering. Best leave the hairy details to somebody else.
 
-Let me show you two examples:
+Let's try out two examples:
 
 1. Pushing our particle generator to 20,000 elements
 2. An n-body collision simulator built with MobX
@@ -101,11 +111,11 @@ Let me show you two examples:
 {#canvas-react-redux}
 ## A particle generator pushed to 20,000 elements with Canvas
 
-Our [SVG-based particle generator](#animating-react-redux) caps out at a few thousand elements. Animation becomes slow, and time between each iteration of our game loop increases.
+Our [SVG-based particle generator](#animating-react-redux) caps out at a few thousand elements. Animation becomes slow as times between iterations of our game loop increase.
 
-Old elements leave the screen and get pruned faster than we can create new ones. This creates a natural (but stochastic) upper limit to how many elements we can push into the page.
+Old elements leave the screen and get pruned faster than we can create new ones. This creates a natural upper limit to how many elements we can push into the page.
 
-We can render many more elements if we take out SVG and use HTML5 Canvas instead. I was able to push the code up to around 20,000 smoothly animated elements. Then JavaScript became the bottleneck.
+We can render many more elements if we take out SVG and use HTML5 Canvas instead. I was able to push the code up to almost 20,000 smoothly animated elements. Then JavaScript became the bottleneck.
 
 Well, I say JavaScript was the bottleneck, but monitor size plays a role too. It goes up to 20,000 on my laptop screen, juuuust grazes 30,000 on my large desktop monitor, and averages about 17,000 on my iPhone 5SE.
 
@@ -113,9 +123,7 @@ Friends with newer laptops got it up to 35,000.
 
 You can see it in action hosted on [Github pages](http://swizec.github.io/react-particles-experiment/).
 
-We're going to keep most of our code from before. The real changes happen in `src/components/index.jsx`, where a Konva stage replaces the `<svg>` element, and in `src/components/Particles.jsx`, where we change what we render. There's a small tweak in the `CREATER_PARTICLES` reducer to generate more particles on each tick.
-
-If anything looks weird or doesn't work, I've prepared a helpful [GitHub branch](https://github.com/Swizec/react-particles-experiment/tree/canvas-based-branch) for you.
+We're keeping most of our existing code. The real changes happen in `src/components/index.jsx`, where a Konva stage replaces the `<svg>` element, and in `src/components/Particles.jsx`, where we change what we render. There's a small tweak in the reducer to generate more particles per tick.
 
 You should go into your particle generator directory, install Konva and react-konva, and then make the changes below. Trying things out is better than just reading my code ;)
 
@@ -168,9 +176,7 @@ Inside, we render the `Particles` component. It's going to create a Konva layer 
 
 Our [SVG-based Particles](#svg-particles) component was simple. Iterate through a list of particles, render a `<Particle>` component for each.
 
-We're going to completely rewrite it.
-
-Our new approach goes like this:
+We're going to completely rewrite that. Our new approach goes like this:
 
 0. Cache a sprite on `componentDidMount`
 1. Clear canvas
@@ -189,8 +195,10 @@ import React, { Component } from 'react';
 import { FastLayer } from 'react-konva';
 
 class Particles extends Component {
+    layerRef = React.createRef();
+    
     componentDidMount() {
-        this.canvas = this.refs.layer.canvas._canvas;
+        this.canvas = this.layerRef.current.canvas._canvas;
         this.canvasContext = this.canvas.getContext('2d');
 
         this.sprite = new Image();
@@ -217,9 +225,7 @@ class Particles extends Component {
 
     render() {
         return (
-            <FastLayer ref="layer" transformsEnabled="position" listening="false">
-
-            </FastLayer>
+            <FastLayer ref={this.layerRef} listening="false" />
         );
     }
 }
@@ -227,11 +233,11 @@ class Particles extends Component {
 export default Particles;
 ```
 
-40 lines of code is a lot to look at all at once. Let's walk through it, step by step.
+40 lines of code is a lot all at once. Let's walk through step by step.
 
 #### componentDidMount
 
-{caption: "componentDidMount code", line-numbers: false}
+{caption: "componentDidMount method", line-numbers: false}
 ```javascript
 // src/components/Particles.jsx
 
@@ -245,23 +251,25 @@ componentDidMount() {
 }
 ```
 
-This is a lifecycle hook that React calls when our component first renders. We use it to set up 3 instance properties.
+React calls `componentDidMount` when our component first renders. We use it to set up 3 instance properties.
 
-`this.canvas` is a reference to the HTML5 Canvas element. We get it via a ref to the Konva layer, then spelunk through properties to get the canvas itself. As you can see by the `_` prefix, Anton Lavrenov did not intend this to be a public API.
+`this.canvas` is a reference to the HTML5 Canvas element. We get it through a ref to the Konva layer, then spelunk through Konva internals to get the canvas itself. As the `_` prefix indicates, Anton Lavrenov did not intend this to be a public API.
 
-Thanks to JavaScript's permissiveness, we can use it anyway.
+Thanks to JavaScript's permissiveness, we can use it anyway. 🙌
 
-`this.canvasContext` is a reference to our canvas's CanvasRenderingContext2D. It's the interface we use to draw basic shapes, perform transformations, etc. Context is basically the only part of canvas you ever interact with as a developer.
+`this.canvasContext` is a reference to our canvas's [CanvasRenderingContext2D](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D). It's the interface we use to draw basic shapes, perform transformations, and so on. Context is the only part of canvas you ever interact with as a developer.
 
-Why it can't be just Canvas, I don't know.
+Why it's not just Canvas, I don't know.
 
-`this.sprite` is a cached image. A small minion that we are going to copy-paste all over the place as our particle. Using a combination of `new Image()` and setting the `src` property loads it into memory as an HTML5 Image object.
+`this.sprite` is a cached image. A small minion that we are going to copy-paste all over as our particle. Creating a new image object with `new Image()` and setting the `src` property downloads our sprite from the internet into browser memory.
 
 It looks like this:
 
 ![Our minion particle](http://i.imgur.com/m5l6lhr.png)
 
-You might be thinking that it's unsafe to copy references to rendered elements into component properties like that, but it's okay. Our render function always renders the same thing, so the reference never changes. Copying them like this means less typing.
+You might think it's unsafe to copy references to rendered elements into component properties like that, but it's okay. Our render function always renders the same thing, so the reference never changes. It just makes our code cleaner.
+
+Should our component unmount and re-mount, React will call `componentDidMount` again and update our reference.
 
 #### drawParticle
 
@@ -277,9 +285,9 @@ drawParticle(particle) {
 }
 ```
 
-This function draws a single particle on the canvas. It gets coordinates from the `particle` and uses `drawImage` to copy our sprite into position.
+`drawParticle` draws a single particle on the canvas. It gets coordinates from the `particle` argument and uses `drawImage` to copy our sprite into position.
 
-We use the whole sprite, corner `(0, 0)` to corner `(128, 128)`. That's how big our sprite is, by the way. And we copy it to position `(x, y)` with a width and height of `15` pixels.
+We use the whole sprite, corner `(0, 0)` to corner `(128, 128)`. That's how big our sprite is. And we copy it to position `(x, y)` with a width and height of `15` pixels.
 
 `drawImage` is the fastest method I've found to put pixels on canvas. I don't know why it's so fast, but here's a [helpful benchmark](https://jsperf.com/canvas-drawimage-vs-putimagedata/3) so you can see for yourself.
 
@@ -303,22 +311,18 @@ componentDidUpdate() {
 }
 ```
 
-`componentDidUpdate` is where the real particle drawing happens. React calls this method every time our list of particles changes. *After* the `render` method.
+`componentDidUpdate` is where the magic happens. React calls this lifecycle method every time our list of particles changes. *After* the `render` method.
 
-Yes, we're moving rendering out of the `render` method and into `componentDidUpdate`.
+Just like the D3 blackbox approach, we move rendering out of the `render` method and into `componentDidUpdate`.
 
 Here's how it works:
 
 1. `this.canvasContext.clearRect` clears the entire canvas from coordinate `(0, 0)` to coordinate `(width, height)`. We delete everything and make the canvas transparent.
 2. We iterate our `particles` list with a `for` loop and call `drawParticle` on each element.
 
-Clearing and redrawing the canvas is faster than moving individual particles. For loops are faster than `.map` or any other form of iteration. I tested.
+Clearing and redrawing the canvas is faster than moving individual particles. For loops are faster than `.map` or any other form of iteration. I tested. A lot.
 
-You can open your browser console to see how long it takes to draw a frame. That's why I left `console.time` and `console.timeEnd` in the code.
-
-{aside}
-`console.time` starts a timer and `timeEnd` stops it and prints the difference. I was super happy when someone told me about it during one of my livecoding sessions.
-{/aside}
+Open your browser console and see how long each frame takes to draw. The `console.time` - `console.timeEnd` pair measures how long it takes your code to get from `time` to `timeEnd`. You can have as many of these timers running as you want as long as you give them different names.
 
 #### render
 
@@ -329,26 +333,26 @@ You can open your browser console to see how long it takes to draw a frame. That
 // ...
 render() {
     return (
-        <FastLayer ref="layer" transformsEnabled="position" listening="false">
-
-        </FastLayer>
+        <FastLayer ref={this.layerRef} listening="false" />
     );
 }
 ```
 
-After all that work, our `render` method is pretty simple. We render a Konva `FastLayer`, give it a `ref`, enable `position` transforms – I can't remember why to be honest, might be a leftover from experimenting – and turn off `listening` for mouse events.
+After all that work, our `render` method is quite short. 
 
-Ideas for this combination of settings came from Konva's official [performance tips](https://konvajs.github.io/docs/performance/All_Performance_Tips.html) documentation. I don't understand Konva enough to know *why* this helps, but it makes sense when you think about it.
+We render a Konva `FastLayer`, give it a `ref` and turn off `listening` for mouse events. That makes the fast layer even faster.
+
+Ideas for this combination of settings came from Konva's official [performance tips](https://konvajs.github.io/docs/performance/All_Performance_Tips.html) documentation. This makes sense when you think about it.
 
 A `FastLayer` is faster than a `Layer`. It's in the name. Ignoring mouse events means you don't have to keep track of elements. It reduces computation.
 
-All I know is that this was empirically the fastest solution that lead to the most particles on screen.
+This was empirically the fastest solution with the most particles on screen.
 
 ### But why, Swizec?
 
 I'm glad you asked. This was a silly example. I devised the experiment because at my first React+D3 workshop somebody asked, *"What if we have thousands of datapoints, and we want to animate all of them?"*. I didn't have a good answer.
 
-Now I do. You put them in Canvas. You drive the animation with a game loop. You are god.
+Now I do. You put them in Canvas. You drive the animation with a game loop. You're good.
 
 You can even do it as an overlay. Have an SVG for your graphs and charts, overlay with a transparent canvas for your high speed animation.
 
