@@ -357,35 +357,37 @@ Now I do. You put them in Canvas. You drive the animation with a game loop. You'
 You can even do it as an overlay. Have an SVG for your graphs and charts, overlay with a transparent canvas for your high speed animation.
 
 {#billiards-simulation}
-## Billiards simulation with MobX and canvas
+## Build a declarative billiards simulation with MobX, Canvas, and Konva
 
 ![Billiards game](images/es6v2/billiards-start.png)
 
-We're building a small game. You have 11 glass balls – marbles, if you will. Grab one, throw it at the others, see how they bounce around. There is no point to the game, but it looks cool, and it's fun to build.
+We're building a small game. You have 11 glass balls – marbles, if you will. Grab one, throw it at the others, watch them bounce around. There is no score, but it looks cool, and it's a fun way to explore how Konva and React give you interactive Canvas features.
 
-We're using React and Konva to render our 11 marbles on an HTML5 Canvas element, MobX to drive the animation loop, and D3 to help with collision detection. Because of our declarative approach to animation, we can split this example into two parts:
+We're using React and Konva to render our 11 marbles on an HTML5 Canvas element, MobX to drive the animation loop, and D3 to help with collision detection. Because this example is declarative, we can split it into two parts:
 
 - Part 1: Rendering the marbles
 - Part 2: Building the physics
 
 You can see the finished [code on Github](https://github.com/Swizec/declarative-canvas-react-konva) and play around with a [hosted version](https://swizec.github.io/declarative-canvas-react-konva/) of the code you're about to build.
 
-I know this example comes late in the book, and you're feeling like you know all there is to React and visualizations. You can think of this example as practice. It's a good way to learn the basics of MobX.
+I know this example comes late in the book, and you're feeling like you know all there is to React and visualizations. You can think of this example as practice. Plus it's a good way to learn the basics of MobX.
 
 ### Decorators
 
-Before we begin, let me tell you about decorators. MobX embraces them to make its API easier to use. You can use MobX without decorators, but decorators make it better. I promise.
+Before we begin, let me tell you about decorators. 
 
-About two years ago, decorators got very close to becoming an official spec, then were held back. I don't know *why*, but they're a great feature whose syntax is unlikely to change. So even if MobX has to change its implementation when decorators do land in the spec, you're not likely to have to change anything.
+MobX embraces them to make its API easier to use. You can use MobX without decorators, but decorators make it better. 
 
-You can think of decorators as function wrappers. Instead of something like this:
+A couple years ago, decorators got very close to becoming an official spec, then got held back. I don't know *why*, but they're a great feature whose syntax is unlikely to change. So even if MobX has to change its implementation when decorators do land in the JavaScript spec, you're not likely to have to change anything.
+
+You can think of decorators as function wrappers. Instead of code like this:
 
 {caption: "Decoratorless function wrapping", line-numbers: false}
 ```javascript
 inject('store', ({ store }) => <div>A thing with {store.value}</div>);
 ```
 
-You can write something like this:
+You can write the same code like this:
 
 {caption: "Function wrapping with decorators", line-numbers: false}
 ```javascript
@@ -393,9 +395,9 @@ You can write something like this:
 ({ store }) => <div>A thing with {store.value}</div>
 ```
 
-I know, that's not much of a difference. It becomes better looking when you work with classes or combine multiple decorators. That's when they shine. No more `})))}))` at the end of your function declarations.
+Not much of a difference, but it becomes better looking when you work with classes or combine multiple decorators. That's when they shine. No more `})))}))` at the end of your functions.
 
-By the way, `inject` is to MobX much like `connect` is to Redux. We'll talk more about that later.
+By the way, `inject` is to MobX much like `connect` is to Redux. I'll explain in a bit.
 
 ### Part 0: Some setup
 
@@ -408,9 +410,9 @@ You should start a new project like this:
 $ create-react-app billiards-game --scripts-version custom-react-scripts
 ```
 
-This command creates a new directory with a full setup for React. Just like you're used to.
+This creates a new directory with a full setup for React. Just like you're used to.
 
-The addition of `--scripts-version custom-react-scripts` employs @kitze's [custom-react-scripts](https://github.com/kitze/custom-react-scripts) project to give us more configuration options. Namely the ability to enable decorators.
+The addition of `--scripts-version custom-react-scripts` employs @kitze's [custom-react-scripts](https://github.com/kitze/custom-react-scripts) project to give us more configuration options. Like the ability to enable decorators.
 
 We enable them in the `.env` file. Add this line:
 
@@ -421,38 +423,38 @@ We enable them in the `.env` file. Add this line:
 REACT_APP_DECORATORS=true
 ```
 
-No installation necessary. I think `custom-react-scripts` uses the `transform-decorators-legacy` Babel plugin behind the scenes. It's pre-installed, and we just enabled it with that `.env` change.
+No installation necessary. I think `custom-react-scripts` uses the `transform-decorators-legacy` Babel plugin behind the scenes. It's pre-installed, and we enable it with that `.env` change.
 
-Before we begin, you should install the other dependencies as well:
+Before we begin, you should install some other dependencies as well:
 
 {caption: "Install libraries", line-numbers: false}
 ```
 $ npm install --save konva react-konva mobx mobx-react d3-timer d3-scale d3-quadtree
 ```
 
-This installs Konva, MobX, and the parts of D3 that we need. You're now ready to build the billiards game.
+This gives you Konva, MobX, and the parts of D3 that we need. You're now ready to build the billiards game.
 
 ### A quick MobX primer
 
-Explaining MobX in detail is beyond the scope of this book. I bet you can learn it by osmosis as you follow the code in our billiards example.
+Explaining MobX in detail is beyond the scope of this book. You can learn it by osmosis as you follow the code in our billiards example.
 
 That said, here's a quick rundown of the concepts we're using.
 
-MobX implements the ideas of reactive programming. There are values that are observable and functions that react when those values change. MobX ensures only the minimal possible set of observers is triggered on every change.
+MobX is based on reactive programming. There are values that are observable and functions that react when those values change. MobX ensures only the minimal possible set of observers is triggered on every change.
 
 So, we have:
 
 `@observable` – a property whose changes observers subscribe to
 `@observer` – a component whose `render()` method observes values
-`@computed` – a method whose value can be fully derived from obsevables
+`@computed` – a method whose value can be fully derived from observables
 `@action` – a method that changes state, analogous to a Redux reducer
 `@inject` – a decorator that injects global stores into a component's props
 
-That's basically all you need to know. Once your component is an `@observer`, you never have to worry about *what* it's observing. MobX ensures it reacts only to the values that it uses during rendering.
+That's all you need to know. Once your component is an `@observer`, you never have to worry about *what* it's observing. MobX ensures it reacts to changes in values used during rendering.
 
-Making your component an observer and injecting the global store is the same as using `connect` in Redux. It gives your component access to your stare, and it triggers a re-render when something that the component uses changes.
+Making your component an observer and injecting the global store is the same as using `connect` in Redux. It gives your component access to your state, and it triggers a re-render when something  changes.
 
-Most importantly, it *doesn't* trigger a re-render when something that the component isn't using changes. That little tidbit is what makes most other reactive libraries difficult to use.
+Importantly, it *doesn't* trigger a re-render when something that the component isn't using changes. That little tidbit is what makes many other reactive libraries difficult to use.
 
 ### Part 1: Rendering our marbles
 
@@ -469,13 +471,13 @@ We're also using 2 MobX stores:
 - `Sprite` to load the marble sprite and define coordinates within
 - `Physics` as our physics engine
 
-`Sprite` and `Physics` are going to hold almost all of our game logic. We're putting a bit of drag & drop logic in the `Marble` component, but other than that, all our components are presentational. They get props and render stuff.
+`Sprite` and `Physics` are hold almost all of our game logic. A bit of drag & drop logic goes in the `Marble` component. Other than that, all our components are presentational. They get props and render stuff.
 
 Let's start with `App` and work our way down.
 
 #### App
 
-Our `App` component doesn't do much. It imports our MobX stores, triggers sprite loading, and starts the game loop.
+Our `App` component doesn't do much. It imports MobX stores, triggers sprite loading, and starts the game loop.
 
 {caption: "The App component", line-numbers: false}
 ```javascript
@@ -490,7 +492,7 @@ import MarbleList from './MarbleList';
 
 @observer
 class App extends Component {
-    componentWillMount() {
+    componentDidMount() {
         Sprite.loadSprite(() => Physics.startGameLoop());
     }
 
@@ -514,7 +516,7 @@ class App extends Component {
 export default App;
 ```
 
-We import our dependencies: React itself, a `MobXProvider` that is similar to the Redux provider (it puts stuff in react context), both of our MobX stores which export singleton instances, and the main `MarbleList` component.
+We import our dependencies: React itself, a `MobXProvider` that's similar to the Redux provider (puts stuff in react context), both of our MobX stores which export singleton instances, and the main `MarbleList` component.
 
 `App` itself is a full featured component that initiates sprite loading in `componentDidMount` and calls `startGameLoop` when the sprite is ready. We know the sprite is ready because it calls a callback. You'll see how that works in a bit.
 
@@ -524,7 +526,7 @@ This makes them available to all child components via the `inject` decorator.
 
 #### MarbleList
 
-Even though `MarbleList` is an important component that basically renders the whole game, it can be a functional stateless component. All the props it needs come from the two stores.
+`MarbleList` is an important component that renders the whole game, yet it can still be small and functional. Every prop it needs comes from our two stores.
 
 Like this:
 
@@ -563,9 +565,9 @@ const MarbleList = inject('physics', 'sprite')(observer(({ physics, sprite }) =>
 export default MarbleList;
 ```
 
-We import our dependencies and create a `MarbleList` component. Instead of decorators, we're going with functional composition.
+We import dependencies and create a `MarbleList` component. Instead of decorators, we're using with functional composition.
 
-This shows you that MobX *can* work without decorators, but there's no real reason behind this choice. Over time, I've developed a preference to use composition for functional stateless components and decorators for class-based components.
+This shows you that MobX *can* work without decorators, but there's no deep reason behind this choice. Over time, I've developed a preference for composition for functional components and decorators for class-based components.
 
 `inject` takes values out of context and puts them in component props. `observer` declares that our component observes those props and reacts to them.
 
@@ -579,9 +581,11 @@ Yes, that means we get draggability on an HTML5 Canvas without any extra effort.
 
 #### Marble
 
-Each `Marble` component renders a single marble and handles dragging and dropping. We could, perhaps should, have put this logic in the physics store, but I felt this makes more sense.
+Each `Marble` component renders a single marble and handles dragging and dropping. That's how you "shoot" marbles.
 
-The component looks like this:
+Dragging and dropping creates a vector that accelerates, or shoots, the marble in a certain direction with a certain speed. Putting this logic in the component itself makes sense because the rest of our game only cares about that final vector. 
+
+The Marble component looks like this:
 
 {caption: "Marble component", line-numbers: false}
 ```javascript
@@ -593,15 +597,15 @@ import { inject, observer } from 'mobx-react';
 
 @inject('physics', 'sprite') @observer
 class Marble extends Component {
-    onDragStart() {
+    onDragStart = () => {
         // set drag starting position
     }
 
-    onDragMove() {
+    onDragMove = () => {
         // update marble position
     }
 
-    onDragEnd() {
+    onDragEnd = () => {
         // shoot the marble
     }
 
@@ -619,9 +623,9 @@ class Marble extends Component {
                     shadowBlur="15"
                     shadowOpacity="1"
                     draggable={draggable}
-                    onDragStart={this.onDragStart.bind(this)}
-                    onDragEnd={this.onDragEnd.bind(this)}
-                    onDragMove={this.onDragMove.bind(this)}
+                    onDragStart={this.onDragStart}
+                    onDragEnd={this.onDragEnd}
+                    onDragMove={this.onDragMove}
                     ref="circle"
                     />
         );
@@ -635,24 +639,22 @@ We `@inject` both stores into our component and make it an `@observer`. The `ren
 
 Those callbacks make our game playable.
 
-In `onDragStart`, we store the starting position of the marble being dragged. In `onDragMove`, we update the marble's position in the store, which makes it possible for other marbles to bounce off ours while it's moving, and in `onDragEnd`, we shoot the marble.
+In `onDragStart`, we store the starting position of the dragged marble. In `onDragMove`, we update the marble's position in the store, which makes it possible for other marbles to bounce off of ours while it's moving, and in `onDragEnd`, we shoot the marble.
 
-Shoot direction depends on how we dragged. That's why we need to store the starting positions.
+Shoot direction depends on how we dragged. That's why we need the starting positions.
 
-Our drag callbacks double as MobX actions, which makes our code simpler. Instead of specifying an extra `@action` in the MobX store, we manipulate the values directly.
+Drag callbacks double as MobX actions. Makes our code simpler. Instead of specifying an extra `@action` in the MobX store, we manipulate the values directly.
 
-MobX makes this okay. It keeps everything in sync and our state easy to understand. MobX even batches several value changes together before triggering re-renders.
+MobX makes this okay. It keeps everything in sync and our state easy to understand. MobX even batches value changes before triggering re-renders.
 
-That said, I would recommend using explicit `@actions` in larger projects.
-
-Here's what the dragging callbacks look like.
+The code inside those callbacks is pretty mathsy.
 
 {caption: "Dragging callbacks", line-numbers: false}
 ```javascript
 // src/components/Marble.js
 
 class Marble extends Component {
-    onDragStart() {
+    onDragStart = () => {
         const { physics, id } = this.props;
 
         this.setState({
@@ -662,7 +664,7 @@ class Marble extends Component {
         });
     }
 
-    onDragMove() {
+    onDragMove = () => {
         const { physics, id } = this.props;
         const { x, y } = this.refs.circle.attrs;
 
@@ -670,7 +672,7 @@ class Marble extends Component {
         physics.marbles[id].y = y;
     }
 
-    onDragEnd() {
+    onDragEnd = () => {
         const { physics } = this.props,
               circle = this.refs.circle,
               { origX, origY } = this.state,
@@ -693,32 +695,30 @@ class Marble extends Component {
 }
 ```
 
-In `onDragStart`, we store original coordinates and start time in local state. These are temporary values that nobody outside this user action cares about. Local state makes sense.
+In `onDragStart`, we store original coordinates and start time in local state. These are temporary values that nothing outside this user action cares about. Local state makes sense.
 
 We'll use them to determine how far the user dragged our marble.
 
-In `onDragMove` we update the MobX stare with new coordinates for this particular marble. You might think we're messing with mutable state here, and we *might* be, but these are MobX observables. They're wrapped in setters that ensure everything is kept in sync, changes are being logged, etc.
+In `onDragMove` we update the MobX store with new coordinates for this particular marble. You might think we're messing with mutable state here, and we *might* be, but these are MobX observables. They're wrapped in setters that ensure everything is kept in sync, changes logged, observers notified, etc.
 
-I don't know how MobX keeps track behind the scenes. I just know it's okay to "change" values.
+`onDragEnd` shoots the marble. We calculate drag speed and direction, then we call the `shoot()` action on the `physics` store.
 
-`onDragEnd` is where the marble shooting happens. We calculate drag speed and direction, then we call the `shoot()` action on the `physics` store.
-
-If you're not sure how our math works, I suggest looking up [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance).
+The math we're doing is called [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) by the way. Distance between two points is the root of the sum of squares of distance on each axis.
 
 #### Sprite store
 
-Now that we know how rendering works, we need to load our sprite. It's an icon set I bought somewhere online, but I can't remember where or who from.
+Now that we know how rendering works, we need to load our sprite. It's an icon set I bought online. Can't remember where or who from.
 
 Here's what it looks like:
 
 ![Marbles sprite](images/es6v2/monster-marbles-sprite-sheets.jpg)
 
-To use this, we need two things:
+To use this sprite, we need two things:
 
 1. A way to tell where on the image each marble lies
 2. A MobX store that loads the image into memory
 
-The first is a `MarbleDefinitions` dictionary. We used it in `Marble` component's render method.
+The first is a `MarbleDefinitions` dictionary. We used it in `Marble` component's render method. If you're playing along, you should copy paste this. Too much typing :)
 
 {caption: "MarbleDefinitions dictionary", line-numbers: false}
 ```javascript
@@ -741,9 +741,9 @@ const MarbleDefinitions = {
 export { MarbleDefinitions };
 ```
 
-Each type of marble has a name, a coordinate, and a color. The coordinate tells us where on the sprite image it is, and the color helps us define a nice looking shadow.
+Each type of marble has a name, a coordinate, and a color. The coordinate tells us where on the sprite image it is, and the color helps us create a nice shadow.
 
-All values were painstakingly assembled by hand. You're welcome.
+All values painstakingly assembled by hand. You're welcome. 😌
 
 The MobX store that loads our sprite into memory and helps us use it looks like this:
 
@@ -780,17 +780,17 @@ class Sprite {
 export default new Sprite();
 ```
 
-As you can see, a MobX store is a JavaScript object. It has `@observable` values, `@actions`, and `@computed` getters. There's nothing more to it than that.
+A MobX store is a JavaScript object. It has `@observable` values, `@actions`, and `@computed` getters. That's all there is to it.
 
-No complicated reducers and action generators, just JavaScript functions and properties. There's plenty going on behind the scenes, but we don't have to think about it.
+No complicated reducers and action generators. Just JavaScript functions and properties. There's plenty going on behind the scenes, but we don't have to think about it.
 
-That's why I personally like MobX more than Redux. Feels easier to use :smile:
+That's why I like MobX more than Redux. Feels easier to use 🤫
 
-In the `Sprite` store, we have an `@observable sprite`. Changing this value will trigger a re-render in our `@observer` components that rely on it. Every marble in our case.
+In the `Sprite` store, we have an `@observable sprite`. Changing this value triggers a re-render in al `@observer` components that rely on it. In our case that's every marble.
 
-Then we have a `loadSprite` action, which creates a new `Image` object and loads the sprite. When the image is done loading, we set `this.sprite`.
+Then we have a `loadSprite` action. It creates a new `Image` object and loads the sprite. After the image loads, we set `this.sprite`.
 
-Our `@computed` getters make it easier to access `MarbleDefinitions`. `marbleTypes` gives us a list of available types of marbles and `marbleDefinitions` returns the definitions object.
+The `@computed` getters make it easier to access `MarbleDefinitions`. `marbleTypes` gives us a list of available types of marbles and `marbleDefinitions` returns the definitions object.
 
 Running your code won't work just yet. We need the physics store first because it defines marble positions.
 
@@ -801,11 +801,11 @@ Our whole physics engine fits into a single MobX store. It contains the collisio
 The general approach goes like this:
 
 1. Have an observable array of marbles
-2. Run a `simulationStep` on each `requesAnimationFrame` using `d3.timer`
+2. Run a `simulationStep` on each `requestAnimationFrame` using `d3.timer`
 3. Change marble positions and speed
 4. MobX observables and observers trigger re-renders of marbles that move
 
-The [whole Physics store](https://github.com/Swizec/declarative-canvas-react-konva/blob/master/src/logic/Physics.js) is some 120 lines of code, so I won't share it all at once. Here's what its skeleton looks like:
+The [whole Physics store](https://github.com/Swizec/declarative-canvas-react-konva/blob/master/src/logic/Physics.js) is some 120 lines of code. We'll go slow. Here's the skeleton:
 
 {caption: "Physics skeleton", line-numbers: false}
 ```javascript
@@ -836,7 +836,7 @@ class Physics {
 }
 ```
 
-We have four observable properties, a `timer`, a `@computed` property for initial positions, and 3 actions. The `startGameLoop` starts our game, `simulationStep` holds our main logic, and `shoot` shoots a particular marble.
+We have four observable properties, a `timer`, a `@computed` property for initial positions, and 3 actions. `startGameLoop` starts our game, `simulationStep` holds the main logic, and `shoot` shoots a particular marble.
 
 Let's walk through.
 
@@ -888,7 +888,7 @@ class Physics {
 
 Believe it or not, this is like one of those *"Arrange things in a triangle"* puzzles you'd see in an old Learn How To Program book. Or a whiteboard interview.
 
-It took me 3 hours to build. Super easy to get wrong and very fiddly to implement.
+It took me 3 hours to build. Easy to get wrong, fiddly to implement.
 
 We start with a `range` of numbers. From `lines` to `0` in descending order. We iterate through this list of rows and change each into a list of marbles.
 
@@ -927,15 +927,15 @@ class Physics {
 }
 ```
 
-`shoot` and `startGameLoop` are the simplest functions in our physics engine. `startGameLoop` creates the initial `marbles` array, and `shoot` updates a specific marble's coordinates and speed vector.
+`shoot` and `startGameLoop` are the simplest functions in our physics engine. `startGameLoop` gets the initial `marbles` array and starts a D3 timer. `shoot` updates a specific marble's coordinates and speed vector.
 
-Lovely :smile:
+👌
 
 #### simulationStep – where collisions collision
 
 Here comes the fun part. The one with our game loop.
 
-I've also made a video of all this. [Watch it on YouTube](https://www.youtube.com/watch?v=H84fmXjTElM). It involves hand-drawn sketches that explain the math, and I think that's neat.
+There's also a video explaining how this works 👉 [Watch it on YouTube](https://www.youtube.com/watch?v=H84fmXjTElM). With hand-drawn sketches that explain the math, and I think that's neat.
 
 {caption: "Full simulationStep function", line-numbers: false}
 ```javascript
@@ -1011,19 +1011,18 @@ You can think of `simulationStep` as a function and a loop. At the bottom, there
     });
 ```
 
-We iterate over the list of marbles, feed them into `moveMarble`, get new properties, and save them in the main marbles array. This might be unnecessary because of MobX. We *should* be able to change them inside the loop and rely on MobX observables to do the heavy lifting.
+We iterate over the list of marbles, feed them into `moveMarble`, get new properties, and save them in the main marbles array. MobX *should* allows us to change these values inside `moveMarble` and let MobX observables do the heavy lifting, but more explicit code is easier to read. 
 
-I wonder why I did it like this :thinking_face: Maybe a leftover from before MobX…
 
 ##### moveMarble
 
-`moveMarble` is itself a hairy function. Things happen in 3 steps:
+`moveMarble` is itself a hairy function. Stuff happens in 3 steps:
 
 1. Handle collisions with walls
 2. Find collision with closest other marble
 3. Handle collision with marble
 
-**Handling collisions with walls happens** in two lines of code. One per coordinate.
+**Handling collisions with walls** happens in two lines of code. One per axis. 
 
 {caption: "Detecting wall collisions", line-numbers: false}
 ```javascript
@@ -1033,10 +1032,10 @@ let _vx = ((x+vx < MarbleR) ? -vx : (x+vx > width-MarbleR) ? -vx : vx)*.99,
 
 Nested ternary expressions are kinda messy, but good enough. If a marble is beyond any boundary, we reverse its direction. We *always* apply a `.99` friction coefficient so that marbles slow down.
 
-**Finding collisions** with the next closest marble happens via a quadtree. Since we don't have too many marbles, we can afford to build a new quadtree from scratch every time.
+**Finding collisions** with the next closest marble happens using a quadtree. Since we don't have too many marbles, we can build a new quadtree every time.
 
 {aside}
-A quadtree is a good way to subdivide space into areas. It lets us answer the question of "What's close enough to me to possibly touch me?" without making too many position comparisons.
+A quadtree is a way to subdivide space into areas. It lets us answer the question of "What's close enough to me to possibly touch me?" without making too many position comparisons.
 
 Checking every marble with every other marble produces 81 comparisons. Versus 2 comparisons using a quadtree.
 {/aside}
@@ -1053,15 +1052,15 @@ const subdividedSpace = quadtree().extent([[-1, -1],
       candidate = subdividedSpace.find(x, y, MarbleR*2);
 ```
 
-We're using [`d3-quadtree`](https://github.com/d3/d3-quadtree) for the quadtree implementation. It takes an `extent`, which tells it how big our space is. It uses `x` and `y` accessors to get coordinates out of our marble objects, and we use `addAll` to fill it with marbles.
+We're using [`d3-quadtree`](https://github.com/d3/d3-quadtree) for the quadtree implementation. It takes an `extent`, which tells it how big our space is. An `x` and `y` accessor tells it how to get coordinates out of our marble objects, and we use `addAll` to fill the quadtree with marbles.
 
 To avoid detecting each marble as colliding with itself, we take each marble out of our list before feeding the quadtree.
 
-Once we have a quadtree built out, we use `.find` to look for the nearest marble within `MarbleR*2` of the current marble. Which is exactly the one we're colliding with! :smile:
+Once we have a quadtree, we use `.find` to look for the nearest marble within two radiuses – `MarbleR*2` – of the current marble. That's exactly the one we're colliding with! :smile:
 
 **Handling collisions with marbles** involves math. The sort of thing you think you remember from high school, and suddenly realize you don't when the time comes to use it.
 
-The code looks like this:
+Code looks like this:
 
 {caption: "Handling marble collisions", line-numbers: false}
 ```javascript
@@ -1095,21 +1094,21 @@ return {
 
 Ok, the `return` statement isn't about handling collisions. It updates the current marble.
 
-The rest kind of looks like magic. I implemented it, and it looks like magic, and I feel like I don't *really* understand it.
+The rest looks like magic. I implemented it and it still looks like magic.
 
 You can think of `[normx, normy]` as a vector that points from current marble to collision candidate. It gives us bounce direction. We use the [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) formula to calculate the length of this vector. The distance between the centers of both marbles.
 
 Then we calculate the [dot product](https://en.wikipedia.org/wiki/Dot_product) between our marble's speed vector and the collision direction vector. And we normalize it by distance. Multiplying distance by `2` accounts for there being two marbles in the collision. That extra `.3` made the simulation look better.
 
-I fiddled with it :smile:
+Fiddling and experimentation are your best tools for magic values like that 😉
 
-Then we use the dot product scalar to adjust the marble's speed vector. Dividing by `2` takes into account that half the energy goes to the other marble. This is only true because we assume their masses are equal.
+Then we use the dot product scalar to adjust the marble's speed vector. Dividing by `2` takes into account that half the energy goes to the other marble. This is true because we assume their masses are equal.
 
 Finally, we update the `candidate` marble and make sure it bounces off as well. We do it additively because that's how it happens in real life.
 
-Now two marbles traveling towards each other in exactly opposite directions with exactly the same speed, will stop dead and stay there. As soon as there's any misalignment, deflection happens. If one is stationary, it starts moving. If it's moving in the same direction, it speeds up… etc.
+Two marbles traveling towards each other in exactly opposite directions with exactly the same speed, will stop dead and stay there. As soon as there's any misalignment, deflection happens. If one is stationary, it starts moving. If it's moving in the same direction, it speeds up… etc.
 
-The end result is [a decent-looking simulation of billiards](https://swizec.github.io/declarative-canvas-react-konva/). I'd show you a gif, but those don't work well in books.
+The end result is [a decent-looking simulation of billiards](https://swizec.github.io/declarative-canvas-react-konva/). 
 
 {#fractal-tree}
 # Using a React alternative like Preact or Inferno
