@@ -1113,25 +1113,25 @@ The end result is [a decent-looking simulation of billiards](https://swizec.gith
 {#fractal-tree}
 # Using a React alternative like Preact or Inferno
 
-We've been using React so far, and that's worked great for us. React is fast, easy to use, and not that hard to understand. However, two up-and-coming frameworks promise the ease of React, but faster.
+We've been using React so far, and that's worked great. React is fast, easy to use, and not too hard to understand. However, two alternative frameworks promise the ease of React, but faster with a smaller footprint.
 
-[**Preact**](https://github.com/developit/preact) looks just like React when you're using it, but the smaller code footprint means your apps open faster. Performing fewer sanity checks at runtime also makes it faster to run. Async rendering has the potential to make your apps feel faster as well.
+[**Preact**](https://github.com/developit/preact) looks just like React when you're using it, but the smaller code footprint means your apps open faster. Performing fewer sanity checks at runtime makes it faster to run too. Async rendering can make your apps feel even faster.
 
-[**Inferno**](https://github.com/infernojs/inferno) also promises to look just like React when you're using it, but its sole purpose in life is to be faster. According to its maintainers, converting to Inferno can improve performance of your real-world app up to 110%.
+[**Inferno**](https://github.com/infernojs/inferno) also promises to look just like React when you're using it, but its sole purpose in life is to be faster. According to its maintainers, converting to Inferno can improve performance of your real-world app by up to 110%.
 
-Both Preact and Inferno have a `-compat` project that lets you convert existing React projects without any code modifications. Whether they remain faster than React after the new React Fiber updates remains to be seen.
+Both Preact and Inferno have a `-compat` project that lets you convert existing React projects without any code modifications. While React has gotten much faster in recent years, so have Preact and Inferno. You should give them a try.
 
-As of this writing, July 2017, React Fiber is in alpha. The team is promising it's going to be faster than current React using many of the same tricks that Preact and Inferno use. The big update everyone is looking for is the new render scheduler that's going to make things feel faster even when they aren't. We'll see.
+I know Uber uses Preact for their Uber lite mobile app.
 
-## Stress testing with a recursive fractal
+## Stress test your framework with a recursive fractal
 
-To show you how these speed improvements look in real life, I've devised a stress test. A [pythagorean fractal tree](https://en.wikipedia.org/wiki/Pythagoras_tree_(fractal)) that moves around when you move your mouse.
+To show you how these speed improvements look in real life, I've devised a stress test. A [pythagorean fractal tree](https://en.wikipedia.org/wiki/Pythagoras_tree_(fractal) that moves around when you move your mouse.
 
 ![Pythagorean tree](images/es6v2/pythagorean-tree.png)
 
 It's a great stress test because a render like this is the worst case scenario for tree-based rendering. You have 2048 SVG nodes, deeply nested, that all change props and re-render with every change.
 
-You can see [the full code on Github](https://github.com/Swizec/react-fractals). We're going to focus on the recursive `<Pythagoras>` component here.
+You can see [the full code on Github](https://github.com/Swizec/react-fractals). We're going to focus on the recursive `<Pythagoras>` component.
 
 ### How you too can build a dancing tree fractal
 
@@ -1191,18 +1191,19 @@ const Pythagoras = ({ w, x, y, heightFactor, lean, left, right, lvl, maxlvl }) =
 };
 ```
 
-We break recursion whenever we try to draw an invisible square or have reached too deep into the tree. Then we:
+We break out of recursion when we get too deep or try to draw an invisible square. Otherwise we:
+
 - use `memoizedCalc` to do the mathematics
 - define different `rotate()` transforms for the `left` and `right` branches
-- and return an SVG `<rect>` for the current rectangle, and two `<Pythagoras>` elements for each branch.
+- return an SVG `<rect>` for the current rectangle, and two `<Pythagoras>` elements for each branch.
 
-Most of this code deals with passing arguments onwards to children, which isn't the most elegant approach, but it works. The rest is about positioning branches so corners match up.
+Most of this code deals with passing props  to children, which isn't the most elegant approach, but it works. The rest is about positioning branches so corners match up.
 
 ![Corners matching up](images/es6v2/pythagoras-corners-match-up.png)
 
 #### The math
 
-I don't _really_ understand this math, but I sort of know where it's coming from. It's the [sine law](https://en.wikipedia.org/wiki/Law_of_sines) applied correctly. The part I failed at miserably [when I tried](https://swizec.com/blog/fractals-react/swizec/7233).
+I don't _really_ understand this math, but I sort of know where it's coming from. It's the [sine law](https://en.wikipedia.org/wiki/Law_of_sines) applied correctly. The part I failed at [when I tried](https://swizec.com/blog/fractals-react/swizec/7233) to do it myself.
 
 {caption: "Trigonometry that moves our fractal", line-numbers: false}
 ```
@@ -1237,15 +1238,15 @@ const memoizedCalc = function () {
 
 We expanded the basic law of sines with a dynamic `heightFactor` and `lean` adjustment. We'll control those with mouse movement.
 
-To improve performance, maybe, our `memoizedCalc` function has an internal data store that maintains a hash of every argument tuple and its result. This lets us avoid computation and read from memory instead.
+To improve performance our `memoizedCalc` function has an internal data store that maintains a hash of every argument tuple and its result. So when we call `memoizedCalc` with the same arguments multiple times, it reads from cache instead of recalculating.
 
-At 11 levels of recursion, `memoizedCalc` is called 2,048 times and only returns 11 different results. You can't find a better candidate for memoization.
+At 11 levels of recursion, `memoizedCalc` is called 2,048 times and only returns 11 different results. Great candidate for memoization if I ever saw one.
 
 Of course, a benchmark would be great here. Maybe `sqrt`, `atan`, and `**` aren't *that* slow, and our real bottleneck is redrawing all those nodes on every mouse move. Hint: it totally is.
 
 Our ability to memoize calculation also means that we could, in theory, flatten our rendering. Instead of recursion, we could use iteration and render in layers. Squares at each level are the same, just at different `(x, y)` coordinates.
 
-This, however, would be tricky to implement. A lot more computation, I think.
+This, however, would be far too tricky to implement.
 
 #### The mouse listener
 
@@ -1304,7 +1305,7 @@ A few things happen here:
 - we define an `onMouseMove` method as the listener
 - render the first `<Pythagoras>` using values from `state`
 
-The `lean` parameter tells us which way the tree is leaning and by how much, the `heightFactor` tells us how high those triangles should be. We control both with the mouse position.
+The `lean` parameter tells us which way the tree is leaning and how much, the `heightFactor` tells us how high those triangles should be. We control both with the mouse position.
 
 That happens in `onMouseMove`:
 
@@ -1334,15 +1335,13 @@ When we feed a change to `this.setState`, it triggers a re-render of the entire 
 
 Beautious. :heart_eyes:
 
-But since this is a book, you probably can't see the gif move. I suggest looking at [this helpful version](https://github.com/Swizec/react-fractals/blob/master/react-tree.gif) on Github.
-
 ## Trying the stress test in Preact and Inferno
 
 The Pythagoras tree example got converted into 6 different UI libraries: React, Preact, Inferno, Vue, Angular 2, and CycleJS.
 
 Mostly by the creators of those libraries themselves because they're awesome and much smarter than I am. You can see the result, in gifs, on [my blog here](https://swizec.com/blog/animating-svg-nodes-react-preact-inferno-vue/swizec/7311).
 
-We're focusing on React-like libraries in this book, so here's a rundown of changes required for Preact and Inferno with links to full code.
+We're focusing on React-like libraries, so here's a rundown of changes required for Preact and Inferno with links to full code.
 
 ### Preact
 
@@ -1360,7 +1359,7 @@ Here's how he did it: [full diff on github](https://github.com/Swizec/react-frac
 
 In `package.json`, he added `preact`, `preact-compat`, and preact -compat clones for React libraries. I guess you need the latter so you don't have to change your imports.
 
-He changed the functional stateless `Pythagoras` component into a stateful component to enable async rendering.
+He changed the functional `Pythagoras` component into a stateful component to enable async rendering.
 
 {caption: "Change <Pythagoras> to a class", line-numbers: false}
 ```
@@ -1399,7 +1398,7 @@ You *can* use Inferno as a drop-in replacement for React, and I did when I tried
 
 Dominic changed all `react-scripts` references to `inferno-scripts`, and it's a good sign that such a thing exists. He also changed the `react` dependency to `inferno-beta36`, but I'm sure it's out of beta by the time you're reading this. The experiment was done in December 2016.
 
-From there, the main changes are to the imports – React becomes Inferno – and he changed some class methods to bound fat arrow functions. I don't know if that's a stylistic choice or an Inferno requirement.
+From there, the main changes are to the imports – React becomes Inferno – and he changed some class methods to bound fat arrow functions. Probably a stylistic choice.
 
 He also had to change a string-based ref into a callback ref. Inferno doesn't do string-based refs for performance reasons, and we need refs so we can use D3 to detect mouse position on SVG.
 
