@@ -10,9 +10,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "emoji-patterns": "^11.2.2",
     "glob-gitignore": "^1.0.11",
-    "node-fetch": "^2.2.0"
+    "node-fetch": "^2.2.0",
+    "nodemon": "^1.18.5"
   }
 }
