@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "colonify": "node emoji.js --colonify",
-    "emojify": "node emoji.js --emojify"
+    "emojify": "node emoji.js --emojify",
+    "remarq": "nodemon --watch manuscript -e md --watch remarq-io.js ./remarq-io.js"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +14,9 @@
   "devDependencies": {
     "emoji-patterns": "^11.2.2",
     "glob-gitignore": "^1.0.11",
+    "lodash": "^4.17.11",
     "node-fetch": "^2.2.0",
-    "nodemon": "^1.18.5"
+    "nodemon": "^1.18.5",
+    "rimraf": "^2.6.2"
   }
 }
