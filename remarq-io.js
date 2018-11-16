@@ -61,7 +61,7 @@ ${code}
 }
 
 function pandocifyLFMCodeBlocks(fileBody) {
-  const isLoggingEnabled = false;
+  const isLoggingEnabled = true;
   const log = (...attrs) => conditionalLog(isLoggingEnabled, ...attrs);
   function replacer(match, g1, g2) {
     const attributes = fp.pipe(
@@ -69,7 +69,11 @@ function pandocifyLFMCodeBlocks(fileBody) {
       fp.trimChars(["{", "}"])
     )(g1);
 
-    const code = g2;
+    // Remove LFM's 4-space indentation from code blocks
+    const code = g2
+      .split("\n")
+      .map(line => line.slice(4))
+      .join("\n");
 
     log("match")(json({ match, g1, g2, attributes, code }), null, 2);
 
@@ -129,6 +133,16 @@ ${code}
 }
 
 // TODO
+function cropMarkuaCodeBlocks(fileBody) {
+  return fileBody;
+}
+
+// TODO
+function cropLFMCodeBlocks(fileBody) {
+  return fileBody;
+}
+
+// TODO
 function transcludeMarkuaCodeSamples(fileBody) {
   return fileBody;
 }
@@ -144,19 +158,44 @@ function transcludeLFMCodeSamples(fileBody) {
 // # Animating with React, Redux, and d3
 // Into this:
 // # Animating with React, Redux, and d3 {#animating-react-redux}
-function pandocifyHeaders(fileBody) {
+function pandocifyMarkuaHeaders(fileBody) {
   return fileBody;
 }
 
-function pandocify(sourceFileBody) {
+// TODO Turn this:
+// {#animating-react-redux}
+// # Animating with React, Redux, and d3
+// Into this:
+// # Animating with React, Redux, and d3 {#animating-react-redux}
+function pandocifyLFMHeaders(fileBody) {
+  return fileBody;
+}
+
+function pandocifyMarkua(sourceFileBody) {
   const pipeline = fp.pipe(
     transcludeMarkuaCodeSamples,
-    transcludeLFMCodeSamples,
     pandocifyMarkuaCodeBlocks,
-    pandocifyLFMCodeBlocks,
-    pandocifyHeaders
+    cropMarkuaCodeBlocks,
+    pandocifyMarkuaHeaders
   );
   return pipeline(sourceFileBody);
+}
+
+function pandocifyLFM(sourceFileBody) {
+  const pipeline = fp.pipe(
+    transcludeLFMCodeSamples,
+    pandocifyLFMCodeBlocks,
+    cropLFMCodeBlocks,
+    pandocifyLFMHeaders
+  );
+  return pipeline(sourceFileBody);
+}
+
+function pandocify(sourceFileBody) {
+  const convert = sourceFileBody.includes("\n```\n")
+    ? pandocifyMarkua
+    : pandocifyLFM;
+  return convert(sourceFileBody);
 }
 
 function id(value) {
