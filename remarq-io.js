@@ -61,7 +61,7 @@ ${code}
 }
 
 function pandocifyLFMCodeBlocks(fileBody) {
-  const isLoggingEnabled = true;
+  const isLoggingEnabled = false;
   const log = (...attrs) => conditionalLog(isLoggingEnabled, ...attrs);
   function replacer(match, g1, g2) {
     const attributes = fp.pipe(
@@ -133,24 +133,117 @@ ${code}
 }
 
 // TODO
-function cropMarkuaCodeBlocks(fileBody) {
-  return fileBody;
-}
-
-// TODO
-function cropLFMCodeBlocks(fileBody) {
-  return fileBody;
-}
-
-// TODO
 function transcludeMarkuaCodeSamples(fileBody) {
   return fileBody;
 }
 
 // TODO
 // LFM === "Leanpub-Flavored Markdown"
+//
+// Turn this:
+// {crop-start-line=4,crop-end-line=17,linenos=on,starting-line-number=19}
+//   <<[Add LESS loaders](code_samples/env/webpack.config.dev.js)
+//
+// Into an LFM code block (don't pandocify it here, that will be done by
+// pandocifyLFMCodeBlocks)
 function transcludeLFMCodeSamples(fileBody) {
-  return fileBody;
+  const isLoggingEnabled = false;
+  const log = (...attrs) => conditionalLog(isLoggingEnabled, ...attrs);
+
+  function replacer(match, g1, g2, g3) {
+    const attributes = fp.pipe(
+      fp.trim,
+      fp.trimChars(["{", "}"])
+    )(g1);
+
+    const caption = g2;
+    const relativePath = g3;
+    const codeSampleAbsolutePath = path.join(
+      srcDirAbsolutePath,
+      "resources",
+      relativePath
+    );
+    const codeSampleBody = fs.readFileSync(codeSampleAbsolutePath, {
+      encoding: "utf8"
+    });
+
+    log("match")(
+      json({
+        match,
+        g1,
+        g2,
+        g3,
+        caption,
+        relativePath,
+        codeSampleBodyLength: codeSampleBody.length
+      }),
+      null,
+      2
+    );
+
+    const idMatch = attributes.match(/(.*)#(\w+)(.*)/);
+    log("idMatch")(json(idMatch));
+    let discard, beforeIdAttr, idAttr, afterIdAttr;
+    if (idMatch) {
+      [discard, beforeIdAttr, idAttr, afterIdAttr] = idMatch;
+      attributes = beforeIdAttr + afterIdAttr;
+    }
+    const attrRegExp = /\s*(.+)=(.+)/;
+    const srcAttrs = attributes.split(/\s*,\s*/).reduce((srcAttrs, chunk) => {
+      const srcAttrMatches = chunk.match(attrRegExp);
+      // log("srcAttrMatches")(json({ srcAttrs, srcAttrMatches }));
+      const [key, value] = srcAttrMatches
+        ? [srcAttrMatches[1], srcAttrMatches[2]]
+        : [null, null];
+      const result = Object.assign({}, srcAttrs);
+      if (key !== null && value !== null) result[key] = value;
+      return result;
+    }, {});
+
+    log("srcAttrs")(json(srcAttrs));
+
+    let destAttrs = [];
+
+    const id = idAttr || srcAttrs.id;
+    if (id) {
+      destAttrs.push(`#${id}`);
+      delete srcAttrs.id;
+    }
+
+    if (srcAttrs.caption) {
+      destAttrs.push(`caption="${srcAttrs.caption}"`);
+      delete srcAttrs.caption;
+    }
+
+    const codeSampleLines = codeSampleBody.split("\n");
+    // It seems like crop-start/end-line are inclusive and 1-indexed
+    const cropStartLine = Number(srcAttrs["crop-start-line"]) - 1 || 0;
+    const cropEndLine =
+      Number(srcAttrs["crop-end-line"]) || codeSampleLines.length;
+    delete srcAttrs["crop-start-line"];
+    delete srcAttrs["crop-end-line"];
+    const code = codeSampleLines.slice(cropStartLine, cropEndLine).join("\n");
+
+    Object.keys(srcAttrs)
+      .map(key => `${key}=${srcAttrs[key]}`)
+      .forEach(destAttr => destAttrs.push(destAttr));
+
+    const destAttrsStr =
+      destAttrs.length > 0 ? `{${destAttrs.join(", ")}}` : "";
+
+    const replacement = `
+\`\`\`${destAttrsStr}
+${code}
+\`\`\`
+`;
+    return log("replacement")(replacement);
+  }
+
+  const result = fileBody.replace(
+    /\n\n({.*}\n)?<<\[(.*)\]\((.+)\)\n\n/g,
+    replacer
+  );
+  return result;
 }
 
 // TODO Turn this:
@@ -175,7 +268,6 @@ function pandocifyMarkua(sourceFileBody) {
   const pipeline = fp.pipe(
     transcludeMarkuaCodeSamples,
     pandocifyMarkuaCodeBlocks,
-    cropMarkuaCodeBlocks,
     pandocifyMarkuaHeaders
   );
   return pipeline(sourceFileBody);
@@ -185,7 +277,6 @@ function pandocifyLFM(sourceFileBody) {
   const pipeline = fp.pipe(
     transcludeLFMCodeSamples,
     pandocifyLFMCodeBlocks,
-    cropLFMCodeBlocks,
     pandocifyLFMHeaders
   );
   return pipeline(sourceFileBody);
@@ -221,6 +312,8 @@ function conditionalLog(isLoggingEnabled, label) {
   };
 }
 
+const srcDirAbsolutePath = path.join(path.dirname(__filename), "manuscript");
+
 const buildDirAbsolutePathSegments = [
   process.env["HOME"],
   "Dropbox",
@@ -232,7 +325,7 @@ const buildDirAbsolutePath = path.join(...buildDirAbsolutePathSegments);
 const buildDirGlob = buildDirAbsolutePathSegments.join("/") + "/*.*";
 rimraf.sync(buildDirGlob, null, e => console.log(e));
 
-const mdFilePaths = sync(["manuscript/**/*.md"]);
+const mdFilePaths = sync([srcDirAbsolutePath + "/**/*.md"]);
 console.log({ mdFilePaths });
 
 const result = mdFilePaths
@@ -242,7 +335,7 @@ const result = mdFilePaths
   ])
   .map(([sourceFilePath, sourceFileBody]) => {
     const destFilePath = sourceFilePath.replace(
-      "manuscript",
+      srcDirAbsolutePath,
       buildDirAbsolutePath
     );
     // const slice = b => b.slice(0, 20);
