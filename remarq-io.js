@@ -132,12 +132,112 @@ ${code}
   return result;
 }
 
-// TODO
+// Turn this:
+// {crop-start: 5, crop-end: 48, format: javascript, line-numbers: false}
+// ![Data parsing functions](code_samples/es6v2/DataHandling.js)
+//
+// Into a Markua code block (don't pandocify it here, that will be done by
+// pandocifyMarkuaCodeBlocks)
 function transcludeMarkuaCodeSamples(fileBody) {
-  return fileBody;
+  const isLoggingEnabled = false;
+  const log = (...attrs) => conditionalLog(isLoggingEnabled, ...attrs);
+
+  function replacer(match, g1, g2, g3) {
+    const attributes = fp.pipe(
+      fp.trim,
+      fp.trimChars(["{", "}"])
+    )(g1);
+
+    const caption = g2;
+    const relativePath = g3;
+    const codeSampleAbsolutePath = path.join(
+      srcDirAbsolutePath,
+      "resources",
+      relativePath
+    );
+    const codeSampleBody = fs.readFileSync(codeSampleAbsolutePath, {
+      encoding: "utf8"
+    });
+
+    log("match")(
+      json({
+        match,
+        g1,
+        g2,
+        g3,
+        caption,
+        relativePath,
+        codeSampleBodyLength: codeSampleBody.length
+      }),
+      null,
+      2
+    );
+
+    const idMatch = attributes.match(/(.*)#(\w+)(.*)/);
+    log("idMatch")(json(idMatch));
+    let discard, beforeIdAttr, idAttr, afterIdAttr;
+    if (idMatch) {
+      [discard, beforeIdAttr, idAttr, afterIdAttr] = idMatch;
+      attributes = beforeIdAttr + afterIdAttr;
+    }
+    const attrRegExp = /\s*(.+):(.+)/;
+    const srcAttrs = attributes.split(/\s*,\s*/).reduce((srcAttrs, chunk) => {
+      const srcAttrMatches = chunk.match(attrRegExp);
+      // log("srcAttrMatches")(json({ srcAttrs, srcAttrMatches }));
+      const [key, value] = srcAttrMatches
+        ? [srcAttrMatches[1], srcAttrMatches[2]]
+        : [null, null];
+      const result = Object.assign({}, srcAttrs);
+      if (key !== null && value !== null) result[key] = value;
+      return result;
+    }, {});
+
+    log("srcAttrs")(json(srcAttrs));
+
+    let destAttrs = [];
+
+    const id = idAttr || srcAttrs.id;
+    if (id) {
+      destAttrs.push(`#${id}`);
+      delete srcAttrs.id;
+    }
+
+    const destCaption = fp.trimChars(' "')(caption || srcAttrs.caption);
+    if (destCaption) {
+      destAttrs.push(`caption: "${destCaption}"`);
+    }
+    delete srcAttrs.caption;
+
+    const codeSampleLines = codeSampleBody.split("\n");
+    // It seems like crop-start/end-line are inclusive and 1-indexed
+    const cropStartLine = Number(srcAttrs["crop-start"]) - 1 || 0;
+    const cropEndLine = Number(srcAttrs["crop-end"]) || codeSampleLines.length;
+    delete srcAttrs["crop-start"];
+    delete srcAttrs["crop-end"];
+    const code = codeSampleLines.slice(cropStartLine, cropEndLine).join("\n");
+
+    Object.keys(srcAttrs)
+      .map(key => `${key}:${srcAttrs[key]}`)
+      .forEach(destAttr => destAttrs.push(destAttr));
+
+    const destAttrsStr =
+      destAttrs.length > 0 ? `{${destAttrs.join(", ")}}` : "";
+
+    const replacement = `
+\`\`\`${destAttrsStr}
+${code}
+\`\`\`
+`;
+    return log("replacement")(replacement);
+  }
+
+  const result = fileBody.replace(
+    /\n\n({.*}\n)?!\[(.*)\]\((code_samples.+)\)\n\n/g,
+    replacer
+  );
+  return result;
 }
 
-// TODO
 // LFM === "Leanpub-Flavored Markdown"
 //
 // Turn this:
@@ -210,10 +310,11 @@ function transcludeLFMCodeSamples(fileBody) {
       delete srcAttrs.id;
     }
 
-    if (srcAttrs.caption) {
-      destAttrs.push(`caption="${srcAttrs.caption}"`);
-      delete srcAttrs.caption;
+    const destCaption = fp.trimChars(' "')(caption || srcAttrs.caption);
+    if (destCaption) {
+      destAttrs.push(`caption="${destCaption}"`);
     }
+    delete srcAttrs.caption;
 
     const codeSampleLines = codeSampleBody.split("\n");
     // It seems like crop-start/end-line are inclusive and 1-indexed
