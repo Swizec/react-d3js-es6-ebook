@@ -347,22 +347,32 @@ ${code}
   return result;
 }
 
-// TODO Turn this:
 // {#animating-react-redux}
 // # Animating with React, Redux, and d3
 // Into this:
 // # Animating with React, Redux, and d3 {#animating-react-redux}
 function pandocifyMarkuaHeaders(fileBody) {
-  return fileBody;
+  const isLoggingEnabled = true;
+  const log = (...attrs) => conditionalLog(isLoggingEnabled, ...attrs);
+
+  function replacer(match, attributes, header) {
+    const replacement = `${header} ${attributes}`;
+
+    return log("replacement")(replacement);
+    return replacement;
+  }
+
+  const result = fileBody.replace(/\n\n({.*})\n(#+.*)\n\n/g, replacer);
+  return result;
 }
 
-// TODO Turn this:
+// LFM and Markua have the same header attribute format.
 // {#animating-react-redux}
 // # Animating with React, Redux, and d3
 // Into this:
 // # Animating with React, Redux, and d3 {#animating-react-redux}
 function pandocifyLFMHeaders(fileBody) {
-  return fileBody;
+  return pandocifyMarkuaHeaders(fileBody);
 }
 
 function pandocifyMarkua(sourceFileBody) {
