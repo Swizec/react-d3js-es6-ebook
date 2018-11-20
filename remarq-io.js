@@ -502,7 +502,91 @@ const pandocCommand =
 
 runShellCommand(pandocCommand);
 
-const gfmContentRepoAbsolutePath = path.resolve("./../content");
-const githubPushCommand = `cp ./build/gfm/the-new-meat.md ${gfmContentRepoAbsolutePath} && cd ${gfmContentRepoAbsolutePath} && git add . && git commit -m "Automated commit" && git push origin master && cd -`;
+function splitIntoSectionsAndLectures() {
+  const fullGfmBody = fs.readFileSync("./build/gfm/the-new-meat.md", {
+    encoding: "utf8"
+  });
 
-runShellCommand(githubPushCommand);
+  const gfmContentRepoAbsolutePath = path.resolve("./../content");
+  const destContentAbsolutePath = path.resolve(
+    gfmContentRepoAbsolutePath,
+    "teachable-gfm-markdown"
+  );
+
+  rimraf.sync(destContentAbsolutePath, null, e => console.log(e));
+
+  let sectionDirectoryName = "";
+  let lectureFileName = "";
+  let sectionIndex = 0;
+  let lectureIndex = 0;
+  let srcLineIndex = 0;
+  let destLines = [];
+  const srcLines = fullGfmBody.split("\n");
+
+  while (srcLineIndex < srcLines.length) {
+    const srcLine = srcLines[srcLineIndex];
+    if (
+      sectionDirectoryName &&
+      lectureFileName &&
+      !srcLine.includes("end-lecture")
+    ) {
+      destLines.push(srcLine);
+    } else if (
+      sectionDirectoryName &&
+      lectureFileName &&
+      srcLine.includes("end-lecture")
+    ) {
+      fs.writeFileSync(
+        path.resolve(
+          destContentAbsolutePath,
+          sectionDirectoryName,
+          lectureFileName
+        ),
+        destLines.join("\n")
+      );
+      lectureFileName = "";
+    } else if (
+      sectionDirectoryName &&
+      !lectureFileName &&
+      srcLine.includes("end-section")
+    ) {
+      sectionDirectoryName = "";
+    } else if (
+      sectionDirectoryName &&
+      !lectureFileName &&
+      srcLine.includes("begin-lecture")
+    ) {
+      const lectureTitle = srcLine.match(/title="(.*)"/)[1];
+      lectureFileName = `s${leftPad(sectionIndex, 2, "0")}e${leftPad(
+        lectureIndex,
+        2,
+        "0"
+      )} - ${lectureTitle}.md`;
+      lectureIndex++;
+      destLines = [];
+    } else if (
+      !sectionDirectoryName &&
+      !lectureFileName &&
+      srcLine.includes("begin-section")
+    ) {
+      const sectionTitle = srcLine.match(/title="(.*)"/)[1];
+      sectionDirectoryName = `s${leftPad(
+        sectionIndex,
+        2,
+        "0"
+      )} - ${sectionTitle}`;
+      sectionIndex++;
+      mkdirp.sync(path.resolve(destContentAbsolutePath, sectionDirectoryName));
+    } else {
+      // process.stdout.write(".");
+    }
+
+    srcLineIndex++;
+  }
+
+  const githubPushCommand = `cd ${gfmContentRepoAbsolutePath} && git add . && git commit -m "Automated commit" && git push origin master && cd -`;
+
+  runShellCommand(githubPushCommand);
+}
+
+splitIntoSectionsAndLectures();
