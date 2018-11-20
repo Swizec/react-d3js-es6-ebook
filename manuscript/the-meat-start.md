@@ -139,7 +139,7 @@ You have to go through many examples to notice what's going on. Inference learni
 
 Let's take an example from [D3's docs](https://github.com/d3/d3/wiki/Gallery), a bar chart with a hover effect.
 
-![An example D3 barchart](images/2018/barchart-example.png)
+![An example D3 barchart](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/barchart-example.png)
 
 You can [try it online](https://cdn.rawgit.com/mbostock/3885304/raw/a91f37f5f4b43269df3dbabcda0090310c05285d/index.html). When you hover on a bar, it changes color. Pretty neat.
 
@@ -314,11 +314,11 @@ Sure `.enter.append` looks like magic, but D3 layouts are the real mind=blown of
 
 For example, a force layout using forces between nodes to place them on the screen.
 
-![Force layout](images/2018/force-layout.png)
+![Force layout](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/force-layout.png)
 
 Or a circle packing layout that neatly packs circles.
 
-![Circle packing layout](images/2018/circle-packing-layout.png)
+![Circle packing layout](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/circle-packing-layout.png)
 
 I don't know the maths that goes into most of these. And that's the point, you shouldn't have to!
 
@@ -466,7 +466,7 @@ List borrowed from [a wonderful Smashing Magazine article](https://www.smashingm
 
 > React.js components for modular charting and data visualization
 
-[Victory.js logo](images/2018/victoryjs.gif)](http://formidable.com/open-source/victory/)
+[Victory.js logo](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/victoryjs.gif)](http://formidable.com/open-source/victory/)
 
 Victory offers low level components for basic charting and reimplements a lot of D3's API. Great when you need to create basic charts without a lot of customization. Supports React Native.
 
@@ -499,7 +499,7 @@ My favorite feature of Victory is that components use fake random data until you
 
 > A composable charting library built on React components
 
-[Recharts homepage](images/recharts.png)
+[Recharts homepage](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/recharts.png)
 
 Recharts is like a more colorful Victory. A pile of charting components, some customization, loves animating everything by default.
 
@@ -535,7 +535,7 @@ Recharts hits a great balance of flexibility and ease ... unless you don't like 
 
 > nivo provides a rich set of dataviz components, built on top of the awesome d3 and Reactjs libraries.
 
-[Nivo homepage](images/nivo.gif)
+[Nivo homepage](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/nivo.gif)
 
 Nivo is another attempt to give you a set of basic charting components. Comes with great interactive documentation, support for Canvas and API rendering. Plenty of basic customization.
 
@@ -698,7 +698,7 @@ Equipped with an `axis` generator, we `select` the `svg` element, append a group
 
 It creates a small axis:
 
-![Simple axis](images/es6v2/simple-axis.png)
+![Simple axis](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/simple-axis.png)
 
 Play around with it on [Codesandbox](https://codepen.io/swizec/pen/YGoYBM). Change the scale type, play with axis orientation. Use `.ticks` on the axis to change how many show up. Have some fun :)
 
@@ -825,7 +825,7 @@ Let me show you a magic trick. 30 seconds to take a random D3 piece of code and 
 
 We can try it on the example barchart from before.
 
-![An example D3 barchart](images/2018/barchart-example.png)
+![An example D3 barchart](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/barchart-example.png)
 
 You can [try it online](https://cdn.rawgit.com/mbostock/3885304/raw/a91f37f5f4b43269df3dbabcda0090310c05285d/index.html). When you hover on a bar, it changes color. Pretty neat.
 
@@ -990,7 +990,7 @@ Let's build a scatterplot step by step. Take a random array of two-dimensional d
 
 Something like this 👇
 
-![A simple scatterplot](images/2018/scatterplot.png)
+![A simple scatterplot](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/scatterplot.png)
 
 You've already built the axes! Copy pasta time.
 
@@ -1181,7 +1181,7 @@ Vertical axis takes the vertical `this.yScale` scale, orients to the `Left` and 
 
 Your Scatterplot should now look like this
 
-![Rendered basic scatterplot](images/2018/scatterplot-basic.png)
+![Rendered basic scatterplot](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/scatterplot-basic.png)
 
 ## Props might update
 
@@ -1267,7 +1267,7 @@ Similar rendering as before. We have an `<svg>` that contains a `<Scatterplot>`.
 
 If you try this code now, you should see a funny effect where axes move, but the scatterplot doesn't resize.
 
-![Axes move, scatterplot doesn't resize](images/2018/not-resizing-scatterplot.png)
+![Axes move, scatterplot doesn't resize](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/not-resizing-scatterplot.png)
 
 Peculiar isn't it? Try to guess why.
 
@@ -1344,7 +1344,7 @@ It's a lot like a Redux reducer, if that helps you think about it. If you don't 
 
 Your Scatterplot should now update its size on every click.
 
-![Scatterplot resizes](images/2018/scatterplot-resizes.png)
+![Scatterplot resizes](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/scatterplot-resizes.png)
 
 ## Making our components more flexible with render props
 
@@ -1487,9 +1487,9 @@ Throughout the example, you'll learn more details of D3, tidbits from React, and
 
 Super fun!
 
-![Default view](images/es6v2/full-dataviz.png)
+![Default view](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/full-dataviz.png)
 
-![After a click](images/es6v2/interaction-dataviz.png)
+![After a click](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/interaction-dataviz.png)
 
 {#state-handling-architecture}
 # Handling state in your React app
@@ -1511,13 +1511,13 @@ Let's save you from that.
 {#basic-architecture}
 ## Basic architecture
 
-![Unidirectional data flow](images/2018/unidirectionalflow.png)
+![Unidirectional data flow](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/unidirectionalflow.png)
 
 We're using a unidirectional data flow architecture with a single source of truth. That means you always know what to expect. Think of your app as a giant circle.
 
 Data goes from your source of truth into your components. Events go from your components into your source of truth. All in one direction
 
-![The basic architecture](images/2018/architecture.png)
+![The basic architecture](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/architecture.png)
 
 Our main App component holds state for your entire application. Anything that multiple components should be aware of lives here. This state flows down the hierarchy via props. Changes happen via callbacks, also passed down through props.
 
@@ -1535,7 +1535,7 @@ This looks roundabout, but it's amazing. Far better than worrying about parts of
 
 When a user clicks one of our controls, a `Toggle`, it invokes a callback. This in turn invokes a callback on `ControlRow`, which invokes a callback on `Controls`, which invokes a callback on `App`.
 
-![Callback chain](images/2018/architecture_callbacks.png)
+![Callback chain](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/architecture_callbacks.png)
 
 With each hop, the nature of our callback changes. `Toggle`  tells `ControlRow` which entry was toggled, `ControlRow` tells `Controls` how to update the data filter function, and `Controls` gives `App` a composite filter built from all the controls. You'll see how that works in the next chapter.
 
@@ -1543,7 +1543,7 @@ All you have to remember right now is that callbacks evolve from passing low-lev
 
 When the final callback is invoked, `App` updates its repository of truth – `this.state` – and communicates the change back down the chain via props. No additional wiring needed on your part. React's got you covered. 
 
-![Data flows down](images/2018/architecture_dataflow.jpg)
+![Data flows down](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/architecture_dataflow.jpg)
 
 You can think of it like calling functions with new arguments. Because the functions – components – render the UI, your interface updates.
 

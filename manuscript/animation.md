@@ -4,7 +4,7 @@ Welcome to the animation section. This is where the real fun begins. Demos that 
 
 At my dinner table at least ...
 
-![](images/es6v2/puking-rainbows.png)
+![](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/puking-rainbows.png)
 
 You already know how React and D3 work together, so these examples are going to go faster. You know that we're using React for rendering SVG and D3 for calculating props. You know how to make your dataviz interactive and how to handle oodles of data.
 
@@ -61,7 +61,7 @@ Yes, those Turbo Pascal and BGI are from the 80's. No, I'm not that old. I start
 
 Here is a screenshot of our bouncing ball:
 
-![Bouncing Ball](images/es6v2/bouncing-ball.png)
+![Bouncing Ball](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/bouncing-ball.png)
 
 Exciting, isn't it? Took me five tries to catch it. Future examples will look better as screenshots, I promise.
 
@@ -185,7 +185,7 @@ Import our `Ball` component, render it at `x=10` and use `this.state.y` for the 
 
 A black ball shows up on your screen. Like this:
 
-![Black ball](images/es6v2/bouncing-ball.png)
+![Black ball](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/bouncing-ball.png)
 
 ### Step 4: The Game Loop
 
@@ -343,7 +343,7 @@ You can read more about the *why* of easing functions in Disney's [12 Basic Prin
 
 But don't worry about it. All you have to know is that many easing functions exist. [easings.net](https://easings.net/) lists the common ones. D3 implements everything on that list.
 
-![Common easing functions](images/2018/easings.net.png)
+![Common easing functions](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/easings.net.png)
 
 Let's try an example: A swipe transition.
 
@@ -356,8 +356,8 @@ We shouldn't care about the transition or how long it takes. That's up to the co
 
 You can see it in action [on CodeSandbox, here](https://codesandbox.io/s/618mr9r6nr). Tweak params, see what happens. Follow along as I explain how it works.
 
-![Ball on the left before you click](images/2018/ball-swipe-left.png)
-![Ball on the right before you click](images/2018/ball-swipe-right.png)
+![Ball on the left before you click](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/ball-swipe-left.png)
+![Ball on the right before you click](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/ball-swipe-right.png)
 
 ### App.js
 
@@ -487,11 +487,11 @@ That's what we're going to build: An animated alphabet. New letters fall down an
 
 You can play with a more advanced version [here](http://swizec.github.io/react-d3-enter-exit-transitions/). Same principle as the alphabet, but it animates what you type.
 
-![Typing animation screenshot](images/es6v2/typing-screenshot.png)
+![Typing animation screenshot](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/typing-screenshot.png)
 
 We're building the alphabet version because the [string diffing algorithm](https://swizec.com/blog/animated-string-diffing-with-react-and-d3/swizec/6952) is a pain to explain. I learned that the hard way when giving workshops on React and D3…
 
-![String diffing algorithm sketch](images/es6v2/string-diffing.jpg)
+![String diffing algorithm sketch](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/string-diffing.jpg)
 
 See?
 
@@ -877,7 +877,7 @@ Inside the transition we render an SVG `<text>` element rendered at an `(x, y)` 
 
 Boom. We're done.
 
-![Alphabet transitions are hard to screenshot](images/2018/alphabet-transitions.png)
+![Alphabet transitions are hard to screenshot](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/alphabet-transitions.png)
 
 You can play with a more complex version of this example here: [http://swizec.github.io/react-d3-enter-exit-transitions/](http://swizec.github.io/react-d3-enter-exit-transitions/). Try typing different strings and see how the visualization reacts.
 

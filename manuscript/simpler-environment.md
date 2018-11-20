@@ -63,7 +63,7 @@ $ npm start
 
 A browser tab should open with a page that looks like this:
 
-![Initial React app](images/es6v2/initial-app.png)
+![Initial React app](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/initial-app.png)
 
 If that didn't work, then something must have gone terribly wrong. You should consult [the official docs](https://github.com/facebookincubator/create-react-app). Maybe that will help.
 

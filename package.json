@@ -1,0 +1,22 @@
+{
+  "name": "manuscript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "colonify": "node emoji.js --colonify",
+    "emojify": "node emoji.js --emojify",
+    "teachable": "nodemon --watch manuscript -e md --watch teachable.js ./teachable.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "emoji-patterns": "^11.2.2",
+    "lodash": "^4.17.11",
+    "mkdirp": "^0.5.1",
+    "node-fetch": "^2.2.0",
+    "nodemon": "^1.18.5",
+    "rimraf": "^2.6.2"
+  }
+}
