@@ -551,6 +551,7 @@ function splitIntoSectionsAndLectures() {
       srcLine.includes("end-section")
     ) {
       sectionDirectoryName = "";
+      sectionIndex++;
     } else if (
       sectionDirectoryName &&
       !lectureFileName &&
@@ -570,12 +571,7 @@ function splitIntoSectionsAndLectures() {
       srcLine.includes("begin-section")
     ) {
       const sectionTitle = srcLine.match(/title="(.*)"/)[1];
-      sectionDirectoryName = `s${leftPad(
-        sectionIndex,
-        2,
-        "0"
-      )} - ${sectionTitle}`;
-      sectionIndex++;
+      sectionDirectoryName = `s${leftPad(sectionIndex, 2, "0")}`;
       mkdirp.sync(path.resolve(destContentAbsolutePath, sectionDirectoryName));
     } else {
       // process.stdout.write(".");
