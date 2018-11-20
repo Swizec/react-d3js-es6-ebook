@@ -1,9 +1,13 @@
 {#salary-visualization}
 # A big example project - 176,113 tech salaries visualized #
 
+<!-- begin-section title="First Section" -->
+
 We're going to build this:
 
 ![](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/full-dataviz.png)
+
+<!-- begin-lecture title="First Lecture" -->
 
 An interactive visualization dashboard app with a choropleth map and a histogram comparing tech salaries to median household income in the area. Users can filter by year, job title, or US state to get a better view.
 
@@ -11,17 +15,25 @@ An interactive visualization dashboard app with a choropleth map and a histogram
 
 It's going to be great.
 
+<!-- end-lecture -->
+
 At this point, I assume you've used `create-react-app` to set up your environment. Check the [getting started](#getting-started) section if you haven't. I'm also assuming you've read the [basics chapter](#the-meat-start). I'm still going to explain what we're doing, but knowing the basics helps.
 
 I suggest you follow along, keep `npm start` running, and watch your visualization change in real time as you code. It's rewarding as hell.
 
 If you get stuck, you can use my [react-d3js-step-by-step Github repo](https://github.com/Swizec/react-d3js-step-by-step) to jump between steps. The [9 tags](https://github.com/Swizec/react-d3js-step-by-step/releases) correspond to the code at the end of each step. Download the first tag and run `npm install` to skip the initial setup.
 
+<!-- begin-lecture title="Second Lecture" -->
+
 If you want to see how this project evolved over 22 months, check [the original repo](https://github.com/Swizec/h1b-software-salaries). The [modern-code](https://github.com/Swizec/h1b-software-salaries/tree/modern-code) branch has the code you're about to build.
+
+<!-- end-lecture -->
 
 # Show a Preloader
 
 ![Preloader screenshot](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/preloader-screenshot.png)
+
+<!-- end-section -->
 
 Our preloader is a screenshot of the final result. Usually you'd have to wait until the end of the project to make that, but I'll just give you mine. Starting with the preloader makes sense for two reasons:
 
@@ -51,6 +63,8 @@ Our `Preloader` is a small component that pretends it's the `App` and renders a 
 
 We'll put all of our components in `src/components/`.
 
+<!-- begin-section title="Second Section" -->
+
 We start the component off with some imports, an export, and a functional stateless component that returns an empty div element.
 
 {format: javascript, line-numbers: false, caption: "Preloader skeleton"}
@@ -69,6 +83,8 @@ const Preloader = () => (
 
 export default Preloader;
 ```
+
+<!-- begin-lecture title="Third Lecture" -->
 
 We `import` React (which we need to make JSX syntax work) and the `PreloaderImg` for our image. We can import images because of the Webpack configuration that comes with `create-react-app`. The webpack image loader returns a URL that we put in the `PreloaderImg` constant.
 
@@ -151,6 +167,8 @@ class App extends React.Component {
 export default App;
 ```
 
+<!-- end-lecture -->
+
 We removed the logo and style imports, added an import for `Preloader`, and gutted the `App` class. It's great for a default app, but we don't need that anymore.
 
 Let's define a default `state` and a `render` method that uses our `Preloader` component when there's no data.
@@ -183,6 +201,8 @@ class App extends React.Component {
     // markua-end-insert
 }
 ```
+
+<!-- end-section -->
 
 Nowadays we can define properties directly in the class body without a constructor method. It's not part of the official JavaScript standard yet, but most React codebases use this pattern.
 
