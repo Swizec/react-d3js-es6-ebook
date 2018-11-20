@@ -6,7 +6,7 @@
   "scripts": {
     "colonify": "node emoji.js --colonify",
     "emojify": "node emoji.js --emojify",
-    "remarq": "nodemon --watch manuscript -e md --watch remarq-io.js ./remarq-io.js"
+    "teachable": "nodemon --watch manuscript -e md --watch teachable.js ./teachable.js"
   },
   "keywords": [],
   "author": "",
