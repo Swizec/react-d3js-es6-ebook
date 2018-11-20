@@ -65,7 +65,7 @@ ${code}
   return result;
 }
 
-function pandocifyLFMCodeBlocks(fileBody) {
+function pandocifyLfmCodeBlocks(fileBody) {
   const isLoggingEnabled = false;
   const log = (...attrs) => conditionalLog(isLoggingEnabled, ...attrs);
   function replacer(match, g1, g2) {
@@ -251,8 +251,8 @@ ${code}
 //   <<[Add LESS loaders](code_samples/env/webpack.config.dev.js)
 //
 // Into an LFM code block (don't pandocify it here, that will be done by
-// pandocifyLFMCodeBlocks)
-function transcludeLFMCodeSamples(fileBody) {
+// pandocifyLfmCodeBlocks)
+function transcludeLfmCodeSamples(fileBody) {
   const isLoggingEnabled = false;
   const log = (...attrs) => conditionalLog(isLoggingEnabled, ...attrs);
 
@@ -381,7 +381,7 @@ function pandocifyMarkuaHeaders(fileBody) {
 // # Animating with React, Redux, and d3
 // Into this:
 // # Animating with React, Redux, and d3 {#animating-react-redux}
-function pandocifyLFMHeaders(fileBody) {
+function pandocifyLfmHeaders(fileBody) {
   return pandocifyMarkuaHeaders(fileBody);
 }
 
@@ -394,11 +394,11 @@ function pandocifyMarkua(sourceFileBody) {
   return pipeline(sourceFileBody);
 }
 
-function pandocifyLFM(sourceFileBody) {
+function pandocifyLfm(sourceFileBody) {
   const pipeline = fp.pipe(
-    transcludeLFMCodeSamples,
-    pandocifyLFMCodeBlocks,
-    pandocifyLFMHeaders
+    transcludeLfmCodeSamples,
+    pandocifyLfmCodeBlocks,
+    pandocifyLfmHeaders
   );
   return pipeline(sourceFileBody);
 }
@@ -406,7 +406,7 @@ function pandocifyLFM(sourceFileBody) {
 function pandocify(sourceFileBody) {
   const convert = sourceFileBody.includes("\n```\n")
     ? pandocifyMarkua
-    : pandocifyLFM;
+    : pandocifyLfm;
   return convert(sourceFileBody);
 }
 
