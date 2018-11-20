@@ -1,4 +1,4 @@
-<!--- begin-section title="Build a data visualization dashboard" -->
+<!--- begin-section title="176,113 tech salaries visualized – a dataviz dashboard" -->
 
 <!--- begin-lecture title="176,113 tech salaries visualized" -->
 
@@ -24,6 +24,10 @@ If you get stuck, you can use my [react-d3js-step-by-step Github repo](https://g
 If you want to see how this project evolved over 22 months, check [the original repo](https://github.com/Swizec/h1b-software-salaries). The [modern-code](https://github.com/Swizec/h1b-software-salaries/tree/modern-code) branch has the code you're about to build.
 
 <!--- end-lecture -->
+
+<!--- end-section -->
+
+<!--- begin-section title="Show a Preloader" -->
 
 <!--- begin-lecture title="Show a Preloader" -->
 
@@ -263,6 +267,10 @@ If you don't, try comparing your changes to this [diff on Github](https://github
 
 <!--- end-lecture -->
 
+<!--- end-section -->
+
+<!--- begin-section title="Load and parse your data" -->
+
 <!--- begin-lecture title="Asynchronously load data" -->
 
 # Asynchronously load data
@@ -459,6 +467,10 @@ If that didn't work, try comparing your changes to this [diff on Github](https:/
 
 <!--- end-lecture -->
 
+<!--- end-section -->
+
+<!--- begin-section title="Render a choropleth map of the US" -->
+
 <!--- begin-lecture title="Render a choropleth map of the US" -->
 
 {#choropleth-map}
@@ -566,7 +578,7 @@ In the `return` statement, we remove our "data loaded" indicator, and add an `<s
 
 <!--- end-lecture -->
 
-<!--- begin-lecture title="Step 2: CountyMap/index.js" -->
+<!--- begin-lecture title="Step 2: CountyMap index.js" -->
 
 ## Step 2: CountyMap/index.js
 
@@ -583,7 +595,7 @@ Having a lot of code in `<directory>/index.js` is a common pattern in new projec
 
 <!--- end-lecture -->
 
-<!--- begin-lecture title="Step 3: CountyMap/CountyMap.js" -->
+<!--- begin-lecture title="Step 3: CountyMap CountyMap.js" -->
 
 ## Step 3: CountyMap/CountyMap.js
 
@@ -801,7 +813,7 @@ For US state borders, we render a single `<path>` element and use `geoPath` to g
 
 <!--- end-lecture -->
 
-<!--- begin-lecture title="Step 4: CountyMap/County.js" -->
+<!--- begin-lecture title="Step 4: CountyMap County.js" -->
 
 ## Step 4: CountyMap/County.js
 
@@ -842,6 +854,10 @@ Tech work visas just aren't that evenly distributed. Even with the full dataset 
 If that didn't work, consult [this diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/f4c1535e9c9ca4982c8f3c74cff9f739eb08c0f7).
 
 <!--- end-lecture -->
+
+<!--- end-section -->
+
+<!--- begin-section title="Render a Histogram of salaries" -->
 
 <!--- begin-lecture title="Render a Histogram of salaries" -->
 
@@ -1330,6 +1346,10 @@ If that didn't work, try comparing your changes to this [diff on Github](https:/
 
 <!--- end-lecture -->
 
+<!--- end-section -->
+
+<!--- begin-section title="Make it understandable with meta info" -->
+
 <!--- begin-lecture title="Add meta info" -->
 
 # Make it understandable - meta info
@@ -1727,6 +1747,10 @@ If that didn't work, consult the [diff on Github](https://github.com/Swizec/reac
 
 <!--- end-lecture -->
 
+<!--- end-section -->
+
+<!--- begin-section title="Add user controls for exploration" -->
+
 <!--- begin-lecture title="Add user controls for data slicing and dicing" -->
 
 {#user-controls}
@@ -1756,6 +1780,10 @@ We'll go through the files linearly. That makes them easier for me to explain an
 ![Controls error during coding](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/controls-error.png)
 
 If you want to see what's up during this process, remove an import or two and maybe a thing from render. For instance, it's complaining about `ControlRow` in this screenshot. Remove the `ControlRow` import on top and delete `<ControlRow ... />` from render. The error goes away, and you see what you're doing.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 1: Update App.js" -->
 
 ## Step 1: Update App.js
 
@@ -1823,6 +1851,10 @@ Rectangle, `500` to the right, `0` from top, `600` wide and `500` tall, with a w
 We render the `Controls` component just after `</svg>` because it's not an SVG component – it uses normal HTML. Unlike other components, it needs our entire dataset as `data`. We use the `updateDataFilter` prop to say which callback function it should call when a new filter is ready.
 
 If this seems roundabout ... I've seen worse. The callbacks approach makes our app easier to componentize and keeps the code relatively unmessy. Imagine putting everything we've done so far in `App`! :laughing:
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 2: Build Controls component" -->
 
 ## Step 2: Build Controls component
 
@@ -1981,6 +2013,10 @@ We build a `Set` of distinct years in our dataset, then render a `ControlRow` us
 
 If you don't know about `Set`s, they're an ES6 data structure that ensures every entry is unique. Just like a mathematical set. They're pretty fast.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 3: Build ControlRow component" -->
+
 ## Step 3: Build ControlRow component
 
 Let's build the `ControlRow` component. It renders a row of controls and ensures only one at a time is selected.
@@ -2082,6 +2118,10 @@ Your browser should continue showing an error, but it should change to talking a
 
 Let's build it.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 4: Build Toggle component" -->
+
 ## Step 4: Build Toggle component
 
 Last piece of the puzzle – the Toggle component. A button that turns on and off.
@@ -2120,6 +2160,10 @@ Click on a button and the `onClick` handler passes a toggle'd value to its paren
 
 
 If that didn't work, consult this [diff on GitHub](https://github.com/Swizec/react-d3js-step-by-step/commit/a45c33e172297ca1bbcfdc76733eae75779ebd7f).
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 5: Add US state and Job Title filters" -->
 
 ## Step 5: Add US state and Job Title filters
 
@@ -2229,6 +2273,10 @@ Two more rows of filters show up.
 Again, if it didn't work, consult [the diff on GitHub](https://github.com/Swizec/react-d3js-step-by-step/commit/a45c33e172297ca1bbcfdc76733eae75779ebd7f).
 
 <!--- end-lecture -->
+
+<!--- end-section -->
+
+<!--- begin-section title="Make it work in the real world" -->
 
 <!--- begin-lecture title="Add rudimentary routing" -->
 
@@ -2373,6 +2421,10 @@ Github Pages URLs follow a `https://<your username>.github.io/<your repo name>` 
 
 You can deploy with `npm run deploy`. Make sure all changes are committed. We'll do it together when we're done setting up.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Twitter and Facebook cards and SEO" -->
+
 ## Twitter and Facebook cards and SEO
 
 How your visualization looks on social media matters more than you'd think. Does it have a nice picture, a great description, and a title, or does it look like a random URL? Those things matter.
@@ -2409,7 +2461,7 @@ Now when somebody shares your dataviz on Twitter or Facebook, it's going to look
 
 <!--- end-lecture -->
 
-<!--- begin-lecture title="Full dataset" -->
+<!--- begin-lecture title="Use full dataset" -->
 
 ## Full dataset
 
