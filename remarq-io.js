@@ -5,7 +5,6 @@ const _ = require("lodash");
 const fp = require("lodash/fp");
 const mkdirp = require("mkdirp");
 const { execSync } = require("child_process");
-const leftPad = require("left-pad");
 
 function json(obj) {
   return JSON.stringify(obj, null, 2);
@@ -434,26 +433,24 @@ function conditionalLog(isLoggingEnabled, label) {
   };
 }
 
-const srcDirAbsolutePath = path.join(path.dirname(__filename), "manuscript");
+const srcDirAbsolutePath = path.resolve("manuscript");
 
-const buildDirAbsolutePath = path.resolve("./build/pandoc-markdown");
-rimraf.sync(buildDirAbsolutePath, null, e => console.log(e));
+const buildDirAbsolutePath = path.resolve("build");
+// rimraf.sync(buildDirAbsolutePath, null, e => console.log(e));
 mkdirp.sync(buildDirAbsolutePath);
 
-// const mdFilePaths = sync([srcDirAbsolutePath + "/**/*.md"]);
-// const mdFilePaths = [path.resolve("manuscript/the-new-meat.md")];
-const mdFileNames = fs
+const srcFileNames = fs
   .readFileSync(path.resolve(srcDirAbsolutePath, "Book.txt"), {
     encoding: "utf8"
   })
   .trim()
   .split("\n")
   .map(fp.trim);
-console.log({ mdFileNames });
+console.log({ srcFileNames });
 
 const log = (...attrs) => conditionalLog(true, ...attrs);
 
-const fullPandocMarkdown = mdFileNames
+const fullPandocMarkdownBody = srcFileNames
   .map(mdFileName => [
     mdFileName,
     fs.readFileSync(path.resolve(srcDirAbsolutePath, mdFileName), {
@@ -461,56 +458,58 @@ const fullPandocMarkdown = mdFileNames
     })
   ])
   .map(([mdFileName, sourceFileBody], i) => {
-    const destFilePath = leftPad(i, 2, "0") + "-" + mdFileName;
+    const destFilePath = fp.padCharsStart("0")(2)(i) + "-" + mdFileName;
     console.log(destFilePath);
     const destFileBody = pandocify(sourceFileBody);
     return [destFilePath, destFileBody];
   })
   .map(([_, destFileBody]) => destFileBody)
   .join("\n\n");
-// .map(([destFilePath, destFileBody]) => {
-//   const destFileAbsolutePath = path.resolve(
-//     buildDirAbsolutePath,
-//     destFilePath
-//   );
-//   fs.writeFileSync(destFileAbsolutePath, destFileBody);
-//   return destFileAbsolutePath;
-// });
-// .map(log());
 
-// TODO change fullPandocMarkdown destination filename
-fs.writeFileSync(
-  path.resolve(buildDirAbsolutePath, "the-new-meat.md"),
-  fullPandocMarkdown
+const fullPandocMarkdownAbsolutePath = path.resolve(
+  buildDirAbsolutePath,
+  "full-pandoc-markdown.md"
 );
+fs.writeFileSync(fullPandocMarkdownAbsolutePath, fullPandocMarkdownBody);
 
-function runShellCommand(commandString) {
-  console.log("\n\nRunning:");
-  console.log(commandString);
+function runShellCommand(
+  commandString,
+  errorMessage = "Something went wrong."
+) {
+  console.log("\n\n=> Running shell command:");
+  console.log("    $ " + commandString);
   let output;
   try {
     output = String(execSync(commandString));
   } catch (e) {
-    console.log("ERROR: Probably because there weren't any changes.");
+    console.log(`\n    !ERROR!: ${errorMessage}`);
     output = String(e);
   }
-  console.log("\noutput:", output);
+  console.log("\n    output:", output);
 }
 
-const pandocCommand =
-  "pandoc -f markdown -t gfm -o ./build/gfm/the-new-meat.md ./build/pandoc-markdown/the-new-meat.md";
+const fullGfmAbsolutePath = path.resolve(buildDirAbsolutePath, "full-gfm.md");
+const pandocCommand = `pandoc -f markdown -t gfm -o ${fullGfmAbsolutePath} ${fullPandocMarkdownAbsolutePath}`;
 
 runShellCommand(pandocCommand);
 
 function splitIntoSectionsAndLectures() {
-  const fullGfmBody = fs.readFileSync("./build/gfm/the-new-meat.md", {
+  const fullGfmBody = fs.readFileSync(fullGfmAbsolutePath, {
     encoding: "utf8"
   });
 
-  const gfmContentRepoAbsolutePath = path.resolve("./../content");
+  const gfmContentRepoAbsolutePath = path.resolve(
+    buildDirAbsolutePath,
+    "content"
+  );
   const destContentAbsolutePath = path.resolve(
     gfmContentRepoAbsolutePath,
     "teachable-gfm-markdown"
+  );
+
+  runShellCommand(
+    `git clone git@github.com:hsribei/content.git ${gfmContentRepoAbsolutePath}`,
+    "Couldn't clone repo. Probably because it's already cloned."
   );
 
   rimraf.sync(destContentAbsolutePath, null, e => console.log(e));
@@ -558,11 +557,9 @@ function splitIntoSectionsAndLectures() {
       srcLine.includes("begin-lecture")
     ) {
       const lectureTitle = srcLine.match(/title="(.*)"/)[1];
-      lectureFileName = `s${leftPad(sectionIndex, 2, "0")}e${leftPad(
-        lectureIndex,
-        2,
-        "0"
-      )} - ${lectureTitle}.md`;
+      lectureFileName = `s${fp.padCharsStart("0")(2)(
+        sectionIndex
+      )}e${fp.padCharsStart("0")(2)(lectureIndex)} - ${lectureTitle}.md`;
       lectureIndex++;
       destLines = [];
     } else if (
@@ -571,7 +568,7 @@ function splitIntoSectionsAndLectures() {
       srcLine.includes("begin-section")
     ) {
       const sectionTitle = srcLine.match(/title="(.*)"/)[1];
-      sectionDirectoryName = `s${leftPad(sectionIndex, 2, "0")}`;
+      sectionDirectoryName = `s${fp.padCharsStart("0")(2)(sectionIndex)}`;
       mkdirp.sync(path.resolve(destContentAbsolutePath, sectionDirectoryName));
     } else {
       // process.stdout.write(".");
@@ -582,7 +579,10 @@ function splitIntoSectionsAndLectures() {
 
   const githubPushCommand = `cd ${gfmContentRepoAbsolutePath} && git add . && git commit -m "Automated commit" && git push origin master && cd -`;
 
-  runShellCommand(githubPushCommand);
+  runShellCommand(
+    githubPushCommand,
+    "Probably because there weren't any changes."
+  );
 }
 
 splitIntoSectionsAndLectures();
