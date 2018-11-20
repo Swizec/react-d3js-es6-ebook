@@ -1,5 +1,7 @@
 {mainmatter}
 
+<!--- begin-lecture title="What you'll build" -->
+
 {#the-meat-start}
 # Visualizing data with React and d3.js #
 
@@ -52,8 +54,16 @@ This section has five chapters:
 - [Handling state in your React app](#state-handling-architecture)
 - [Structuring your React App](#structuring-your-app)
 
+<!--- end-lecture -->
+
+<!--- end-section -->
+
+<!--- begin-section title="A quick intro to D3" -->
+
 {#d3-quick-intro}
 # A quick intro to D3
+
+<!--- begin-lecture title="Why D3" -->
 
 D3 is the best library out there for custom data visualization. It comes with a rich ecosystem of functions for almost anything you can think of. From simple medians, to automatic axis generators, and force diagrams.
 
@@ -116,6 +126,10 @@ Can you tell what's going on? I'd need to read it pretty carefully.
 
 Which brings us to 👇
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="3 key insights to learn D3 from scratch" -->
+
 ## 3 key insights that help you learn D3.js from scratch
 
 Somebody once asked me how to learn D3.js from scratch. I quipped that it took me writing a book to really learn it. It's one hell of a library.
@@ -125,6 +139,10 @@ Most people don't go that far. They don't have to.
 You start with a problem, find similar examples, do some copy pasta, tweak until it works and end up with a working visualization you don't understand. You'd be surprised how few engineers actually understand how their D3 data visualization works.
 
 Fear not! There are just 3 key concepts you have to grok. Then you can understand every D3 example out there. 😱
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Data vs. DOM manipulation" -->
 
 ### 1) Data manipulation vs. DOM manipulation
 
@@ -284,6 +302,10 @@ You can think of `.enter` as a loop over your data. Everything chained after `.e
 
 That function executes for any *new* data "entering" your visualization. There's also `.exit` for anything that's dropping out, and `.update` for anything that's changing.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Scales" -->
+
 ### 2) Scales
 
 Scales are D3's most versatile concept. They help you translate between two different spaces. Like, mathematical spaces.
@@ -307,6 +329,10 @@ Once you have this scale, you can use it to translate from shapes to colors. `sh
 Many different types of scales exist. Linear, logarithmic, quantize, etc. Any basic transformation you can think of exists. The rest you can create by writing custom scales.
 
 You're most often going to use scales to turn your data values into coordinates. But other use-cases exist.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="D3 layouts" -->
 
 ### 3) D3 layouts
 
@@ -341,6 +367,10 @@ For a force layout, you have to update the DOM on every tick of the animation. F
 
 Once you grok this, all the fancy visualizations out there start making sense. Also means you can use these fancy layouts in React 🙌
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Recap" -->
+
 ## Recap
 
 There's a lot more D3 can do, but those are the 3 key insights you need to understand any example you find in the wild.
@@ -352,6 +382,14 @@ There's a lot more D3 can do, but those are the 3 key insights you need to under
 Then you can start using D3's more advanced features like maps and axes and shape generators and geo computations and data loading and transitions and user interactions.
 
 There's a lot. We're not going to cover it all but you can find those advanced features in the docs and the skills you learn here will help you get started.
+
+<!--- end-lecture -->
+
+<!--- end-section -->
+
+<!--- begin-section title="How React makes D3 easier" -->
+
+<!--- begin-lecture title="React + D3 = ❤️" -->
 
 {#basic-approach}
 # How React makes D3 easier
@@ -447,6 +485,10 @@ Now let's look at three different ways of using React and D3 to build data visua
 - quick blackbox components
 - full feature integration
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="What about existing libraries?" -->
+
 {#existing-libraries}
 # When should you use an existing library? Which one?
 
@@ -461,6 +503,10 @@ That's why I rarely use libraries myself. Often find it quicker to build somethi
 But they're a great first step. Here's a few of the most popular React & D3 libraries 👇 
 
 List borrowed from [a wonderful Smashing Magazine article](https://www.smashingmagazine.com/2018/02/react-d3-ecosystem/), because it's a good list.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Victory.js" -->
 
 ## Victory
 
@@ -494,6 +540,10 @@ const App = () => (
 Create some fake data, render a `<VictoryChart>` rendering area, add a `<VictoryBar>` component, give it data and axis keys. Quick and easy.
 
 My favorite feature of Victory is that components use fake random data until you pass your own. Means you always know what to expect.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Recharts" -->
 
 ## Recharts
 
@@ -530,6 +580,9 @@ More involved than Victory, but same principle. Fake some data, render a drawing
 
 Recharts hits a great balance of flexibility and ease ... unless you don't like animation by default. Then you're in trouble.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Nivo" -->
 
 ## Nivo
 
@@ -563,6 +616,10 @@ const App = () => (
 Least amount of effort! You render a `<ResponsiveBar>` component, give it data and some params, and Nivo handles the rest.
 
 Wonderful! But means you have to learn a whole new language of configs and props that might make your hair stand on end. The documentation is great and shows how everything works, but I found it difficult to know which prop combinations are valid.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="VX" -->
 
 ## VX
 
@@ -629,6 +686,10 @@ Move involved than previous examples, but means you have more control and fight 
 
 This code creates value accessor methods, D3 scales, then iterates over an array of `data` and renders a `<Bar` for each. The bar gets a bunch of props.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="When you shouldn't use a library" -->
+
 ## When not to use a library
 
 Libraries are great. Quick to get started, quick to keep using, great for common usecases.
@@ -640,6 +701,14 @@ A rule of thumb you can use is to consider how custom you want to make your visu
 Or if you've had a lot of practice with rolling your own and it's literally easier than learning a library.
 
 If you have to customize an existing library, or build your own for the team, that's what we're here for today :)
+
+<!--- end-lecture -->
+
+<!--- end-section -->
+
+<!--- begin-section title="Quickly integrate any D3 code in your React project with Blackbox Components" -->
+
+<!--- begin-lecture title="The idea behind blackbox components" -->
 
 {#blackbox-components}
 # Quickly integrate any D3 code in your React project with Blackbox Components
@@ -663,6 +732,10 @@ Here's how it works:
 You manually re-render on props and state changes. Throwing away and rebuilding the entire DOM subtree on each render. With complex visualizations this becomes a huge hit on performance.
 
 Use this technique sparingly.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="A quick blackbox example - a D3 axis" -->
 
 {#blackbox-axis}
 ## A quick blackbox example - a D3 axis
@@ -701,6 +774,10 @@ It creates a small axis:
 ![Simple axis](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/simple-axis.png)
 
 Play around with it on [Codesandbox](https://codepen.io/swizec/pen/YGoYBM). Change the scale type, play with axis orientation. Use `.ticks` on the axis to change how many show up. Have some fun :)
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="A React + D3 axis" -->
 
 ## A quick blackbox example - a React+D3 axis
 
@@ -753,6 +830,10 @@ You can make the axis more useful by getting positioning, scale, and orientation
 Try implementing those as an exercise. Make the axis more reusable with some carefully placed props.
 
 Here's my solution, if you get stuck 👉 [https://codesandbox.io/s/5ywlj6jn4l](https://codesandbox.io/s/5ywlj6jn4l)
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="A D3 blackbox higher order component - HOC" -->
 
 {#blackbox-hoc}
 # A D3 blackbox higher order component – HOC
@@ -817,6 +898,10 @@ const Axis = D3blackbox(function () {
 You know this code! We copy pasted our axis rendering code from before, wrapped it in a function, and passed it into `D3blackbox`. Now it's a React component.
 
 Play with this example on [Codesandbox, here](https://codesandbox.io/s/5v21r0wo4x).
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="D3blackbox magic trick - render anything in 30 seconds" -->
 
 {#magic-trick}
 ## D3blackbox magic trick – render anything in 30 seconds
@@ -968,6 +1053,14 @@ return (
 
 But like I said, don't use this in production. It's great for quick prototypes, trying stuff out, or seeing how an existing visualization might fit your app.
 
+<!--- end-lecture -->
+
+<!--- end-section -->
+
+<!--- begin-section title="Build scalable dataviz components with full integration" -->
+
+<!--- begin-lecture title="The approach" -->
+
 {#full-feature-integration}
 # Build scalable dataviz components with full integration
 
@@ -993,6 +1086,10 @@ Something like this 👇
 ![A simple scatterplot](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/scatterplot.png)
 
 You've already built the axes! Copy pasta time.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="When props don't change - a scatterplot" -->
 
 ## Props don't change
 
@@ -1183,6 +1280,10 @@ Your Scatterplot should now look like this
 
 ![Rendered basic scatterplot](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/scatterplot-basic.png)
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="A scatterplot When props do change" -->
+
 ## Props might update
 
 The story is a little different when our props might update. Since we're using D3 objects to calculate SVG properties, we have to make sure those objects are updated *before* we render.
@@ -1346,7 +1447,11 @@ Your Scatterplot should now update its size on every click.
 
 ![Scatterplot resizes](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/scatterplot-resizes.png)
 
-## Making our components more flexible with render props
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Making your components more flexible with render props" -->
+
+## Making your components more flexible with render props
 
 Our scatterplot doesn't look quite as nice as the earlier screenshot. Regular SVG circles with no styling just can't match up.
 
@@ -1473,6 +1578,14 @@ The component itself renders a styled circle using props for positioning and a r
 
 For an extra challenge, try rendering circle radius from state and changing datapoint size on mouse over. Make the scatterplot interactive.
 
+<!--- end-lecture -->
+
+<!--- end-section -->
+
+<!--- begin-section title="You're awesome" -->
+
+<!--- begin-lecture title="💪" -->
+
 # You're awesome
 
 You know the basics! 
@@ -1491,6 +1604,14 @@ Super fun!
 
 ![After a click](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/interaction-dataviz.png)
 
+<!--- end-lecture -->
+
+<!--- end-section -->
+
+<!--- begin-section title="A note about state" -->
+
+<!--- begin-lecture title="Handling state in your React app" -->
+
 {#state-handling-architecture}
 # Handling state in your React app
 
@@ -1507,6 +1628,10 @@ Best approach is to optimize for change.
 Otherwise you might have to do a rewrite. Rewrites are bad. One of the most infamous rewrite story is about [The Rewrite that Killed Netscape](http://www.joelonsoftware.com/articles/fog0000000069.html). You might not even have heard of Netscape ;)
 
 Let's save you from that.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Basic architecture we'll use" -->
 
 {#basic-architecture}
 ## Basic architecture
@@ -1553,6 +1678,10 @@ Functional programming for HTML! 😎
 
 The functional programming concepts we're relying on are called [referential transparency](https://en.wikipedia.org/wiki/Referential_transparency), [idempotent functions](https://en.wikipedia.org/wiki/Idempotence), and [functional purity](https://en.wikipedia.org/wiki/Pure_function). I suggest Googling them if you want to learn the theory behind it all.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="What about React Context? Redux? MobX?" -->
+
 ## What about React Context? Redux? MobX?
 
 You may have heard of React Context, Redux, MobX and other state handling libraries. They're all great in different ways and the internet can't decide which one is best. Everyone has their own little twist on the story.
@@ -1589,6 +1718,10 @@ We're sticking with the basic approach because it's easier to explain, works wit
 
 You can see an approach to using Redux in dataviz in the [Animating with React, Redux, and D3 chapter](#animating-react-redux), and we tackle MobX in the [MobX chapter](#refactoring-to-mobx).
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="How to structure your app" -->
+
 {#structuring-your-app}
 # How to structure your app
 
@@ -1623,10 +1756,16 @@ We want to access every component with `import My Component from './MyComponent'
 
 You can read more about these ideas by Googling ["leaky abstractions"](https://en.wikipedia.org/wiki/Leaky_abstraction), ["single responsibility principle"](https://en.wikipedia.org/wiki/Single_responsibility_principle), ["separation of concerns"](https://en.wikipedia.org/wiki/Separation_of_concerns), and ["structured programming"](https://en.wikipedia.org/wiki/Structured_programming). Books from the late 90's and early 2000's (when object-oriented programming was The Future™) have the best curated info in my experience.
 
+<!--- end-lecture -->
+
 ---
+
+<!--- begin-lecture title="Congratz!" -->
 
 Congratz! You know everything you need to build visualizations with React and D3. 👏
 
 This is the point in tech books where I run off and start building things on my own. Then I get frustrated, spend hours Googling for answers, and then remember, "Hey! Maybe I should read the rest of the book!"
 
 Reading the rest of the book helps. I'll show you how all this fits together into a larger project.
+
+<!--- end-lecture -->

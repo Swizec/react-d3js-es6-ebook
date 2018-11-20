@@ -1,6 +1,9 @@
 {frontmatter}
+
 <!--- begin-section title="Introduction" -->
+
 <!--- begin-lecture title="Hello new friend 👋" -->
+
 # Introduction #
 
 Hello new friend! 👋
@@ -99,8 +102,11 @@ Sometimes they do.
 That's okay. Life happens. I understand. Hell, I procrastinated for months before sitting down to update this stuff :)
 
 I recommend you go through the basic chapters at least. The little building blocks. You can do that in an afternoon or two. It's worth it, I promise.
+
 <!--- end-lecture -->
+
 <!--- begin-lecture title="What you need to know" -->
+
 # What you need to know
 
 I’m going to assume you already know how to code and that you're great with JavaScript. Many books have been written to teach the basics of JavaScript; this is not one of them.
@@ -117,7 +123,9 @@ All examples in React + D3 use modern JavaScript. That is JavaScript from ES6 �
 
 I'm going to explain any new syntax that we use.
 <!--- end-lecture -->
+
 <!--- begin-lecture title="How to approach React for Dataviz" -->
+
 ## How to approach React for Data Visualization
 
 I recommend starting with an idea, a problem. Something you want to build. A dataset you want to play with. A feature you want to add to your app.
@@ -160,7 +168,9 @@ $ npm start
 ```
 
 <!--- end-lecture -->
+
 <!--- begin-lecture title="Foreword" -->
+
 # Why React and D3
 
 React is Facebook's  approach to writing modern JavaScript front-ends. It encourages building an app out of small, re-usable components. Each component is self-contained and only knows how to render a small bit of the interface.
@@ -198,8 +208,11 @@ Look how this H1B salary visualization changes when the user picks a subset of t
 ![Changes after user picks a data subset](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/full_changed_h1b.png)
 
 React + D3: a powerful combination indeed.
+
 <!--- end-lecture -->
+
 <!--- begin-lecture title="Buzzword soup explained" -->
+
 # Buzzword soup explained
 
 We're going to use some buzzwords in this book. Hell, we've used some already. Most will get a thorough explanation further on, but let me give you a quick rundown.
@@ -218,8 +231,11 @@ We're going to use some buzzwords in this book. Hell, we've used some already. M
 - **state**, a local dictionary of values available in most components
 - **functional components**, React components expressed as pure functions that take props and return markup
 - **Webpack**, a module packager for JavaScript. Makes it more convenient to organize code into multiple files. Provides cool plugins.
+
 <!--- end-lecture -->
+
 <!--- begin-lecture title="JSX" -->
+
 # JSX
 
 Our components are going to use JSX, a JavaScript syntax extension that lets us treat XML-like data as normal code. You can use React without JSX, but JSX makes React’s full power easier to use.
@@ -249,5 +265,5 @@ ReactDOM.render(
 HTML code translates to `React.createElement` calls with attributes translated into a property dictionary. The beauty of this approach is two-pronged: you can use React components as if they were HTML tags, and HTML attributes can be anything.
 
 You’ll see that anything from a simple value to a function or an object works equally well.
+
 <!--- end-lecture -->
-<!--- end-section -->
