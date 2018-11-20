@@ -10,7 +10,7 @@ function json(obj) {
   return JSON.stringify(obj, null, 2);
 }
 
-function pandocifyMarkuaCodeBlocks(fileBody) {
+function pandocifyMarkuaCodeBlocks(sourceFileBody) {
   const isLoggingEnabled = false;
   // const isLoggingEnabled = true;
   const log = (...attrs) => conditionalLog(isLoggingEnabled, ...attrs);
@@ -58,14 +58,14 @@ ${code}
     return log("replacement")(replacement);
   }
 
-  const result = fileBody.replace(
+  const result = sourceFileBody.replace(
     /\n{(.+)}\n```(.*)\n([\s\S]*?)\n```\n/g,
     replacer
   );
   return result;
 }
 
-function pandocifyLfmCodeBlocks(fileBody) {
+function pandocifyLfmCodeBlocks(sourceFileBody) {
   const isLoggingEnabled = false;
   const log = (...attrs) => conditionalLog(isLoggingEnabled, ...attrs);
   function replacer(match, g1, g2) {
@@ -130,7 +130,7 @@ ${code}
     return log("replacement")(replacement);
   }
 
-  const result = fileBody.replace(
+  const result = sourceFileBody.replace(
     /\n\n({.*}\n)?((?: {4}[\s\S]*?)+)\n\n/g,
     replacer
   );
@@ -143,7 +143,7 @@ ${code}
 //
 // Into a Markua code block (don't pandocify it here, that will be done by
 // pandocifyMarkuaCodeBlocks)
-function transcludeMarkuaCodeSamples(fileBody) {
+function transcludeMarkuaCodeSamples(sourceFileBody) {
   const isLoggingEnabled = false;
   const log = (...attrs) => conditionalLog(isLoggingEnabled, ...attrs);
 
@@ -237,7 +237,7 @@ ${code}
     return log("replacement")(replacement);
   }
 
-  const result = fileBody.replace(
+  const result = sourceFileBody.replace(
     /\n({.*}\n)?!\[(.*)\]\((code_samples.+)\)\n\n/g,
     replacer
   );
@@ -252,7 +252,7 @@ ${code}
 //
 // Into an LFM code block (don't pandocify it here, that will be done by
 // pandocifyLfmCodeBlocks)
-function transcludeLfmCodeSamples(fileBody) {
+function transcludeLfmCodeSamples(sourceFileBody) {
   const isLoggingEnabled = false;
   const log = (...attrs) => conditionalLog(isLoggingEnabled, ...attrs);
 
@@ -346,7 +346,7 @@ ${code}
     return log("replacement")(replacement);
   }
 
-  const result = fileBody.replace(
+  const result = sourceFileBody.replace(
     /\n\n({.*}\n)?<<\[(.*)\]\((.+)\)\n\n/g,
     replacer
   );
@@ -357,7 +357,7 @@ ${code}
 // # Animating with React, Redux, and d3
 // Into this:
 // # Animating with React, Redux, and d3 {#animating-react-redux}
-function pandocifyMarkuaHeaders(fileBody) {
+function pandocifyMarkuaHeaders(sourceFileBody) {
   const isLoggingEnabled = false;
   // const isLoggingEnabled = true;
   const log = (...attrs) => conditionalLog(isLoggingEnabled, ...attrs);
@@ -368,11 +368,14 @@ function pandocifyMarkuaHeaders(fileBody) {
       ""
     )} ${attributes}\n\n`;
 
-    return log("replacement")(replacement);
+    // log("replacement")(replacement);
     return replacement;
   }
 
-  const result = fileBody.replace(/(^|\n\n)({.*})\n(#+.*)\n\n/g, replacer);
+  const result = sourceFileBody.replace(
+    /(^|\n\n)({.*})\n(#+.*)\n\n/g,
+    replacer
+  );
   return result;
 }
 
@@ -381,24 +384,49 @@ function pandocifyMarkuaHeaders(fileBody) {
 // # Animating with React, Redux, and d3
 // Into this:
 // # Animating with React, Redux, and d3 {#animating-react-redux}
-function pandocifyLfmHeaders(fileBody) {
-  return pandocifyMarkuaHeaders(fileBody);
+function pandocifyLfmHeaders(sourceFileBody) {
+  return pandocifyMarkuaHeaders(sourceFileBody);
 }
 
 function pandocifyMarkua(sourceFileBody) {
   const pipeline = fp.pipe(
     transcludeMarkuaCodeSamples,
     pandocifyMarkuaCodeBlocks,
-    pandocifyMarkuaHeaders
+    pandocifyMarkuaHeaders,
+    deleteMarkuaSpecialNames
   );
   return pipeline(sourceFileBody);
+}
+
+function deleteLfmSpecialNames(sourceFileBody) {
+  // const isLoggingEnabled = false;
+  const isLoggingEnabled = true;
+  const log = (...attrs) => conditionalLog(isLoggingEnabled, ...attrs);
+
+  function replacer(match) {
+    const replacement = "";
+
+    log("replacement")(json({ match, replacement }));
+    return replacement;
+  }
+
+  const result = sourceFileBody.replace(
+    /(?:^|\n){(?:frontmatter|pagebreak|mainmatter|backmatter)}(?:\n|$)/g,
+    replacer
+  );
+  return result;
+}
+
+function deleteMarkuaSpecialNames(sourceFileBody) {
+  return deleteLfmSpecialNames(sourceFileBody);
 }
 
 function pandocifyLfm(sourceFileBody) {
   const pipeline = fp.pipe(
     transcludeLfmCodeSamples,
     pandocifyLfmCodeBlocks,
-    pandocifyLfmHeaders
+    pandocifyLfmHeaders,
+    deleteLfmSpecialNames
   );
   return pipeline(sourceFileBody);
 }
