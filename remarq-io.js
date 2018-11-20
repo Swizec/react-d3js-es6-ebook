@@ -1,9 +1,11 @@
 const fs = require("fs");
 const path = require("path");
-const sync = require("glob-gitignore").sync;
 const rimraf = require("rimraf");
 const _ = require("lodash");
 const fp = require("lodash/fp");
+const mkdirp = require("mkdirp");
+const { execSync } = require("child_process");
+const leftPad = require("left-pad");
 
 function json(obj) {
   return JSON.stringify(obj, null, 2);
@@ -11,12 +13,13 @@ function json(obj) {
 
 function pandocifyMarkuaCodeBlocks(fileBody) {
   const isLoggingEnabled = false;
+  // const isLoggingEnabled = true;
   const log = (...attrs) => conditionalLog(isLoggingEnabled, ...attrs);
   function replacer(match, attributes, language, code) {
-    log("match")(json({ attributes, language, code }), null, 2);
+    // log("match")(json({ attributes, language, code }), null, 2);
 
     const idMatch = attributes.match(/(.*)#(\w+)(.*)/);
-    log("idMatch")(json(idMatch));
+    // log("idMatch")(json(idMatch));
     let discard, beforeIdAttr, idAttr, afterIdAttr;
     if (idMatch) {
       [discard, beforeIdAttr, idAttr, afterIdAttr] = idMatch;
@@ -25,7 +28,7 @@ function pandocifyMarkuaCodeBlocks(fileBody) {
     const attrRegExp = /\s*(.+): "(.*)"/;
     const srcAttrs = attributes.split(/\s*,\s*/).reduce((srcAttrs, chunk) => {
       const srcAttrMatches = chunk.match(attrRegExp);
-      log("srcAttrMatches")(json(srcAttrMatches));
+      // log("srcAttrMatches")(json(srcAttrMatches));
       const [key, value] = srcAttrMatches
         ? [srcAttrMatches[1], srcAttrMatches[2]]
         : [null, null];
@@ -34,19 +37,22 @@ function pandocifyMarkuaCodeBlocks(fileBody) {
       return result;
     }, {});
 
-    log("srcAttrs")(json(srcAttrs));
+    // log("srcAttrs")(json(srcAttrs));
 
     let destAttrs = [];
 
     if (idAttr) destAttrs.push(`#${idAttr}`);
 
-    const langClass = language || srcAttrs.language;
+    const langClass = language || srcAttrs.format;
+    log("markuaLanguage")(langClass);
     if (langClass) destAttrs.push(`.${langClass}`);
 
     if (srcAttrs.caption) destAttrs.push(`caption="${srcAttrs.caption}"`);
 
+    const destAttrsStr = destAttrs.length > 0 ? `{${destAttrs.join(" ")}}` : "";
+
     const replacement = `
-\`\`\`{${destAttrs.join(" ")}}
+\`\`\`${destAttrsStr}
 ${code}
 \`\`\`
 `;
@@ -224,15 +230,16 @@ function transcludeMarkuaCodeSamples(fileBody) {
       destAttrs.length > 0 ? `{${destAttrs.join(", ")}}` : "";
 
     const replacement = `
-\`\`\`${destAttrsStr}
-${code}
+${destAttrsStr}
 \`\`\`
+${code}
+\`\`\`\n
 `;
     return log("replacement")(replacement);
   }
 
   const result = fileBody.replace(
-    /\n\n({.*}\n)?!\[(.*)\]\((code_samples.+)\)\n\n/g,
+    /\n({.*}\n)?!\[(.*)\]\((code_samples.+)\)\n\n/g,
     replacer
   );
   return result;
@@ -352,17 +359,21 @@ ${code}
 // Into this:
 // # Animating with React, Redux, and d3 {#animating-react-redux}
 function pandocifyMarkuaHeaders(fileBody) {
-  const isLoggingEnabled = true;
+  const isLoggingEnabled = false;
+  // const isLoggingEnabled = true;
   const log = (...attrs) => conditionalLog(isLoggingEnabled, ...attrs);
 
-  function replacer(match, attributes, header) {
-    const replacement = `${header} ${attributes}`;
+  function replacer(match, newlinesBefore, attributes, header) {
+    const replacement = `${newlinesBefore}${header.replace(
+      /[ #]*$/,
+      ""
+    )} ${attributes}\n\n`;
 
     return log("replacement")(replacement);
     return replacement;
   }
 
-  const result = fileBody.replace(/\n\n({.*})\n(#+.*)\n\n/g, replacer);
+  const result = fileBody.replace(/(^|\n\n)({.*})\n(#+.*)\n\n/g, replacer);
   return result;
 }
 
@@ -425,37 +436,73 @@ function conditionalLog(isLoggingEnabled, label) {
 
 const srcDirAbsolutePath = path.join(path.dirname(__filename), "manuscript");
 
-const buildDirAbsolutePathSegments = [
-  process.env["HOME"],
-  "Dropbox",
-  "Apps",
-  "RemarqDocuments"
-];
-const buildDirAbsolutePath = path.join(...buildDirAbsolutePathSegments);
-// glob uses forward slashes regardless if on windows or not
-const buildDirGlob = buildDirAbsolutePathSegments.join("/") + "/*.*";
-rimraf.sync(buildDirGlob, null, e => console.log(e));
+const buildDirAbsolutePath = path.resolve("./build/pandoc-markdown");
+rimraf.sync(buildDirAbsolutePath, null, e => console.log(e));
+mkdirp.sync(buildDirAbsolutePath);
 
-const mdFilePaths = sync([srcDirAbsolutePath + "/**/*.md"]);
-console.log({ mdFilePaths });
+// const mdFilePaths = sync([srcDirAbsolutePath + "/**/*.md"]);
+// const mdFilePaths = [path.resolve("manuscript/the-new-meat.md")];
+const mdFileNames = fs
+  .readFileSync(path.resolve(srcDirAbsolutePath, "Book.txt"), {
+    encoding: "utf8"
+  })
+  .trim()
+  .split("\n")
+  .map(fp.trim);
+console.log({ mdFileNames });
 
-const result = mdFilePaths
-  .map(sourceFilePath => [
-    sourceFilePath,
-    fs.readFileSync(sourceFilePath, { encoding: "utf8" })
+const log = (...attrs) => conditionalLog(true, ...attrs);
+
+const fullPandocMarkdown = mdFileNames
+  .map(mdFileName => [
+    mdFileName,
+    fs.readFileSync(path.resolve(srcDirAbsolutePath, mdFileName), {
+      encoding: "utf8"
+    })
   ])
-  .map(([sourceFilePath, sourceFileBody]) => {
-    const destFilePath = sourceFilePath.replace(
-      srcDirAbsolutePath,
-      buildDirAbsolutePath
-    );
-    // const slice = b => b.slice(0, 20);
+  .map(([mdFileName, sourceFileBody], i) => {
+    const destFilePath = leftPad(i, 2, "0") + "-" + mdFileName;
+    console.log(destFilePath);
     const destFileBody = pandocify(sourceFileBody);
     return [destFilePath, destFileBody];
   })
-  // .map(log())
-  .map(destFile => fs.writeFileSync(...destFile))
-  .map(id);
+  .map(([_, destFileBody]) => destFileBody)
+  .join("\n\n");
+// .map(([destFilePath, destFileBody]) => {
+//   const destFileAbsolutePath = path.resolve(
+//     buildDirAbsolutePath,
+//     destFilePath
+//   );
+//   fs.writeFileSync(destFileAbsolutePath, destFileBody);
+//   return destFileAbsolutePath;
+// });
+// .map(log());
 
-const log = (...attrs) => conditionalLog(true, ...attrs);
-log("RESULT")(result);
+// TODO change fullPandocMarkdown destination filename
+fs.writeFileSync(
+  path.resolve(buildDirAbsolutePath, "the-new-meat.md"),
+  fullPandocMarkdown
+);
+
+function runShellCommand(commandString) {
+  console.log("\n\nRunning:");
+  console.log(commandString);
+  let output;
+  try {
+    output = String(execSync(commandString));
+  } catch (e) {
+    console.log("ERROR: Probably because there weren't any changes.");
+    output = String(e);
+  }
+  console.log("\noutput:", output);
+}
+
+const pandocCommand =
+  "pandoc -f markdown -t gfm -o ./build/gfm/the-new-meat.md ./build/pandoc-markdown/the-new-meat.md";
+
+runShellCommand(pandocCommand);
+
+const gfmContentRepoAbsolutePath = path.resolve("./../content");
+const githubPushCommand = `cp ./build/gfm/the-new-meat.md ${gfmContentRepoAbsolutePath} && cd ${gfmContentRepoAbsolutePath} && git add . && git commit -m "Automated commit" && git push origin master && cd -`;
+
+runShellCommand(githubPushCommand);
