@@ -1769,3 +1769,5 @@ This is the point in tech books where I run off and start building things on my 
 Reading the rest of the book helps. I'll show you how all this fits together into a larger project.
 
 <!--- end-lecture -->
+
+<!--- end-section -->

@@ -1,13 +1,13 @@
+<!--- begin-section title="Build a data visualization dashboard" -->
+
+<!--- begin-lecture title="176,113 tech salaries visualized" -->
+
 {#salary-visualization}
 # A big example project - 176,113 tech salaries visualized #
-
-<!-- begin-section title="First Section" -->
 
 We're going to build this:
 
 ![](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/full-dataviz.png)
-
-<!-- begin-lecture title="First Lecture" -->
 
 An interactive visualization dashboard app with a choropleth map and a histogram comparing tech salaries to median household income in the area. Users can filter by year, job title, or US state to get a better view.
 
@@ -15,25 +15,21 @@ An interactive visualization dashboard app with a choropleth map and a histogram
 
 It's going to be great.
 
-<!-- end-lecture -->
-
 At this point, I assume you've used `create-react-app` to set up your environment. Check the [getting started](#getting-started) section if you haven't. I'm also assuming you've read the [basics chapter](#the-meat-start). I'm still going to explain what we're doing, but knowing the basics helps.
 
 I suggest you follow along, keep `npm start` running, and watch your visualization change in real time as you code. It's rewarding as hell.
 
 If you get stuck, you can use my [react-d3js-step-by-step Github repo](https://github.com/Swizec/react-d3js-step-by-step) to jump between steps. The [9 tags](https://github.com/Swizec/react-d3js-step-by-step/releases) correspond to the code at the end of each step. Download the first tag and run `npm install` to skip the initial setup.
 
-<!-- begin-lecture title="Second Lecture" -->
-
 If you want to see how this project evolved over 22 months, check [the original repo](https://github.com/Swizec/h1b-software-salaries). The [modern-code](https://github.com/Swizec/h1b-software-salaries/tree/modern-code) branch has the code you're about to build.
 
-<!-- end-lecture -->
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Show a Preloader" -->
 
 # Show a Preloader
 
 ![Preloader screenshot](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/preloader-screenshot.png)
-
-<!-- end-section -->
 
 Our preloader is a screenshot of the final result. Usually you'd have to wait until the end of the project to make that, but I'll just give you mine. Starting with the preloader makes sense for two reasons:
 
@@ -53,17 +49,23 @@ We're building our preloader in 4 steps:
 3. Update `App`
 4. Load Bootstrap styles in `index.js`
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step1: get image" -->
+
 ## Step 1: Get the image
 
 Download [my screenshot from Github](https://raw.githubusercontent.com/Swizec/react-d3js-step-by-step/798ec9eca54333da63b91c66b93339565d6d582a/src/assets/preloading.png) and save it in `src/assets/preloading.png`. It goes in the `src/assets/` directory because we're going to `import` it in JavaScript (which makes it part of our source code), and I like to put non-JavaScript files in `assets`. Keeps the project organized.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 2: make component" -->
 
 ## Step 2: Preloader component
 
 Our `Preloader` is a small component that pretends it's the `App` and renders a static title, description, and a screenshot of the end result. It goes in `src/components/Preloader.js`.
 
 We'll put all of our components in `src/components/`.
-
-<!-- begin-section title="Second Section" -->
 
 We start the component off with some imports, an export, and a functional stateless component that returns an empty div element.
 
@@ -83,8 +85,6 @@ const Preloader = () => (
 
 export default Preloader;
 ```
-
-<!-- begin-lecture title="Third Lecture" -->
 
 We `import` React (which we need to make JSX syntax work) and the `PreloaderImg` for our image. We can import images because of the Webpack configuration that comes with `create-react-app`. The webpack image loader returns a URL that we put in the `PreloaderImg` constant.
 
@@ -128,6 +128,10 @@ But look at the `img` tag: the `src` attribute is dynamic, defined by `Preloader
 
 That will be a cornerstone of our project.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 3: Update App" -->
+
 ## Step 3: Update App
 
 We use our new Preloader component in App – `src/App.js`. Let's remove the `create-react-app` defaults and import our `Preloader` component.
@@ -167,8 +171,6 @@ class App extends React.Component {
 export default App;
 ```
 
-<!-- end-lecture -->
-
 We removed the logo and style imports, added an import for `Preloader`, and gutted the `App` class. It's great for a default app, but we don't need that anymore.
 
 Let's define a default `state` and a `render` method that uses our `Preloader` component when there's no data.
@@ -202,8 +204,6 @@ class App extends React.Component {
 }
 ```
 
-<!-- end-section -->
-
 Nowadays we can define properties directly in the class body without a constructor method. It's not part of the official JavaScript standard yet, but most React codebases use this pattern.
 
 Properties defined this way are bound to each instance of our components so they have the correct `this` value. Late you'll see we can use this shorthand to neatly define event handlers.
@@ -215,6 +215,10 @@ If your `npm start` is running, the preloader should show up on your screen.
 ![Preloader without Bootstrap styles](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/preloader-without-styles-screenshot.png)
 
 Hmm… that's not very pretty. Let's fix it.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 4: Load styles" -->
 
 ## Step 4: Load Bootstrap styles
 
@@ -257,6 +261,10 @@ Your preloader screen should look better now.
 
 If you don't, try comparing your changes to this [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/798ec9eca54333da63b91c66b93339565d6d582a).
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Asynchronously load data" -->
+
 # Asynchronously load data
 
 Great! We have a preloader. Time to load some data.
@@ -269,11 +277,19 @@ Our dataset comes from a few sources. Tech salaries are from [h1bdata.info](http
 
 You can read about the scraping on my blog [here](https://swizec.com/blog/place-names-county-names-geonames/swizec/7083), [here](https://swizec.com/blog/facts-us-household-income/swizec/7075), and [here](https://swizec.com/blog/livecoding-24-choropleth-react-js/swizec/7078). But it's not the subject of this book.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 0: Get data" -->
+
 ## Step 0: Get the data
 
 Download the 6 data files from [my step-by-step repository on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/8819d9c38b4aef0a0c569e493f088ff9c3bfdf33). Put them in your `public/data` directory.
 
 The quickest way to download each file is to click `View`, then right-click `Raw` and `Save Link As`.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 1: Prep App.js" -->
 
 ## Step 1: Prep App.js
 
@@ -364,6 +380,10 @@ These nice error overlays come with `create-react-app` and make your code easier
 
 Let's build that file and fill it with our data loading logic.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 2: Prep data parsing functions" -->
+
 ## Step 2: Prep data parsing functions
 
 We're putting data loading logic in a separate file from `App.js` because it's a bunch of functions that work together and don't have much to do with the `App` component itself.
@@ -383,6 +403,10 @@ You'll see those `d3` and `lodash` imports a lot.
 Our data parsing functions all follow the same approach: Take a row of data as `d`, return a dictionary with nicer key names, cast any numbers or dates into appropriate formats. They all start as strings.
 
 Doing all this parsing now, keeps the rest of our codebase clean. Handling data is always messy. You want to contain that mess as much as possible.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 3: Load the datasets" -->
 
 ## Step 3: Load the datasets
 
@@ -404,6 +428,10 @@ To load multiple files, we use `Promise.all` with a list of unresolved promises.
 D3 supports formats like `json`, `csv`, `tsv`, `text`, and `xml` out of the box. You can make it work with custom data sources through the underlying `request` API.
 
 PS: we're using the shortened salary dataset to make page reloads faster while building our project.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 4: Tie datasets together" -->
 
 {#tie-datasets-together}
 ## Step 4: Tie the datasets together
@@ -429,6 +457,10 @@ You should now see how many salary entries the shortened dataset contains.
 
 If that didn't work, try comparing your changes to this [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/9f113cdd3bc18535680cb5a4e87a3fd45743c9ae).
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Render a choropleth map of the US" -->
+
 {#choropleth-map}
 # Render a choropleth map of the US
 
@@ -449,6 +481,10 @@ Just like before, we're going to start with changes in our `App` component, then
 - `CountyMap/index.js`, to make imports easier
 - `CountyMap/CountyMap.js`, for overall map logic
 - `CountyMap/County.js`, for individual county polygons
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 1: Prep App.js" -->
 
 ## Step 1: Prep App.js
 
@@ -528,6 +564,10 @@ We set `zoom` to `null` for now. We'll use this later.
 
 In the `return` statement, we remove our "data loaded" indicator, and add an `<svg>` element that's `1100` pixels wide and `500` pixels high. Inside, we place the `CountyMap` component with a bunch of properties. Some dataset stuff, some sizing and positioning stuff.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 2: CountyMap/index.js" -->
+
 ## Step 2: CountyMap/index.js
 
 We make `index.js` for just reason: to make imports and debugging easier. I learned this lesson the hard way so you don't have to.
@@ -540,6 +580,10 @@ Re-export the default import from `./CountyMap.js`. That's it.
 This allows us to import `CountyMap` from the directory without knowing about internal file structure. We *could* put all the code in this `index.js` file, but that makes debugging harder. You'll have plenty of index.js files in your project.
 
 Having a lot of code in `<directory>/index.js` is a common pattern in new projects. But when you're looking at a stack trace, source files in the browser, or filenames in your editor, you'll wish every component lived in a file of the same name.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 3: CountyMap/CountyMap.js" -->
 
 ## Step 3: CountyMap/CountyMap.js
 
@@ -755,6 +799,10 @@ As promised, the `return` statement loops through the list of `counties` and ren
 
 For US state borders, we render a single `<path>` element and use `geoPath` to generate the `d` attribute.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 4: CountyMap/County.js" -->
+
 ## Step 4: CountyMap/County.js
 
 The `County` component is built from two parts: imports and color constants, and a component that returns a `<path>`. All the hard calculation happens in `CountyMap`.
@@ -779,7 +827,11 @@ This can lead to all 3,220 counties re-rendering every time a user does anything
 
 Using `shouldComponentUpdate` like this we can go from 3,220 DOM updates to a few hundred. Big speed improvement
 
+<!--- end-lecture -->
+
 ---
+
+<!--- begin-lecture title="A map appears 🗺" -->
 
 Your browser should now show a map.
 
@@ -788,6 +840,10 @@ Your browser should now show a map.
 Tech work visas just aren't that evenly distributed. Even with the full dataset most counties are gray.
 
 If that didn't work, consult [this diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/f4c1535e9c9ca4982c8f3c74cff9f739eb08c0f7).
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Render a Histogram of salaries" -->
 
 {#histogram-of-salaries}
 # Render a Histogram of salaries
@@ -803,6 +859,10 @@ In the shortened dataset, 35% of tech salaries fall between $60k and $80k, 26% b
 It's where statistics like "More people die from vending machines than shark attacks" come from. Which are you afraid of, vending machines or sharks? Stats say your answer should be [heart disease](https://www.cdc.gov/nchs/fastats/deaths.htm). ;)
 
 We'll start our histogram with some changes in `App.js`, make a `Histogram` component using the [full-feature approach](#full-feature-integration), add an `Axis` using the [blackbox HOC approach](#blackbox-hoc), and finally add some styling.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 1: Prep App.js" -->
 
 ## Step 1: Prep App.js
 
@@ -842,6 +902,10 @@ We render the `Histogram` component with a bunch of props. They specify the dime
 That's it. `App` is ready to render our `Histogram`.
 
 You should now see an error about missing files. That's normal.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 2: CSS changes" -->
 
 {#histogram-css}
 ## Step 2: CSS changes
@@ -897,6 +961,10 @@ In broad strokes:
 More CSS than we need for just the histogram, but we're already here so might as well write it now.
 
 Adding our CSS before building the Histogram means it's going to look beautiful the first time around.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 3: Histogram component" -->
 
 ## Step 3: Histogram component
 
@@ -1074,6 +1142,10 @@ Some, like `axisMargin` we pass through, others like `width` and `height` we cal
 
 Setting the `key` prop is important. React uses it to tell the bars apart and only re-render those that change.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 4: HistogramBar (sub)component" -->
+
 ## Step 4: HistogramBar (sub)component
 
 Before our histogram shows up, we need another component: `HistogramBar`. We *could* have shoved all of it in the `makeBar` function, but it makes sense to keep separate. Better future flexibility.
@@ -1138,6 +1210,10 @@ import HistogramBar from './HistogramBar'
 You should now see a histogram.
 
 ![Histogram without axis](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/histogram-without-axis.png)
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 5: Add an axis" -->
 
 ## Step 5: Axis HOC
 
@@ -1252,6 +1328,10 @@ An axis appears.
 
 If that didn't work, try comparing your changes to this [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/02a40899e348587a909e97e8f18ecf468e2fe218).
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Add meta info" -->
+
 # Make it understandable - meta info
 
 You've come so far! There's a US map and a histogram. They're blue and shiny and you look at them and you go *"Huh?"*.
@@ -1265,6 +1345,10 @@ We're adding a dynamic title and description, and a median line on the histogram
 At the end of this section, you'll have a full visualization of the shortened dataset.
 
 ![Full visualization without user controls](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/dataviz-without-controls.png)
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Dynamic title" -->
 
 ## Dynamic title
 
@@ -1429,6 +1513,10 @@ And a title appears.
 
 If it doesn't, consult [this diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/4f94fcd1c3caeb0fc410636243ca99764e27c5e6).
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Dynamic description" -->
+
 ## Dynamic description
 
 You know what? The dynamic description component is pretty much the same as the title. It's just longer and more complex and uses more code. It's interesting, but not super relevant to the topic of this book.
@@ -1505,7 +1593,11 @@ You can follow this [diff on Github](https://github.com/Swizec/react-d3js-step-b
 
 ![Dataviz with all descriptions](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/dataviz-with-all-descriptions.png)
 
-## Median household line
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Overlay a median household line" -->
+
+## Overlay a median household line
 
 Here's a more interesting component: the median dotted line. It shows a direct comparison between the histogram's distribution and the median household income in an area. I'm not sure people understand it at a glance, but I think it's cool.
 
@@ -1632,6 +1724,10 @@ You should see a median household salary line overlaid on your histogram.
 Almost everyone in tech makes more than an entire median household. Crazy, huh? I think it is.
 
 If that didn't work, consult the [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/1fd055e461184fb8dc8dd509edb3a6a683c995fe).
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Add user controls for data slicing and dicing" -->
 
 {#user-controls}
 # Add user controls for data slicing and dicing
@@ -2132,6 +2228,10 @@ Two more rows of filters show up.
 
 Again, if it didn't work, consult [the diff on GitHub](https://github.com/Swizec/react-d3js-step-by-step/commit/a45c33e172297ca1bbcfdc76733eae75779ebd7f).
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Add rudimentary routing" -->
+
 # Rudimentary routing
 
 Imagine this. A user finds your dataviz, clicks around, and finds an interesting insight. They share it with their friends.
@@ -2200,6 +2300,10 @@ You should see the URL changing as you click around.
 There's a bug with some combinations in 2013 that don't have enough data. It will go away when we use the full dataset.
 
 If it doesn't work at all, consult the [diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/2e8fb070cbee5f1e942be8ea42fa87c6c0379a9b).
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Prep your app for launch" -->
 
 # Prep for launch
 
@@ -2303,6 +2407,10 @@ Now when somebody shares your dataviz on Twitter or Facebook, it's going to look
 
 ![Dataviz Twitter card](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/twitter-card.png)
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Full dataset" -->
+
 ## Full dataset
 
 One more step left. Use the whole dataset!
@@ -2313,6 +2421,10 @@ Go into `src/DataHandling.js` and change one line:
 ![Switch to full dataset](code_samples/es6v2/DataHandling.js)
 
 We change the file name, and that's that. Full dataset locked and loaded. Dataviz ready to go.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Launch! 🚀" -->
 
 # Launch!
 
@@ -2337,3 +2449,7 @@ Congratz! You've built and deployed your first React and D3 dataviz. You're amaz
 Thanks for following along with the meaty part of my book. You're now well equipped to build cool things.
 
 In the next section, we're going to look at building animations.
+
+<!--- end-lecture -->
+
+<!--- end-section -->

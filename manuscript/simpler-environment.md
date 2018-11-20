@@ -1,3 +1,8 @@
+
+<!--- begin-section title="Set up your local environment" -->
+
+<!--- begin-lecture title="Local environment setup" -->
+
 {#getting-started}
 # Set up a local environment with create-react-app
 
@@ -12,6 +17,10 @@ Getting started with React has never been easier.
 1. Make sure you have node.js
 2. Install the app generator
 3. Run the app generator
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Start with create-react-app" -->
 
 ## Make sure you have node.js
 
@@ -67,6 +76,10 @@ A browser tab should open with a page that looks like this:
 
 If that didn't work, then something must have gone terribly wrong. You should consult [the official docs](https://github.com/facebookincubator/create-react-app). Maybe that will help.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="What you get" -->
+
 ## What you get
 
 Running `create-react-app` installs tools and libraries. There's around 80MB of them as of October 2016. This is why using a generator is easier than slogging through on your own.
@@ -94,8 +107,12 @@ You can poke around `src/App.js` to see how it's structured and what happens whe
 
 I suggest you keep `npm start` running at all times while coding. The browser will refresh on every code change, so you'll be able to see instant results.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Install extra dependencies" -->
+
 {#install-dependencies}
-## Install dependencies for this book
+## Install dependencies for React for Datavisualization
 
 There are a couple of libraries we're going to use often in this book: D3, Topojson, and Lodash. We're using D3 to do our heavy lifting, Topojson to parse geographical data, and Lodash to make data manipulation easier.
 
@@ -116,3 +133,7 @@ $ npm install --save bootstrap string
 Now your environment is ready! You should see a default React App page in the browser without errors. Keep `npm start` running as you follow the examples in this book.
 
 Some examples are going to need other libraries. When that happens, I'll remind you to install them.
+
+<!--- end-lecture -->
+
+<!--- end-section -->
