@@ -85,7 +85,7 @@ The `render` method returns different elements based on whether or not we’ve g
 
 If you’ve kept `npm start` running in the background, your browser should flash the loading text then go blank.
 
-![Loading message](images/loading_message.png)
+![Loading message](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/loading_message.png)
 
 Marvelous.
 
@@ -256,7 +256,7 @@ Inside the `return` statement, we make sure our `<svg>` element has a width and 
 
 If you kept `npm start` running, your browser should show something like this:
 
-![Unstyled Histogram](images/unstyled_histogram.png)
+![Unstyled Histogram](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/unstyled_histogram.png)
 
 Wow. So much effort went into those labels, and you can't even see them. Let's add some styling to `src/components/Histogram/style.less` to make the Histogram prettier:
 
@@ -270,7 +270,7 @@ Make sure to `require` the styles in `H1Bgraph/index.jsx`:
 
 Now you should see a histogram like this:
 
-![Basic Histogram](images/base_histogram.png)
+![Basic Histogram](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/base_histogram.png)
 
 ## Wrapping a pure-d3 element in React - an Axis
 
@@ -340,7 +340,7 @@ Great. Now we head back to the Histogram file (`src/components/Histogram/Histogr
 
 That’s it. Your histogram should look like this:
 
-![Histogram with axis](images/axis_histogram.png)
+![Histogram with axis](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/axis_histogram.png)
 
 If it doesn't, you should send me an email, and I'll try to help.
 
@@ -360,7 +360,7 @@ Win-win-win.
 
 We're going to make controls that let users filter data by year. Then, in order to show you how reusable React components are, we're going to add filtering by US state as well. In the full example, I also added filtering by job title, but that would take too long to explain here. The code is easy, but the dataset is a mess.
 
-![Events flow up through callbacks](images/architecture_events.jpg)
+![Events flow up through callbacks](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/architecture_events.jpg)
 
 Remember, we talked about using a Flux-like approach in our [architecture](#the-architecture). That means:
 
@@ -368,7 +368,7 @@ Remember, we talked about using a Flux-like approach in our [architecture](#the-
 - the main component changes its data state
 - React propagates data changes back down through component props
 
-![Updated data flows back down](images/architecture_updates.jpg)
+![Updated data flows back down](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/architecture_updates.jpg)
 
 The only difference between this bi-directional data-flow and a true Flux architecture is that in a true Flux architecture, the data store is separate from the main component. As a result, everyone has a way to affect changes directly on the data store, which means we don't have to mess about with callbacks.
 
@@ -382,7 +382,7 @@ Our controls are going to look like rows of toggleable buttons. Each row represe
 
 The end result will be something like this:
 
-![Histogram with buttons](images/buttons_histogram.png)
+![Histogram with buttons](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/buttons_histogram.png)
 
 We'll build the controls out of three components:
 
@@ -720,7 +720,7 @@ Same as the year filter, different key names.
 
 If all went well, you should have a histogram with two rows of filters underneath. Users can choose a year *and* a US state to filter by.
 
-![Histogram with two filters](images/more_buttons_histogram.png)
+![Histogram with two filters](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/more_buttons_histogram.png)
 
 ## Making disparate components act together
 
@@ -801,7 +801,7 @@ The render:
 
 That's it. If you have `npm start` running in the background, you should see something like this now:
 
-![Histogram with dummy title and description](images/dummy_title_description.png)
+![Histogram with dummy title and description](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/dummy_title_description.png)
 
 ### The title
 
@@ -835,7 +835,7 @@ Note that in the second case, we still have to render both fragments because we 
 
 Your histogram should look like this:
 
-![Histogram with title](images/titled_histogram.png)
+![Histogram with title](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/titled_histogram.png)
 
 Let's fix that description.
 
@@ -890,7 +890,7 @@ This is the sort of assumption that would make a statistics professor cry. But I
 
 You should have a histogram with a nice description now:
 
-![Histogram with description](images/description_histogram.png)
+![Histogram with description](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/description_histogram.png)
 
 Woohoo, you’ve made a histogram of H1B salaries with a title and description and everything changes when the visualization changes. You’re amazing!
 

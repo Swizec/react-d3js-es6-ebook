@@ -5,7 +5,7 @@
 
 Hello new friend! 👋
 
-![This is me, Swizec](images/es6v2/6300d21408f5e9f0c8f5698d266fb258.jpg)
+![This is me, Swizec](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/6300d21408f5e9f0c8f5698d266fb258.jpg)
 
 Welcome to what I hope is the best and most fun React and D3 learning resource on the internet. No TODO apps here, just fun interactive stuff that makes you look great at a dinner party.
 
@@ -193,9 +193,9 @@ Your graph changes. The title changes. The description changes. Everything chang
 
 Look how this H1B salary visualization changes when the user picks a subset of the data to look at.
 
-![Default H1B histogram](images/full_default_h1b.png)
+![Default H1B histogram](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/full_default_h1b.png)
 
-![Changes after user picks a data subset](images/full_changed_h1b.png)
+![Changes after user picks a data subset](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/full_changed_h1b.png)
 
 React + D3: a powerful combination indeed.
 <!--- end-lecture -->
