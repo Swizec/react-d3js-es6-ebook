@@ -1,3 +1,7 @@
+<!--- begin-section title="Animation" -->
+
+<!--- begin-lecture title="Intro" -->
+
 # Animation #
 
 Welcome to the animation section. This is where the real fun begins. Demos that look cool, impress your friends, and sound good at the dinner table.
@@ -23,6 +27,10 @@ You're about to learn two different approaches to building these animations. Usi
 2. Transitions are easier to implement
 
 We're starting with an example or two in CodeSandbox, then building some bigger stuff. No more big huge projects like the [tech salary visualization](#salary-visualization), though. Takes too long to set up and doesn't focus on animation.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Using a game loop for rich animation" -->
 
 {#game-loop}
 # Using a game loop for rich animation
@@ -51,6 +59,14 @@ Make those state changes fast enough and you get 60 frames per second. The hard 
 
 When something speeds up, what does that mean for changes in its position?
 
+<!--- end-lecture -->
+
+<!--- end-section -->
+
+<!--- begin-section title="A bouncy ball game loop example" -->
+
+<!--- begin-lecture title="Begin bouncy ball" -->
+
 ## A bouncing ball game loop example
 
 Let's get our feet wet with my favorite childhood example: a bouncing ball.
@@ -66,6 +82,10 @@ Here is a screenshot of our bouncing ball:
 Exciting, isn't it? Took me five tries to catch it. Future examples will look better as screenshots, I promise.
 
 I suggest you follow along on CodeSandbox. Here's one I prepared for you earlier: [click me](https://codesandbox.io/s/rrwz67jl04)
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 1: stub out App and Ball" -->
 
 ### Step 1: stub out App and Ball
 
@@ -109,6 +129,10 @@ It's these coordinates that we're going to play with to make the ball drop and b
 ---
 
 Those are the boring components. The animation game loop fun happens in `BouncingBall`.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Stub out BouncingBall" -->
 
 ### Step 2: Stub out BouncingBall
 
@@ -163,6 +187,10 @@ D3 timers work like JavaScript's own `setInterval`, but their implementation is 
 
 Unlike `setInterval` timers are also synced so their frames match up, can be restarted, stopped, etc. You should default to favoring `d3.timer` over `setInterval` or hacking your own `requestAnimationFrame` implementation.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 3: Rendering" -->
+
 ### Step 3: Rendering
 
 To render our Ball we have to tweak BouncingBall's `render` method. A small change. Try it yourself first.
@@ -186,6 +214,10 @@ Import our `Ball` component, render it at `x=10` and use `this.state.y` for the 
 A black ball shows up on your screen. Like this:
 
 ![Black ball](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/bouncing-ball.png)
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 4: The Game Loop" -->
 
 ### Step 4: The Game Loop
 
@@ -255,7 +287,11 @@ Here's a CodeSandbox with the [final bouncy ball code](https://codesandbox.io/s/
 
 Experiment with multiple balls. Start them at different heights. Play with different factors in those equations. It's fun if you're a nerd like me.
 
-### Step 5: Correcting for time
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Step 5: Correcting for time and frame drops" -->
+
+### Step 5: Correcting for time and frame drops
 
 If you run the CodeSandbox a few times, you'll notice two bugs. 
 
@@ -307,6 +343,10 @@ We use `frames` to simulate as many frames as we need in a quick loop. Run the s
 
 Try it out on CodeSandbox: [click me for time-fixed bouncy ball](https://codesandbox.io/s/8n3p6720wl)
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Game loop recap" -->
+
 ## Game loop recap
 
 You now know how to build a game loop and use it to run custom animations. 👏
@@ -320,6 +360,14 @@ You now know how to build a game loop and use it to run custom animations. 👏
 Complete control is nice, but the mental acrobatics are not. Getting game loops just right is hard.
 
 And that's why I recommend transitions in most cases. Transitions can handle all of that for you out of the box.
+
+<!--- end-lecture -->
+
+<!--- end-section -->
+
+<!--- begin-section title="Use transitions for simple animation" -->
+
+<!--- begin-lecture title="Transition basics" -->
 
 # Using transitions for simple animation
 
@@ -347,6 +395,14 @@ But don't worry about it. All you have to know is that many easing functions exi
 
 Let's try an example: A swipe transition.
 
+<!--- end-lecture -->
+
+<!--- end-section -->
+
+<!--- begin-section title="Build a simple transition component" -->
+
+<!--- begin-lecture title="A swipe transition component" -->
+
 {#swipe-transition}
 ## Swipe transition
 
@@ -358,6 +414,10 @@ You can see it in action [on CodeSandbox, here](https://codesandbox.io/s/618mr9r
 
 ![Ball on the left before you click](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/ball-swipe-left.png)
 ![Ball on the right before you click](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/ball-swipe-right.png)
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="App.js" -->
 
 ### App.js
 
@@ -399,6 +459,10 @@ When `state.ballLeft` is true, ball renders on the left. When it's false, on the
 
 Ball component handles the rest.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Ball.js" -->
+
 ### Ball.js
 
 You've rendered a ball before: It's an SVG circle. You can make it fancier, but that's not the point. The point are transitions.
@@ -431,6 +495,10 @@ We render a `circle` at `x` coordinate and a random `y` and give it a React ref.
 The interesting part is that we use a constructor to copy our `x` prop into state. That's because we're going to use props as a sort of staging area for what we *want* `x` to be, not what it currently is.
 
 Props change, state stays the same. React doesn't move our ball.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Ball.js state transition" -->
 
 ### Ball.js state transition
 
@@ -472,6 +540,14 @@ After a transition is done, I like to sync React's worldview with what the trans
 
 Play around. Try adding some more transitions. Make the ball move diagonally. Make it go right then down. It's fun. 😊
 
+<!--- end-lecture -->
+
+<!--- end-section -->
+
+<!--- begin-section title="Enter-update-exit animation" -->
+
+<!--- begin-lecture title="Enter-update-exit animation intro" -->
+
 {#enter-exit-animation}
 # Enter/update/exit animation
 
@@ -497,6 +573,10 @@ See?
 
 Easy on paper, but the code is long and weird. That, or I'm bad at implementing it. Either way, it's too tangential to explain here. You can [read the article about it](https://swizec.com/blog/animated-string-diffing-with-react-and-d3/swizec/6952).
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Build a declarative animated alphabet" -->
+
 {#animated-alphabet}
 ## Animated alphabet
 
@@ -508,6 +588,10 @@ We need two components:
  - `Letter`, which renders an SVG text element and takes care of its own enter/update/exit transitions
 
 You can see the full code on GitHub [here](https://github.com/Swizec/react-d3-enter-exit-transitions/blob/master/src/components/Alphabet.jsx).
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Project setup" -->
 
 ### Project setup
 
@@ -531,6 +615,10 @@ const App = () => (
 I follow the convention of putting components in a `src/components` directory. You don't have to.
 
 Remember to install dependencies: d3 and react-transition-group
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="The Alphabet component" -->
 
 ### The Alphabet component
 
@@ -604,6 +692,10 @@ This process ensures our alphabet is both random and in alphabetical order.
 
 Starting the interval in `componentDidMount` ensures it only runs when our Alphabet is on the page. In real life you should stop it on `componentWillUnmount`. Since this is a tiny experiment and we know `<Alphabet>` never unmounts without a page refresh, it's okay to skip that step.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Declarative render for enter-exit transitions" -->
+
 #### Declarative render for enter/exit transitions
 
 Our declarative enter/exit transitions start in the `render` method.
@@ -636,6 +728,10 @@ That's how x-axis transitions work.
 
 You move the letter into a specific place in the alphabet. You'll see what I mean when we look at the `Letter` component.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="TransitionGroup" -->
+
 #### TransitionGroup
 
 React TransitionGroup gives us coordinated control over a set of transitionable components. Each Letter is going to be a `<Transition>`, you'll see.
@@ -651,6 +747,10 @@ We can make this change from within our component, of course. When responding to
 `TransitionGroup` handles that for us. It automatically passes the correct `in` prop to its children based on who is and isn't being rendered.
 
 As an added bonus, we can use TransitionGroup to set a bunch of default parameters for child Transitions. Whether to use `enter` animations, `exit` animations, stuff like that. You can read [a full list in the docs](https://github.com/reactjs/react-transition-group).
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="The Letter component" -->
 
 ### The Letter component
 
@@ -713,6 +813,10 @@ Each of these transition methods is going to follow the same approach you learne
 
 You can make this component more flexible by moving the various magic numbers we use into props. Default `y` offset, transition duration, colors, stuff like that. The world is your oyster my friend.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="onEnter" -->
+
 #### onEnter
 
 We start with the enter transition in the `onEnter` callback. 
@@ -747,6 +851,10 @@ When our transition ends, we update state with the new `y` coordinate, `fillOpac
 
 The result is an invisible letter that starts at -60px and moves into 0px and full visibility over 750 milliseconds.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="onExit" -->
+
 #### onExit
 
 Our exit transition goes in the `onExit` callback.
@@ -775,6 +883,10 @@ Our components never unmount.
 We avoid unmounts to keep transitions smoother. Instead of unmounting, we have to reset state back to its default values.
 
 That moves the letter back into its enter state and ensures even re-used letters drop down from the top. Took me a while to tinker that one out.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="componentDidUpdate" -->
 
 #### componentDidUpdate
 
@@ -828,6 +940,10 @@ Otherwise we check if index changed and if it has, we run a transition in much t
 
 You now have a component that knows how to run its own enter/update/exit transitions. Time to wire it all up in the `render` method.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="render" -->
+
 #### render
 
 Hard work is done. Here's how you render:
@@ -873,7 +989,11 @@ There's a lot more to the API that we can use and you should check that out in t
 
 Inside the transition we render an SVG `<text>` element rendered at an `(x, y)` position with a `color` and `fillOpacity` style. It shows a single letter taken from the `letter` prop.
 
-### That's it
+<!--- end-lecture -->
+
+<!--- begin-lecture title="That's it 👍🏼" -->
+
+### That's it 👍🏼
 
 Boom. We're done.
 
@@ -883,9 +1003,16 @@ You can play with a more complex version of this example here: [http://swizec.gi
 
 The typing example uses the same Letter components to declaratively render its string, but it drives the input through your typing instead of an automatic shuffler.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Key transition takeaways" -->
 
 ### Key takeaways for transitions are:
 
 - use d3 for transitions
 - use React to manage SVG elements
 - use TransitionGroup and Transition for the enter/update/exit pattern
+
+<!--- end-lecture -->
+
+<!--- end-section -->

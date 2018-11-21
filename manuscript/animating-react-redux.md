@@ -1,3 +1,7 @@
+<!--- begin-section title="Animating with React, Redux, and D3" -->
+
+<!--- begin-lecture title="Redux animation intro" -->
+
 {#animating-react-redux}
 # Animating with React, Redux, and d3
 
@@ -17,6 +21,10 @@ It's going to be great.
 Code in this example uses the `.jsx` file extension. I originally wrote it back when that was still a thing, and while I did update everything to React 16+, I felt that changing filenames was unnecessary.
 {/aside}
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Here's how it works" -->
+
 ## Here's how it works
 
 We use **React to render everything**: the page, the SVG element, the particles inside. This lets us tap into React's algorithms that decide which nodes to update and when to garbage collect old nodes.
@@ -33,6 +41,10 @@ When the store updates, **React flushes changes** via props and because **coordi
 
 The result is smooth animation. Just like the game loop example from before.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Some basic terminology" -->
+
 ## Some basic terminology
 
 We're about to throw around some terms. You'll understand what they mean in detail after this chapter.
@@ -46,6 +58,10 @@ Until then, here's a quick glossary so you don't feel lost:
 **Reducers** are functions that take the current state and an action, and use that information to generate a new state.
 
 Got it? No worries. You will soon :)
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="3 presentation components" -->
 
 ## 3 presentation components
 
@@ -212,6 +228,10 @@ Touch events return lists of coordinates. One for each finger. We use only the f
 
 That's it for rendering and user events. [107 lines of code](https://github.com/Swizec/react-particles-experiment/blob/svg-based-branch/src/components/index.jsx).
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="6 Redux Actions" -->
+
 ## 6 Redux Actions
 
 Redux actions are a fancy way of saying *"Yo, a thing happened!"*. They're functions you call to get structured metadata that's passed into Redux reducers.
@@ -245,6 +265,10 @@ Actions *must* have a `type`. Reducers use the type to decide what to do. The re
 You can see [all the actions on GitHub](https://github.com/Swizec/react-particles-experiment/blob/master/src/actions/index.js).
 
 I find this to be the least elegant part of Redux. Makes sense in large applications, but way too convoluted for small apps. Simpler alternatives exist like doing it yourself with React Context.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="1 Container component" -->
 
 ## 1 Container component
 
@@ -426,6 +450,10 @@ To make a change therefore, a Redux loop unfolds:
 So that's the container. 71 lines of boilerplate pretty code.
 
 The remaining piece of the puzzle is our reducer. Two reducers in fact.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="2 Redux Reducers" -->
 
 ## 2 Redux Reducers
 
@@ -654,6 +682,10 @@ To simulate gravity, we update vectors' vertical component using our `Gravity` c
 
 Our reducer is done. Our particle generator works. Our thing animates smoothly. \o/
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="What we learned" -->
+
 ## What we learned
 
 Building a particle generator in React and Redux, we made three important discoveries:
@@ -676,3 +708,7 @@ Here's the recap:
 - animation!
 
 Now let's render to canvas and push this sucker to 20,000 smoothly animated elements. Even on a mobile phone.
+
+<!--- end-lecture -->
+
+<!--- end-section -->

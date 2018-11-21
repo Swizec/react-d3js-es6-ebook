@@ -1,3 +1,7 @@
+<!--- begin-section title="Speed optimizations" -->
+
+<!--- begin-lecture title="Speed intro" -->
+
 # Speed optimizations #
 
 Welcome to the speed optimization chapter. This is where we make our code harder to read and faster to run.
@@ -22,6 +26,14 @@ For the most part, we're going to talk about three things:
 - reaching for WebGL when even Canvas isn't fast enough
 
 We'll start with Canvas because it's the best bang for buck improvement you can make.
+
+<!--- end-lecture -->
+
+<!--- end-section -->
+
+<!--- begin-section title="Using canvas" -->
+
+<!--- begin-lecture title="Intro" -->
 
 # Using canvas
 
@@ -49,6 +61,10 @@ Terrible.
 
 So if SVG is slow and you need to animate thousands of elements, what are you to do? HTML5 Canvas.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Why canvas" -->
+
 ## Why Canvas
 
 Unlike SVG, HTML5 Canvas lets you draw rasterized images. This means you're no longer operating at the level of shapes because you're working with pixels on the screen.
@@ -60,6 +76,10 @@ That's much faster for computers to handle. In some cases browsers can even use 
 Phones these days have amazing GPUs and kind of terrible CPUs in comparison. The CPU burns more battery, works slower, warms up your phone more, etc.
 
 If SVG wasn't so easy to use, I'd almost suggest going straight to Canvas for any sort of complex animation. Mobile traffic is, what, 60% to 70% of web traffic these days?
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Isn't canvas too hard?" -->
 
 ## Isn't that too hard?
 
@@ -75,6 +95,10 @@ If your app allows it, you can use sprites: Tiny images copy-pasted on the Canva
 
 But I'm getting ahead of myself. We'll talk about sprites later.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="The trouble with Canvas" -->
+
 ## The trouble with HTML5 Canvas
 
 The tricky thing with HTML5 Canvas is that the API is low level and that canvas is flat. As far as your JavaScript and React code are concerned, it's a flat image. It could be anything.
@@ -88,6 +112,10 @@ As you can imagine, this becomes cumbersome. And you still can't detect user int
 At the same time, the low level API makes abstractions difficult. You can't create components for "this is a map" or "histogram goes here". You're always down to circles and rectangles and basic shapes.
 
 Your code soon looks like the D3.js spaghetti we tried to avoid in the first place.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Declarative Canvas with Konva and react-konva" -->
 
 # Declarative HTML5 Canvas with Konva and react-konva
 
@@ -107,6 +135,14 @@ Let's try out two examples:
 
 1. Pushing our particle generator to 20,000 elements
 2. An n-body collision simulator built with MobX
+
+<!--- end-lecture -->
+
+<!--- end-section -->
+
+<!--- begin-section title="Smooth animation with 20,000+ elements" -->
+
+<!--- begin-lecture title="A particle generator pushed to the max" -->
 
 {#canvas-react-redux}
 ## A particle generator pushed to 20,000 elements with Canvas
@@ -135,6 +171,10 @@ $ npm install --save konva react-konva
 {aside}
 react-konva is a thin wrapper on Konva itself. There's no need to think about it as its own thing. For the most part, you can go into the Konva docs, read about something, and it Just Works™ in react-konva.
 {/aside}
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Prepare canvas layer" -->
 
 ### Preparing a canvas layer
 
@@ -171,6 +211,10 @@ class App extends Component {
 We import `Stage` from `react-konva`, then use it instead of the `<svg>` element in the `render` method. It gets a `width` and a `height`.
 
 Inside, we render the `Particles` component. It's going to create a Konva layer and use low-level Canvas methods to render particles as sprites.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Use sprites for max redraw speed" -->
 
 ### Using sprites for max redraw speed
 
@@ -348,6 +392,10 @@ A `FastLayer` is faster than a `Layer`. It's in the name. Ignoring mouse events 
 
 This was empirically the fastest solution with the most particles on screen.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="But why so many elements?" -->
+
 ### But why, Swizec?
 
 I'm glad you asked. This was a silly example. I devised the experiment because at my first React+D3 workshop somebody asked, *"What if we have thousands of datapoints, and we want to animate all of them?"*. I didn't have a good answer.
@@ -355,6 +403,14 @@ I'm glad you asked. This was a silly example. I devised the experiment because a
 Now I do. You put them in Canvas. You drive the animation with a game loop. You're good.
 
 You can even do it as an overlay. Have an SVG for your graphs and charts, overlay with a transparent canvas for your high speed animation.
+
+<!--- end-lecture -->
+
+<!--- end-section -->
+
+<!--- begin-section title="Build a small interactive canvas game" -->
+
+<!--- begin-lecture title="A declarative billiards simulation with MobX, Canvas, and Konva" -->
 
 {#billiards-simulation}
 ## Build a declarative billiards simulation with MobX, Canvas, and Konva
@@ -371,6 +427,10 @@ We're using React and Konva to render our 11 marbles on an HTML5 Canvas element,
 You can see the finished [code on Github](https://github.com/Swizec/declarative-canvas-react-konva) and play around with a [hosted version](https://swizec.github.io/declarative-canvas-react-konva/) of the code you're about to build.
 
 I know this example comes late in the book, and you're feeling like you know all there is to React and visualizations. You can think of this example as practice. Plus it's a good way to learn the basics of MobX.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Decorators" -->
 
 ### Decorators
 
@@ -398,6 +458,10 @@ You can write the same code like this:
 Not much of a difference, but it becomes better looking when you work with classes or combine multiple decorators. That's when they shine. No more `})))}))` at the end of your functions.
 
 By the way, `inject` is to MobX much like `connect` is to Redux. I'll explain in a bit.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Part 0: Some setup" -->
 
 ### Part 0: Some setup
 
@@ -434,6 +498,10 @@ $ npm install --save konva react-konva mobx mobx-react d3-timer d3-scale d3-quad
 
 This gives you Konva, MobX, and the parts of D3 that we need. You're now ready to build the billiards game.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="A quick MobX primer" -->
+
 ### A quick MobX primer
 
 Explaining MobX in detail is beyond the scope of this book. You can learn it by osmosis as you follow the code in our billiards example.
@@ -455,6 +523,10 @@ That's all you need to know. Once your component is an `@observer`, you never ha
 Making your component an observer and injecting the global store is the same as using `connect` in Redux. It gives your component access to your state, and it triggers a re-render when something  changes.
 
 Importantly, it *doesn't* trigger a re-render when something that the component isn't using changes. That little tidbit is what makes many other reactive libraries difficult to use.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Part 1: Rendering our marbles" -->
 
 ### Part 1: Rendering our marbles
 
@@ -794,6 +866,10 @@ The `@computed` getters make it easier to access `MarbleDefinitions`. `marbleTyp
 
 Running your code won't work just yet. We need the physics store first because it defines marble positions.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Part 2: Building the physics" -->
+
 ### Part 2: Building the physics
 
 Our whole physics engine fits into a single MobX store. It contains the collision detection, marble movement calculations, and drives the game loop itself.
@@ -930,6 +1006,10 @@ class Physics {
 `shoot` and `startGameLoop` are the simplest functions in our physics engine. `startGameLoop` gets the initial `marbles` array and starts a D3 timer. `shoot` updates a specific marble's coordinates and speed vector.
 
 👌
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Collision detection" -->
 
 #### simulationStep – where collisions collision
 
@@ -1110,6 +1190,14 @@ Two marbles traveling towards each other in exactly opposite directions with exa
 
 The end result is [a decent-looking simulation of billiards](https://swizec.github.io/declarative-canvas-react-konva/). 
 
+<!--- end-lecture -->
+
+<!--- end-section -->
+
+<!--- begin-lecture title="Speedy React alternatives" -->
+
+<!--- begin-lecture title="Using a React alternative like Preact or Inferno" -->
+
 {#fractal-tree}
 # Using a React alternative like Preact or Inferno
 
@@ -1122,6 +1210,10 @@ We've been using React so far, and that's worked great. React is fast, easy to u
 Both Preact and Inferno have a `-compat` project that lets you convert existing React projects without any code modifications. While React has gotten much faster in recent years, so have Preact and Inferno. You should give them a try.
 
 I know Uber uses Preact for their Uber lite mobile app.
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Stress test your framework with a recursive fractal" -->
 
 ## Stress test your framework with a recursive fractal
 
@@ -1335,6 +1427,10 @@ When we feed a change to `this.setState`, it triggers a re-render of the entire 
 
 Beautious. :heart_eyes:
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Stress testing Preact and Inferno" -->
+
 ## Trying the stress test in Preact and Inferno
 
 The Pythagoras tree example got converted into 6 different UI libraries: React, Preact, Inferno, Vue, Angular 2, and CycleJS.
@@ -1421,3 +1517,7 @@ class App extends Component {
 In the core `Pythagoras` component, he added two Inferno-specific props: `noNormalize` and `hasNonKeyedChildren`.
 
 According to [this issue](https://github.com/trueadm/inferno/issues/565), `noNormalize` is a benchmark-focused flag that improves performance, and I can't figure out what `hasNonKeyedChildren` does. I assume both are performance optimizations for the Virtual DOM diffing algorithm.
+
+<!--- end-lecture -->
+
+<!--- end-section -->
