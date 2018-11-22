@@ -169,7 +169,7 @@ $ npm start
 
 <!--- end-lecture -->
 
-<!--- begin-lecture title="Foreword" -->
+<!--- begin-lecture title="Why React and D3" -->
 
 # Why React and D3
 
