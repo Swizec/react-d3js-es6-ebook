@@ -410,9 +410,10 @@ You can even do it as an overlay. Have an SVG for your graphs and charts, overla
 
 <!--- begin-section title="Build a small interactive canvas game" -->
 
-<!--- begin-lecture title="A declarative billiards simulation with MobX, Canvas, and Konva" -->
-
 {#billiards-simulation}
+
+<!--- begin-lecture title="Simulating billiards with MobX, Canvas, and Konva" -->
+
 ## Build a declarative billiards simulation with MobX, Canvas, and Konva
 
 ![Billiards game](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/billiards-start.png)
