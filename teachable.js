@@ -125,9 +125,11 @@ function pandocifyLfmCodeBlocks(sourceFileBody) {
     const destAttrsStr = destAttrs.length > 0 ? `{${destAttrs.join(" ")}}` : "";
 
     const replacement = `
+
 \`\`\`${destAttrsStr}
 ${code}
 \`\`\`
+
 `;
     return log("replacement")(replacement);
   }
