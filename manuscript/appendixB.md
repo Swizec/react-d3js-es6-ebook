@@ -214,4 +214,4 @@ And you might want to set up your text editor to understand JSX files. I'm using
 
 If `grunt` complains about missing files, that's normal. We're going to create them in the next section. But if it's bugging you too much, just create them as empty files.
 
-You can also refer to the stub project included with the book if something went wrong. If that doesn't help, Google is your friend. You can also poke me on Twitter (@Swizec) or send me an email at swizec@swizec.com.
+You can also refer to the stub project included with the book if something went wrong. If that doesn't help, Google is your friend. You can also poke me on Twitter ([\@Swizec](https://twitter.com/swizec)) or send me an email at [swizec@swizec.com](mailto:swizec@swizec.com).
