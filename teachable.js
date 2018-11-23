@@ -51,15 +51,17 @@ function pandocifyMarkuaCodeBlocks(sourceFileBody) {
     const destAttrsStr = destAttrs.length > 0 ? `{${destAttrs.join(" ")}}` : "";
 
     const replacement = `
-\`\`\`${destAttrsStr}
+
+\`\`\` ${destAttrsStr}
 ${code}
 \`\`\`
+
 `;
     return log("replacement")(replacement);
   }
 
   const result = sourceFileBody.replace(
-    /\n{(.+)}\n```(.*)\n([\s\S]*?)\n```\n/g,
+    /\n\n{(.+)}\n```(.*)\n([\s\S]*?)\n```\n\n/g,
     replacer
   );
   return result;
