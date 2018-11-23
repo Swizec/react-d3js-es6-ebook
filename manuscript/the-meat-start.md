@@ -1668,7 +1668,7 @@ All you have to remember right now is that callbacks evolve from passing low-lev
 
 When the final callback is invoked, `App` updates its repository of truth – `this.state` – and communicates the change back down the chain via props. No additional wiring needed on your part. React's got you covered. 
 
-![Data flows down](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/architecture_dataflow.jpg)
+![Data flows down](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/architecture_dataflow.png)
 
 You can think of it like calling functions with new arguments. Because the functions – components – render the UI, your interface updates.
 
