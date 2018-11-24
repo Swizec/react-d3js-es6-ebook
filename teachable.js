@@ -231,10 +231,11 @@ function transcludeMarkuaCodeSamples(sourceFileBody) {
       .forEach(destAttr => destAttrs.push(destAttr));
 
     const destAttrsStr =
-      destAttrs.length > 0 ? `{${destAttrs.join(", ")}}` : "";
+      destAttrs.length > 0 ? `{${destAttrs.join(", ")}}\n` : "";
 
     const replacement = `
-\`\`\`${destAttrsStr}
+
+${destAttrsStr}\`\`\`
 ${code}
 \`\`\`
 
@@ -243,7 +244,7 @@ ${code}
   }
 
   const result = sourceFileBody.replace(
-    /\n({.*}\n)?!\[(.*)\]\((code_samples.+)\)\n\n/g,
+    /\n\n({.*}\n)?!\[(.*)\]\((code_samples.+)\)\n\n/g,
     replacer
   );
   return result;
