@@ -24,15 +24,10 @@ function pandocifyMarkuaCodeBlocks(sourceFileBody) {
       [discard, beforeIdAttr, idAttr, afterIdAttr] = idMatch;
       attributes = beforeIdAttr + afterIdAttr;
     }
-    const attrRegExp = /\s*(.+): "(.*)"/;
     const srcAttrs = attributes.split(/\s*,\s*/).reduce((srcAttrs, chunk) => {
-      const srcAttrMatches = chunk.match(attrRegExp);
-      // log("srcAttrMatches")(json(srcAttrMatches));
-      const [key, value] = srcAttrMatches
-        ? [srcAttrMatches[1], srcAttrMatches[2]]
-        : [null, null];
+      const [key, value] = chunk.split(/\s*:\s*/).map(fp.trimChars(' "'));
       const result = Object.assign({}, srcAttrs);
-      if (key !== null && value !== null) result[key] = value;
+      if (key && value) result[key] = value;
       return result;
     }, {});
 
