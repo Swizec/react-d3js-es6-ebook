@@ -124,7 +124,7 @@ d3.tsv("data.tsv", function(d) {
 
 Can you tell what's going on? I'd need to read it pretty carefully.
 
-Which brings us to 👇
+Which brings us to 👉
 
 <!--- end-lecture -->
 
