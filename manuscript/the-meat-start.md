@@ -512,7 +512,7 @@ List borrowed from [a wonderful Smashing Magazine article](https://www.smashingm
 
 > React.js components for modular charting and data visualization
 
-[Victory.js logo](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/victoryjs.gif)](http://formidable.com/open-source/victory/)
+[![Victory.js logo](https://raw.githubusercontent.com/hsribei/react-d3js-es6-ebook/teachable-only/manuscript/resources/images/2018/victoryjs.jpg)](http://formidable.com/open-source/victory/)
 
 Victory offers low level components for basic charting and reimplements a lot of D3's API. Great when you need to create basic charts without a lot of customization. Supports React Native.
 
@@ -549,7 +549,7 @@ My favorite feature of Victory is that components use fake random data until you
 
 > A composable charting library built on React components
 
-[Recharts homepage](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/recharts.png)
+[![Recharts homepage](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/recharts.png)](http://recharts.org/)
 
 Recharts is like a more colorful Victory. A pile of charting components, some customization, loves animating everything by default.
 
@@ -588,7 +588,7 @@ Recharts hits a great balance of flexibility and ease ... unless you don't like 
 
 > nivo provides a rich set of dataviz components, built on top of the awesome d3 and Reactjs libraries.
 
-[Nivo homepage](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/nivo.gif)
+[![Nivo homepage](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/nivo.gif)](https://nivo.rocks/)
 
 Nivo is another attempt to give you a set of basic charting components. Comes with great interactive documentation, support for Canvas and API rendering. Plenty of basic customization.
 
@@ -625,7 +625,7 @@ Wonderful! But means you have to learn a whole new language of configs and props
 
 > vx is collection of reusable low-level visualization components. vx combines the power of d3 to generate your visualization with the benefits of react for updating the DOM.
 
-[VX](vx.png)
+[![VX](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/vx.png)](https://vx-demo.now.sh/)
 
 VX is the closest to the approaches you're learning in this book. React for rendering, D3 for calculations. When you build a set of custom components for your organization, a flavor of VX is what you often come up with.
 
