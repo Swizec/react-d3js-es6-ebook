@@ -1574,7 +1574,7 @@ I'm using styled-components to define the CSS for my Datapoint. You can use what
 
 The component itself renders a styled circle using props for positioning and a radius of 3 pixels.
 
-![Finished scatterplot](scatterplot-finished.png)
+![Finished scatterplot](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/scatterplot-finished.png)
 
 For an extra challenge, try rendering circle radius from state and changing datapoint size on mouse over. Make the scatterplot interactive.
 
