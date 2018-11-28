@@ -324,6 +324,8 @@ let shapes = d3.scaleOrdinal()
 
 [Play with scales on CodeSandbox](https://codesandbox.io/s/r0rw72z75o)
 
+<iframe src="https://codesandbox.io/embed/r0rw72z75o?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+
 Once you have this scale, you can use it to translate from shapes to colors. `shapes('red triangle')` returns `'red'` for example.
 
 Many different types of scales exist. Linear, logarithmic, quantize, etc. Any basic transformation you can think of exists. The rest you can create by writing custom scales.
@@ -518,6 +520,8 @@ Victory offers low level components for basic charting and reimplements a lot of
 
 Here's what it takes to implement a Barchart using Victory.js. [You can try it on CodeSandbox](https://codesandbox.io/s/3v3q013x36)
 
+<iframe src="https://codesandbox.io/embed/3v3q013x36?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+
 {caption: "Bar chart in Victory.js", line-numbers: false}
 ```javascript
 const data = [
@@ -554,6 +558,8 @@ My favorite feature of Victory is that components use fake random data until you
 Recharts is like a more colorful Victory. A pile of charting components, some customization, loves animating everything by default.
 
 Here's what it takes to implement a Barchart using Recharts. [You can try it on CodeSandbox](https://codesandbox.io/s/mmkrjl7qxp)
+
+<iframe src="https://codesandbox.io/embed/mmkrjl7qxp?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 {code-samples: "Bar chart in Recharts", line-numbers: false}
 ```javascript
@@ -594,6 +600,8 @@ Nivo is another attempt to give you a set of basic charting components. Comes wi
 
 Here's what it takes to implement a Barchart using Nivo. [You can try it on CodeSandbox](https://codesandbox.io/s/n1wwkvq24)
 
+<iframe src="https://codesandbox.io/embed/n1wwkvq24?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+
 {caption: "Bar chart in Nivo", line-numbers: false}
 ```javascript
 const data = [
@@ -632,6 +640,8 @@ VX is the closest to the approaches you're learning in this book. React for rend
 That's why I recommend teams use VX when they need to get started quickly.
 
 Here's what it takes to implement a Barchart using Nivo. [You can try it on CodeSandbox](https://codesandbox.io/s/k5853pryrv)
+
+<iframe src="https://codesandbox.io/embed/k5853pryrv?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 {caption: "Bar chart built in VX", line-numbers: false}
 ```javascript
@@ -761,6 +771,8 @@ d3.select('svg')
 
 You can [try it out on CodeSandbox](https://codesandbox.io/s/v6ovkow8q3).
 
+<iframe src="https://codesandbox.io/embed/v6ovkow8q3?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+
 If this code doesn't make any sense, don't worry. There's a bunch of D3 to learn, and I'll help you out. If it's obvious, you're a pro! This book will be much quicker to read.
 
 We start with a linear scale that has a domain `[0, 10]` and a range `[0, 200]`. Scales are like mathematical functions that map a domain to a range. In this case, calling `scale(0)` returns `0`, `scale(5)` returns `100`, `scale(10)` returns `200`. Just like a linear function from math class – y = kx + n.
@@ -823,6 +835,8 @@ That wasn't so bad, was it?
 
 [Try it out on Codesandbox](https://codesandbox.io/s/3xy2jr1y5m).
 
+<iframe src="https://codesandbox.io/embed/3xy2jr1y5m?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+
 You can make the axis more useful by getting positioning, scale, and orientation from props. We'll do that in our big project.
 
 ### Practical exercise
@@ -830,6 +844,8 @@ You can make the axis more useful by getting positioning, scale, and orientation
 Try implementing those as an exercise. Make the axis more reusable with some carefully placed props.
 
 Here's my solution, if you get stuck 👉 [https://codesandbox.io/s/5ywlj6jn4l](https://codesandbox.io/s/5ywlj6jn4l)
+
+<iframe src="https://codesandbox.io/embed/5ywlj6jn4l?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 <!--- end-lecture -->
 
@@ -899,6 +915,8 @@ You know this code! We copy pasted our axis rendering code from before, wrapped 
 
 Play with this example on [Codesandbox, here](https://codesandbox.io/s/5v21r0wo4x).
 
+<iframe src="https://codesandbox.io/embed/5v21r0wo4x?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+
 <!--- end-lecture -->
 
 <!--- begin-lecture title="D3blackbox magic trick - render anything in 30 seconds" -->
@@ -915,6 +933,8 @@ We can try it on the example barchart from before.
 You can [try it online](https://cdn.rawgit.com/mbostock/3885304/raw/a91f37f5f4b43269df3dbabcda0090310c05285d/index.html). When you hover on a bar, it changes color. Pretty neat.
 
 I recommend you follow along in a CodeSandbox. If you fork the [react-d3-axis-hoc CodeSandbox](https://codesandbox.io/s/5v21r0wo4x) that will be easiest.
+
+<iframe src="https://codesandbox.io/embed/5v21r0wo4x?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 You should already have the `D3blackbox` HOC. If you don't, make a new file and paste it in.
 
@@ -1108,6 +1128,8 @@ We don't have to worry about updating D3 objects on prop changes. Work done 👌
 
 We're building a scatterplot of random data. You can see the [final solution on CodeSandbox](https://codesandbox.io/s/1zlp4jv494)
 
+<iframe src="https://codesandbox.io/embed/1zlp4jv494?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+
 Here's the approach 👇
 
 - stub out the basic setup
@@ -1253,6 +1275,8 @@ In the `return` statement of our `render` render method, we add a `data.map` wit
 
 You can reuse axes from our earlier exercise. Or copy mine from [the CodeSandbox](https://codesandbox.io/s/1zlp4jv494)
 
+<iframe src="https://codesandbox.io/embed/1zlp4jv494?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+
 Mine take a scale and orientation as props, which makes them more flexible. Means we can use the same component for both the vertical and horizontal axis on our Scatterplot.
 
 Put the axis code in `Axis.js`, then augment the Scatterplot like this 👇
@@ -1315,6 +1339,8 @@ Let's update our scatterplot so it can deal with resizing and updating data.
 - update scales in `getDerivedStateFromProps`
 
 You can see [my final solution on CodeSandbox](https://codesandbox.io/s/ll9kp8or0l). I recommend you follow along updating your existing code.
+
+<iframe src="https://codesandbox.io/embed/ll9kp8or0l?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 #### Resize scatterplot on click
 
@@ -1484,6 +1510,8 @@ Steps 👇
 - make datapoint component look nice
 
 You can see [my solution on CodeSandbox](https://codesandbox.io/s/j73xlyr8v5). I recommend you follow along with your existing code.
+
+<iframe src="https://codesandbox.io/embed/j73xlyr8v5?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 ### Pass in a render prop
 
