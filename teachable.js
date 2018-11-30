@@ -521,30 +521,40 @@ function runShellCommand(
 }
 
 const fullGfmAbsolutePath = path.resolve(buildDirAbsolutePath, "full-gfm.md");
-const pandocCommand = `pandoc -f markdown -t gfm -o ${fullGfmAbsolutePath} ${fullPandocMarkdownAbsolutePath}`;
+const pandocToGfmCommand = `pandoc -f markdown -t gfm -o ${fullGfmAbsolutePath} ${fullPandocMarkdownAbsolutePath}`;
 
-runShellCommand(pandocCommand);
+runShellCommand(pandocToGfmCommand);
 
-function splitIntoSectionsAndLectures() {
-  const fullGfmBody = fs.readFileSync(fullGfmAbsolutePath, {
-    encoding: "utf8"
-  });
+const fullHtmlAbsolutePath = path.resolve(
+  buildDirAbsolutePath,
+  "full-html.html"
+);
+const pandocToHtmlCommand = `pandoc -f markdown -t html -o ${fullHtmlAbsolutePath} -s ${fullPandocMarkdownAbsolutePath} && npx juice ${fullHtmlAbsolutePath} ${fullHtmlAbsolutePath}`;
 
-  const gfmContentRepoAbsolutePath = path.resolve(
-    buildDirAbsolutePath,
-    "content"
-  );
-  const destContentAbsolutePath = path.resolve(
-    gfmContentRepoAbsolutePath,
-    "teachable-gfm-markdown"
-  );
+runShellCommand(pandocToHtmlCommand);
 
+function splitIntoSectionsAndLectures({
+  fullBodyAbsolutePath,
+  destRepoAbsolutePath,
+  destRepoContentPath
+}) {
   runShellCommand(
-    `git clone git@github.com:hsribei/content.git ${gfmContentRepoAbsolutePath}`,
+    `git clone git@github.com:hsribei/content.git ${destRepoAbsolutePath}`,
     "Couldn't clone repo. Probably because it's already cloned."
   );
 
+  const destContentAbsolutePath = path.join(
+    destRepoAbsolutePath,
+    destRepoContentPath
+  );
+
   rimraf.sync(destContentAbsolutePath, null, e => console.log(e));
+
+  const fullBody = fs.readFileSync(fullBodyAbsolutePath, {
+    encoding: "utf8"
+  });
+
+  const extension = path.extname(fullBodyAbsolutePath);
 
   let sectionDirectoryName = "";
   let lectureFileName = "";
@@ -552,7 +562,7 @@ function splitIntoSectionsAndLectures() {
   let lectureIndex = 0;
   let srcLineIndex = 0;
   let destLines = [];
-  const srcLines = fullGfmBody.split("\n");
+  const srcLines = fullBody.split("\n");
 
   while (srcLineIndex < srcLines.length) {
     const srcLine = srcLines[srcLineIndex];
@@ -591,7 +601,9 @@ function splitIntoSectionsAndLectures() {
       const lectureTitle = srcLine.match(/title="(.*)"/)[1];
       lectureFileName = `s${fp.padCharsStart("0")(2)(
         sectionIndex
-      )}e${fp.padCharsStart("0")(2)(lectureIndex)} - ${lectureTitle}.md`;
+      )}e${fp.padCharsStart("0")(2)(
+        lectureIndex
+      )} - ${lectureTitle}${extension}`;
       lectureIndex++;
       destLines = [];
     } else if (
@@ -608,8 +620,38 @@ function splitIntoSectionsAndLectures() {
 
     srcLineIndex++;
   }
+}
 
-  const githubPushCommand = `cd ${gfmContentRepoAbsolutePath} && git add . && git commit -m "Automated commit" && git push origin master && cd -`;
+function deployMarkdownFiles() {
+  const fullBodyAbsolutePath = fullGfmAbsolutePath;
+  const destRepoAbsolutePath = path.resolve(buildDirAbsolutePath, "content");
+  const destRepoContentPath = "teachable-gfm-markdown";
+
+  splitIntoSectionsAndLectures({
+    fullBodyAbsolutePath,
+    destRepoAbsolutePath,
+    destRepoContentPath
+  });
+
+  deployChanges(destRepoAbsolutePath);
+}
+
+function deployHtmlFiles() {
+  const fullBodyAbsolutePath = fullHtmlAbsolutePath;
+  const destRepoAbsolutePath = path.resolve(buildDirAbsolutePath, "content");
+  const destRepoContentPath = "teachable-html";
+
+  splitIntoSectionsAndLectures({
+    fullBodyAbsolutePath,
+    destRepoAbsolutePath,
+    destRepoContentPath
+  });
+
+  deployChanges(destRepoAbsolutePath);
+}
+
+function deployChanges(destRepoAbsolutePath) {
+  const githubPushCommand = `cd ${destRepoAbsolutePath} && git add . && git commit -m "Automated commit" && git push origin master && cd -`;
 
   runShellCommand(
     githubPushCommand,
@@ -617,4 +659,5 @@ function splitIntoSectionsAndLectures() {
   );
 }
 
-splitIntoSectionsAndLectures();
+deployMarkdownFiles();
+deployHtmlFiles();
