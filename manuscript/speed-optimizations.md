@@ -1137,7 +1137,7 @@ We're using [`d3-quadtree`](https://github.com/d3/d3-quadtree) for the quadtree 
 
 To avoid detecting each marble as colliding with itself, we take each marble out of our list before feeding the quadtree.
 
-Once we have a quadtree, we use `.find` to look for the nearest marble within two radiuses – `MarbleR*2` – of the current marble. That's exactly the one we're colliding with! :smile:
+Once we have a quadtree, we use `.find` to look for the nearest marble within two radiuses – `MarbleR*2` – of the current marble. That's exactly the one we're colliding with! 😄
 
 **Handling collisions with marbles** involves math. The sort of thing you think you remember from high school, and suddenly realize you don't when the time comes to use it.
 
@@ -1426,7 +1426,7 @@ When we feed a change to `this.setState`, it triggers a re-render of the entire 
 
 ![Dancing Pythagoras tree](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/pythagoras-dancing.gif)
 
-Beautious. :heart_eyes:
+Beautious. 😍
 
 <!--- end-lecture -->
 

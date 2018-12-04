@@ -568,7 +568,7 @@ render() {
 }
 ```
 
-We call our dataset `filteredTechSalaries` because we're going to add filtering in the [subchapter about adding user controls](#user-controls). Using the proper name now means less code to change later. The magic of foresight :smile:
+We call our dataset `filteredTechSalaries` because we're going to add filtering in the [subchapter about adding user controls](#user-controls). Using the proper name now means less code to change later. The magic of foresight 😄
 
 We use `_.groupBy` to build a dictionary mapping each `countyID` to an array of salaries, and we use our `countyValue` method to build an array of counties for our map.
 
@@ -1374,7 +1374,7 @@ At the end of this section, you'll have a full visualization of the shortened da
 
 We begin with the title because it shows up first.
 
-We start with an import in `App.js` and add it to the render method. You know the drill :smile:
+We start with an import in `App.js` and add it to the render method. You know the drill 😄
 
 {format: javascript, caption: "Adding Title to main App component"}
 ```
@@ -1627,14 +1627,14 @@ We're using a quick approach where everything fits into a functional React compo
 
 Inside `src/App.js`, we first have to add an import, then extract the median household value from state, and in the end, add `MedianLine` to the render method.
 
-Let's see if we can do it in a single code block :smile:
+Let's see if we can do it in a single code block 😄
 
 {crop-start: 282, crop-end: 317, format: javascript, line-numbers: false}
 ![Adding MedianLine to App.js](code_samples/es6v2/App.js)
 
 You probably don't remember `medianIncomesByUSState` anymore. We set it up way back when [tying datasets together](#tie-datasets-together). It groups our salary data by US state.
 
-See, using good names helps :smile:
+See, using good names helps 😄
 
 When rendering `MedianLine`, we give it sizing and positioning props, the dataset, a `value` accessor, and the median value to show. We could make it smart enough to calculate the median, but the added flexibility of a prop felt right.
 
@@ -1850,7 +1850,7 @@ Rectangle, `500` to the right, `0` from top, `600` wide and `500` tall, with a w
 
 We render the `Controls` component just after `</svg>` because it's not an SVG component – it uses normal HTML. Unlike other components, it needs our entire dataset as `data`. We use the `updateDataFilter` prop to say which callback function it should call when a new filter is ready.
 
-If this seems roundabout ... I've seen worse. The callbacks approach makes our app easier to componentize and keeps the code relatively unmessy. Imagine putting everything we've done so far in `App`! :laughing:
+If this seems roundabout ... I've seen worse. The callbacks approach makes our app easier to componentize and keeps the code relatively unmessy. Imagine putting everything we've done so far in `App`! 😆
 
 <!--- end-lecture -->
 
@@ -2268,7 +2268,7 @@ Two more rows of filters show up.
 
 ![All the filters](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/all-filters.png)
 
-:clap:
+👏
 
 Again, if it didn't work, consult [the diff on GitHub](https://github.com/Swizec/react-d3js-step-by-step/commit/a45c33e172297ca1bbcfdc76733eae75779ebd7f).
 
