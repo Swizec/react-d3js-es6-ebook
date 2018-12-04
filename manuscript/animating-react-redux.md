@@ -680,7 +680,7 @@ We now have an array full of old and new particles. We remove all out-of-bounds 
 
 To simulate gravity, we update vectors' vertical component using our `Gravity` constant. That makes particles fall down faster and faster creating a nice parabola.
 
-Our reducer is done. Our particle generator works. Our thing animates smoothly. \o/
+Our reducer is done. Our particle generator works. Our thing animates smoothly. \\o/
 
 <!--- end-lecture -->
 

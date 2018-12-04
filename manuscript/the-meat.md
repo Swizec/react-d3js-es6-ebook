@@ -894,6 +894,6 @@ You should have a histogram with a nice description now:
 
 Woohoo, you’ve made a histogram of H1B salaries with a title and description and everything changes when the visualization changes. You’re amazing!
 
-Now you know how to make React and d3.js work together. \o/
+Now you know how to make React and d3.js work together. \\o/
 
 In the next section, we're going to look at something fancier - advanced animations, using Redux, and a potential way to make simple games.
