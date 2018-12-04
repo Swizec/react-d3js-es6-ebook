@@ -28,7 +28,7 @@ console.log(process.argv);
 fetch("https://www.gitcdn.xyz/repo/github/gemoji/master/db/emoji.json")
   .then(res => res.json())
   .then(json => {
-    const textFilePaths = sync(["**/*.md", "**/*.txt"], {
+    const textFilePaths = sync(["manuscript/**/*.md", "manuscript/**/*.txt"], {
       ignore: "node_modules/*"
     });
     console.log({ textFilePaths });
