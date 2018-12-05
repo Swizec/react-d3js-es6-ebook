@@ -1195,7 +1195,7 @@ The end result is [a decent-looking simulation of billiards](https://swizec.gith
 
 <!--- end-section -->
 
-<!--- begin-lecture title="Speedy React alternatives" -->
+<!--- begin-section title="Speedy React alternatives" -->
 
 <!--- begin-lecture title="Using a React alternative like Preact or Inferno" -->
 
@@ -1238,7 +1238,7 @@ We're using a `<Pythagoras>` component for each square and its two children, a D
 
 The `<Pythagoras>` component looks like this:
 
-{caption: "Recursive <Pythagoras> component", line-numbers: false}
+{caption: "Recursive <Pythagoras> component", line-numbers: false, format: javascript}
 ```
 const Pythagoras = ({ w, x, y, heightFactor, lean, left, right, lvl, maxlvl }) => {
     if (lvl >= maxlvl || w < 1) {
@@ -1298,7 +1298,7 @@ Most of this code deals with passing props  to children, which isn't the most el
 
 I don't _really_ understand this math, but I sort of know where it's coming from. It's the [sine law](https://en.wikipedia.org/wiki/Law_of_sines) applied correctly. The part I failed at [when I tried](https://swizec.com/blog/fractals-react/swizec/7233) to do it myself.
 
-{caption: "Trigonometry that moves our fractal", line-numbers: false}
+{caption: "Trigonometry that moves our fractal", line-numbers: false, format: javascript}
 ```
 const memoizedCalc = function () {
     const memo = {};
@@ -1345,7 +1345,7 @@ This, however, would be far too tricky to implement.
 
 Inside [`App.js`](https://github.com/Swizec/react-fractals/blob/master/src/App.js), we add a mouse event listener. We use D3's because it gives us SVG-relative position calculation out of the box. With React's, we'd have to do the hard work ourselves.
 
-{caption: "Reacting to mouse movement", line-numbers: false}
+{caption: "Reacting to mouse movement", line-numbers: false, format: javascript}
 ```
 // App.js
 state = {
@@ -1402,7 +1402,7 @@ The `lean` parameter tells us which way the tree is leaning and how much, the `h
 
 That happens in `onMouseMove`:
 
-{caption: "Moving the fractal as user moves mouse", line-numbers: false}
+{caption: "Moving the fractal as user moves mouse", line-numbers: false, format: javascript}
 ```
 onMouseMove(event) {
 	const [x, y] = d3mouse(this.refs.svg),
@@ -1458,7 +1458,7 @@ In `package.json`, he added `preact`, `preact-compat`, and preact -compat clones
 
 He changed the functional `Pythagoras` component into a stateful component to enable async rendering.
 
-{caption: "Change <Pythagoras> to a class", line-numbers: false}
+{caption: "Change <Pythagoras> to a class", line-numbers: false, format: javascript}
 ```
 // src/Pythagoras.js
 export default class {
@@ -1470,7 +1470,7 @@ export default class {
 
 And enabled debounced asynchronous rendering:
 
-{caption: "Debounce rendering", line-numbers: false}
+{caption: "Debounce rendering", line-numbers: false, format: javascript}
 ```
 // src/index.js
 import { options } from 'preact';
@@ -1499,7 +1499,7 @@ From there, the main changes are to the imports – React becomes Inferno – 
 
 He also had to change a string-based ref into a callback ref. Inferno doesn't do string-based refs for performance reasons, and we need refs so we can use D3 to detect mouse position on SVG.
 
-{caption: "Change ref to callback", line-numbers: false}
+{caption: "Change ref to callback", line-numbers: false, format: javascript}
 ```
 // src/App.js
 
