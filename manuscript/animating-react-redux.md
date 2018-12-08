@@ -11,7 +11,7 @@ We're making tiny circles fly out of your mouse cursor. Works on mobile with you
 
 To see the particle generator in action, [go here](http://swizec.github.io/react-particles-experiment/). Github won't let me host different branches, so you'll see the advanced 20,000 particle version from next chapter.
 
-We're using the [game loop](#game-loop) approach to animation and Redux to store the state tree and drive changes for each frame.
+We're using the [game loop](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6906604#game-loop) approach to animation and Redux to store the state tree and drive changes for each frame.
 
 You can see the full code [on GitHub](https://github.com/Swizec/react-particles-experiment). I've merged the SVG and Canvas branches. Redux part is the same, some parameters differ. We're focusing on the Redux part because that's what's new.
 

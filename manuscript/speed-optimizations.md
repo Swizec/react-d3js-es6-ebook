@@ -147,7 +147,7 @@ Let's try out two examples:
 {#canvas-react-redux}
 ## A particle generator pushed to 20,000 elements with Canvas
 
-Our [SVG-based particle generator](#animating-react-redux) caps out at a few thousand elements. Animation becomes slow as times between iterations of our game loop increase.
+Our [SVG-based particle generator](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6906668#animating-react-redux) caps out at a few thousand elements. Animation becomes slow as times between iterations of our game loop increase.
 
 Old elements leave the screen and get pruned faster than we can create new ones. This creates a natural upper limit to how many elements we can push into the page.
 
@@ -218,7 +218,7 @@ Inside, we render the `Particles` component. It's going to create a Konva layer 
 
 ### Using sprites for max redraw speed
 
-Our [SVG-based Particles](#svg-particles) component was simple. Iterate through a list of particles, render a `<Particle>` component for each.
+Our [SVG-based Particles](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6906670#svg-particles) component was simple. Iterate through a list of particles, render a `<Particle>` component for each.
 
 We're going to completely rewrite that. Our new approach goes like this:
 
@@ -1218,7 +1218,7 @@ I know Uber uses Preact for their Uber lite mobile app.
 
 ## Stress test your framework with a recursive fractal
 
-To show you how these speed improvements look in real life, I've devised a stress test. A [pythagorean fractal tree](https://en.wikipedia.org/wiki/Pythagoras_tree_(fractal) that moves around when you move your mouse.
+To show you how these speed improvements look in real life, I've devised a stress test. A [pythagorean fractal tree](https://en.wikipedia.org/wiki/Pythagoras_tree_(fractal)) that moves around when you move your mouse.
 
 ![Pythagorean tree](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/pythagorean-tree.png)
 

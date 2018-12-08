@@ -15,7 +15,7 @@ An interactive visualization dashboard app with a choropleth map and a histogram
 
 It's going to be great.
 
-At this point, I assume you've used `create-react-app` to set up your environment. Check the [getting started](#getting-started) section if you haven't. I'm also assuming you've read the [basics chapter](#the-meat-start). I'm still going to explain what we're doing, but knowing the basics helps.
+At this point, I assume you've used `create-react-app` to set up your environment. Check the [getting started](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6888622#getting-started) section if you haven't. I'm also assuming you've read the [basics chapter](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6887708#the-meat-start). I'm still going to explain what we're doing, but knowing the basics helps.
 
 I suggest you follow along, keep `npm start` running, and watch your visualization change in real time as you code. It's rewarding as hell.
 
@@ -44,7 +44,7 @@ We're using a screenshot of the final result because the full dataset takes a fe
 
 React Suspense is about to make building preloaders a whole lot better. Adapting to the user's network speed, built-in preload functionality, stuff like that. More on that in the chapter on React Suspense and Time Slicing.
 
-Make sure you've installed [all dependencies](#install-dependencies) and that `npm start` is running.
+Make sure you've installed [all dependencies](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6888625#install-dependencies) and that `npm start` is running.
 
 We're building our preloader in 4 steps:
 
@@ -568,7 +568,7 @@ render() {
 }
 ```
 
-We call our dataset `filteredTechSalaries` because we're going to add filtering in the [subchapter about adding user controls](#user-controls). Using the proper name now means less code to change later. The magic of foresight 😄
+We call our dataset `filteredTechSalaries` because we're going to add filtering in the [subchapter about adding user controls](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6888938#user-controls). Using the proper name now means less code to change later. The magic of foresight 😄
 
 We use `_.groupBy` to build a dictionary mapping each `countyID` to an array of salaries, and we use our `countyValue` method to build an array of counties for our map.
 
@@ -601,7 +601,7 @@ Having a lot of code in `<directory>/index.js` is a common pattern in new projec
 
 Here comes the fun part - declaratively drawing a map. You'll see why I love using React for dataviz.
 
-We're using the [full-feature integration](#full-feature-integration) approach and a lot of D3 maps magic. Drawing a map with D3 I'm always surprised how little code it takes.
+We're using the [full-feature integration](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6887740#full-feature-integration) approach and a lot of D3 maps magic. Drawing a map with D3 I'm always surprised how little code it takes.
 
 Start with the imports: React, D3, lodash, topojson, County component.
 
@@ -678,7 +678,7 @@ D3 offers many other projections. You can see them on [d3-geo's Github page](htt
 
 A `geoPath` generator takes a projection and returns a function that generates the `d` attribute of `<path>` elements. This is the most general way to specify SVG shapes. I won't go into explaining the `d` here, but it's [an entire language](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d) for describing shapes.
 
-`quantize` is a D3 scale. We've talked about the basics of scales in the [D3 Axis example](#blackbox-axis). This one splits a domain into 9 quantiles and assigns them specific values from the `range`.
+`quantize` is a D3 scale. We've talked about the basics of scales in the [D3 Axis example](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6887732#blackbox-axis). This one splits a domain into 9 quantiles and assigns them specific values from the `range`.
 
 Let's say our domain goes from 0 to 90. Calling the scale with any number between 0 and 9 would return 1. 10 to 19 returns 2 and so on. We'll use it to pick colors from an array.
 
@@ -874,7 +874,7 @@ In the shortened dataset, 35% of tech salaries fall between $60k and $80k, 26% b
 
 It's where statistics like "More people die from vending machines than shark attacks" come from. Which are you afraid of, vending machines or sharks? Stats say your answer should be [heart disease](https://www.cdc.gov/nchs/fastats/deaths.htm). ;)
 
-We'll start our histogram with some changes in `App.js`, make a `Histogram` component using the [full-feature approach](#full-feature-integration), add an `Axis` using the [blackbox HOC approach](#blackbox-hoc), and finally add some styling.
+We'll start our histogram with some changes in `App.js`, make a `Histogram` component using the [full-feature approach](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6887740#full-feature-integration), add an `Axis` using the [blackbox HOC approach](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6887729#blackbox-hoc), and finally add some styling.
 
 <!--- end-lecture -->
 
@@ -984,7 +984,7 @@ Adding our CSS before building the Histogram means it's going to look beautiful 
 
 ## Step 3: Histogram component
 
-We're following the [full-feature integration](#full-feature-integration) approach for our Histogram component. React talks to the DOM, D3 calculates the props.
+We're following the [full-feature integration](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6887740#full-feature-integration) approach for our Histogram component. React talks to the DOM, D3 calculates the props.
 
 We'll use two components:
 
@@ -1233,7 +1233,7 @@ You should now see a histogram.
 
 ## Step 5: Axis HOC
 
-Our histogram is pretty, but it needs an axis to be useful. You've already learned how to implement an axis when we talked about [blackbox integration](#blackbox-axis). We're going to use the same approach and copy those concepts into the real project.
+Our histogram is pretty, but it needs an axis to be useful. You've already learned how to implement an axis when we talked about [blackbox integration](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6887732#blackbox-axis). We're going to use the same approach and copy those concepts into the real project.
 
 ### D3blackbox
 
@@ -1632,7 +1632,7 @@ Let's see if we can do it in a single code block 😄
 {crop-start: 282, crop-end: 317, format: javascript, line-numbers: false}
 ![Adding MedianLine to App.js](code_samples/es6v2/App.js)
 
-You probably don't remember `medianIncomesByUSState` anymore. We set it up way back when [tying datasets together](#tie-datasets-together). It groups our salary data by US state.
+You probably don't remember `medianIncomesByUSState` anymore. We set it up way back when [tying datasets together](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6888897#tie-datasets-together). It groups our salary data by US state.
 
 See, using good names helps 😄
 
@@ -1719,7 +1719,7 @@ It comes from the [d3-shape](https://github.com/d3/d3-shape#lines) package and g
 
 That makes it span the entire width and leaves 5px for the label. We're using a `transform` on the entire group to vertically position the final element.
 
-Remember, we already styled `medianLine` when we built [histogram styles](#histogram-css) earlier.
+Remember, we already styled `medianLine` when we built [histogram styles](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6888921#histogram-css) earlier.
 
 {caption: "Histogram css", line-numbers: false}
 ```css
@@ -1764,7 +1764,7 @@ Here's what we're building:
 
 It's a set of filters for users to slice and dice our visualization. The shortened dataset gives you 2 years, 12 job titles, and 50 US states. You'll get 5+ years and many more job titles with the full dataset.
 
-We're using the [architecture we discussed](#basic-architecture) earlier to make it work. Clicking buttons updates a filter function and communicates it all the way up to the `App` component. `App` then uses it to update `this.state.filteredSalaries`, which triggers a re-render and updates our dataviz.
+We're using the [architecture we discussed](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6887770#basic-architecture) earlier to make it work. Clicking buttons updates a filter function and communicates it all the way up to the `App` component. `App` then uses it to update `this.state.filteredSalaries`, which triggers a re-render and updates our dataviz.
 
 ![Architecture sketch](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/architecture_callbacks.png)
 

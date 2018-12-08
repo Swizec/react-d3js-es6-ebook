@@ -7,16 +7,16 @@
 
 Welcome to the main part of React + D3 2018. We're going to talk a little theory, learn some principles, then get our hands dirty with some examples. Through this book you're going to build:
 
-- [A few small components in Codesandbox](#basic-approach)
-- [A choropleth map](#choropleth-map)
-- [An interactive histogram](#histogram-of-salaries)
-- [A bouncing ball](#bouncing-ball)
-- [A swipe transition](#swipe-transition)
-- [An animated alphabet](#animated-alphabet)
-- [A simple particle generator with Redux](#animating-react-redux)
-- [A particle generator pushed to 20,000 elements with canvas](#canvas-react-redux)
-- [Billiards simulation with MobX and canvas](#billiards-simulation)
-- [A dancing fractal tree](#fractal-tree)
+- [A few small components in Codesandbox](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6887721#basic-approach)
+- [A choropleth map](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6888908#choropleth-map)
+- [An interactive histogram](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6888919#histogram-of-salaries)
+- [A bouncing ball](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6906619#a-bouncing-ball-game-loop-example)
+- [A swipe transition](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6906645#swipe-transition)
+- [An animated alphabet](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6906659#animated-alphabet)
+- [A simple particle generator with Redux](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6906668#animating-react-redux)
+- [A particle generator pushed to 20,000 elements with canvas](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6906689#canvas-react-redux)
+- [Billiards simulation with MobX and canvas](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6906696#build-a-declarative-billiards-simulation-with-mobx-canvas-and-konva)
+- [A dancing fractal tree](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/8456113#fractal-tree)
 
 Looks random, right? Bear with me. Examples build on each other. 
 
@@ -46,13 +46,13 @@ Although you should still play with the bigger examples. They're fun.
 
 This section has five chapters:
 
-- [A quick intro to D3](#d3-quick-intro)
-- [How React makes D3 easier](#basic-approach)
-- [When should you use an existing library? Which one?](#existing-libraries)
-- [Quickly integrate any D3 code in your React project with Blackbox Components](#blackbox-components)
-- [Build scalable dataviz components with full integration](#full-feature-integration)
-- [Handling state in your React app](#state-handling-architecture)
-- [Structuring your React App](#structuring-your-app)
+- [A quick intro to D3](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6887710)
+- [How React makes D3 easier](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6887721#basic-approach)
+- [When should you use an existing library? Which one?](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6887723#existing-libraries)
+- [Quickly integrate any D3 code in your React project with Blackbox Components](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6887730#blackbox-components)
+- [Build scalable dataviz components with full integration](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6887740#full-feature-integration)
+- [Handling state in your React app](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6887771#state-handling-architecture)
+- [Structuring your React App](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6887772#structuring-your-app)
 
 <!--- end-lecture -->
 
@@ -1744,7 +1744,7 @@ Different libraries have different details for how that works, but they all foll
 
 We're sticking with the basic approach because it's easier to explain, works without additional libraries, and is Good Enough™.
 
-You can see an approach to using Redux in dataviz in the [Animating with React, Redux, and D3 chapter](#animating-react-redux), and we tackle MobX in the [MobX chapter](#refactoring-to-mobx).
+You can see an approach to using Redux in dataviz in the [Animating with React, Redux, and D3 chapter](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6906668#animating-react-redux), and we tackle MobX in the [MobX chapter](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6906696).
 
 <!--- end-lecture -->
 

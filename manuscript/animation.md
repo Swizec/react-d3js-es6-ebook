@@ -26,7 +26,7 @@ You're about to learn two different approaches to building these animations. Usi
 1. Game loops give you more control
 2. Transitions are easier to implement
 
-We're starting with an example or two in CodeSandbox, then building some bigger stuff. No more big huge projects like the [tech salary visualization](#salary-visualization), though. Takes too long to set up and doesn't focus on animation.
+We're starting with an example or two in CodeSandbox, then building some bigger stuff. No more big huge projects like the [tech salary visualization](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6888870#salary-visualization), though. Takes too long to set up and doesn't focus on animation.
 
 <!--- end-lecture -->
 
