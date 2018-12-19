@@ -45,10 +45,16 @@ function pandocifyMarkuaCodeBlocks(sourceFileBody) {
 
     const destAttrsStr = destAttrs.length > 0 ? `{${destAttrs.join(" ")}}` : "";
 
+    const destCode = code
+      .replace(/markua-start-delete/g, "Delete the line(s) between here...")
+      .replace(/markua-end-delete/g, "...and here.")
+      .replace(/markua-start-insert/g, "Insert the line(s) between here...")
+      .replace(/markua-end-insert/g, "...and here.");
+
     const replacement = `
 
 \`\`\` ${destAttrsStr}
-${code}
+${destCode}
 \`\`\`
 
 `;
@@ -120,10 +126,16 @@ function pandocifyLfmCodeBlocks(sourceFileBody) {
     const destAttrsStr =
       destAttrs.length > 0 ? ` {${destAttrs.join(" ")}}` : "";
 
+    const destCode = code
+      .replace(/leanpub-start-delete/g, "Delete the line(s) between here...")
+      .replace(/leanpub-end-delete/g, "...and here.")
+      .replace(/leanpub-start-insert/g, "Insert the line(s) between here...")
+      .replace(/leanpub-end-insert/g, "...and here.");
+
     const replacement = `
 
 \`\`\`${destAttrsStr}
-${code}
+${destCode}
 \`\`\`
 
 `;
