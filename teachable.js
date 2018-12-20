@@ -634,7 +634,7 @@ function splitIntoSectionsAndLectures({
   }
 }
 
-function deployMarkdownFiles() {
+function deployGfmFiles() {
   const fullBodyAbsolutePath = fullGfmAbsolutePath;
   const destRepoAbsolutePath = path.resolve(buildDirAbsolutePath, "content");
   const destRepoContentPath = "teachable-gfm-markdown";
@@ -645,7 +645,7 @@ function deployMarkdownFiles() {
     destRepoContentPath
   });
 
-  deployChanges(destRepoAbsolutePath);
+  gitAddAllCommitAndPush(destRepoAbsolutePath);
 }
 
 function deployHtmlFiles() {
@@ -659,10 +659,10 @@ function deployHtmlFiles() {
     destRepoContentPath
   });
 
-  deployChanges(destRepoAbsolutePath);
+  gitAddAllCommitAndPush(destRepoAbsolutePath);
 }
 
-function deployChanges(destRepoAbsolutePath) {
+function gitAddAllCommitAndPush(destRepoAbsolutePath) {
   const githubPushCommand = `cd ${destRepoAbsolutePath} && git add . && git commit -m "Automated commit" && git push origin master && cd -`;
 
   runShellCommand(
@@ -671,5 +671,5 @@ function deployChanges(destRepoAbsolutePath) {
   );
 }
 
-deployMarkdownFiles();
+deployGfmFiles();
 deployHtmlFiles();
