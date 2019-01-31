@@ -6,13 +6,15 @@
   "scripts": {
     "colonify": "node emoji.js --colonify",
     "emojify": "node emoji.js --emojify",
-    "teachable": "nodemon --watch manuscript -e md --watch teachable.js ./teachable.js"
+    "teachable": "nodemon --watch manuscript -e md --watch util.js --watch conversions.js --watch teachable.js ./teachable.js",
+    "remarq": "nodemon --watch manuscript -e md --watch util.js --watch conversions.js  --watch remarq.js ./remarq.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "emoji-patterns": "^11.2.2",
+    "eslint": "^5.10.0",
     "glob-gitignore": "^1.0.11",
     "juice": "^5.0.1",
     "lodash": "^4.17.11",
@@ -20,5 +22,22 @@
     "node-fetch": "^2.2.0",
     "nodemon": "^1.18.5",
     "rimraf": "^2.6.2"
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true,
+      "es6": true
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+      "no-console": "off",
+      "no-unused-vars": [
+        "error",
+        {
+          "varsIgnorePattern": "^_",
+          "argsIgnorePattern": "^_"
+        }
+      ]
+    }
   }
 }
