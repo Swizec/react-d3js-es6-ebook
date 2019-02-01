@@ -1,18 +1,17 @@
-const fs = require("fs");
+const fse = require("fs-extra");
 const path = require("path");
 const os = require("os");
 
-const mkdirp = require("mkdirp");
-const rimraf = require("rimraf");
 const fp = require("lodash/fp");
 
 const { runShellCommand } = require("./util");
 const { pandocify } = require("./conversions");
 
-const srcDirAbsPath = path.resolve("manuscript");
+const rmqDirAbsPath = path.resolve("remarq-template/");
+const srcDirAbsPath = path.resolve("manuscript/");
 const dstDirAbsPath = path.resolve(
   os.homedir(),
-  "Dropbox/Apps/RemarqBooks/ReactDataviz/2_chapters"
+  "Dropbox/Apps/RemarqBooks/ReactDataviz/"
 );
 
 // ## pure-ish functions
@@ -27,7 +26,7 @@ function prependIndex(srcFileNames) {
 }
 
 function getSrcFileNames() {
-  return fs
+  return fse
     .readFileSync(path.resolve(srcDirAbsPath, "Book.txt"), {
       encoding: "utf8"
     })
@@ -37,7 +36,7 @@ function getSrcFileNames() {
 }
 
 function loadSrcFile(srcFileName) {
-  return fs.readFileSync(path.resolve(srcDirAbsPath, srcFileName), {
+  return fse.readFileSync(path.resolve(srcDirAbsPath, srcFileName), {
     encoding: "utf8"
   });
 }
@@ -51,26 +50,29 @@ const dstFileBody = fp.pipe(
 
 // ## effectful functions
 
-function writeFile(dstFileName, dstFileBody) {
-  const dstFileAbsPath = path.resolve(dstDirAbsPath, dstFileName);
-  fs.writeFileSync(dstFileAbsPath, dstFileBody);
+function writeFile(dstFilePath, dstFileBody) {
+  const dstFileAbsPath = path.resolve(dstDirAbsPath, dstFilePath);
+  fse.writeFileSync(dstFileAbsPath, dstFileBody);
 }
 
 function resetDstDir() {
-  rimraf.sync(dstDirAbsPath, null, e => console.log(e));
-  mkdirp.sync(dstDirAbsPath);
+  fse.removeSync(dstDirAbsPath, null, e => console.log(e));
+  fse.ensureDirSync(dstDirAbsPath);
+  fse.copySync(rmqDirAbsPath, dstDirAbsPath);
 }
 
 function main() {
   resetDstDir();
 
   const srcFileNames = getSrcFileNames();
-  const dstFileNames = prependIndex(srcFileNames);
-  console.log({ dstFileNames });
+  const dstFilePaths = fp.map(dstFileName => "2_chapters/" + dstFileName)(
+    prependIndex(srcFileNames)
+  );
+  console.log({ dstFilePaths });
 
   const dstFileBodies = fp.map(dstFileBody)(srcFileNames);
 
-  fp.zipWith(writeFile, dstFileNames, dstFileBodies);
+  fp.zipWith(writeFile, dstFilePaths, dstFileBodies);
 }
 
 main();
