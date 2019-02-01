@@ -1,0 +1,6 @@
+---
+title: "ReactDataviz"
+author: "swizec@swizec.com"
+date: "December 20, 2018"
+language: en-US
+---
