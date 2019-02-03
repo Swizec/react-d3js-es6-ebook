@@ -2,11 +2,11 @@
 
 <!--- begin-section title="Introduction" -->
 
-<!--- begin-lecture title="Hello new friend 👋" -->
+<!--- begin-lecture title="Hello new friend :wave:" -->
 
 # Introduction #
 
-Hello new friend! 👋
+Hello new friend! :wave:
 
 ![This is me, Swizec](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/6300d21408f5e9f0c8f5698d266fb258.jpg)
 
@@ -18,7 +18,7 @@ It's going to be fun!
 
 I believe learning new tech should be exciting, so I did my best to inject joy whenever I could.
 
-250+ pages as a book, 8 example apps, near 8 hours of video, a bunch of skill building blocks. 👌
+250+ pages as a book, 8 example apps, near 8 hours of video, a bunch of skill building blocks. :ok_hand:
 
 Going through this course you will:
 
@@ -93,7 +93,7 @@ Because I think it's interesting, here's what I had to say about that first vers
 
 A lot of that still rings true. People are distracted, busy, the internet is shiny. It's hard to sit down and learn stuff.
 
-The most common feedback I get from students goes something like this 👇
+The most common feedback I get from students goes something like this :point_down:
 
 > Loving your book! It's amazing. So clear and concise and relatable. But I read 20 pages, then my wife had a kid, my boss pulled the project, and I'm doing backend now. But truly amazing. I'm gonna get back to it as soon as I can!
 
@@ -138,10 +138,10 @@ If the best way is a daily practice, 20 minutes after work, 5 minutes on the poo
 
 But don't make it a chore. We're here to have fun :)
 
-Two suggestions ✌️: 
+Two suggestions :v:: 
 
 1. *Try* the example code. Don’t just copy-paste; type it and execute it. Execute frequently. If something doesn’t fit together, look at the linked Github repositories or solved CodeSandboxes. Each project has one.
-2. If you know something, skip that section. You’re awesome. ❤️
+2. If you know something, skip that section. You’re awesome. :heart:
 
 React + D3 is based on code samples. They look like this:
 
@@ -179,7 +179,7 @@ The catch is that many frameworks have attempted this: everything from Angular t
 
 I've found React a joy to use. Using React was the first time in my life that I could move a piece of HTML in a modern app without rewriting half my JavaScript. It's like a super power.
 
-React being the most popular JavaScript framework out there, the world seems to agree. React is great. ⚛️
+React being the most popular JavaScript framework out there, the world seems to agree. React is great. :atom_symbol:
 
 D3 is Mike Bostock’s infamous data visualization library. It's used by The New York Times along with many other sites. It is the workhorse of data visualization on the web, and many charting libraries out there are based on it.
 
