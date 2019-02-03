@@ -1,10 +1,10 @@
-const fse = require("fs-extra");
 const path = require("path");
 const os = require("os");
 
+const fse = require("fs-extra");
+const globSync = require("glob-gitignore").sync;
 const fp = require("lodash/fp");
 
-const { runShellCommand } = require("./util");
 const { pandocify } = require("./conversions");
 
 const rmqDirAbsPath = path.resolve("remarq-template/");
@@ -17,22 +17,27 @@ const dstDirAbsPath = path.resolve(
 // ## pure-ish functions
 
 function prependIndex(srcFileNames) {
-  const indices = [...Array(10).keys()];
+  const indices = [...Array(srcFileNames.length).keys()];
+  // using `i + 1` because remarq relies on 01-indexed .md files
   return fp.zipWith(
-    (i, srcFileName) => fp.padCharsStart("0")(2)(i) + "-" + srcFileName,
+    (i, srcFileName) => fp.padCharsStart("0")(2)(i + 1) + "-" + srcFileName,
     indices,
     srcFileNames
   );
 }
 
 function getSrcFileNames() {
-  return fse
+  const fileNames = fse
     .readFileSync(path.resolve(srcDirAbsPath, "Book.txt"), {
       encoding: "utf8"
     })
     .trim()
     .split("\n")
     .map(fp.trim);
+  const frontMatter = fileNames.slice(0, 1);
+  const chapters = fileNames.slice(1, -2);
+  const backMatter = fileNames.slice(-2);
+  return [frontMatter, chapters, backMatter];
 }
 
 function loadSrcFile(srcFileName) {
@@ -49,6 +54,9 @@ const dstFileBody = fp.pipe(
 );
 
 // ## effectful functions
+function rmrf(path) {
+  fse.removeSync(path, null, e => console.log(e));
+}
 
 function writeFile(dstFilePath, dstFileBody) {
   const dstFileAbsPath = path.resolve(dstDirAbsPath, dstFilePath);
@@ -56,23 +64,42 @@ function writeFile(dstFilePath, dstFileBody) {
 }
 
 function resetDstDir() {
-  fse.removeSync(dstDirAbsPath, null, e => console.log(e));
+  rmrf(dstDirAbsPath);
   fse.ensureDirSync(dstDirAbsPath);
   fse.copySync(rmqDirAbsPath, dstDirAbsPath);
+  const mdAbsFilePaths = globSync("**/*.md", {
+    cwd: dstDirAbsPath,
+    absolute: true
+  });
+  fp.map(rmrf)(mdAbsFilePaths);
 }
 
-function main() {
-  resetDstDir();
-
-  const srcFileNames = getSrcFileNames();
-  const dstFilePaths = fp.map(dstFileName => "2_chapters/" + dstFileName)(
-    prependIndex(srcFileNames)
-  );
-  console.log({ dstFilePaths });
+function convertAndWrite(dstDirPath, srcFileNames) {
+  const dstFilePaths = fp.map(dstFileName =>
+    path.join(dstDirPath, dstFileName)
+  )(prependIndex(srcFileNames));
 
   const dstFileBodies = fp.map(dstFileBody)(srcFileNames);
 
   fp.zipWith(writeFile, dstFilePaths, dstFileBodies);
+  fp.zipWith(
+    (..._args) => process.stdout.write("."),
+    dstFilePaths,
+    dstFileBodies
+  );
+  process.stdout.write("\n");
+}
+
+function main() {
+  resetDstDir();
+  console.log(`Saving files for Remarq at:\n${dstDirAbsPath}`);
+
+  const [frontMatter, chapters, backMatter] = getSrcFileNames();
+  console.log([frontMatter, chapters, backMatter]);
+
+  convertAndWrite("1_front_matter", frontMatter);
+  convertAndWrite("2_chapters", chapters);
+  convertAndWrite("3_back_matter", backMatter);
 }
 
 main();
