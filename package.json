@@ -7,7 +7,7 @@
     "colonify": "node emoji.js --colonify",
     "emojify": "node emoji.js --emojify",
     "teachable": "nodemon --watch manuscript -e md --watch util.js --watch conversions.js --watch teachable.js ./teachable.js",
-    "remarq": "nodemon --watch manuscript -e md --watch util.js --watch conversions.js  --watch remarq.js ./remarq.js"
+    "remarq": "nodemon --watch manuscript --watch util.js --watch conversions.js  --watch remarq.js ./remarq.js"
   },
   "keywords": [],
   "author": "",

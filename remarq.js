@@ -54,8 +54,9 @@ const dstFileBody = fp.pipe(
 );
 
 // ## effectful functions
-function rmrf(path) {
-  fse.removeSync(path, null, e => console.log(e));
+function rmrf(rmrfPath) {
+  console.log({ rmrfPath });
+  fse.removeSync(rmrfPath, null, e => console.log(e));
 }
 
 function writeFile(dstFilePath, dstFileBody) {
@@ -72,6 +73,14 @@ function resetDstDir() {
     absolute: true
   });
   fp.map(rmrf)(mdAbsFilePaths);
+}
+
+function deleteRemarqResults() {
+  const rmqResAbsFilePaths = globSync("ReactDataviz@(.*|-*)", {
+    cwd: path.dirname(dstDirAbsPath),
+    absolute: true
+  });
+  fp.map(rmrf)(rmqResAbsFilePaths);
 }
 
 function convertAndWrite(dstDirPath, srcFileNames) {
@@ -92,6 +101,7 @@ function convertAndWrite(dstDirPath, srcFileNames) {
 
 function main() {
   resetDstDir();
+  deleteRemarqResults();
   console.log(`Saving files for Remarq at:\n${dstDirAbsPath}`);
 
   const [frontMatter, chapters, backMatter] = getSrcFileNames();
