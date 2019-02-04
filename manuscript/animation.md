@@ -567,7 +567,7 @@ You can play with a more advanced version [here](http://swizec.github.io/react-d
 
 We're building the alphabet version because the [string diffing algorithm](https://swizec.com/blog/animated-string-diffing-with-react-and-d3/swizec/6952) is a pain to explain. I learned that the hard way when giving workshops on React and D3…
 
-![String diffing algorithm sketch](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/string-diffing.jpg)
+![String diffing algorithm sketch](https://cdn.staticaly.com/gh/hsribei/react-d3js-es6-ebook/024f7e0ae8547f5288f61bc442370f0f689d84eb/manuscript/resources/images/es6v2/string-diffing.jpg)
 
 See?
 
