@@ -5,6 +5,10 @@ const fse = require("fs-extra");
 const globSync = require("glob-gitignore").sync;
 const fp = require("lodash/fp");
 
+const stripSkinTone = require("strip-skin-tone");
+const retext = require("retext");
+const emoji = require("retext-emoji");
+
 const { pandocify } = require("./conversions");
 
 const rmqDirAbsPath = path.resolve("remarq-template/");
@@ -15,6 +19,11 @@ const dstDirAbsPath = path.resolve(
 );
 
 // ## pure-ish functions
+
+const gemojify = fp.pipe(
+  retext().use(emoji, { convert: "decode" }).processSync,
+  String
+);
 
 function prependIndex(srcFileNames) {
   const indices = [...Array(srcFileNames.length).keys()];
@@ -50,6 +59,8 @@ const pandocifySrcFile = fp.curry(pandocify)(srcDirAbsPath);
 
 const dstFileBody = fp.pipe(
   loadSrcFile,
+  stripSkinTone,
+  gemojify,
   pandocifySrcFile
 );
 

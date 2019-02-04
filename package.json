@@ -21,8 +21,11 @@
     "lodash": "^4.17.11",
     "mkdirp": "^0.5.1",
     "node-fetch": "^2.2.0",
-    "nodemon": "^1.18.5",
-    "rimraf": "^2.6.2"
+    "nodemon": "^1.18.9",
+    "retext": "^6.0.1",
+    "retext-emoji": "^5.0.1",
+    "rimraf": "^2.6.2",
+    "strip-skin-tone": "^1.0.2"
   },
   "eslintConfig": {
     "env": {
