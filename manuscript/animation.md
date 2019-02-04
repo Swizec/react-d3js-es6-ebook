@@ -225,7 +225,7 @@ Our game loop is already running. It's that `d3.timer` we started on component m
 
 What do you think we should do every time `gameLoop` is called?
 
-Move the ball. Accelerate. Bounce it back. :basketball:
+Move the ball. Accelerate. Bounce it back. 🏀
 
 The physics is tricky to think about. Few students at my workshops figure this one out and that's the point: Game loop gives you control. All the control.
 
@@ -349,7 +349,7 @@ Try it out on CodeSandbox: [click me for time-fixed bouncy ball](https://codesan
 
 ## Game loop recap
 
-You now know how to build a game loop and use it to run custom animations. :clap:
+You now know how to build a game loop and use it to run custom animations. 👏
 
 - render from state
 - change state 60 times per second
@@ -439,7 +439,7 @@ class App extends React.Component {
     return (
       <div style={styles}>
         <h1>D3 transitions in React 16.3 {"\u2728"}</h1>
-        <p>Click the ball :point_down:</p>
+        <p>Click the ball 👇</p>
         <svg style={{ width: "300", height: "300px" }} onClick={this.ballJump}>
           <Ball x={ballLeft ? 15 : 250} />
         </svg>
@@ -538,7 +538,7 @@ D3's interpolation methods will figure it out for you. Numbers, strings, colors,
 
 After a transition is done, I like to sync React's worldview with what the transition changed. It's not strictly required but it can sometimes lead to React freaking out that you moved an element.
 
-Play around. Try adding some more transitions. Make the ball move diagonally. Make it go right then down. It's fun. :blush:
+Play around. Try adding some more transitions. Make the ball move diagonally. Make it go right then down. It's fun. 😊
 
 <!--- end-lecture -->
 
@@ -599,7 +599,7 @@ To get started you'll need a project. Either start one with `create-react-app` o
 
 You'll need a base App component that renders an SVG with an `<Alphabet>` child. Our component is self-contained so that's all you need.
 
-Something like this :point_down:
+Something like this 👇
 
 {caption: "Base App component", line-numbers: false}
 ```javascript
@@ -754,7 +754,7 @@ As an added bonus, we can use TransitionGroup to set a bunch of default paramete
 
 ### The Letter component
 
-We're ready for the component that can transition itself into and out of a visualization. Without consumers having to worry about what's going on behind the scenes :ok_hand: 
+We're ready for the component that can transition itself into and out of a visualization. Without consumers having to worry about what's going on behind the scenes 👌 
 
 The skeleton for our `Letter` component looks like this:
 
@@ -895,7 +895,7 @@ That moves the letter back into its enter state and ensures even re-used letters
 - jump existing components to correct horizontal position when a new `enter` transition begins
 - transition components into new horizontal positions based on changing indexes
 
-It goes like this :point_down:
+It goes like this 👇
 
 {caption: "Update transition", line-numbers: false}
 ```javascript

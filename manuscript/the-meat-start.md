@@ -83,7 +83,7 @@ Where many charting libraries fall short is customization. The API is limited, y
 
 A lot of what you end up doing in real life is finding a D3 example that looks like what you want to build and adapting it. That's why you should learn at least some D3.
 
-But D3 is hard to read. Take this barchart code, for example :point_down:
+But D3 is hard to read. Take this barchart code, for example 👇
 
 {caption: "Barchart in pure D3", line-numbers: false}
 ```javascript
@@ -124,7 +124,7 @@ d3.tsv("data.tsv", function(d) {
 
 Can you tell what's going on? I'd need to read it pretty carefully.
 
-Which brings us to :point_right:
+Which brings us to 👉
 
 <!--- end-lecture -->
 
@@ -138,7 +138,7 @@ Most people don't go that far. They don't have to.
 
 You start with a problem, find similar examples, do some copy pasta, tweak until it works and end up with a working visualization you don't understand. You'd be surprised how few engineers actually understand how their D3 data visualization works.
 
-Fear not! There are just 3 key concepts you have to grok. Then you can understand every D3 example out there. :scream:
+Fear not! There are just 3 key concepts you have to grok. Then you can understand every D3 example out there. 😱
 
 <!--- end-lecture -->
 
@@ -161,7 +161,7 @@ Let's take an example from [D3's docs](https://github.com/d3/d3/wiki/Gallery), a
 
 You can [try it online](https://cdn.rawgit.com/mbostock/3885304/raw/a91f37f5f4b43269df3dbabcda0090310c05285d/index.html). When you hover on a bar, it changes color. Pretty neat.
 
-Mike Bostock, the creator of D3, built this chart in 43 lines of code. Here they are :point_down:
+Mike Bostock, the creator of D3, built this chart in 43 lines of code. Here they are 👇
 
 {caption: "Example D3 barchart", line-numbers: false}
 ```javascript
@@ -367,7 +367,7 @@ But it is up to you to render them. A layout handles your dataviz in the abstrac
 
 For a force layout, you have to update the DOM on every tick of the animation. For circle packing, you render it once.
 
-Once you grok this, all the fancy visualizations out there start making sense. Also means you can use these fancy layouts in React :raised_hands:
+Once you grok this, all the fancy visualizations out there start making sense. Also means you can use these fancy layouts in React 🙌
 
 <!--- end-lecture -->
 
@@ -391,7 +391,7 @@ There's a lot. We're not going to cover it all but you can find those advanced f
 
 <!--- begin-section title="How React makes D3 easier" -->
 
-<!--- begin-lecture title="React + D3 = :heart:" -->
+<!--- begin-lecture title="React + D3 = ❤️" -->
 
 {#basic-approach}
 # How React makes D3 easier
@@ -502,7 +502,7 @@ Where libraries become a problem is when you want to move beyond the library aut
 
 That's why I rarely use libraries myself. Often find it quicker to build something specific from scratch than figuring out how to hold a generalized API just right.
 
-But they're a great first step. Here's a few of the most popular React & D3 libraries :point_down: 
+But they're a great first step. Here's a few of the most popular React & D3 libraries 👇 
 
 List borrowed from [a wonderful Smashing Magazine article](https://www.smashingmagazine.com/2018/02/react-d3-ecosystem/), because it's a good list.
 
@@ -733,7 +733,7 @@ No render engine, no tree diffing, no dev tools to inspect what's going. Just a 
 
 Okay for small components or when you're prototyping, but I've had people come to my workshops and say *"We built our whole app with the blackbox approach. It takes a few seconds to re-render when you click something. Please help"*
 
-:thinking:
+🤔
 
 Here's how it works:
 - React renders an anchor element
@@ -843,7 +843,7 @@ You can make the axis more useful by getting positioning, scale, and orientation
 
 Try implementing those as an exercise. Make the axis more reusable with some carefully placed props.
 
-Here's my solution, if you get stuck :point_right: [https://codesandbox.io/s/5ywlj6jn4l](https://codesandbox.io/s/5ywlj6jn4l)
+Here's my solution, if you get stuck 👉 [https://codesandbox.io/s/5ywlj6jn4l](https://codesandbox.io/s/5ywlj6jn4l)
 
 <iframe src="https://codesandbox.io/embed/5ywlj6jn4l?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
@@ -1057,7 +1057,7 @@ Same link, absolute version. And we updated the callback-based code to use the D
 
 That's it. You now have a Barchart component that renders the example barchart from D3's docs.
 
-You can use it like this :point_down: I recommend adding this code to the main App component that CodeSandbox creates for you.
+You can use it like this 👇 I recommend adding this code to the main App component that CodeSandbox creates for you.
 
 {caption: "Use the Barchart", line-numbers: false}
 ```javascript
@@ -1101,7 +1101,7 @@ It's easiest to show you with an example.
 
 Let's build a scatterplot step by step. Take a random array of two-dimensional data, render in a loop. Make magic.
 
-Something like this :point_down:
+Something like this 👇
 
 ![A simple scatterplot](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/scatterplot.png)
 
@@ -1115,14 +1115,14 @@ You've already built the axes! Copy pasta time.
 
 Ignoring props changes makes our life easier, but the component less flexible and reusable. Great when you know in advance that there are features you don't ned to support.
 
-Like, no filtering your data or changing component size :point_right: means your D3 scales don't have to change.
+Like, no filtering your data or changing component size 👉 means your D3 scales don't have to change.
 
 When our props don't change, we follow a 2-step integration process:
 
 * set up D3 objects as class properties
 * output SVG in `render()`
 
-We don't have to worry about updating D3 objects on prop changes. Work done :ok_hand:
+We don't have to worry about updating D3 objects on prop changes. Work done 👌
 
 ### An unchanging scatterplot
 
@@ -1130,7 +1130,7 @@ We're building a scatterplot of random data. You can see the [final solution on 
 
 <iframe src="https://codesandbox.io/embed/1zlp4jv494?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
-Here's the approach :point_down:
+Here's the approach 👇
 
 - stub out the basic setup
 - generate random data
@@ -1279,7 +1279,7 @@ You can reuse axes from our earlier exercise. Or copy mine from [the CodeSandbox
 
 Mine take a scale and orientation as props, which makes them more flexible. Means we can use the same component for both the vertical and horizontal axis on our Scatterplot.
 
-Put the axis code in `Axis.js`, then augment the Scatterplot like this :point_down:
+Put the axis code in `Axis.js`, then augment the Scatterplot like this 👇
 
 {caption: "Add axes to Scatterplot", line-numbers: false}
 ```javascript
@@ -1316,7 +1316,7 @@ No problem in React 15: Update in `componentWillUpdate`. But since React 16.3 we
 
 The official recommended solution is that anything that used to go in `componentWillUpdate`, can go in `componentDidUpdate`. But not so fast! 
 
-Updating D3 objects in `componentDidUpdate` would mean our visualization always renders one update behind. Stale renders! :scream:
+Updating D3 objects in `componentDidUpdate` would mean our visualization always renders one update behind. Stale renders! 😱
 
 The new `getDerivedStateFromProps` to the rescue. Our integration follows a 3-step pattern:
 
@@ -1332,7 +1332,7 @@ Because React calls `getDerivedStateFromProps` on every component render, not ju
 
 Let's update our scatterplot so it can deal with resizing and updating data. 
 
-3 steps :point_down:
+3 steps 👇
 
 - add an interaction that resizes the scatterplot
 - move scales to state
@@ -1483,13 +1483,13 @@ Our scatterplot doesn't look quite as nice as the earlier screenshot. Regular SV
 
 What if we wanted to render beautiful circles? Or stars? Or maybe something else entirely?
 
-We can use render props to give users of our scatterplot component the power to define how they want datapoints to render. :scream:
+We can use render props to give users of our scatterplot component the power to define how they want datapoints to render. 😱
 
 Think of it as a sort of inversion of control. Another common buzzword are "slots", or renderless components. The idea is that one of our props accepts a React component.
 
 We then use that prop to render our datapoints.
 
-It looks a little like this :point_down:
+It looks a little like this 👇
 
 ```jsx
 <Scatterplot
@@ -1503,7 +1503,7 @@ What's more, we can add interactions and other useful stuff to our `<Datapoint>`
 
 Let's use the render prop approach to make our scatterplot more reusable.
 
-Steps :point_down:
+Steps 👇
 
 - pass in a render prop
 - use it to render datapoints
@@ -1538,7 +1538,7 @@ import Datapoint from "./Datapoint";
 </svg>
 ```
 
-For extra flexibility and readability we're wrapping our `<Datapoint>` component in another function that accepts `x` and `y` coordinates. This is a common pattern you'll see with render props :point_right: it gives you the ability to pass in props from both the rendering component and the component that's setting the render prop.
+For extra flexibility and readability we're wrapping our `<Datapoint>` component in another function that accepts `x` and `y` coordinates. This is a common pattern you'll see with render props 👉 it gives you the ability to pass in props from both the rendering component and the component that's setting the render prop.
 
 Say we wanted Datapoint to know something about our App *and* our Scatterplot. The scatterplot calls this function with coordinates. We pass those into `<Datapoint>`. And because the method is defined inside App, we could pass-in anything that's defined in the App. Like perhaps `data`.
 
@@ -1612,13 +1612,13 @@ For an extra challenge, try rendering circle radius from state and changing data
 
 <!--- begin-section title="You're awesome" -->
 
-<!--- begin-lecture title=":muscle:" -->
+<!--- begin-lecture title="💪" -->
 
 # You're awesome
 
 You know the basics! 
 
-You can take any D3 example from the internets and wrap it in a React component, *and* you know how to build React+D3 components from scratch. You're amazing. High five! :raised_hand_with_fingers_splayed:
+You can take any D3 example from the internets and wrap it in a React component, *and* you know how to build React+D3 components from scratch. You're amazing. High five! 🖐
 
 The rest of this book is about using these concepts and pushing them to the limits of practicality. We're going to build an interactive visualization of tech salaries compared to median household income. 
 
@@ -1674,7 +1674,7 @@ Data goes from your source of truth into your components. Events go from your co
 
 Our main App component holds state for your entire application. Anything that multiple components should be aware of lives here. This state flows down the hierarchy via props. Changes happen via callbacks, also passed down through props.
 
-Like this :point_down:
+Like this 👇
 
 * The Main Component – `App` – holds the truth
 * Truth flows down through props
@@ -1702,7 +1702,7 @@ You can think of it like calling functions with new arguments. Because the funct
 
 Because your components are well-made and rely on their props to render, React's engine can optimize these changes. It compares the new and old component trees and decides which components to re-render and which to leave alone.
 
-Functional programming for HTML! :sunglasses:
+Functional programming for HTML! 😎
 
 The functional programming concepts we're relying on are called [referential transparency](https://en.wikipedia.org/wiki/Referential_transparency), [idempotent functions](https://en.wikipedia.org/wiki/Idempotence), and [functional purity](https://en.wikipedia.org/wiki/Pure_function). I suggest Googling them if you want to learn the theory behind it all.
 
@@ -1790,7 +1790,7 @@ You can read more about these ideas by Googling ["leaky abstractions"](https://e
 
 <!--- begin-lecture title="Congratz!" -->
 
-Congratz! You know everything you need to build visualizations with React and D3. :clap:
+Congratz! You know everything you need to build visualizations with React and D3. 👏
 
 This is the point in tech books where I run off and start building things on my own. Then I get frustrated, spend hours Googling for answers, and then remember, "Hey! Maybe I should read the rest of the book!"
 

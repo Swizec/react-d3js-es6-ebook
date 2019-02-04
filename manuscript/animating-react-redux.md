@@ -361,7 +361,7 @@ export default connect(
 )(AppContainer);
 ```
 
-I love the smell of boilerplate in the morning. :nose:
+I love the smell of boilerplate in the morning. 👃
 
 We import dependencies and define `AppContainer` as a class-based React `Component` so we have somewhere to put the D3 interval. The render method outputs our `<App>` component using a bunch of props to pass relevant actions and values.
 
@@ -432,7 +432,7 @@ const mapDispatchToProps = {
 };
 ```
 
-And you thought previous code had a lot of boilerplate ... imagine if this was how you'd do it in real life :stuck_out_tongue:
+And you thought previous code had a lot of boilerplate ... imagine if this was how you'd do it in real life 😛
 
 `connect` wraps each of these action generators in `store.dispatch()` calls. You can pass the resulting function into any component and fire actions by calling that method.
 
@@ -497,7 +497,7 @@ const initialState = {
 };
 ```
 
-Using D3's `randomNormal` random number generator creates a better random distribution than using JavaScript's own `Math.random`. The rest is a bunch of default state :point_down:
+Using D3's `randomNormal` random number generator creates a better random distribution than using JavaScript's own `Math.random`. The rest is a bunch of default state 👇
 
 - `particles` holds an array of particles to draw
 - `particleIndex` defines the ID of the next generated particle
@@ -569,7 +569,7 @@ function appReducer(state, action) {
 }
 ```
 
-Gotta love that boilerplate :stuck_out_tongue:
+Gotta love that boilerplate 😛
 
 Even though we're only changing values of boolean flags and two-digit arrays, *we have to create a new state*. Redux relies on application state being immutable.
 
@@ -577,7 +577,7 @@ Well, JavaScript doesn't have real immutability. We pretend and make sure to nev
 
 We use `Object.assign({}, ...` to create a new empty object, fill it with the current state, then overwrite specific values with new ones. This is fast enough even with large state trees thanks to modern JavaScript engines.
 
-Note that when a reducer doesn't recognize an action, it has to return the same state it received. Otherwise you end up wiping state. :sweat_smile:
+Note that when a reducer doesn't recognize an action, it has to return the same state it received. Otherwise you end up wiping state. 😅
 
 So that's the boilerplatey state updates. Manages starting and stopping the animation, flipping the particle generation switch, and resizing our viewport.
 
@@ -670,7 +670,7 @@ We loop through `particlesPerTick` particles, create them at `mousePos` coordina
 
 This randomness is a Redux faux pas. Reducers are supposed to be functionally pure: produce the same result every time they are called with the same argument values. Randomness is impure.
 
-We don't need our particle vectors to be deterministic, so I think this is fine. Let's say our universe is stochastic instead :smile:
+We don't need our particle vectors to be deterministic, so I think this is fine. Let's say our universe is stochastic instead 😄
 
 {aside}
 Stochastic means that our universe/physic simulation is governed by probabilities. You can still model such a universe and reason about its behavior. A lot of real world physics is stochastic in nature.
@@ -696,7 +696,7 @@ Building a particle generator in React and Redux, we made three important discov
 
 ----
 
-There you go: Animating with React, Redux, and D3. Kind of a new superpower :wink:
+There you go: Animating with React, Redux, and D3. Kind of a new superpower 😉
 
 Here's the recap:
 
