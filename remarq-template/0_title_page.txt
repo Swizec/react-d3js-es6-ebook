@@ -1,6 +1,6 @@
 ---
-title: "ReactDataviz"
+title: "React for Data Visualization"
 author: "swizec@swizec.com"
-date: "December 20, 2018"
+date: "February 25, 2019"
 language: en-US
 ---
