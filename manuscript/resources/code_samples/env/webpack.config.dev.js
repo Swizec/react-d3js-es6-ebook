@@ -154,20 +154,20 @@ module.exports = {
 //
 module: {
    loaders: [
-       // leanpub-start-delete
-       {test: /\.js$/,
-       // leanpub-end-delete
-       // leanpub-start-insert
-       {test: /\.js|\.jsx$/
-       // leanpub-end-insert
-        loaders: ['babel'],
-        include: path.join(__dirname, 'src')
-       },
-       {test: /\.less$/,
-        loader: "style!css!less"
-       }
-    ]
-  }
+     // leanpub-start-delete
+     {test: /\.js$/},
+     // leanpub-end-delete
+     // leanpub-start-insert
+     {test: /\.js|\.jsx$/
+      // leanpub-end-insert
+      loaders: ['babel'],
+      include: path.join(__dirname, 'src')
+     },
+     {test: /\.less$/,
+      loader: "style!css!less"
+     }
+   ]
+}
 
 
 //

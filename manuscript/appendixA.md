@@ -204,7 +204,7 @@ Our visualization is going to use Ajax to load data. That means the server we us
 
 We have to add a line to `devServer.js`:
 
-{lang=js,crop-start-line=38,crop-end-line=45,linenos=off}
+{lang=js,crop-start-line=35,crop-end-line=43,linenos=off}
 <<[Enable static server on ./public](code_samples/env/devServer.js)
 
 This tells express.js, which is the framework our simple server uses, to route any URL starting with `/public` to local files by matching paths.
@@ -215,14 +215,14 @@ Whenever I'm working with React, I like to add two nice-to-haves to `webpack.con
 
 First, I add the `.jsx` extension to the list of files loaded with Babel. This lets me write React code in `.jsx` files. I know what you're thinking: writing files like that is no longer encouraged by the community, but hey, it makes my Emacs behave better.
 
-{lang=js,crop-start-line=160,crop-end-line=171,linenos=off}
+{lang=js,crop-start-line=155,crop-end-line=170,linenos=off}
 <<[Add .jsx to Babel file extensions](code_samples/env/webpack.config.dev.js)
 
 We changed the `test` regex to add `.jsx`. You can read in more detail about how these configs work in later parts of this chapter.
 
 Second, I like to add a `resolve` config to Webpack. This lets me load files without writing their extension. It's a small detail, but it makes your code cleaner.
 
-{lang=js,crop-start-line=182,crop-end-line=191,linenos=off}
+{lang=js,crop-start-line=176,crop-end-line=183,linenos=off}
 <<[Add resolve to webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
 
 It's a list of file extensions that Webpack tries to guess when a path you use doesn't match any files.
@@ -303,7 +303,7 @@ Both files look alike, so we're going to focus on the dev version.
 
 It comes in four parts:
 
-{lang=js,crop-start-line=23,crop-end-line=38,linenos=off}
+{lang=js,crop-start-line=23,crop-end-line=37,linenos=off}
 <<[Webpack config structure](code_samples/env/webpack.config.dev.js)
 
  - **Entry**, which tells Webpack where to start building our project's dependency tree;
@@ -337,7 +337,7 @@ The output section specifies which files get the output. Our config is going to 
 
 The config looks like this:
 
-{lang=js,crop-start-line=76,crop-end-line=84,linenos=off}
+{lang=js,crop-start-line=70,crop-end-line=82,linenos=off}
 <<[Output part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
 
 We define a path, `./dist/`, where compiled files live, say the filename for JavaScript is `bundle.js`, and specify `/static/` as the public path. That means the `<script>` tag in our HTML should use `/static/bundle.js` to get our code, but we should use `./dist/bundle.js` to copy the compiled file.
@@ -346,7 +346,7 @@ We define a path, `./dist/`, where compiled files live, say the filename for Jav
 
 There's a plethora of Webpack plugins out there. We're only going to use two of them in our example.
 
-{lang=js,crop-start-line=108,crop-end-line=115,linenos=off}
+{lang=js,crop-start-line=100,crop-end-line=113,linenos=off}
 <<[Plugins part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
 
 As you might have guessed, this config is just an array of plugin object instances. Both plugins we're using come with Webpack by default. Otherwise, we'd have to `require()` them at the top of the file.
@@ -363,7 +363,7 @@ If you can think of it, there's a loader for it. At my day job, we use a Webpack
 
 For the purposes of this book, we don't need anything that fancy. We just need a loader for JavaScript and styles.
 
-{lang=js,crop-start-line=141,crop-end-line=154,linenos=off}
+{lang=js,crop-start-line=137,crop-end-line=149,linenos=off}
 <<[Loaders part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
 
 Each of these definitions comes in three parts:
@@ -393,14 +393,14 @@ The `compiler` variable is an instance of Webpack, and `config` is the config we
 
 Another important bit of the `devServer.js` file specifies routes. In our case, we want to serve everything from `public` as a static file, and anything else to serve `index.html` and let JavaScript handle routing.
 
-{lang=js,crop-start-line=19,crop-end-line=22,linenos=on,starting-line-number=16}
+{lang=js,crop-start-line=16,crop-end-line=20,linenos=on,starting-line-number=16}
 <<[Lines that tell Express how to route requests](code_samples/env/devServer.js)
 
 This tells Express to use a static file server for everything in `public` and to serve `index.html` for anything else.
 
 At the bottom, there is a line that starts the server:
 
-{lang=js,crop-start-line=24,crop-end-line=25,linenos=on,starting-line-number=22}
+{lang=js,crop-start-line=22,crop-end-line=29,linenos=on,starting-line-number=22}
 <<[Line that starts the server](code_samples/env/devServer.js)
 
 I know I didn't explain much, but that's as deep as we can go at this point. You can read more about node.js servers, and Express in particular, in [Azat Mardan's books](http://azat.co/). They're great.
