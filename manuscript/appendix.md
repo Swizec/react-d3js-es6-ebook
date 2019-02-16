@@ -1,5 +1,4 @@
-{#appendix}
-# Appendix - Browserify-based environment
+# Appendix - Browserify-based environment {#appendix}
 
 When I first wrote this book in the spring of 2015, I came up with a build-and-run system based on Grunt and Browserify. I also suggested using Bower for client-side dependencies.
 
@@ -17,8 +16,9 @@ You can get it by installing node.js from [nodejs.org](http://nodejs.org). Grunt
 
 Once you’ve got it, create a working directory, navigate to it, and run:
 
-{linenos=off}
-    $ npm init .
+```
+$ npm init .
+```
 
 This will ask you a few questions and create `package.json` file. It contains some meta data about the project, and more importantly, it has the list of dependencies. This is useful when you return to a project months or years later and can’t remember how to get it running.
 
@@ -34,8 +34,9 @@ We’re going to use `live-server`, which is a great static server written in Ja
 
 To install `live-server`, run:
 
-{linenos=off}
-    $ npm install -g live-server
+```
+$ npm install -g live-server
+```
 
 If all went well, you should be able to start a server by running `live-server` in the command line. It’s even going to open a browser tab pointing at `http://localhost:8080` for you.
 
@@ -57,8 +58,12 @@ Compiling JSX is far more important.
 
 JSX is React’s new file format that lets us embed HTML snippets straight in our JavaScript code. You’ll often see render methods doing something like this:
 
-{crop-start-line=399,crop-end-line=402,linenos=off,lang=jsx}
-<<[A basic Render](code_samples/old/main.jsx)
+``` {.javascript caption="A basic Render"}
+React.render(
+    <H1BGraph url="data/h1bs.csv" />,
+    document.querySelectorAll('.h1bgraph')[0]
+);
+```
 
 See, we’re treating HTML - in this case, an H1BGraph component - just like a normal part of our code. I haven’t decided yet if this is cleaner than other templating approaches like Mustache, but it’s definitely much better than manually concatenating strings.
 
@@ -66,11 +71,12 @@ As you’ll see later, it’s also very powerful.
 
 But browsers don’t support this format, so we have to compile it into pure JavaScript. The above code ends up looking like this:
 
-{title="JSX compile result", linenos=off, lang=js}
-    React.render(
-        React.createElement(H1BGraph, {url: “data/h1bs.csv”}),
-        document.querySelectorAll(‘.h1bgraph’)[0]
-    );
+``` {.javascript caption="JSX compile result"}
+React.render(
+    React.createElement(H1BGraph, {url: “data/h1bs.csv”}),
+    document.querySelectorAll(‘.h1bgraph’)[0]
+);
+```
 
 We could avoid this compilation step by using `JSXTransform`. It can compile JSX to JavaScript in the browser, but it makes our site slower. React will also throw a warning and ask you never to use `JSXTransform` in production.
 
@@ -82,14 +88,15 @@ We’re going to power all of this with [Grunt](http://gruntjs.com), which lets 
 
 To install Grunt and the plugins we need, run:
 
-{linenos=off}
-    $ npm install -g grunt-cli
-    $ npm install --save-dev grunt
-    $ npm install --save-dev grunt-browserify
-    $ npm install --save-dev grunt-contrib-less
-    $ npm install --save-dev grunt-contrib-watch
-    $ npm install --save-dev jit-grunt
-    $ npm install --save-dev reactify
+```
+$ npm install -g grunt-cli
+$ npm install --save-dev grunt
+$ npm install --save-dev grunt-browserify
+$ npm install --save-dev grunt-contrib-less
+$ npm install --save-dev grunt-contrib-watch
+$ npm install --save-dev jit-grunt
+$ npm install --save-dev reactify
+```
 
 [Browserify](http://browserify.org) will allow us to write our code in modules that we can use with `require(‘foo.js’)`, just like we would in node.js. It’s also going to concatenate the resulting module hierarchy into a single file.
 
@@ -111,32 +118,78 @@ We’ll define three tasks:
 
 The basic file with no configs should look like this:
 
-{title="Base Gruntconfig.js",linenos=off,lang=js}
-    module.exports = function (grunt) {
-        require('jit-grunt')(grunt);
+``` {.javascript caption="Base Gruntconfig.js"}
+module.exports = function (grunt) {
+    require('jit-grunt')(grunt);
 
-        grunt.initConfig({ /* ... */ });
+    grunt.initConfig({ /* ... */ });
 
-        grunt.registerTask('default',
-                           ['less', 'browserify:dev', 'watch']);
-    );
+    grunt.registerTask('default',
+                       ['less', 'browserify:dev', 'watch']);
+);
+```
 
 We add the three tasks inside `initConfig`:
 
-{linenos=off,lang=js,crop-start-line=6,crop-end-line=17}
-<<[Less task config](code_samples/old/Gruntfile.js)
+``` {.javascript caption="Less task config"}
+        less: {
+            development: {
+                options: {
+                    compress: true,
+                    yuicompress: true,
+                    optimization: 2
+                },
+                files: {
+                    "build/style.css": "src/style.less"
+                }
+            }
+        },
+```
 
 This sets a couple of options for the less compiler and tells it which file we’re interested in.
 
-{id=browserify-config,linenos=off,lang=js,crop-start-line=19,crop-end-line=37}
-<<[Browserify task config](code_samples/old/Gruntfile.js)
+``` {#browserify-config .javascript caption="Browserify task config"}
+        browserify: {
+            options: {
+                transform: ['reactify', 'debowerify']
+            },
+            dev: {
+                options: {
+                    debug: true
+                },
+                src: 'src/main.jsx',
+                dest: 'build/bundle.js'
+            },
+            production: {
+                options: {
+                    debug: false
+                },
+                src: '<%= browserify.dev.src %>',
+                dest: 'build/bundle.js'
+            }
+        },
+```
 
 The `reactify` transform is going to transform JSX files into plain JavaScript. The rest just tells `browserify` what our main file is going to be and where to put the compiled result.
 
 I’m going to explain `debowerify` when we talk about client-side package management in the next section.
 
-{linenos=off,lang=js,crop-start-line=39,crop-end-line=52}
-<<[Watch task config](code_samples/old/Gruntfile.js)
+``` {.javascript caption="Watch task config"}
+        watch: {
+            styles: {
+                files: ['src/*.less'],
+                tasks: ['less'],
+                options: {
+                    nospawn: true
+                }
+            },
+
+            browserify: {
+                files: 'src/*.jsx',
+                tasks: ['browserify:dev']
+            }
+        }
+```
 
 This tells `watch` which files it needs to watch for changes and what to do with them.
 
@@ -154,26 +207,29 @@ It's even worse if the plugin’s got some dependencies that also need to be upd
 
 This is where Bower comes in. Instead of worrying about any of that, you can just run:
 
-{linenos=off}
-    $ bower install <something>
+```
+$ bower install <something>
+```
 
 You could use NPM for this, but Bower can play with any source anywhere. It understands several package repositories, and it can even download code straight from Github.
 
 To begin using Bower, install it and init the project:
 
-{linenos=off}
-    $ npm install -g bower
-    $ bower init
+```
+$ npm install -g bower
+$ bower init
+```
 
 This will create a `bower.json` file with some basic configuration.
 
 When that’s done, install the four dependencies we need:
 
-{linenos=off}
-    $ bower install -S d3
-    $ bower install -S react
-    $ bower install -S bootstrap
-    $ bower install -S lodash
+```
+$ bower install -S d3
+$ bower install -S react
+$ bower install -S bootstrap
+$ bower install -S lodash
+```
 
 We’re going to rely heavily on d3 and React. Bootstrap is there to give us some basic styling, and lodash will make it easier to play around with the data.
 
@@ -185,8 +241,9 @@ We can solve this with `debowerify`, which knows how to translate `require()` st
 
 You should install it with:
 
-{linenos=off}
-    $ npm install --save-dev debowerify
+```
+$ npm install --save-dev debowerify
+```
 
 We already configured Debowerify in the [Grunt config section](#browserify-config) under Browserify. Now we’ll be able to include d3.js with just `require(‘d3’);`. Much better.
 
@@ -207,8 +264,12 @@ Check that your work directory has at least these files:
 
 I’d suggest adding a `.gitignore` as well. Something like this:
 
-{linenos=off}
-<<[.gitignore](code_samples/old/.gitignore)
+``` {caption=".gitignore"}
+bower_components
+build/.*
+node_modules
+
+```
 
 And you might want to set up your text editor to understand JSX files. I'm using Emacs and `web-mode` is perfect for this type of work.
 

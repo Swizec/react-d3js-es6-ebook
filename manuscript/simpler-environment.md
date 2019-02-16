@@ -3,8 +3,7 @@
 
 <!--- begin-lecture title="Local environment setup" -->
 
-{#getting-started}
-# Set up a local environment with create-react-app
+# Set up a local environment with create-react-app {#getting-started}
 
 Can you believe this is the third time I'm writing a *"How to set up all the tools and get started"* section? The ecosystem moves fast! 
 
@@ -36,8 +35,7 @@ Great, you have node and you're ready to go.
 
 Run this command in a terminal:
 
-{caption: "Install create-react-app"}
-```
+``` {caption="Install create-react-app"}
 $ npm install -g create-react-app
 ```
 
@@ -55,8 +53,7 @@ Superb! You have `create-react-app`. Time to create an app and get started with 
 
 Run this in a terminal:
 
-{caption: "Create your project", line-numbers: false}
-```
+``` {caption="Create your project"}
 $ create-react-app react-d3js-example
 ```
 
@@ -64,8 +61,7 @@ Congratulations! You just created a React app. *With* all the setup and the fuss
 
 Your next step is to run your app:
 
-{caption: "Start your dev server"}
-```
+``` {caption="Start your dev server"}
 $ cd react-d3js-example
 $ npm start
 ```
@@ -88,7 +84,7 @@ Crucially, there is a single dependency in your project – `react-scripts`. But
 
 * **Webpack** - a module bundler and file loader. It turns your app into a single JavaScript file, and it even lets you import images and styles like they were code.
 * **Babel** - a JavaScript transpiler. It turns your modern JS code (ES6, ECMAScript2015, 2016, ES7, whatever you call it) into code that can run on real world browsers. It's the ecosystem's answer to slow browser adoption.
-* **ESLint** - linting! It annoys you when you write code that is bad. This is a good thing. 😄
+* **ESLint** - linting! It annoys you when you write code that is bad. This is a good thing. :smile:
 * **Jest** - a test runner. Having tests set up from the beginning of a project is a good idea. We won't really write tests in this book, but I will show you how it's done.
 
 All tools come preconfigured with sane defaults and ready to use. You have no idea how revolutionary this is. Check the appendixes to see how hard setting up an environment used to be. I'm so happy that `create-react-app` exists.
@@ -111,22 +107,19 @@ I suggest you keep `npm start` running at all times while coding. The browser wi
 
 <!--- begin-lecture title="Install extra dependencies" -->
 
-{#install-dependencies}
-## Install dependencies for React for Datavisualization
+## Install dependencies for React for Datavisualization {#install-dependencies}
 
 There are a couple of libraries we're going to use often in this book: D3, Topojson, and Lodash. We're using D3 to do our heavy lifting, Topojson to parse geographical data, and Lodash to make data manipulation easier.
 
 You can install them like this:
 
-{caption: "Install dependencies", line-numbers: false}
-```
+``` {caption="Install dependencies"}
 $ npm install --save d3 topojson lodash
 ```
 
 Additionally, we're using Bootstrap for default styling and String for string manipulation. You should install them as well.
 
-{caption: "Styling and string manipulation", line-numbers: false}
-```
+``` {caption="Styling and string manipulation"}
 $ npm install --save bootstrap string
 ```
 

@@ -2,8 +2,7 @@
 
 <!--- begin-lecture title="Redux animation intro" -->
 
-{#animating-react-redux}
-# Animating with React, Redux, and d3
+# Animating with React, Redux, and d3 {#animating-react-redux}
 
 And now for some pure nerdy fun: A particle generator… or, well, as close as you can get with React and D3. You'd need WebGL for a *real* particle generator.
 
@@ -57,7 +56,7 @@ Until then, here's a quick glossary so you don't feel lost:
 
 **Reducers** are functions that take the current state and an action, and use that information to generate a new state.
 
-Got it? No worries. You will soon :)
+Got it? No worries. You will soon :smiley:
 
 <!--- end-lecture -->
 
@@ -77,8 +76,7 @@ None of them contain state, but `App` has to be a class-based component so that 
 
 The `Particle` component is a circle. It looks like this:
 
-{caption: "Particle component", line-numbers: false}
-```javascript
+``` {.javascript caption="Particle component"}
 // src/components/Particles/Particle.jsx
 import React from 'react';
 
@@ -91,13 +89,11 @@ export default Particle;
 
 It takes `x` and `y` coordinates and returns an SVG circle.
 
-{#svg-particles}
-### Particles
+### Particles {#svg-particles}
 
 The `Particles` component isn't much smarter – it returns a list of circles wrapped in a grouping element, like this:
 
-{caption: "Particles list", line-numbers: false}
-```javascript
+``` {.javascript caption="Particles list"}
 // src/components/Particles/index.jsx
 import React from 'react';
 import Particle from './Particle';
@@ -112,7 +108,7 @@ const Particles = ({ particles }) => (
 export default Particles;
 ```
 
-Walk through the array of particles, render a Particle component for each. Declarative rendering that you've seen before :)
+Walk through the array of particles, render a Particle component for each. Declarative rendering that you've seen before :smiley:
 
 We can take an array of `{id, x, y}` objects and render SVG circles. Now comes our first fun component: the `App`.
 
@@ -122,8 +118,7 @@ We can take an array of `{id, x, y}` objects and render SVG circles. Now comes o
 
 The rendering part looks like this:
 
-{caption: "App component", line-numbers: false}
-```javascript
+``` {.javascript caption="App component"}
 // src/components/index.jsx
 
 import React, { Component } from 'react';
@@ -166,8 +161,7 @@ Oh, and we call `startTicker()` when a user clicks on our scene. No reason to ha
 
 To let users generate particles, we have to wire up some functions in `componentDidMount`. That looks like this:
 
-{caption: "Event listeners", line-numbers: false}
-```javascript
+``` {.javascript caption="Event listeners"}
 // src/components/index.jsx
 
 class App extends Component {
@@ -247,8 +241,7 @@ Our particle generator uses 6 actions:
 
 Our actions look something like this:
 
-{caption: "A Redux action", line-numbers: false}
-```javascript
+``` {.javascript caption="A Redux action"}
 export function updateMousePos(x, y) {
     return {
         type: UPDATE_MOUSE_POS,
@@ -284,8 +277,7 @@ Maintaining it can be awkward and sometimes cumbersome in mid-size projects, but
 
 We use the idiomatic `connect()` approach. Like this:
 
-{caption: "Main container component", line-numbers: false}
-```javascript
+``` {.javascript caption="Main container component"}
 // src/containers/AppContainer.jsx
 
 import { connect } from "react-redux";
@@ -361,7 +353,7 @@ export default connect(
 )(AppContainer);
 ```
 
-I love the smell of boilerplate in the morning. 👃
+I love the smell of boilerplate in the morning. :nose:
 
 We import dependencies and define `AppContainer` as a class-based React `Component` so we have somewhere to put the D3 interval. The render method outputs our `<App>` component using a bunch of props to pass relevant actions and values.
 
@@ -369,8 +361,7 @@ The `startTicker` method is a callback we pass into App. It runs on first click 
 
 ### AppContainer talks to the store
 
-{caption: "The Reduxy part", line-numbers: false}
-```javascript
+``` {.javascript caption="The Reduxy part"}
 // src/containers/AppContainer.jsx
 
 const mapStateToProps = ({
@@ -421,8 +412,7 @@ But Swiz, we're not writing key:value dictionaries, we're just listing stuff!
 
 That's a syntax supported in most modern JavaScript environments, called object literal property value shorthand. Our build system expands that `mapDispatchToProps` dictionary into something like this:
 
-{caption: "Compiler expands our dictionaries", line-numbers: false}
-```javascript
+``` {.javascript caption="Compiler expands our dictionaries"}
 const mapDispatchToProps = {
     tickTime: tickTime,
     tickerStarted: tickerStarted,
@@ -432,7 +422,7 @@ const mapDispatchToProps = {
 };
 ```
 
-And you thought previous code had a lot of boilerplate ... imagine if this was how you'd do it in real life 😛
+And you thought previous code had a lot of boilerplate ... imagine if this was how you'd do it in real life :stuck_out_tongue:
 
 `connect` wraps each of these action generators in `store.dispatch()` calls. You can pass the resulting function into any component and fire actions by calling that method.
 
@@ -465,8 +455,7 @@ All our logic and physics goes in the reducer. [Dan Abramov says](http://redux.j
 
 A "sum numbers" example would look like this:
 
-{caption: "Reducer concept", line-numbers: false}
-```javascript
+``` {.javascript caption="Reducer concept"}
 let sum = [1,2,3,4].reduce((sum, n) => sum+n, 0);
 ```
 
@@ -476,13 +465,12 @@ Our particle generator is a more advanced version of the same concept: Takes cur
 
 Start with a default state and some D3 random number helpers.
 
-{caption: "Default state and constants", line-numbers: false}
-```javascript
+``` {.javascript caption="Default state and constants"}
 import { randomNormal } from "d3";
 
 const Gravity = 0.5,
     randNormal = randomNormal(0.3, 2),
-    randNormal2 = randomNormal(0.5, 1.8);
+    randNormal2 = randomNormal(0.5, 1.:sunglasses:;
 
 const initialState = {
     particles: [],
@@ -497,7 +485,7 @@ const initialState = {
 };
 ```
 
-Using D3's `randomNormal` random number generator creates a better random distribution than using JavaScript's own `Math.random`. The rest is a bunch of default state 👇
+Using D3's `randomNormal` random number generator creates a better random distribution than using JavaScript's own `Math.random`. The rest is a bunch of default state :point_down:
 
 - `particles` holds an array of particles to draw
 - `particleIndex` defines the ID of the next generated particle
@@ -511,8 +499,7 @@ Using D3's `randomNormal` random number generator creates a better random distri
 
 To manipulate all this state, we use two reducers and manually combine them. Redux does come with a `combineReducers` function, but I wanted to keep our state flat and that doesn't fit `combineReducers`'s view of how life should work.
 
-{caption: "Combining two reducers", line-numbers: false}
-```javascript
+``` {.javascript caption="Combining two reducers"}
 // src/reducers/index.js
 
 // Manually combineReducers
@@ -536,8 +523,7 @@ Lesson here is that there are no rules. You can make your reducers whatever you 
 
 Our `appReducer` handles the boring actions with a big switch statement. These are common in the Redux world. They help us decide what to do based on action type.
 
-{caption: "appReducer big switch", line-numbers: false}
-```javascript
+``` {.javascript caption="appReducer big switch"}
 // src/reducers/index.js
 function appReducer(state, action) {
     switch (action.type) {
@@ -569,7 +555,7 @@ function appReducer(state, action) {
 }
 ```
 
-Gotta love that boilerplate 😛
+Gotta love that boilerplate :stuck_out_tongue:
 
 Even though we're only changing values of boolean flags and two-digit arrays, *we have to create a new state*. Redux relies on application state being immutable.
 
@@ -577,7 +563,7 @@ Well, JavaScript doesn't have real immutability. We pretend and make sure to nev
 
 We use `Object.assign({}, ...` to create a new empty object, fill it with the current state, then overwrite specific values with new ones. This is fast enough even with large state trees thanks to modern JavaScript engines.
 
-Note that when a reducer doesn't recognize an action, it has to return the same state it received. Otherwise you end up wiping state. 😅
+Note that when a reducer doesn't recognize an action, it has to return the same state it received. Otherwise you end up wiping state. :sweat_smile:
 
 So that's the boilerplatey state updates. Manages starting and stopping the animation, flipping the particle generation switch, and resizing our viewport.
 
@@ -595,8 +581,7 @@ On each tick of the animation we have to:
 
 We can do all that in one big reducer, like this:
 
-{caption: "The particles logic", line-numbers: false}
-```javascript
+``` {.javascript caption="The particles logic"}
 // src/reducers/index.js
 function particlesReducer(state, action) {
     switch (action.type) {
@@ -660,7 +645,7 @@ function particlesReducer(state, action) {
 }
 ```
 
-That's a lot of code, I know. Let me explain :)
+That's a lot of code, I know. Let me explain :smiley:
 
 The first part takes important values out of `state`, calculates the dropped frame multiplier, and makes a new copy of the particles array with `.slice(0)`. That was the fastest way I could find.
 
@@ -670,7 +655,7 @@ We loop through `particlesPerTick` particles, create them at `mousePos` coordina
 
 This randomness is a Redux faux pas. Reducers are supposed to be functionally pure: produce the same result every time they are called with the same argument values. Randomness is impure.
 
-We don't need our particle vectors to be deterministic, so I think this is fine. Let's say our universe is stochastic instead 😄
+We don't need our particle vectors to be deterministic, so I think this is fine. Let's say our universe is stochastic instead :smile:
 
 {aside}
 Stochastic means that our universe/physic simulation is governed by probabilities. You can still model such a universe and reason about its behavior. A lot of real world physics is stochastic in nature.
@@ -696,7 +681,7 @@ Building a particle generator in React and Redux, we made three important discov
 
 ----
 
-There you go: Animating with React, Redux, and D3. Kind of a new superpower 😉
+There you go: Animating with React, Redux, and D3. Kind of a new superpower :wink:
 
 Here's the recap:
 

@@ -14,7 +14,7 @@ You and your team spend most of your time reading code. Optimize for that. The f
 
 Do you really need to save that tenth of a second at runtime if it means an extra hour of head scratching every time there's a bug?
 
-Be honest. 😉
+Be honest. :wink:
 
 That said, there *are* cases where faster code is also easier to read. And there are cases where your visualization is so massive, that you need every ounce of oomph you can get.
 
@@ -91,7 +91,7 @@ HTML5 Canvas does offer some shape primitives. It has circles and rectangles and
 
 10,000 elements is still a hell of a lot more than the 3,000 or so that SVG gives you.
 
-If your app allows it, you can use sprites: Tiny images copy-pasted on the Canvas as bytestreams. I have yet to find an upper bound for those. My JavaScript became the bottleneck :D
+If your app allows it, you can use sprites: Tiny images copy-pasted on the Canvas as bytestreams. I have yet to find an upper bound for those. My JavaScript became the bottleneck :smile:
 
 But I'm getting ahead of myself. We'll talk about sprites later.
 
@@ -144,8 +144,7 @@ Let's try out two examples:
 
 <!--- begin-lecture title="A particle generator pushed to the max" -->
 
-{#canvas-react-redux}
-## A particle generator pushed to 20,000 elements with Canvas
+## A particle generator pushed to 20,000 elements with Canvas {#canvas-react-redux}
 
 Our [SVG-based particle generator](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6906668#animating-react-redux) caps out at a few thousand elements. Animation becomes slow as times between iterations of our game loop increase.
 
@@ -161,10 +160,9 @@ You can see it in action hosted on [Github pages](http://swizec.github.io/react-
 
 We're keeping most of our existing code. The real changes happen in `src/components/index.jsx`, where a Konva stage replaces the `<svg>` element, and in `src/components/Particles.jsx`, where we change what we render. There's a small tweak in the reducer to generate more particles per tick.
 
-You should go into your particle generator directory, install Konva and react-konva, and then make the changes below. Trying things out is better than just reading my code ;)
+You should go into your particle generator directory, install Konva and react-konva, and then make the changes below. Trying things out is better than just reading my code :wink:
 
-{caption: "Install Konva", line-numbers: false}
-```
+``` {caption="Install Konva"}
 $ npm install --save konva react-konva
 ```
 
@@ -182,8 +180,7 @@ Our changes start in `src/components/index.jsx`. We have to throw away the `<svg
 
 You can think of a Konva stage as a Canvas element with a bunch of helper methods attached. Some of them Konva uses internally; others are exposed as an API. Functions like exporting to an image file, detecting intersections, etc.
 
-{caption: "Import Konva and set the stage", line-numbers: false}
-```javascript
+``` {.javascript caption="Import Konva and set the stage"}
 // src/components/index.jsx
 
 // ...
@@ -231,8 +228,7 @@ Because the new approach renders a flat image, and because we don't care about i
 
 The new `Particles` component looks like this:
 
-{caption: "Sprite-based Particles component", line-numbers: false}
-```javascript
+``` {.javascript caption="Sprite-based Particles component"}
 // src/components/Particles.jsx
 
 import React, { Component } from 'react';
@@ -281,8 +277,7 @@ export default Particles;
 
 #### componentDidMount
 
-{caption: "componentDidMount method", line-numbers: false}
-```javascript
+``` {.javascript caption="componentDidMount method"}
 // src/components/Particles.jsx
 
 // ...
@@ -299,7 +294,7 @@ React calls `componentDidMount` when our component first renders. We use it to s
 
 `this.canvas` is a reference to the HTML5 Canvas element. We get it through a ref to the Konva layer, then spelunk through Konva internals to get the canvas itself. As the `_` prefix indicates, Anton Lavrenov did not intend this to be a public API.
 
-Thanks to JavaScript's permissiveness, we can use it anyway. 🙌
+Thanks to JavaScript's permissiveness, we can use it anyway. :raised_hands:
 
 `this.canvasContext` is a reference to our canvas's [CanvasRenderingContext2D](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D). It's the interface we use to draw basic shapes, perform transformations, and so on. Context is the only part of canvas you ever interact with as a developer.
 
@@ -317,8 +312,7 @@ Should our component unmount and re-mount, React will call `componentDidMount` a
 
 #### drawParticle
 
-{caption: "drawParticle code", line-numbers: false}
-```javascript
+``` {.javascript caption="drawParticle code"}
 // src/components/Particles.jsx
 
 // ...
@@ -337,8 +331,7 @@ We use the whole sprite, corner `(0, 0)` to corner `(128, 128)`. That's how big 
 
 #### componentDidUpdate
 
-{caption: "componentDidUpdate code", line-numbers: false}
-```javascript
+``` {.javascript caption="componentDidUpdate code"}
 // src/components/Particles.jsx
 
 // ...
@@ -370,8 +363,7 @@ Open your browser console and see how long each frame takes to draw. The `consol
 
 #### render
 
-{caption: "render code", line-numbers: false}
-```javascript
+``` {.javascript caption="render code"}
 // src/components/Particles.jsx
 
 // ...
@@ -443,15 +435,13 @@ A couple years ago, decorators got very close to becoming an official spec, then
 
 You can think of decorators as function wrappers. Instead of code like this:
 
-{caption: "Decoratorless function wrapping", line-numbers: false}
-```javascript
+``` {.javascript caption="Decoratorless function wrapping"}
 inject('store', ({ store }) => <div>A thing with {store.value}</div>);
 ```
 
 You can write the same code like this:
 
-{caption: "Function wrapping with decorators", line-numbers: false}
-```javascript
+``` {.javascript caption="Function wrapping with decorators"}
 @inject('store')
 ({ store }) => <div>A thing with {store.value}</div>
 ```
@@ -470,8 +460,7 @@ Because decorators aren't in the JavaScript spec, we have to tweak how we start 
 
 You should start a new project like this:
 
-{caption: "Create the billiards game project", line-numbers: false}
-```
+``` {caption="Create the billiards game project"}
 $ create-react-app billiards-game --scripts-version custom-react-scripts
 ```
 
@@ -481,8 +470,7 @@ The addition of `--scripts-version custom-react-scripts` employs @kitze's [custo
 
 We enable them in the `.env` file. Add this line:
 
-{caption: "Add to .env settings", line-numbers: false}
-```
+``` {caption="Add to .env settings"}
 // billiards-game/.env
 // ...
 REACT_APP_DECORATORS=true
@@ -492,8 +480,7 @@ No installation necessary. I think `custom-react-scripts` uses the `transform-de
 
 Before we begin, you should install some other dependencies as well:
 
-{caption: "Install libraries", line-numbers: false}
-```
+``` {caption="Install libraries"}
 $ npm install --save konva react-konva mobx mobx-react d3-timer d3-scale d3-quadtree
 ```
 
@@ -552,8 +539,7 @@ Let's start with `App` and work our way down.
 
 Our `App` component doesn't do much. It imports MobX stores, triggers sprite loading, and starts the game loop.
 
-{caption: "The App component", line-numbers: false}
-```javascript
+``` {.javascript caption="The App component"}
 // src/components/App.js
 
 import React, { Component } from 'react';
@@ -603,8 +589,7 @@ This makes them available to all child components via the `inject` decorator.
 
 Like this:
 
-{caption: "MarbleList component", line-numbers: false}
-```javascript
+``` {.javascript caption="MarbleList component"}
 // src/components/MarbleList.js
 
 import React from 'react';
@@ -660,8 +645,7 @@ Dragging and dropping creates a vector that accelerates, or shoots, the marble i
 
 The Marble component looks like this:
 
-{caption: "Marble component", line-numbers: false}
-```javascript
+``` {.javascript caption="Marble component"}
 // src/components/Marble.js
 
 import React, { Component } from 'react';
@@ -722,8 +706,7 @@ MobX makes this okay. It keeps everything in sync and our state easy to understa
 
 The code inside those callbacks is pretty mathsy.
 
-{caption: "Dragging callbacks", line-numbers: false}
-```javascript
+``` {.javascript caption="Dragging callbacks"}
 // src/components/Marble.js
 
 class Marble extends Component {
@@ -791,10 +774,9 @@ To use this sprite, we need two things:
 1. A way to tell where on the image each marble lies
 2. A MobX store that loads the image into memory
 
-The first is a `MarbleDefinitions` dictionary. We used it in `Marble` component's render method. If you're playing along, you should copy paste this. Too much typing :)
+The first is a `MarbleDefinitions` dictionary. We used it in `Marble` component's render method. If you're playing along, you should copy paste this. Too much typing :smiley:
 
-{caption: "MarbleDefinitions dictionary", line-numbers: false}
-```javascript
+``` {.javascript caption="MarbleDefinitions dictionary"}
 // src/logic/Sprite.js
 
 const MarbleDefinitions = {
@@ -816,12 +798,11 @@ export { MarbleDefinitions };
 
 Each type of marble has a name, a coordinate, and a color. The coordinate tells us where on the sprite image it is, and the color helps us create a nice shadow.
 
-All values painstakingly assembled by hand. You're welcome. 😌
+All values painstakingly assembled by hand. You're welcome. :relieved:
 
 The MobX store that loads our sprite into memory and helps us use it looks like this:
 
-{caption: "Sprite store", line-numbers: false}
-```javascript
+``` {.javascript caption="Sprite store"}
 // src/logic/Sprite.js
 
 import { observable, action, computed } from 'mobx';
@@ -884,8 +865,7 @@ The general approach goes like this:
 
 The [whole Physics store](https://github.com/Swizec/declarative-canvas-react-konva/blob/master/src/logic/Physics.js) is some 120 lines of code. We'll go slow. Here's the skeleton:
 
-{caption: "Physics skeleton", line-numbers: false}
-```javascript
+``` {.javascript caption="Physics skeleton"}
 // src/logic/Physics.js
 
 class Physics {
@@ -919,8 +899,7 @@ Let's walk through.
 
 #### initialPositions
 
-{caption: "initialPositions function", line-numbers: false}
-```javascript
+``` {.javascript caption="initialPositions function"}
 // src/logic/Physics.js
 class Physics {
     // ..
@@ -979,8 +958,7 @@ In the end, we add an `id` to each marble. We're using index as the id, that's t
 
 #### shoot and startGameLoop
 
-{caption: "shoot and startGameLoop functions", line-numbers: false}
-```javascript
+``` {.javascript caption="shoot and startGameLoop functions"}
 // src/logic/Physics.js
 class Physics {
     // ...
@@ -1006,7 +984,7 @@ class Physics {
 
 `shoot` and `startGameLoop` are the simplest functions in our physics engine. `startGameLoop` gets the initial `marbles` array and starts a D3 timer. `shoot` updates a specific marble's coordinates and speed vector.
 
-👌
+:ok_hand:
 
 <!--- end-lecture -->
 
@@ -1016,10 +994,9 @@ class Physics {
 
 Here comes the fun part. The one with our game loop.
 
-There's also a video explaining how this works 👉 [Watch it on YouTube](https://www.youtube.com/watch?v=H84fmXjTElM). With hand-drawn sketches that explain the math, and I think that's neat.
+There's also a video explaining how this works :point_right: [Watch it on YouTube](https://www.youtube.com/watch?v=H84fmXjTElM). With hand-drawn sketches that explain the math, and I think that's neat.
 
-{caption: "Full simulationStep function", line-numbers: false}
-```javascript
+``` {.javascript caption="Full simulationStep function"}
 
 @action simulationStep() {
     const { width, height, MarbleR } = this;
@@ -1031,7 +1008,7 @@ There's also a video explaining how this works 👉 [Watch it on YouTube](https:
         // nearest marble is a collision candidate
         const subdividedSpace = quadtree().extent([[-1, -1],
                                                    [this.width+1, this.height+1]])
-                                          .x(d => d.x)
+                                          .x(d => d.:satisfied:
                                           .y(d => d.y)
                                           .addAll(this.marbles
                                                       .filter(m => id !== m.id)),
@@ -1077,12 +1054,11 @@ There's also a video explaining how this works 👉 [Watch it on YouTube](https:
 }
 ```
 
-That's a lot of code 😅. Let's break it down.
+That's a lot of code :sweat_smile:. Let's break it down.
 
 You can think of `simulationStep` as a function and a loop. At the bottom, there is a `.forEach` that applies a `moveMarble` function to each marble.
 
-{caption: "Loop through marbles", line-numbers: false}
-```javascript
+``` {.javascript caption="Loop through marbles"}
     this.marbles.forEach((marble, i) => {
         const { x, y, vx, vy } = moveMarble(marble);
 
@@ -1106,8 +1082,7 @@ We iterate over the list of marbles, feed them into `moveMarble`, get new proper
 
 **Handling collisions with walls** happens in two lines of code. One per axis. 
 
-{caption: "Detecting wall collisions", line-numbers: false}
-```javascript
+``` {.javascript caption="Detecting wall collisions"}
 let _vx = ((x+vx < MarbleR) ? -vx : (x+vx > width-MarbleR) ? -vx : vx)*.99,
     _vy = ((y+vy < MarbleR) ? -vy : (y+vy > height-MarbleR) ? -vy : vy)*.99;
 ```
@@ -1122,12 +1097,11 @@ A quadtree is a way to subdivide space into areas. It lets us answer the questio
 Checking every marble with every other marble produces 81 comparisons. Versus 2 comparisons using a quadtree.
 {/aside}
 
-{caption: "Finding collision candidates", line-numbers: false}
-```javascript
+``` {.javascript caption="Finding collision candidates"}
 // nearest marble is a collision candidate
 const subdividedSpace = quadtree().extent([[-1, -1],
                                            [this.width+1, this.height+1]])
-                                  .x(d => d.x)
+                                  .x(d => d.:satisfied:
                                   .y(d => d.y)
                                   .addAll(this.marbles
                                               .filter(m => id !== m.id)),
@@ -1138,14 +1112,13 @@ We're using [`d3-quadtree`](https://github.com/d3/d3-quadtree) for the quadtree 
 
 To avoid detecting each marble as colliding with itself, we take each marble out of our list before feeding the quadtree.
 
-Once we have a quadtree, we use `.find` to look for the nearest marble within two radiuses – `MarbleR*2` – of the current marble. That's exactly the one we're colliding with! 😄
+Once we have a quadtree, we use `.find` to look for the nearest marble within two radiuses – `MarbleR*2` – of the current marble. That's exactly the one we're colliding with! :smile:
 
 **Handling collisions with marbles** involves math. The sort of thing you think you remember from high school, and suddenly realize you don't when the time comes to use it.
 
 Code looks like this:
 
-{caption: "Handling marble collisions", line-numbers: false}
-```javascript
+``` {.javascript caption="Handling marble collisions"}
 if (candidate) {
 
     // borrowing @air_hadoken's implementation from here:
@@ -1183,7 +1156,7 @@ You can think of `[normx, normy]` as a vector that points from current marble to
 
 Then we calculate the [dot product](https://en.wikipedia.org/wiki/Dot_product) between our marble's speed vector and the collision direction vector. And we normalize it by distance. Multiplying distance by `2` accounts for there being two marbles in the collision. That extra `.3` made the simulation look better.
 
-Fiddling and experimentation are your best tools for magic values like that 😉
+Fiddling and experimentation are your best tools for magic values like that :wink:
 
 Then we use the dot product scalar to adjust the marble's speed vector. Dividing by `2` takes into account that half the energy goes to the other marble. This is true because we assume their masses are equal.
 
@@ -1201,8 +1174,7 @@ The end result is [a decent-looking simulation of billiards](https://swizec.gith
 
 <!--- begin-lecture title="Using a React alternative like Preact or Inferno" -->
 
-{#fractal-tree}
-# Using a React alternative like Preact or Inferno
+# Using a React alternative like Preact or Inferno {#fractal-tree}
 
 We've been using React so far, and that's worked great. React is fast, easy to use, and not too hard to understand. However, two alternative frameworks promise the ease of React, but faster with a smaller footprint.
 
@@ -1240,8 +1212,7 @@ We're using a `<Pythagoras>` component for each square and its two children, a D
 
 The `<Pythagoras>` component looks like this:
 
-{caption: "Recursive <Pythagoras> component", line-numbers: false, format: javascript}
-```
+``` {.javascript caption="Recursive <Pythagoras> component"}
 const Pythagoras = ({ w, x, y, heightFactor, lean, left, right, lvl, maxlvl }) => {
     if (lvl >= maxlvl || w < 1) {
         return null;
@@ -1300,8 +1271,7 @@ Most of this code deals with passing props  to children, which isn't the most el
 
 I don't _really_ understand this math, but I sort of know where it's coming from. It's the [sine law](https://en.wikipedia.org/wiki/Law_of_sines) applied correctly. The part I failed at [when I tried](https://swizec.com/blog/fractals-react/swizec/7233) to do it myself.
 
-{caption: "Trigonometry that moves our fractal", line-numbers: false, format: javascript}
-```
+``` {.javascript caption="Trigonometry that moves our fractal"}
 const memoizedCalc = function () {
     const memo = {};
 
@@ -1347,8 +1317,7 @@ This, however, would be far too tricky to implement.
 
 Inside [`App.js`](https://github.com/Swizec/react-fractals/blob/master/src/App.js), we add a mouse event listener. We use D3's because it gives us SVG-relative position calculation out of the box. With React's, we'd have to do the hard work ourselves.
 
-{caption: "Reacting to mouse movement", line-numbers: false, format: javascript}
-```
+``` {.javascript caption="Reacting to mouse movement"}
 // App.js
 state = {
         currentMax: 0,
@@ -1366,14 +1335,14 @@ onMouseMove(event) {
   const [x, y] = d3mouse(this.refs.svg),
 
   scaleFactor = scaleLinear().domain([this.svg.height, 0])
-                             .range([0, .8]),
+                             .range([0, .:sunglasses:),
 
   scaleLean = scaleLinear().domain([0, this.svg.width/2, this.svg.width])
                            .range([.5, 0, -.5]);
 
   this.setState({
     heightFactor: scaleFactor(y),
-    lean: scaleLean(x)
+    lean: scaleLean(:satisfied:
   });
 }
 
@@ -1404,20 +1373,19 @@ The `lean` parameter tells us which way the tree is leaning and how much, the `h
 
 That happens in `onMouseMove`:
 
-{caption: "Moving the fractal as user moves mouse", line-numbers: false, format: javascript}
-```
+``` {.javascript caption="Moving the fractal as user moves mouse"}
 onMouseMove(event) {
   const [x, y] = d3mouse(this.refs.svg),
 
   scaleFactor = scaleLinear().domain([this.svg.height, 0])
-                             .range([0, .8]),
+                             .range([0, .:sunglasses:),
 
   scaleLean = scaleLinear().domain([0, this.svg.width/2, this.svg.width])
                            .range([.5, 0, -.5]);
 
   this.setState({
     heightFactor: scaleFactor(y),
-    lean: scaleLean(x)
+    lean: scaleLean(:satisfied:
   });
 }
 ```
@@ -1428,7 +1396,7 @@ When we feed a change to `this.setState`, it triggers a re-render of the entire 
 
 ![Dancing Pythagoras tree](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/pythagoras-dancing.gif)
 
-Beautious. 😍
+Beautious. :heart_eyes:
 
 <!--- end-lecture -->
 
@@ -1460,8 +1428,7 @@ In `package.json`, he added `preact`, `preact-compat`, and preact -compat clones
 
 He changed the functional `Pythagoras` component into a stateful component to enable async rendering.
 
-{caption: "Change <Pythagoras> to a class", line-numbers: false, format: javascript}
-```
+``` {.javascript caption="Change <Pythagoras> to a class"}
 // src/Pythagoras.js
 export default class {
   render(props) {
@@ -1472,8 +1439,7 @@ export default class {
 
 And enabled debounced asynchronous rendering:
 
-{caption: "Debounce rendering", line-numbers: false, format: javascript}
-```
+``` {.javascript caption="Debounce rendering"}
 // src/index.js
 import { options } from 'preact';
 options.syncComponentUpdates = false;
@@ -1501,8 +1467,7 @@ From there, the main changes are to the imports – React becomes Inferno – 
 
 He also had to change a string-based ref into a callback ref. Inferno doesn't do string-based refs for performance reasons, and we need refs so we can use D3 to detect mouse position on SVG.
 
-{caption: "Change ref to callback", line-numbers: false, format: javascript}
-```
+``` {.javascript caption="Change ref to callback"}
 // src/App.js
 
 class App extends Component {

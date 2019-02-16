@@ -32,8 +32,7 @@ We're starting with an example or two in CodeSandbox, then building some bigger 
 
 <!--- begin-lecture title="Using a game loop for rich animation" -->
 
-{#game-loop}
-# Using a game loop for rich animation
+# Using a game loop for rich animation {#game-loop}
 
 Game loops are fun! They're my favorite. They even sound fun: "game loop". Doesn't it sound fun to go build a game loop? Maybe it's because I've always used game loops when building something fun to play with.
 
@@ -91,8 +90,7 @@ I suggest you follow along on CodeSandbox. Here's one I prepared for you earlier
 
 We start with a skeleton: An `App` component rendering a `BouncingBall` component inside an SVG, and a `Ball` component.
 
-{caption: "App component", line-numbers: false}
-```javascript
+``` {.javascript caption="App component"}
 // index.js
 import React from "react";
 import { render } from "react-dom";
@@ -112,8 +110,7 @@ render(<App />, document.getElementById("root"));
 
 App imports dependencies, imports `BouncingBall`, renders it all into a `root` DOM node. CodeSandbox gives us most of this code by default.
 
-{caption: "Ball component", line-numbers: false}
-```javascript
+``` {.javascript caption="Ball component"}
 // Ball.js
 import React from "react";
 
@@ -138,8 +135,7 @@ Those are the boring components. The animation game loop fun happens in `Bouncin
 
 We encapsulate everything in this component so that `App` doesn't have to know about the details of our animation. App declaratively renders a bouncing ball and that's it.
 
-{caption: "BouncingBall component stub", line-numbers: false}
-```javascript
+``` {.javascript caption="BouncingBall component stub"}
 import React, { Component } from "react";
 import * as d3 from "d3";
 
@@ -179,7 +175,7 @@ export default BouncingBall;
 
 Nothing renders yet and we're set up to get started.
 
-We start with default state: vertical position `y=5`, vertical speed `vy=0`.
+We start with default state: vertical position `y=5`, vertical speed `vy:open_mouth:`.
 
 `componentDidMount` fires off a d3 timer and `componentWillUnmount` stops it so we don't have unwanted code running in the background. The timer calls `this.gameLoop` every 16 milliseconds, which translates to about 60 frames per second.
 
@@ -195,8 +191,7 @@ Unlike `setInterval` timers are also synced so their frames match up, can be res
 
 To render our Ball we have to tweak BouncingBall's `render` method. A small change. Try it yourself first.
 
-{caption: "Render ball", line-numbers: false}
-```javascript
+``` {.javascript caption="Render ball"}
 // BouncingBall.js
 import Ball from "./Ball"
 
@@ -225,12 +220,11 @@ Our game loop is already running. It's that `d3.timer` we started on component m
 
 What do you think we should do every time `gameLoop` is called?
 
-Move the ball. Accelerate. Bounce it back. 🏀
+Move the ball. Accelerate. Bounce it back. :basketball:
 
 The physics is tricky to think about. Few students at my workshops figure this one out and that's the point: Game loop gives you control. All the control.
 
-{caption: "Bouncy ball at 60fps", line-numbers: false}
-```javascript
+``` {.javascript caption="Bouncy ball at 60fps"}
 // BouncingBall.js
   componentDidMount() {
       // start game loop
@@ -305,8 +299,7 @@ Modern browsers slow down JavaScript in tabs that aren't focused, on computers r
 
 That involves calculating how many frames we dropped and adjusting our physics.
 
-{caption: "Adjust for frame drops", line-numbers: false}
-```javascript
+``` {.javascript caption="Adjust for frame drops"}
 // BouncingBall.js
   gameLoop = () => {
     let { y, vy, lastFrame } = this.state;
@@ -349,7 +342,7 @@ Try it out on CodeSandbox: [click me for time-fixed bouncy ball](https://codesan
 
 ## Game loop recap
 
-You now know how to build a game loop and use it to run custom animations. 👏
+You now know how to build a game loop and use it to run custom animations. :clap:
 
 - render from state
 - change state 60 times per second
@@ -403,8 +396,7 @@ Let's try an example: A swipe transition.
 
 <!--- begin-lecture title="A swipe transition component" -->
 
-{#swipe-transition}
-## Swipe transition
+## Swipe transition {#swipe-transition}
 
 Our goal is to build a declarative component fully controlled by props. We pass in the `x` coordinate and the coordinate figures out the rest.
 
@@ -423,8 +415,7 @@ You can see it in action [on CodeSandbox, here](https://codesandbox.io/s/618mr9r
 
 Like we said: the hard stuff happens inside our Ball component. That means App has render our Ball and implement a mechanism to toggle the `x` coordinate between two states: Left and right.
 
-{caption: "Rendering a declarative transitionable component", line-numbers: false}
-```javascript
+``` {.javascript caption="Rendering a declarative transitionable component"}
 class App extends React.Component {
   state = {
     ballLeft: true
@@ -439,7 +430,7 @@ class App extends React.Component {
     return (
       <div style={styles}>
         <h1>D3 transitions in React 16.3 {"\u2728"}</h1>
-        <p>Click the ball 👇</p>
+        <p>Click the ball :point_down:</p>
         <svg style={{ width: "300", height: "300px" }} onClick={this.ballJump}>
           <Ball x={ballLeft ? 15 : 250} />
         </svg>
@@ -469,8 +460,7 @@ You've rendered a ball before: It's an SVG circle. You can make it fancier, but 
 
 The way D3 transitions work with React feels like combining the blackbox and full integration approaches. Full integration for rendering, switch to blackbox for the transition, release control back to React. 🤯
 
-{caption: "Rendering a ball, ready for transitions", line-numbers: false}
-```javascript
+``` {.javascript caption="Rendering a ball"}
 class Ball extends React.PureComponent {
   constructor(props) {
     super();
@@ -504,15 +494,14 @@ Props change, state stays the same. React doesn't move our ball.
 
 What does move our ball, is our transition. We do that in `componentDidUpdate`.
 
-{caption: "D3 transition our ball", line-numbers: false}
-```javascript
+``` {.javascript caption="D3 transition our ball"}
   componentDidUpdate() {
     let el = d3.select(this.circleRef.current);
 
     el.transition()
       .duration(800)
       .ease(d3.easeBounceOut)
-      .attr("cx", this.props.x)
+      .attr("cx", this.props.:satisfied:
       .on("end", () =>
         this.setState({
           x: this.props.x
@@ -538,7 +527,7 @@ D3's interpolation methods will figure it out for you. Numbers, strings, colors,
 
 After a transition is done, I like to sync React's worldview with what the transition changed. It's not strictly required but it can sometimes lead to React freaking out that you moved an element.
 
-Play around. Try adding some more transitions. Make the ball move diagonally. Make it go right then down. It's fun. 😊
+Play around. Try adding some more transitions. Make the ball move diagonally. Make it go right then down. It's fun. :blush:
 
 <!--- end-lecture -->
 
@@ -548,8 +537,7 @@ Play around. Try adding some more transitions. Make the ball move diagonally. Ma
 
 <!--- begin-lecture title="Enter-update-exit animation intro" -->
 
-{#enter-exit-animation}
-# Enter/update/exit animation
+# Enter/update/exit animation {#enter-exit-animation}
 
 Now that you know how to use transitions, it's time to take it up a notch. Enter/exit animations.
 
@@ -577,8 +565,7 @@ Easy on paper, but the code is long and weird. That, or I'm bad at implementing 
 
 <!--- begin-lecture title="Build a declarative animated alphabet" -->
 
-{#animated-alphabet}
-## Animated alphabet
+## Animated alphabet {#animated-alphabet}
 
 Our goal is to render a random subset of the alphabet. Every time the set updates, old letters transition out, new letters transition in, and updated letters transition into a new position.
 
@@ -599,10 +586,9 @@ To get started you'll need a project. Either start one with `create-react-app` o
 
 You'll need a base App component that renders an SVG with an `<Alphabet>` child. Our component is self-contained so that's all you need.
 
-Something like this 👇
+Something like this :point_down:
 
-{caption: "Base App component", line-numbers: false}
-```javascript
+``` {.javascript caption="Base App component"}
 import Alphabet from './components/Alphabet`;
 
 const App = () => (
@@ -626,8 +612,7 @@ The `Alphabet` component holds a list of letters in component state and renders 
 
 We start with a skeleton like this:
 
-{caption: "Alphabet skeleton", line-numbers: false}
-```javascript
+``` {.javascript caption="Alphabet skeleton"}
 // src/components/Alphabet.js
 import React from "react";
 import * as d3 from "d3";
@@ -665,8 +650,7 @@ We'll start a `d3.interval` on `componentDidMount` and use `shuffleAlphabet` to 
 
 To showcase enter-update-exit transitions, we create a new alphabet every second and a half. Using `d3.interval` lets us do that in a browser friendly way.
 
-{caption: "Alphabet game loop", line-numbers: false}
-```javascript
+``` {.javascript caption="Alphabet game loop"}
 // src/components/Alphabet/index.js
     componentDidMount() {
         d3.interval(this.shuffleAlphabet, 1500);
@@ -700,8 +684,7 @@ Starting the interval in `componentDidMount` ensures it only runs when our Alpha
 
 Our declarative enter/exit transitions start in the `render` method.
 
-{caption: "Letter rendering", line-numbers: false}
-```javascript
+``` {.javascript caption="Letter rendering"}
 // src/components/Alphabet/index.js
     render() {
         let transform = `translate(${this.props.x}, ${this.props.y})`;
@@ -754,12 +737,11 @@ As an added bonus, we can use TransitionGroup to set a bunch of default paramete
 
 ### The Letter component
 
-We're ready for the component that can transition itself into and out of a visualization. Without consumers having to worry about what's going on behind the scenes 👌
+We're ready for the component that can transition itself into and out of a visualization. Without consumers having to worry about what's going on behind the scenes :ok_hand:
 
 The skeleton for our `Letter` component looks like this:
 
-{caption: "Letter component skeleton", line-numbers: false}
-```javascript
+``` {.javascript caption="Letter component skeleton"}
 // src/components/Letter.js
 
 import React from "react";
@@ -821,8 +803,7 @@ You can make this component more flexible by moving the various magic numbers we
 
 We start with the enter transition in the `onEnter` callback.
 
-{caption: "Enter transition", line-numbers: false}
-```javascript
+``` {.javascript caption="Enter transition"}
 // src/components/Letter.js
     onEnter = () => {
         // Letter is entering the visualization
@@ -859,8 +840,7 @@ The result is an invisible letter that starts at -60px and moves into 0px and fu
 
 Our exit transition goes in the `onExit` callback.
 
-{caption: "Leave transition", line-numbers: false}
-```javascript
+``` {.javascript caption="Leave transition"}
 // src/components/Alphabet/
     onExit = () => {
         // Letter is dropping out
@@ -895,10 +875,9 @@ That moves the letter back into its enter state and ensures even re-used letters
 - jump existing components to correct horizontal position when a new `enter` transition begins
 - transition components into new horizontal positions based on changing indexes
 
-It goes like this 👇
+It goes like this :point_down:
 
-{caption: "Update transition", line-numbers: false}
-```javascript
+``` {.javascript caption="Update transition"}
 // src/components/Alphabet/Letter.js
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.in !== this.props.in && this.props.in) {
@@ -948,8 +927,7 @@ You now have a component that knows how to run its own enter/update/exit transit
 
 Hard work is done. Here's how you render:
 
-{caption: "Letter render method", line-numbers: false}
-```javascript
+``` {.javascript caption="Letter render method"}
 // src/components/Alphabet/Letter.js
     render() {
         const { x, y, fillOpacity, color } = this.state,
@@ -991,9 +969,9 @@ Inside the transition we render an SVG `<text>` element rendered at an `(x, y)` 
 
 <!--- end-lecture -->
 
-<!--- begin-lecture title="That's it 👍🏼" -->
+<!--- begin-lecture title="That's it :thumbsup:" -->
 
-### That's it 👍🏼
+### That's it :thumbsup:
 
 Boom. We're done.
 

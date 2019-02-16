@@ -1,9 +1,7 @@
-{mainmatter}
 
 <!--- begin-lecture title="What you'll build" -->
 
-{#the-meat-start}
-# Visualizing data with React and d3.js #
+# Visualizing data with React and d3.js {#the-meat-start}
 
 Welcome to the main part of React + D3 2018. We're going to talk a little theory, learn some principles, then get our hands dirty with some examples. Through this book you're going to build:
 
@@ -60,8 +58,7 @@ This section has five chapters:
 
 <!--- begin-section title="A quick intro to D3" -->
 
-{#d3-quick-intro}
-# A quick intro to D3
+# A quick intro to D3 {#d3-quick-intro}
 
 <!--- begin-lecture title="Why D3" -->
 
@@ -83,10 +80,9 @@ Where many charting libraries fall short is customization. The API is limited, y
 
 A lot of what you end up doing in real life is finding a D3 example that looks like what you want to build and adapting it. That's why you should learn at least some D3.
 
-But D3 is hard to read. Take this barchart code, for example 👇
+But D3 is hard to read. Take this barchart code, for example :point_down:
 
-{caption: "Barchart in pure D3", line-numbers: false}
-```javascript
+``` {.javascript caption="Barchart in pure D3"}
 d3.tsv("data.tsv", function(d) {
   d.frequency = +d.frequency;
   return d;
@@ -124,7 +120,7 @@ d3.tsv("data.tsv", function(d) {
 
 Can you tell what's going on? I'd need to read it pretty carefully.
 
-Which brings us to 👉
+Which brings us to :point_right:
 
 <!--- end-lecture -->
 
@@ -138,7 +134,7 @@ Most people don't go that far. They don't have to.
 
 You start with a problem, find similar examples, do some copy pasta, tweak until it works and end up with a working visualization you don't understand. You'd be surprised how few engineers actually understand how their D3 data visualization works.
 
-Fear not! There are just 3 key concepts you have to grok. Then you can understand every D3 example out there. 😱
+Fear not! There are just 3 key concepts you have to grok. Then you can understand every D3 example out there. :scream:
 
 <!--- end-lecture -->
 
@@ -161,10 +157,9 @@ Let's take an example from [D3's docs](https://github.com/d3/d3/wiki/Gallery), a
 
 You can [try it online](https://cdn.rawgit.com/mbostock/3885304/raw/a91f37f5f4b43269df3dbabcda0090310c05285d/index.html). When you hover on a bar, it changes color. Pretty neat.
 
-Mike Bostock, the creator of D3, built this chart in 43 lines of code. Here they are 👇
+Mike Bostock, the creator of D3, built this chart in 43 lines of code. Here they are :point_down:
 
-{caption: "Example D3 barchart", line-numbers: false}
-```javascript
+``` {.javascript caption="Example D3 barchart"}
 var svg = d3.select("svg"),
     margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = +svg.attr("width") - margin.left - margin.right,
@@ -213,8 +208,7 @@ d3.tsv("data.tsv", function(d) {
 
 There are two parts to this code: Data manipulation and DOM manipulation.
 
-{caption: "Data manipulation code", line-numbers: false}
-```javascript
+``` {.javascript caption="Data manipulation code"}
 var // ..,
     margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = +svg.attr("width") - margin.left - margin.right,
@@ -246,8 +240,7 @@ Bostock here first prepares his data:
 
 In the DOM manipulation part, he puts shapes and objects into an SVG. This is the part that shows up in your browser.
 
-{caption: "DOM manipulation code", line-numbers: false}
-```javascript
+``` {.javascript caption="DOM manipulation code"}
 var svg = d3.select("svg"),
     // ..
 
@@ -296,7 +289,7 @@ Here Bostock does a few things
 
 That last part is where people get lost. It looks like magic. Even to me.
 
-It's a declarative approach to rendering data. Works great, hard to understand. That's why we'll do it in React instead :)
+It's a declarative approach to rendering data. Works great, hard to understand. That's why we'll do it in React instead :smiley:
 
 You can think of `.enter` as a loop over your data. Everything chained after `.enter` is your loop's body. Sort of like doing `data.map(d => append(rect).setManyAttributes())`
 
@@ -324,7 +317,7 @@ let shapes = d3.scaleOrdinal()
 
 [Play with scales on CodeSandbox](https://codesandbox.io/s/r0rw72z75o)
 
-<iframe src="https://codesandbox.io/embed/r0rw72z75o?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/r0rw72z75o?codemirror=1&view=split" style="width:100%; height:500px; border:open_mouth:; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 Once you have this scale, you can use it to translate from shapes to colors. `shapes('red triangle')` returns `'red'` for example.
 
@@ -367,7 +360,7 @@ But it is up to you to render them. A layout handles your dataviz in the abstrac
 
 For a force layout, you have to update the DOM on every tick of the animation. For circle packing, you render it once.
 
-Once you grok this, all the fancy visualizations out there start making sense. Also means you can use these fancy layouts in React 🙌
+Once you grok this, all the fancy visualizations out there start making sense. Also means you can use these fancy layouts in React :raised_hands:
 
 <!--- end-lecture -->
 
@@ -391,15 +384,13 @@ There's a lot. We're not going to cover it all but you can find those advanced f
 
 <!--- begin-section title="How React makes D3 easier" -->
 
-<!--- begin-lecture title="React + D3 = ❤️" -->
+<!--- begin-lecture title="React + D3 = :heart:" -->
 
-{#basic-approach}
-# How React makes D3 easier
+# How React makes D3 easier {#basic-approach}
 
 Our visualizations are going to use SVG – an XML-based image format that lets us describe images in terms of mathematical shapes. For example, the source code of an 800x600 SVG image with a rectangle looks like this:
 
-{caption: "SVG rectangle", line-numbers: false}
-```html
+``` {.html caption="SVG rectangle"}
 <svg width="800" height="600">
     <rect width="100" height="200" x="50" y="20" />
 </svg>
@@ -417,8 +408,7 @@ Another nice feature of SVG is that it's just a dialect of XML - nested elements
 
 That makes React's rendering engine particularly suited for SVG. Our 100x200 rectangle from before looks like this as a React component:
 
-{caption: "A simple rectangle in React", line-numbers: false, format: javascript}
-```
+``` {.javascript caption="A simple rectangle in React"}
 const Rectangle = () => (
     <rect width="100" height="200" x="50" y="20" />
 );
@@ -426,8 +416,7 @@ const Rectangle = () => (
 
 To use this rectangle component in a picture, you'd use a component like this:
 
-{caption: "Rect component in a picture", line-numbers: false, format: javascript}
-```
+``` {.javascript caption="Rect component in a picture"}
 const Picture = () => (
     <svg width="800" height="600">
         <Rectangle />
@@ -439,8 +428,7 @@ Sure looks like tons of work for a static rectangle. But look closely! Even if y
 
 Compare that to a pure D3 approach:
 
-{caption: "A static rectangle in d3.js", line-numbers: false, format: javascript}
-```
+``` {.javascript caption="A static rectangle in d3.js"}
 d3.select("svg")
   .attr("width", 800)
   .attr("height", 600)
@@ -457,8 +445,7 @@ You have to take your time and read the code carefully: first, we `select` the `
 
 Those 8 lines of code create HTML that looks like this:
 
-{caption: "HTML of a rectangle", line-numbers: false, format: javascript}
-```
+``` {.javascript caption="HTML of a rectangle"}
 <svg width="800" height="600">
     <rect width="100" height="200" x="50" y="20" />
 </svg>
@@ -491,8 +478,7 @@ Now let's look at three different ways of using React and D3 to build data visua
 
 <!--- begin-lecture title="What about existing libraries?" -->
 
-{#existing-libraries}
-# When should you use an existing library? Which one?
+# When should you use an existing library? Which one? {#existing-libraries}
 
 The quickest way to achieve the benefits of integrating React with D3 is to use a library. A collection of components with pre-built charting visualizations. Plug it into your app, move on with life.
 
@@ -502,7 +488,7 @@ Where libraries become a problem is when you want to move beyond the library aut
 
 That's why I rarely use libraries myself. Often find it quicker to build something specific from scratch than figuring out how to hold a generalized API just right.
 
-But they're a great first step. Here's a few of the most popular React & D3 libraries 👇
+But they're a great first step. Here's a few of the most popular React & D3 libraries :point_down:
 
 List borrowed from [a wonderful Smashing Magazine article](https://www.smashingmagazine.com/2018/02/react-d3-ecosystem/), because it's a good list.
 
@@ -520,10 +506,9 @@ Victory offers low level components for basic charting and reimplements a lot of
 
 Here's what it takes to implement a Barchart using Victory.js. [You can try it on CodeSandbox](https://codesandbox.io/s/3v3q013x36)
 
-<iframe src="https://codesandbox.io/embed/3v3q013x36?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/3v3q013x36?codemirror=1&view=split" style="width:100%; height:500px; border:open_mouth:; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
-{caption: "Bar chart in Victory.js", line-numbers: false}
-```javascript
+``` {.javascript caption="Bar chart in Victory.js"}
 const data = [
   { quarter: 1, earnings: 13000 },
   { quarter: 2, earnings: 16500 },
@@ -559,10 +544,9 @@ Recharts is like a more colorful Victory. A pile of charting components, some cu
 
 Here's what it takes to implement a Barchart using Recharts. [You can try it on CodeSandbox](https://codesandbox.io/s/mmkrjl7qxp)
 
-<iframe src="https://codesandbox.io/embed/mmkrjl7qxp?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/mmkrjl7qxp?codemirror=1&view=split" style="width:100%; height:500px; border:open_mouth:; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
-{code-samples: "Bar chart in Recharts", line-numbers: false}
-```javascript
+``` {.javascript}
 const data = [
   { quarter: 1, earnings: 13000 },
   { quarter: 2, earnings: 16500 },
@@ -600,10 +584,9 @@ Nivo is another attempt to give you a set of basic charting components. Comes wi
 
 Here's what it takes to implement a Barchart using Nivo. [You can try it on CodeSandbox](https://codesandbox.io/s/n1wwkvq24)
 
-<iframe src="https://codesandbox.io/embed/n1wwkvq24?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/n1wwkvq24?codemirror=1&view=split" style="width:100%; height:500px; border:open_mouth:; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
-{caption: "Bar chart in Nivo", line-numbers: false}
-```javascript
+``` {.javascript caption="Bar chart in Nivo"}
 const data = [
   { quarter: 1, earnings: 13000 },
   { quarter: 2, earnings: 16500 },
@@ -641,10 +624,9 @@ That's why I recommend teams use VX when they need to get started quickly.
 
 Here's what it takes to implement a Barchart using Nivo. [You can try it on CodeSandbox](https://codesandbox.io/s/k5853pryrv)
 
-<iframe src="https://codesandbox.io/embed/k5853pryrv?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/k5853pryrv?codemirror=1&view=split" style="width:100%; height:500px; border:open_mouth:; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
-{caption: "Bar chart built in VX", line-numbers: false}
-```javascript
+``` {.javascript caption="Bar chart built in VX"}
 const data = [
   { quarter: 1, earnings: 13000 },
   { quarter: 2, earnings: 16500 },
@@ -662,7 +644,7 @@ const App = ({ width = 400, height = 400 }) => {
   // scales
   const xScale = scaleBand({
     rangeRound: [0, xMax],
-    domain: data.map(x),
+    domain: data.map(:satisfied:,
     padding: 0.4
   });
   const yScale = scaleLinear({
@@ -710,7 +692,7 @@ A rule of thumb you can use is to consider how custom you want to make your visu
 
 Or if you've had a lot of practice with rolling your own and it's literally easier than learning a library.
 
-If you have to customize an existing library, or build your own for the team, that's what we're here for today :)
+If you have to customize an existing library, or build your own for the team, that's what we're here for today :smiley:
 
 <!--- end-lecture -->
 
@@ -720,8 +702,7 @@ If you have to customize an existing library, or build your own for the team, th
 
 <!--- begin-lecture title="The idea behind blackbox components" -->
 
-{#blackbox-components}
-# Quickly integrate any D3 code in your React project with Blackbox Components
+# Quickly integrate any D3 code in your React project with Blackbox Components {#blackbox-components}
 
 Blackbox components are the quickest way to integrate D3 and React. You can think of them as wrappers around D3 visualizations.
 
@@ -733,7 +714,7 @@ No render engine, no tree diffing, no dev tools to inspect what's going. Just a 
 
 Okay for small components or when you're prototyping, but I've had people come to my workshops and say *"We built our whole app with the blackbox approach. It takes a few seconds to re-render when you click something. Please help"*
 
-🤔
+:thinking:
 
 Here's how it works:
 - React renders an anchor element
@@ -747,8 +728,7 @@ Use this technique sparingly.
 
 <!--- begin-lecture title="A quick blackbox example - a D3 axis" -->
 
-{#blackbox-axis}
-## A quick blackbox example - a D3 axis
+## A quick blackbox example - a D3 axis {#blackbox-axis}
 
 Let's build an axis component. Axes are the perfect use-case for blackbox components. D3 comes with an axis generator bundled inside, and they're difficult to build from scratch.
 
@@ -756,8 +736,7 @@ They don't *look* difficult, but there are many tiny details you have to get _ju
 
 D3's axis generator takes a scale and some configuration to render an axis for us. The code looks like this:
 
-{caption: "Vanilla D3 axis",line-numbers: false, format: javascript}
-```
+``` {.javascript caption="Vanilla D3 axis"}
 const scale = d3.scaleLinear()
     .domain([0, 10])
     .range([0, 200]);
@@ -771,7 +750,7 @@ d3.select('svg')
 
 You can [try it out on CodeSandbox](https://codesandbox.io/s/v6ovkow8q3).
 
-<iframe src="https://codesandbox.io/embed/v6ovkow8q3?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/v6ovkow8q3?codemirror=1&view=split" style="width:100%; height:500px; border:open_mouth:; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 If this code doesn't make any sense, don't worry. There's a bunch of D3 to learn, and I'll help you out. If it's obvious, you're a pro! This book will be much quicker to read.
 
@@ -785,7 +764,7 @@ It creates a small axis:
 
 ![Simple axis](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/simple-axis.png)
 
-Play around with it on [Codesandbox](https://codepen.io/swizec/pen/YGoYBM). Change the scale type, play with axis orientation. Use `.ticks` on the axis to change how many show up. Have some fun :)
+Play around with it on [Codesandbox](https://codepen.io/swizec/pen/YGoYBM). Change the scale type, play with axis orientation. Use `.ticks` on the axis to change how many show up. Have some fun :smiley:
 
 <!--- end-lecture -->
 
@@ -795,8 +774,7 @@ Play around with it on [Codesandbox](https://codepen.io/swizec/pen/YGoYBM). Chan
 
 Now let's say we want to use that same axis code but as a React component. The simplest way is to use a blackbox component approach like this:
 
-{caption: "React blackbox axis", line-numbers: false, format: javascript}
-```
+``` {.javascript caption="React blackbox axis"}
 class Axis extends Component {
   gRef = React.createRef();
 
@@ -819,7 +797,7 @@ class Axis extends Component {
 }
 ```
 
-So much code! Worth it for the other benefits of using React in your dataviz. You'll see :)
+So much code! Worth it for the other benefits of using React in your dataviz. You'll see :smiley:
 
 We created an `Axis` component that extends React's base `Component` class. We can't use functional components because we need lifecycle hooks.
 
@@ -835,7 +813,7 @@ That wasn't so bad, was it?
 
 [Try it out on Codesandbox](https://codesandbox.io/s/3xy2jr1y5m).
 
-<iframe src="https://codesandbox.io/embed/3xy2jr1y5m?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/3xy2jr1y5m?codemirror=1&view=split" style="width:100%; height:500px; border:open_mouth:; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 You can make the axis more useful by getting positioning, scale, and orientation from props. We'll do that in our big project.
 
@@ -843,16 +821,15 @@ You can make the axis more useful by getting positioning, scale, and orientation
 
 Try implementing those as an exercise. Make the axis more reusable with some carefully placed props.
 
-Here's my solution, if you get stuck 👉 [https://codesandbox.io/s/5ywlj6jn4l](https://codesandbox.io/s/5ywlj6jn4l)
+Here's my solution, if you get stuck :point_right: [https://codesandbox.io/s/5ywlj6jn4l](https://codesandbox.io/s/5ywlj6jn4l)
 
-<iframe src="https://codesandbox.io/embed/5ywlj6jn4l?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/5ywlj6jn4l?codemirror=1&view=split" style="width:100%; height:500px; border:open_mouth:; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 <!--- end-lecture -->
 
 <!--- begin-lecture title="A D3 blackbox higher order component - HOC" -->
 
-{#blackbox-hoc}
-# A D3 blackbox higher order component – HOC
+# A D3 blackbox higher order component – HOC {#blackbox-hoc}
 
 After that example you might think this is hella tedious to implement every time. You'd be right!
 
@@ -869,8 +846,7 @@ Think of our HOC as a function that takes some params and creates a class – a 
 
 A HOC for D3 blackbox integration, called `D3blackbox`, looks like like this:
 
-{caption: "React blackbox HOC", line-numbers: false, format: javascript}
-```
+``` {.javascript caption="React blackbox HOC"}
 function D3blackbox(D3render) {
   return class Blackbox extends React.Component {
     anchor = React.createRef();
@@ -898,8 +874,7 @@ Consult the [ES6 cheatsheet](https://es6cheatsheet.com/) for details on the synt
 
 Using our new `D3blackbox` HOC to make an axis looks like this:
 
-{caption: "React blackbox HOC", line-numbers: false, format: javascript}
-```
+``` {.javascript caption="React blackbox HOC"}
 const Axis = D3blackbox(function () {
     const scale = d3.scaleLinear()
               .domain([0, 10])
@@ -915,14 +890,13 @@ You know this code! We copy pasted our axis rendering code from before, wrapped 
 
 Play with this example on [Codesandbox, here](https://codesandbox.io/s/5v21r0wo4x).
 
-<iframe src="https://codesandbox.io/embed/5v21r0wo4x?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/5v21r0wo4x?codemirror=1&view=split" style="width:100%; height:500px; border:open_mouth:; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 <!--- end-lecture -->
 
 <!--- begin-lecture title="D3blackbox magic trick - render anything in 30 seconds" -->
 
-{#magic-trick}
-## D3blackbox magic trick – render anything in 30 seconds
+## D3blackbox magic trick – render anything in 30 seconds {#magic-trick}
 
 Let me show you a magic trick. 30 seconds to take a random D3 piece of code and add it to your React project.
 
@@ -934,7 +908,7 @@ You can [try it online](https://cdn.rawgit.com/mbostock/3885304/raw/a91f37f5f4b4
 
 I recommend you follow along in a CodeSandbox. If you fork the [react-d3-axis-hoc CodeSandbox](https://codesandbox.io/s/5v21r0wo4x) that will be easiest.
 
-<iframe src="https://codesandbox.io/embed/5v21r0wo4x?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/5v21r0wo4x?codemirror=1&view=split" style="width:100%; height:500px; border:open_mouth:; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 You should already have the `D3blackbox` HOC. If you don't, make a new file and paste it in.
 
@@ -942,8 +916,7 @@ With your HOC ready, create a new file in CodeSandbox. Call it `Barchart.js`.
 
 Add your imports:
 
-{caption: "Import dependencies", line-numbers: false}
-```javascript
+``` {.javascript caption="Import dependencies"}
 import React from 'react';
 import D3blackbox from './D3blackbox';
 import * as d3 from 'd3';
@@ -953,8 +926,7 @@ This gives you React, our HOC, and D3.
 
 Now right-click view code on that barchart and copy the code. Wrap it in a `D3blackbox` call. Like this:
 
-{caption: "Wrap D3 code in D3blackbox", line-numbers: false}
-```javascript
+``` {.javascript caption="Wrap D3 code in D3blackbox"}
 const Barchart = D3blackbox(function () {
   var svg = d3.select("svg"),
       margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -1007,24 +979,23 @@ export default Barchart;
 
 That should throw some errors. We have to change the `d3.select` and get `width` and `height` from props.
 
-{caption: "Change where D3 renders", line-numbers: false}
-```javascript
+``` {.javascript caption="Change where D3 renders"}
 const Barchart = D3blackbox(function () {
-  // markua-start-delete
+  // Delete the line(s) between here...
   var svg = d3.select("svg"),
-  // markua-end-delete
-  // markua-start-insert
+  // ...and here.
+  // Insert the line(s) between here...
   var svg = d3.select(this.anchor.current)
-  // markua-end-insert
+  // ...and here.
       margin = {top: 20, right: 20, bottom: 30, left: 40},
-      // markua-start-delete
+      // Delete the line(s) between here...
       width = +svg.attr("width") - margin.left - margin.right,
       height = +svg.attr("height") - margin.top - margin.bottom;
-      // markua-end-delete
-      // markua-start-insert
+      // ...and here.
+      // Insert the line(s) between here...
       width = +this.props.width - margin.left - margin.right,
       height = +this.props.height - margin.top - margin.bottom;
-      // markua-end-insert
+      // ...and here.
 ```
 
 
@@ -1034,33 +1005,31 @@ We also replaced reading width and height from the SVG element to getting them f
 
 Next step is to change where our barchart gets its data. Gotta use the public URL.
 
-{caption: "Change data URL", line-numbers: false}
-```javascript
-//markua-start-delete
+``` {.javascript caption="Change data URL"}
+//Delete the line(s) between here...
 d3.tsv("data.tsv", function(d) {
-// markua-end-delete
-// markua-start-insert
+// ...and here.
+// Insert the line(s) between here...
 d3.tsv("https://swizec.github.io/dl/barchart.tsv", function(d) {
-// markua-end-insert
+// ...and here.
     d.frequency = +d.frequency;
     return d;
-// markua-start-delete
+// Delete the line(s) between here...
   }, function(error, data) {
     if (error) throw error;
-// markua-end-delete
-// markua-start-insert
+// ...and here.
+// Insert the line(s) between here...
   }).then(function(data) {
-// markua-end-insert
+// ...and here.
 ```
 
 Same link, absolute version. And we updated the callback-based code to use the D3v5 promises version. That's the most disruptive change going from v4 to v5 I believe.
 
 That's it. You now have a Barchart component that renders the example barchart from D3's docs.
 
-You can use it like this 👇 I recommend adding this code to the main App component that CodeSandbox creates for you.
+You can use it like this :point_down: I recommend adding this code to the main App component that CodeSandbox creates for you.
 
-{caption: "Use the Barchart", line-numbers: false}
-```javascript
+``` {.javascript caption="Use the Barchart"}
 import Barchart from './Barchart';
 
 // ...
@@ -1081,8 +1050,7 @@ But like I said, don't use this in production. It's great for quick prototypes, 
 
 <!--- begin-lecture title="The approach" -->
 
-{#full-feature-integration}
-# Build scalable dataviz components with full integration
+# Build scalable dataviz components with full integration {#full-feature-integration}
 
 As useful as blackbox components are, we need something better if we want to leverage React's rendering engine. The blackbox approach in particular struggles with scale. The more charts and graphs and visualizations on your screen, the slower it gets.
 
@@ -1101,7 +1069,7 @@ It's easiest to show you with an example.
 
 Let's build a scatterplot step by step. Take a random array of two-dimensional data, render in a loop. Make magic.
 
-Something like this 👇
+Something like this :point_down:
 
 ![A simple scatterplot](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/scatterplot.png)
 
@@ -1115,22 +1083,22 @@ You've already built the axes! Copy pasta time.
 
 Ignoring props changes makes our life easier, but the component less flexible and reusable. Great when you know in advance that there are features you don't ned to support.
 
-Like, no filtering your data or changing component size 👉 means your D3 scales don't have to change.
+Like, no filtering your data or changing component size :point_right: means your D3 scales don't have to change.
 
 When our props don't change, we follow a 2-step integration process:
 
 * set up D3 objects as class properties
 * output SVG in `render()`
 
-We don't have to worry about updating D3 objects on prop changes. Work done 👌
+We don't have to worry about updating D3 objects on prop changes. Work done :ok_hand:
 
 ### An unchanging scatterplot
 
 We're building a scatterplot of random data. You can see the [final solution on CodeSandbox](https://codesandbox.io/s/1zlp4jv494)
 
-<iframe src="https://codesandbox.io/embed/1zlp4jv494?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/1zlp4jv494?codemirror=1&view=split" style="width:100%; height:500px; border:open_mouth:; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
-Here's the approach 👇
+Here's the approach :point_down:
 
 - stub out the basic setup
 - generate random data
@@ -1145,8 +1113,7 @@ I recommend creating a new CodeSandbox, or starting a new app with create-react-
 
 Make sure you have `d3` added as a dependency. Then add imports in your `App.js` file.
 
-{caption: "Import files in App.js", line-numbers: false}
-```javascript
+``` {.javascript caption="Import files in App.js"}
 // ./App.js
 
 import * as d3 from "d3";
@@ -1155,8 +1122,7 @@ import Scatterplot from "./Scatterplot";
 
 Add an `<svg>` and render a Scatterplot in the render method. This will throw an error because we haven't defined the Scatterplot yet and that's okay.
 
-{caption: "Render Scatterplot in App.js", line-numbers: false}
-```javascript
+``` {.javascript caption="Render Scatterplot in App.js"}
 // ./App.js
 
 function App() {
@@ -1190,8 +1156,7 @@ It also accepts data.
 
 We're using a line of code to generate data for our scatterplot. Put it in App.js. Either globally or within the App  function. Doesn't matter because this is an example.
 
-{caption: "Generate random data", line-numbers: false}
-```javascript
+``` {.javascript caption="Generate random data"}
 const data = d3.range(100)
                .map(_ => [Math.random(), Math.random()]);
 ```
@@ -1204,8 +1169,7 @@ We iterate over this array and return a pair of random numbers for each entry. T
 
 Our scatterplot goes in a new `Scatterplot.js` file. Starts with imports and an empty React component.
 
-{caption: "Scatterplot stub", line-numbers: false}
-```javascript
+``` {.javascript caption="Scatterplot stub"}
 // ./Scatterplot.js
 import React from "react";
 import * as d3 from "d3";
@@ -1234,8 +1198,7 @@ Now we define D3 scales as component properties. We're using the class field syn
 
 Technically a Babel plugin, but comes by default with CodeSandbox React projects and create-react-app setup. As far as I can tell, it's a common way to write React components.
 
-{caption: "Add D3 scales", line-numbers: false}
-```javascript
+``` {.javascript caption="Add D3 scales"}
 // ./Scatterplot.js
 class Scatterplot extends React.Component {
   xScale = d3
@@ -1256,14 +1219,13 @@ Idea being that these two scales will help us take those tiny variations in data
 
 Rendering our data points is a matter of looping over the data and rendering a `<circle>` for each entry. Using our scales to define positioning.
 
-{caption: "Loop through data and render circles", line-numbers: false}
-```javascript
+``` {.javascript caption="Loop through data and render circles"}
 // ./Scatterplot.js
 
 return (
   <g transform={`translate(${x}, ${y})`}>
     {data.map(([x, y]) => (
-      <circle cx={this.xScale(x)} cy={this.yScale(y)} r="5" />
+      <circle cx={this.xScale(:satisfied:} cy={this.yScale(y)} r="5" />
     ))}
   </g>
 );
@@ -1275,14 +1237,13 @@ In the `return` statement of our `render` render method, we add a `data.map` wit
 
 You can reuse axes from our earlier exercise. Or copy mine from [the CodeSandbox](https://codesandbox.io/s/1zlp4jv494)
 
-<iframe src="https://codesandbox.io/embed/1zlp4jv494?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/1zlp4jv494?codemirror=1&view=split" style="width:100%; height:500px; border:open_mouth:; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 Mine take a scale and orientation as props, which makes them more flexible. Means we can use the same component for both the vertical and horizontal axis on our Scatterplot.
 
-Put the axis code in `Axis.js`, then augment the Scatterplot like this 👇
+Put the axis code in `Axis.js`, then augment the Scatterplot like this :point_down:
 
-{caption: "Add axes to Scatterplot", line-numbers: false}
-```javascript
+``` {.javascript caption="Add axes to Scatterplot"}
 import Axis from "./Axis";
 
 // ...
@@ -1290,7 +1251,7 @@ import Axis from "./Axis";
 return (
   <g transform={`translate(${x}, ${y})`}>
     {data.map(([x, y]) => (
-      <circle cx={this.xScale(x)} cy={this.yScale(y)} r="5" />
+      <circle cx={this.xScale(:satisfied:} cy={this.yScale(y)} r="5" />
     ))}
     <Axis x={0} y={0} scale={this.yScale} type="Left" />
     <Axis x={0} y={height} scale={this.xScale} type="Bottom" />
@@ -1316,7 +1277,7 @@ No problem in React 15: Update in `componentWillUpdate`. But since React 16.3 we
 
 The official recommended solution is that anything that used to go in `componentWillUpdate`, can go in `componentDidUpdate`. But not so fast!
 
-Updating D3 objects in `componentDidUpdate` would mean our visualization always renders one update behind. Stale renders! 😱
+Updating D3 objects in `componentDidUpdate` would mean our visualization always renders one update behind. Stale renders! :scream:
 
 The new `getDerivedStateFromProps` to the rescue. Our integration follows a 3-step pattern:
 
@@ -1332,7 +1293,7 @@ Because React calls `getDerivedStateFromProps` on every component render, not ju
 
 Let's update our scatterplot so it can deal with resizing and updating data.
 
-3 steps 👇
+3 steps :point_down:
 
 - add an interaction that resizes the scatterplot
 - move scales to state
@@ -1340,7 +1301,7 @@ Let's update our scatterplot so it can deal with resizing and updating data.
 
 You can see [my final solution on CodeSandbox](https://codesandbox.io/s/ll9kp8or0l). I recommend you follow along updating your existing code.
 
-<iframe src="https://codesandbox.io/embed/ll9kp8or0l?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/ll9kp8or0l?codemirror=1&view=split" style="width:100%; height:500px; border:open_mouth:; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 #### Resize scatterplot on click
 
@@ -1350,8 +1311,7 @@ That change happens in `App.js`. Click on the `<svg>`, reduce width and height b
 
 Move sizing into App state and add an `onClick` handler.
 
-{caption: "Sizing into state and click handler", line-numbers: false}
-```javascript
+``` {.javascript caption="Sizing into state and click handler"}
 // App.js
 class App extends React.Component {
   state = {
@@ -1375,8 +1335,7 @@ We changed our App component from a function to a class, added `state` with defa
 
 Now gotta change rendering to listen to these values and fire the `onClick` handler.
 
-{caption: "Use state in rendering", line-numbers: false}
-```javascript
+``` {.javascript caption="Use state in rendering"}
 // App.js
 
 <svg width="800" height="800" onClick={this.onClick}>
@@ -1404,8 +1363,7 @@ The horizontal axis moves because it's render at `height` vertical coordinate. D
 
 First step to keeping scales up to date is to move them from component values into state.
 
-{caption: "Move scales into state", line-numbers: false}
-```javascript
+``` {.javascript caption="Move scales into state"}
 // Scatterplot.js
 class Scatterplot extends React.Component {
   state = {
@@ -1424,8 +1382,7 @@ Same scale definition code we had before. Linear scales, domain from 0 to 1, usi
 
 Our render function should use these as well. Small change:
 
-{caption: "Render function uses state scales", line-numbers: false}
-```javascript
+``` {.javascript caption="Render function uses state scales"}
 // Scatterplot.js
   render() {
     const { x, y, data, height } = this.props,
@@ -1433,7 +1390,7 @@ Our render function should use these as well. Small change:
 
     return (
       <g transform={`translate(${x}, ${y})`}>
-        {data.map(([x, y]) => <circle cx={xScale(x)} cy={yScale(y)} r="5" />)}
+        {data.map(([x, y]) => <circle cx={xScale(:satisfied:} cy={yScale(y)} r="5" />)}
 ```
 
 We use destructuring to take our scales from state, then use them when mapping over our data.
@@ -1444,8 +1401,7 @@ Clicking on the SVG produces the same result as before, but we're almost there. 
 
 Last step is to update our scales' ranges in `getDerivedStateFromProps`. This method runs every time React touches our component for any reason.
 
-{caption: "Update scales", line-numbers: false}
-```javascript
+``` {.javascript caption="Update scales"}
 // Scatterplot.js
 class Scatterplot extends React.PureComponent {
   // ..
@@ -1483,13 +1439,13 @@ Our scatterplot doesn't look quite as nice as the earlier screenshot. Regular SV
 
 What if we wanted to render beautiful circles? Or stars? Or maybe something else entirely?
 
-We can use render props to give users of our scatterplot component the power to define how they want datapoints to render. 😱
+We can use render props to give users of our scatterplot component the power to define how they want datapoints to render. :scream:
 
 Think of it as a sort of inversion of control. Another common buzzword are "slots", or renderless components. The idea is that one of our props accepts a React component.
 
 We then use that prop to render our datapoints.
 
-It looks a little like this 👇
+It looks a little like this :point_down:
 
 ```jsx
 <Scatterplot
@@ -1503,7 +1459,7 @@ What's more, we can add interactions and other useful stuff to our `<Datapoint>`
 
 Let's use the render prop approach to make our scatterplot more reusable.
 
-Steps 👇
+Steps :point_down:
 
 - pass in a render prop
 - use it to render datapoints
@@ -1511,7 +1467,7 @@ Steps 👇
 
 You can see [my solution on CodeSandbox](https://codesandbox.io/s/j73xlyr8v5). I recommend you follow along with your existing code.
 
-<iframe src="https://codesandbox.io/embed/j73xlyr8v5?codemirror=1&view=split" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/j73xlyr8v5?codemirror=1&view=split" style="width:100%; height:500px; border:open_mouth:; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 ### Pass in a render prop
 
@@ -1519,8 +1475,7 @@ React components are Just JavaScript. Either a JSX function call or a function t
 
 That means we can pass them into components via props. Let's do that in App.js
 
-{caption: "Pass render prop into Scatterplot", line-numbers: false}
-```javascript
+``` {.javascript caption="Pass render prop into Scatterplot"}
 // App.js
 
 import Datapoint from "./Datapoint";
@@ -1538,7 +1493,7 @@ import Datapoint from "./Datapoint";
 </svg>
 ```
 
-For extra flexibility and readability we're wrapping our `<Datapoint>` component in another function that accepts `x` and `y` coordinates. This is a common pattern you'll see with render props 👉 it gives you the ability to pass in props from both the rendering component and the component that's setting the render prop.
+For extra flexibility and readability we're wrapping our `<Datapoint>` component in another function that accepts `x` and `y` coordinates. This is a common pattern you'll see with render props :point_right: it gives you the ability to pass in props from both the rendering component and the component that's setting the render prop.
 
 Say we wanted Datapoint to know something about our App *and* our Scatterplot. The scatterplot calls this function with coordinates. We pass those into `<Datapoint>`. And because the method is defined inside App, we could pass-in anything that's defined in the App. Like perhaps `data`.
 
@@ -1548,8 +1503,7 @@ Your code will start throwing an error now. Datapoint isn't defined. Don't worry
 
 To use our new `datapoint` render prop, we have to change how we render the scatterplot. Instead of returning a `<circle>` for each iteration of the dataset, we're calling a function passed in from props.
 
-{caption: "Accept a render prop", line-numbers: false}
-```javascript
+``` {.javascript caption="Accept a render prop"}
 // Scatterplot.js
   render() {
     const { x, y, data, height, datapoint } = this.props,
@@ -1558,7 +1512,7 @@ To use our new `datapoint` render prop, we have to change how we render the scat
     return (
       <g transform={`translate(${x}, ${y})`}>
         {data.map(([x, y]) => datapoint({
-            x: xScale(x),
+            x: xScale(:satisfied:,
             y: yScale(y)
         }))}
 ```
@@ -1569,8 +1523,7 @@ We take the `datapoint` function from props and call it in `data.map` making sur
 
 We've got all the rendering, now all we need is the `<Datapoint`  component itself. That goes in a new `Datapoint.js` file.
 
-{caption: "Datapoint file", line-numbers: false}
-```javascript
+``` {.javascript caption="Datapoint file"}
 import React from "react";
 import styled from "styled-components";
 
@@ -1612,13 +1565,13 @@ For an extra challenge, try rendering circle radius from state and changing data
 
 <!--- begin-section title="You're awesome" -->
 
-<!--- begin-lecture title="💪" -->
+<!--- begin-lecture title=":muscle:" -->
 
 # You're awesome
 
 You know the basics!
 
-You can take any D3 example from the internets and wrap it in a React component, *and* you know how to build React+D3 components from scratch. You're amazing. High five! 🖐
+You can take any D3 example from the internets and wrap it in a React component, *and* you know how to build React+D3 components from scratch. You're amazing. High five! :raised_hand_with_fingers_splayed:
 
 The rest of this book is about using these concepts and pushing them to the limits of practicality. We're going to build an interactive visualization of tech salaries compared to median household income.
 
@@ -1640,8 +1593,7 @@ Super fun!
 
 <!--- begin-lecture title="Handling state in your React app" -->
 
-{#state-handling-architecture}
-# Handling state in your React app
+# Handling state in your React app {#state-handling-architecture}
 
 Before I can set you loose on the world, we should talk about managing state. It's where most engineers shoot themselves in the foot.
 
@@ -1653,7 +1605,7 @@ I shoot myself in the foot all the time. You can't predict how your app is going
 
 Best approach is to optimize for change.
 
-Otherwise you might have to do a rewrite. Rewrites are bad. One of the most infamous rewrite story is about [The Rewrite that Killed Netscape](http://www.joelonsoftware.com/articles/fog0000000069.html). You might not even have heard of Netscape ;)
+Otherwise you might have to do a rewrite. Rewrites are bad. One of the most infamous rewrite story is about [The Rewrite that Killed Netscape](http://www.joelonsoftware.com/articles/fog0000000069.html). You might not even have heard of Netscape :wink:
 
 Let's save you from that.
 
@@ -1661,8 +1613,7 @@ Let's save you from that.
 
 <!--- begin-lecture title="Basic architecture we'll use" -->
 
-{#basic-architecture}
-## Basic architecture
+## Basic architecture {#basic-architecture}
 
 ![Unidirectional data flow](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/unidirectionalflow.png)
 
@@ -1674,7 +1625,7 @@ Data goes from your source of truth into your components. Events go from your co
 
 Our main App component holds state for your entire application. Anything that multiple components should be aware of lives here. This state flows down the hierarchy via props. Changes happen via callbacks, also passed down through props.
 
-Like this 👇
+Like this :point_down:
 
 * The Main Component – `App` – holds the truth
 * Truth flows down through props
@@ -1702,7 +1653,7 @@ You can think of it like calling functions with new arguments. Because the funct
 
 Because your components are well-made and rely on their props to render, React's engine can optimize these changes. It compares the new and old component trees and decides which components to re-render and which to leave alone.
 
-Functional programming for HTML! 😎
+Functional programming for HTML! :sunglasses:
 
 The functional programming concepts we're relying on are called [referential transparency](https://en.wikipedia.org/wiki/Referential_transparency), [idempotent functions](https://en.wikipedia.org/wiki/Idempotence), and [functional purity](https://en.wikipedia.org/wiki/Pure_function). I suggest Googling them if you want to learn the theory behind it all.
 
@@ -1750,8 +1701,7 @@ You can see an approach to using Redux in dataviz in the [Animating with React, 
 
 <!--- begin-lecture title="How to structure your app" -->
 
-{#structuring-your-app}
-# How to structure your app
+# How to structure your app {#structuring-your-app}
 
 Our app is built from components. You already know how components work. Where it gets tricky is deciding where one component ends and another beings.
 
@@ -1790,7 +1740,7 @@ You can read more about these ideas by Googling ["leaky abstractions"](https://e
 
 <!--- begin-lecture title="Congratz!" -->
 
-Congratz! You know everything you need to build visualizations with React and D3. 👏
+Congratz! You know everything you need to build visualizations with React and D3. :clap:
 
 This is the point in tech books where I run off and start building things on my own. Then I get frustrated, spend hours Googling for answers, and then remember, "Hey! Maybe I should read the rest of the book!"
 

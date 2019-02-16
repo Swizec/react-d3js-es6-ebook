@@ -1,7 +1,6 @@
 # Appendixes #
 
-{#appendixA}
-# Appendix A - roll your own environment
+# Appendix A - roll your own environment {#appendixA}
 
 If you already know how to set up the perfect development environment for modern JavaScript, go ahead and skip this section. Otherwise, keep reading.
 
@@ -19,7 +18,7 @@ There were no sourcemaps, which meant your browser's error reporting was useless
 
 It was a mess. I'm sorry I told you to use it. The old system is included in [the appendix](#appendix) if you're curious.
 
-The new system is great. I promise. I use it all the time :)
+The new system is great. I promise. I use it all the time :smiley:
 
 ## Bundle with Webpack
 Instead of using the old setup, I now think the best choice is to use a combination of Webpack and Babel.
@@ -48,19 +47,21 @@ Transpilers are the officially-encouraged stepping stone towards full ES6 suppor
 
 To give you a rough idea of what Babel does with your code, here's a fat arrow function with JSX. Don't worry if you don't understand this code yet; we'll go through that later.
 
-{lang=js,linenos=no}
-    () => (<div>Hello there</div>)
+``` {.javascript}
+() => (<div>Hello there</div>)
+```
 
 After Babel transpiles that line into ES5, it looks like this:
 
-{lang=js,linenos=no}
-    (function () {
-      return React.createElement(
-        'div',
-        null,
-        'Hello there'
-      );
-    });
+``` {.javascript}
+(function () {
+  return React.createElement(
+    'div',
+    null,
+    'Hello there'
+  );
+});
+```
 
 Babel developers have created a [playground that live-compiles](https://babeljs.io/repl/) code for you. Have fun.
 
@@ -82,8 +83,9 @@ You can get NPM by installing node.js from [nodejs.org](http://nodejs.org). Webp
 
 Once you have NPM, you can install Webpack globally with:
 
-{linenos=off}
-    $ npm install webpack -g
+```
+$ npm install webpack -g
+```
 
 If that worked, you're ready to go. If it didn't, Google is your friend.
 
@@ -100,17 +102,19 @@ You will need Git for this step. I assume you have it already because you're a p
 
 Head to a directory of your choosing, and run:
 
-{linenos=off}
-    $ git clone git@github.com:gaearon/react-transform-boilerplate.git
+```
+$ git clone git@github.com:gaearon/react-transform-boilerplate.git
+```
 
 This makes a local copy of the boilerplate project. Now that we've got the base code, we should make it our own.
 
 Our first step is to rename the directory and remove Git's version history and ties to the original project. This will let us turn it into our own project.
 
-{linenos=off}
-    $ mv react-transform-boilerplate react-d3-example
-    $ rm -rf react-d3-example/.git
-    $ cd react-d3-example
+```
+$ mv react-transform-boilerplate react-d3-example
+$ rm -rf react-d3-example/.git
+$ cd react-d3-example
+```
 
 We now have a directory called `react-d3-example` that contains some config files and a bit of code. Most importantly, it isn't tied to a Git project, so we can make it all ours.
 
@@ -118,47 +122,51 @@ We now have a directory called `react-d3-example` that contains some config file
 
 To make the project our own, we have to change some information inside `package.json`: the name, version, and description.
 
-{linenos=off,lang=js}
-    // ./package.json
-    {
-      // leanpub-start-delete
-      "name": "react-transform-boilerplate",
-      "version": "1.0.0",
-      "description": "A new Webpack boilerplate with hot reloading React components, and error handling on module and component level.",
-      // leanpub-end-delete
-      // leanpub-start-insert
-      "name": "react-d3-example",
-      "version": "0.1.0",
-      "description": "An example project to show off React and d3 working together",
-      // leanpub-end-insert
-      "scripts": {
+``` {.javascript}
+// ./package.json
+{
+  // Delete the line(s) between here...
+  "name": "react-transform-boilerplate",
+  "version": "1.0.0",
+  "description": "A new Webpack boilerplate with hot reloading React components, and error handling on module and component level.",
+  // ...and here.
+  // Insert the line(s) between here...
+  "name": "react-d3-example",
+  "version": "0.1.0",
+  "description": "An example project to show off React and d3 working together",
+  // ...and here.
+  "scripts": {
+```
 
 It's also a good idea to update the `author` field:
 
-{linenos=off,lang=js}
-    // ./src/package.json
-    // leanpub-start-delete
-    "author": "Dan Abramov <dan.abramov@me.com> (http://github.com/gaearon)",
-    // leanpub-end-delete
-    // leanpub-start-insert
-    "author": "Swizec <swizec@swizec.com> (http://swizec.com)
-    // leanpub-end-insert
+``` {.javascript}
+// ./src/package.json
+// Delete the line(s) between here...
+"author": "Dan Abramov <dan.abramov@me.com> (http://github.com/gaearon)",
+// ...and here.
+// Insert the line(s) between here...
+"author": "Swizec <swizec@swizec.com> (http://swizec.com)
+// ...and here.
+```
 
-Use your own name, email, and URL. Not mine :)
+Use your own name, email, and URL. Not mine :smiley:
 
 If you want to use Git to manage source code versioning, now is a good time to start. You can do that by running:
 
-{linenos=off}
-    $ git init
-    $ git add .
-    $ git commit -a -m "Start project from boilerplate"
+```
+$ git init
+$ git add .
+$ git commit -a -m "Start project from boilerplate"
+```
 
 Great. Now we have a project signed in our name.
 
 Our new project comes preconfigured for React and all the other tools and compilers we need to run our code. Install them by running:
 
-{linenos=off}
-    $ npm install
+```
+$ npm install
+```
 
 This installs a bunch of dependencies like React, a few Webpack extensions, and a JavaScript transpiler (Babel) with a few bells and whistles. Sometimes, parts of the installation fail. If it happens to you, try re-running `npm install` for the libraries that threw an error. I don't know why this happens, but you're not alone. I've been seeing this behavior for years.
 
@@ -167,8 +175,9 @@ Now that we have all the basic libraries and tools, we have to install two more 
 1. `d3` for drawing
 2. `lodash` for some utility functions
 
-{linenos=off}
-    $ npm install --save d3 lodash
+```
+$ npm install --save d3 lodash
+```
 
 The `--save` option saves them to `package.json`.
 
@@ -182,15 +191,31 @@ Webpack can handle compiling Less to CSS for us. We need a couple of Webpack loa
 
 Let's start with the loaders:
 
-{linenos=off}
-    $ npm install --save style-loader less less-loader css-loader
+```
+$ npm install --save style-loader less less-loader css-loader
+```
 
 Remember, `--save` adds `style-loader` and `less-loader` to package.json. The `style-loader` takes care of transforming `require()` calls into `<link rel="stylesheet"` definitions, and `less-loader` takes care of compiling LESS into CSS.
 
 To add them to our build step, we have to go into `webpack.config.dev.js`, find the `loaders: [` definition, and add a new object. Like this:
 
-{lang=js,crop-start-line=4,crop-end-line=18,linenos=on,starting-line-number=19}
-<<[Add LESS loaders](code_samples/env/webpack.config.dev.js)
+``` {.javascript caption="Add LESS loaders"}
+module: {
+    loaders: [
+      {
+        test: /\.js$/,
+        loaders: ['babel'],
+        include: path.join(__dirname, 'src')
+      },
+      // Insert the line(s) between here...
+      {
+          test: /\.less$/,
+          loader: "style!css!less"
+      }
+      // ...and here.
+    ]
+}
+```
 
 Don't worry if you don't understand what the rest of this file does. We're going to look at that in the next section.
 
@@ -204,8 +229,17 @@ Our visualization is going to use Ajax to load data. That means the server we us
 
 We have to add a line to `devServer.js`:
 
-{lang=js,crop-start-line=35,crop-end-line=43,linenos=off}
-<<[Enable static server on ./public](code_samples/env/devServer.js)
+``` {.javascript caption="Enable static server on ./public"}
+app.use(require('webpack-hot-middleware')(compiler));
+
+// Insert the line(s) between here...
+app.use(express.static('public'));
+// ...and here.
+
+app.get('*', function(req, res) {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+```
 
 This tells express.js, which is the framework our simple server uses, to route any URL starting with `/public` to local files by matching paths.
 
@@ -215,20 +249,43 @@ Whenever I'm working with React, I like to add two nice-to-haves to `webpack.con
 
 First, I add the `.jsx` extension to the list of files loaded with Babel. This lets me write React code in `.jsx` files. I know what you're thinking: writing files like that is no longer encouraged by the community, but hey, it makes my Emacs behave better.
 
-{lang=js,crop-start-line=155,crop-end-line=170,linenos=off}
-<<[Add .jsx to Babel file extensions](code_samples/env/webpack.config.dev.js)
+``` {.javascript caption="Add .jsx to Babel file extensions"}
+module: {
+   loaders: [
+     // Delete the line(s) between here...
+     {test: /\.js$/},
+     // ...and here.
+     // Insert the line(s) between here...
+     {test: /\.js|\.jsx$/
+      // ...and here.
+      loaders: ['babel'],
+      include: path.join(__dirname, 'src')
+     },
+     {test: /\.less$/,
+      loader: "style!css!less"
+     }
+   ]
+}
+```
 
 We changed the `test` regex to add `.jsx`. You can read in more detail about how these configs work in later parts of this chapter.
 
 Second, I like to add a `resolve` config to Webpack. This lets me load files without writing their extension. It's a small detail, but it makes your code cleaner.
 
-{lang=js,crop-start-line=176,crop-end-line=183,linenos=off}
-<<[Add resolve to webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
+``` {.javascript caption="Add resolve to webpack.config.dev.js"}
+    new webpack.NoErrorsPlugin()
+  ],
+  // Insert the line(s) between here...
+  resolve: {
+    extensions: ['', '.js', '.jsx']
+  },
+  // ...and here.
+  module: {
+```
 
 It's a list of file extensions that Webpack tries to guess when a path you use doesn't match any files.
 
-{#enable-es7}
-## Optionally enable ES7
+## Optionally enable ES7 {#enable-es7}
 
 Examples in this book are written in ES6, also known as ECMAScript2015. If you're using the boilerplate approach or the stub project you got with the book, all ES6 features work in any browser. The Babel 6 compiler makes sure of that by transpiling ES6 into ES5.
 
@@ -240,13 +297,23 @@ You don't need `stage-0` to follow the examples in this book, but I do use one o
 
 To enable `stage-0`, you have to first install `babel-preset-stage-0`. Like this:
 
-{linenos=off}
-    $ npm install --save-dev babel-preset-stage-0
+```
+$ npm install --save-dev babel-preset-stage-0
+```
 
 Then enable it in `.babelrc`:
 
-{crop-start-line=4,crop-end-line=12,linenos=off,lang=js}
-<<[Add stage-0 preset to .babelrc](code_samples/env/babelrc)
+``` {.javascript caption="Add stage-0 preset to .babelrc"}
+{
+  // Delete the line(s) between here...
+  "presets": ["react", "es2015"],
+  // ...and here.
+  // Insert the line(s) between here...
+  "presets": ["react", "es2015", "stage-0"],
+  // ...and here.
+  "env": {
+    "development": {
+```
 
 That's it. You can use fancy ES7 features in your code and Babel will transpile them into normal ES5 that all browsers support.
 
@@ -256,8 +323,9 @@ Don't worry if you don't understand how `.babelrc` works. You can read more abou
 
 Your environment should be ready. Let's try it out. First, start the dev server:
 
-{linenos=off}
-    $ npm start
+```
+$ npm start
+```
 
 This command runs a small static file server that's written in node.js. The server ensures that Webpack continues to compile your code when it detects a file change. It also puts some magic in place that hot loads code into the browser without refreshing and without losing variable values.
 
@@ -277,8 +345,7 @@ Done? Wonderful.
 
 In the rest of this chapter, we're going to take a deeper look into all the config files that came with our boilerplate. If you don't care about that right now, you can jump straight to [the meat](#the-meat-start).
 
-{#env-in-depth}
-## The environment in depth
+## The environment in depth {#env-in-depth}
 
 Boilerplate is great because it lets you get started right away. No setup, no fuss, just `npm install` and away we go.
 
@@ -303,8 +370,23 @@ Both files look alike, so we're going to focus on the dev version.
 
 It comes in four parts:
 
-{lang=js,crop-start-line=23,crop-end-line=37,linenos=off}
-<<[Webpack config structure](code_samples/env/webpack.config.dev.js)
+``` {.javascript caption="Webpack config structure"}
+var path = require('path');
+var webpack = require('webpack');
+
+module.exports = {
+  devtool: 'eval',
+  entry: [
+  ],
+  output: {
+  },
+  plugins: [
+  ],
+  module: {
+    loaders: []
+  }
+};
+```
 
  - **Entry**, which tells Webpack where to start building our project's dependency tree;
 
@@ -324,8 +406,18 @@ The entry section of Webpack's config specifies the entry points of our dependen
 
 In our case, it looks like this:
 
-{lang=js,crop-start-line=46,crop-end-line=55,linenos=off}
-<<[Entry part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
+``` {.javascript caption="Entry part of webpack.config.dev.js"}
+  devtool: 'eval',
+  entry: [
+    // Insert the line(s) between here...
+    'webpack-hot-middleware/client',
+    './src/index'
+    // ...and here.
+  ],
+  output: {
+  },
+  plugins: [
+```
 
 We specify that `./src/index` is the main file. In the next section, you'll see that this is the file that requires our app and renders it into the page.
 
@@ -337,8 +429,21 @@ The output section specifies which files get the output. Our config is going to 
 
 The config looks like this:
 
-{lang=js,crop-start-line=70,crop-end-line=82,linenos=off}
-<<[Output part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
+``` {.javascript caption="Output part of webpack.config.dev.js"}
+  entry: [
+    'webpack-hot-middleware/client',
+    './src/index'
+  ],
+  output: {
+    // Insert the line(s) between here...
+    path: path.join(__dirname, 'dist'),
+    filename: 'bundle.js',
+    publicPath: '/static/'
+    // ...and here.
+  },
+  plugins: [
+  ],
+```
 
 We define a path, `./dist/`, where compiled files live, say the filename for JavaScript is `bundle.js`, and specify `/static/` as the public path. That means the `<script>` tag in our HTML should use `/static/bundle.js` to get our code, but we should use `./dist/bundle.js` to copy the compiled file.
 
@@ -346,8 +451,22 @@ We define a path, `./dist/`, where compiled files live, say the filename for Jav
 
 There's a plethora of Webpack plugins out there. We're only going to use two of them in our example.
 
-{lang=js,crop-start-line=100,crop-end-line=113,linenos=off}
-<<[Plugins part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
+``` {.javascript caption="Plugins part of webpack.config.dev.js"}
+  output: {
+    path: path.join(__dirname, 'dist'),
+    filename: 'bundle.js',
+    publicPath: '/static/'
+  },
+  plugins: [
+    // Insert the line(s) between here...
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoErrorsPlugin()
+    // ...and here.
+  ],
+  module: {
+    loaders: []
+  }
+```
 
 As you might have guessed, this config is just an array of plugin object instances. Both plugins we're using come with Webpack by default. Otherwise, we'd have to `require()` them at the top of the file.
 
@@ -363,8 +482,21 @@ If you can think of it, there's a loader for it. At my day job, we use a Webpack
 
 For the purposes of this book, we don't need anything that fancy. We just need a loader for JavaScript and styles.
 
-{lang=js,crop-start-line=137,crop-end-line=149,linenos=off}
-<<[Loaders part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
+``` {.javascript caption="Loaders part of webpack.config.dev.js"}
+  module: {
+   loaders: [
+       // Insert the line(s) between here...
+       {test: /\.js|\.jsx$/,
+        loaders: ['babel'],
+        include: path.join(__dirname, 'src')
+       },
+       {test: /\.less$/,
+        loader: "style!css!less"
+       }
+      // ...and here.
+    ]
+  }
+```
 
 Each of these definitions comes in three parts:
 
@@ -386,22 +518,42 @@ Many better and more in-depth books have been written about node.js and its fram
 
 For example, on line 9, you can see that we tell the server to use Webpack as a middleware. That means the server passes every request through Webpack and lets it change anything it needs.
 
-{lang=js,crop-start-line=9,crop-end-line=15,linenos=on,starting-line-number=9}
-<<[Lines that tell Express to use Webpack](code_samples/env/devServer.js)
+``` {.javascript caption="Lines that tell Express to use Webpack"}
+app.use(require('webpack-dev-middleware')(compiler, {
+  noInfo: true,
+  publicPath: config.output.publicPath
+}));
+
+app.use(require('webpack-hot-middleware')(compiler));
+
+```
 
 The `compiler` variable is an instance of Webpack, and `config` is the config we looked at earlier. `app` is an instance of the Express server.
 
 Another important bit of the `devServer.js` file specifies routes. In our case, we want to serve everything from `public` as a static file, and anything else to serve `index.html` and let JavaScript handle routing.
 
-{lang=js,crop-start-line=16,crop-end-line=20,linenos=on,starting-line-number=16}
-<<[Lines that tell Express how to route requests](code_samples/env/devServer.js)
+``` {.javascript caption="Lines that tell Express how to route requests"}
+app.use(express.static('public'));
+
+app.get('*', function(req, res) {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+```
 
 This tells Express to use a static file server for everything in `public` and to serve `index.html` for anything else.
 
 At the bottom, there is a line that starts the server:
 
-{lang=js,crop-start-line=22,crop-end-line=29,linenos=on,starting-line-number=22}
-<<[Line that starts the server](code_samples/env/devServer.js)
+``` {.javascript caption="Line that starts the server"}
+app.listen(3000, 'localhost', function(err) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+
+  console.log('Listening at http://localhost:3000');
+});
+```
 
 I know I didn't explain much, but that's as deep as we can go at this point. You can read more about node.js servers, and Express in particular, in [Azat Mardan's books](http://azat.co/). They're great.
 
@@ -415,8 +567,16 @@ We don't need anything fancy for the purposes of our example project – just a 
 
 The best way to configure Babel is through the `.babelrc` file, which looks like this:
 
-{lang=js,crop-start-line=22,crop-end-line=31,linenos=off}
-<<[.babelrc config](code_samples/env/babelrc)
+``` {.javascript caption=".babelrc config"}
+  "presets": ["react", "es2015", "stage-0"],
+  "env": {
+    "development": {
+      "presets": ["react-hmre"]
+    }
+  }
+}
+
+```
 
 I imagine this file is something most people copy-paste from the internet, but here's what’s happening in our case:
 
@@ -440,8 +600,29 @@ From what I've heard, most modern editors support `.eslintrc` out of the box, so
 
 The `eslint` config that comes with Dan's boilerplate loads a React linter plugin and defines a few React-specific rules. It also enables JSX linting and modern ES6 modules stuff. By the looks of it, Dan is a fan of single quotes.
 
-{linenos=off}
-<<[.eslintrc for React code](code_samples/env/eslintrc)
+``` {caption=".eslintrc for React code"}
+Features": {
+    "jsx": true,
+    "modules": true
+  },
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "parser": "babel-eslint",
+  "rules": {
+    "quotes": [2, "single"],
+    "strict": [2, "never"],
+    "react/jsx-uses-react": 2,
+    "react/jsx-uses-vars": 2,
+    "react/react-in-jsx-scope": 2
+  },
+  "plugins": [
+    "react"
+  ]
+}
+
+```
 
 I haven't really had a chance to play around with linting configs like these to be honest. Emacs defaults have been good to me for years. But these types of configs are a great idea. The biggest problem in a team is syncing everyone's linters, and if you can put a file like this in your Git project - **BAM!**, everyone's always in sync.
 

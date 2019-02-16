@@ -2,8 +2,7 @@
 
 <!--- begin-lecture title="176,113 tech salaries visualized" -->
 
-{#salary-visualization}
-# A big example project - 176,113 tech salaries visualized #
+# A big example project - 176,113 tech salaries visualized {#salary-visualization}
 
 We're going to build this:
 
@@ -73,8 +72,7 @@ We'll put all of our components in `src/components/`.
 
 We start the component off with some imports, an export, and a functional stateless component that returns an empty div element.
 
-{format: javascript, line-numbers: false, caption: "Preloader skeleton"}
-```
+``` {.javascript caption="Preloader skeleton"}
 // src/components/Preloader.js
 
 import React from "react";
@@ -96,8 +94,7 @@ At the bottom, we `export default Preloader` so that we can use it in `App.js` a
 
 The `Preloader` function takes no props (because we don't need any) and returns an empty `div`. Let's fill it in.
 
-{format: javascript, line-numbers: false, caption: "Preloader content"}
-```
+``` {.javascript caption="Preloader content"}
 // src/components/Preloader.js
 
 const Preloader = () => (
@@ -140,22 +137,21 @@ That will be a cornerstone of our project.
 
 We use our new Preloader component in App – `src/App.js`. Let's remove the `create-react-app` defaults and import our `Preloader` component.
 
-{format: javascript, line-numbers: false, caption: "Revamp App.js"}
-```
+``` {.javascript caption="Revamp App.js"}
 // src/App.js
 
 import React from 'react';
-// markua-start-delete
+// Delete the line(s) between here...
 import logo from './logo.svg';
 import './App.css';
-// markua-end-delete
+// ...and here.
 
-// markua-start-insert
+// Insert the line(s) between here...
 import Preloader from './components/Preloader';
-// markua-end-insert
+// ...and here.
 
 class App extends React.Component {
-    // markua-start-delete
+    // Delete the line(s) between here...
   render() {
     return (
       <div className="App">
@@ -169,7 +165,7 @@ class App extends React.Component {
       </div>
     );
   }
-    // markua-end-delete
+    // ...and here.
 }
 
 export default App;
@@ -179,12 +175,11 @@ We removed the logo and style imports, added an import for `Preloader`, and gutt
 
 Let's define a default `state` and a `render` method that uses our `Preloader` component when there's no data.
 
-{format: javascript, line-numbers: false, caption: "Render our preloader"}
-```
+``` {.javascript caption="Render our preloader"}
 // src/App.js
 
 class App extends React.Component {
-    // markua-start-insert
+    // Insert the line(s) between here...
     state = {
         techSalaries: []
     }
@@ -204,7 +199,7 @@ class App extends React.Component {
             </div>
         );
     }
-    // markua-end-insert
+    // ...and here.
 }
 ```
 
@@ -232,16 +227,15 @@ They'll make our fonts look better, help with layouting, and make buttons look l
 
 We load stylesheets in `src/index.js`.
 
-{format: javascript, line-numbers: false, caption: "Add Bootstrap in index.js"}
-```
+``` {.javascript caption="Add Bootstrap in index.js"}
 // src/index.js
 
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-// markua-start-insert
+// Insert the line(s) between here...
 import 'bootstrap/dist/css/bootstrap.css';
-// markua-end-insert
+// ...and here.
 
 ReactDOM.render(
   <App />,
@@ -251,7 +245,7 @@ ReactDOM.render(
 
 Another benefit of Webpack: `import`-ing stylesheets. These imports turn into `<style>` tags with CSS in their body at runtime.
 
-This is also a good opportunity to see how `index.js` works to render our app 👇
+This is also a good opportunity to see how `index.js` works to render our app :point_down:
 
 1. loads `App` and React
 2. loads styles
@@ -305,32 +299,30 @@ Let's set up our `App` component first. That way you'll see results as soon data
 
 Start by importing our data loading method - `loadAllData` - and both D3 and Lodash. We'll need them later.
 
-{format: javascript, line-numbers: false, caption: "Import D3, lodash, and our loading method"}
-```
+``` {.javascript caption="Import D3"}
 // src/App.js
 import React from 'react';
-// markua-start-insert
+// Insert the line(s) between here...
 import * as d3 from 'd3';
 import _ from 'lodash';
-// markua-end-insert
+// ...and here.
 
 import Preloader from './components/Preloader';
-// markua-start-insert
+// Insert the line(s) between here...
 import { loadAllData } from './DataHandling';
-// markua-end-insert
+// ...and here.
 ```
 
 You already know about default imports. Importing with `{}` is how we import named exports. That lets us get multiple things from the same file. You'll see the export side in Step 2.
 
 Don't worry about the missing `DataHandling` file. It's coming soon.
 
-{format: javascript, line-numbers: false, caption: "Initiate data loading in App.js"}
-```
+``` {.javascript caption="Initiate data loading in App.js"}
 // src/App.js
 class App extends React.Component {
     state = {
         techSalaries: [],
-        // markua-start-insert
+        // Insert the line(s) between here...
         medianIncomes: [],
         countyNames: [],
     };
@@ -338,7 +330,7 @@ class App extends React.Component {
     componentDidMount() {
         loadAllData(data => this.setState(data));
     }
-    // markua-end-insert
+    // ...and here.
 ```
 
 We initiate data loading inside the `componentDidMount` lifecycle hook. It fires when React first mounts our component into the DOM.
@@ -353,8 +345,7 @@ We also add two more entries to our `state`: `countyNames`, and `medianIncomes`.
 
 Let's change the `render` method to show a message when our data finishes loading.
 
-{format: javascript, line-numbers: false, caption: "Show when data loads"}
-```
+``` {.javascript caption="Show when data loads"}
 // src/App.js
   render() {
      const { techSalaries } = this.state;
@@ -366,13 +357,13 @@ Let's change the `render` method to show a message when our data finishes loadin
       }
 
     return (
-        // markua-start-delete
+        // Delete the line(s) between here...
         <div className="App">
-        // markua-end-delete
-        // markua-start-insert
+        // ...and here.
+        // Insert the line(s) between here...
         <div className="App container">
             <h1>Loaded {techSalaries.length} salaries</h1>
-        // markua-end-insert
+        // ...and here.
         </div>
     );
 }
@@ -403,8 +394,52 @@ We start with two imports and four data parsing functions:
 - `cleanSalary`, which parses each row of salary data
 - `cleanUSStateName`, which parses US state names
 
-{crop-start: 5, crop-end: 48, format: javascript, line-numbers: false}
-![Data parsing functions](code_samples/es6v2/DataHandling.js)
+``` {.javascript caption="Data parsing functions"}
+// src/DataHandling.js
+import * as d3 from 'd3';
+import _ from 'lodash';
+
+const cleanIncome = (d) => ({
+    countyName: d['Name'],
+    USstate: d['State'],
+    medianIncome: Number(d['Median Household Income']),
+    lowerBound: Number(d['90% CI Lower Bound']),
+    upperBound: Number(d['90% CI Upper Bound'])
+});
+
+const dateParse = d3.timeParse("%m/%d/%Y");
+
+const cleanSalary = (d) => {
+    if (!d['base salary'] || Number(d['base salary']) > 300000) {
+        return null;
+    }
+
+    return {employer: d.employer,
+            submit_date: dateParse(d['submit date']),
+            start_date: dateParse(d['start date']),
+            case_status: d['case status'],
+            job_title: d['job title'],
+            clean_job_title: d['job title'],
+            base_salary: Number(d['base salary']),
+            city: d['city'],
+            USstate: d['state'],
+            county: d['county'],
+            countyID: d['countyID']
+    };
+}
+
+const cleanUSStateName = (d) => ({
+    code: d.code,
+    id: Number(d.id),
+    name: d.name
+});
+
+const cleanCounty = d => ({
+    id: Number(d.id),
+    name: name
+});
+
+```
 
 You'll see those `d3` and `lodash` imports a lot.
 
@@ -420,8 +455,21 @@ Doing all this parsing now, keeps the rest of our codebase clean. Handling data 
 
 Now we can use D3 to load our data with fetch requests.
 
-{crop-start: 52, crop-end: 64, format: javascript, line-numbers: false}
-![Data loading](code_samples/es6v2/DataHandling.js)
+``` {.javascript caption="Data loading"}
+// src/DataHandling.js
+export const loadAllData = (callback = _.noop) => {
+    Promise.all([
+        d3.json("data/us.json"),
+        d3.csv("data/us-county-names-normalized.csv", cleanCounty),
+        d3.csv("data/county-median-incomes.csv", cleanIncome),
+        d3.csv("data/h1bs-2012-2016-shortened.csv", cleanSalary),
+        d3.tsv("data/us-state-names.tsv", cleanUSStateName)
+    ]).then(([us, countyNames, medianIncomes, techSalaries, USstateNames]) => {
+
+    });
+};
+
+```
 
 Here you can see another ES6 trick: default argument values. If `callback` is undefined, we set it to `_.noop` - a function that does nothing. This lets us later call `callback()` without worrying whether it's defined.
 
@@ -441,15 +489,39 @@ PS: we're using the shortened salary dataset to make page reloads faster while b
 
 <!--- begin-lecture title="Step 4: Tie datasets together" -->
 
-{#tie-datasets-together}
-## Step 4: Tie the datasets together
+## Step 4: Tie the datasets together {#tie-datasets-together}
 
 If you add a `console.log` to the `.then` callback above, you'll see a bunch of data. Each argument - `us`, `countyNames`, `medianIncomes`, `techSalaries`, `USstateNames` - holds a parsed dataset from the corresponding file.
 
 To tie them together and prepare a dictionary for `setState` back in the `App` component, we need to add some logic. We're building a dictionary of county household incomes and removing any empty salaries.
 
-{crop-start: 68, crop-end: 92, format: javascript, line-numbers: false}
-![Tie our datasets together](code_samples/es6v2/DataHandling.js)
+``` {.javascript caption="Tie our datasets together"}
+// src/DataHandling.js
+]).then(([us, countyNames, medianIncomes, techSalaries, USstateNames]) => {
+    let medianIncomesMap = {};
+
+    medianIncomes.filter(d => _.find(countyNames,
+                                     {name: d['countyName']}))
+                 .forEach((d) => {
+                     d['countyID'] = _.find(countyNames,
+                                            {name: d['countyName']}).id;
+                     medianIncomesMap[d.countyID] = d;
+                 });
+
+    techSalaries = techSalaries.filter(d => !_.isNull(d));
+
+    callback({
+        usTopoJson: us,
+        countyNames: countyNames,
+        medianIncomes: medianIncomesMap,
+        medianIncomesByCounty: _.groupBy(medianIncomes, 'countyName'),
+        medianIncomesByUSState: _.groupBy(medianIncomes, 'USstate'),
+        techSalaries: techSalaries,
+        USstateNames: USstateNames
+    });
+});
+
+```
 
 Building the income map looks weird because of indentation, but it's not that bad. We `filter` the `medianIncomes` array to discard any incomes whose `countyName` we can't find. I made sure they were all unique when I built the datasets.
 
@@ -473,8 +545,7 @@ If that didn't work, try comparing your changes to this [diff on Github](https:/
 
 <!--- begin-lecture title="Render a choropleth map of the US" -->
 
-{#choropleth-map}
-# Render a choropleth map of the US
+# Render a choropleth map of the US {#choropleth-map}
 
 With our data in hand, it's time to draw some pictures. A choropleth map will show us the best places to be in tech.
 
@@ -502,15 +573,39 @@ Just like before, we're going to start with changes in our `App` component, then
 
 You might guess the pattern already: add an import, add a helper method or two, update `render`.
 
-{crop-start: 119, crop-end: 126, format: javascript, line-numbers: false}
-![Import CountyMap component](code_samples/es6v2/App.js)
+``` {.javascript caption="Import CountyMap component"}
+// src/App.js
+import Preloader from './components/Preloader';
+import { loadAllData } from './DataHandling';
+
+// Insert the line(s) between here...
+import CountyMap from './components/CountyMap';
+// ...and here.
+
+```
 
 That imports the `CountyMap` component from `components/CountyMap/`. Your browser will show an error overlay about some file or another until we're done.
 
 In the `App` class itself, we add a `countyValue` method. It takes a county entry and a map of tech salaries, and it returns the delta between median household income and a single tech salary.
 
-{crop-start: 129, crop-end: 144, format: javascript, line-numbers: false}
-![App.countyValue method](code_samples/es6v2/App.js)
+``` {.javascript caption="App.countyValue method"}
+    // src/App.js
+    countyValue(county, techSalariesMap) {
+        const medianHousehold = this.state.medianIncomes[county.id],
+              salaries = techSalariesMap[county.name];
+
+        if (!medianHousehold || !salaries) {
+            return null;
+        }
+
+        const median = d3.median(salaries, d => d.base_salary);
+
+        return {
+            countyID: county.id,
+            value: median - medianHousehold.medianIncome
+        };
+    }
+```
 
 We use `this.state.medianIncomes` to get the median household salary and the `techSalariesMap` input to get salaries for a specific census area. Then we use `d3.median` to calculate the median value for salaries and return a two-element dictionary with the result.
 
@@ -522,13 +617,12 @@ In the `render` method, we'll:
  - remove the "data loaded" indicator
  - render the map
 
-{format: javascript, line-numbers: false, caption: "Render the CountyMap component}
-```
+``` {.javascript caption="Render the CountyMap component"}
 // src/App.js
 render() {
-    // markua-start-insert
+    // Insert the line(s) between here...
     const { countyNames, usTopoJson, techSalaries, } = this.state;
-    // markua-end-insert
+    // ...and here.
 
     if (techSalaries.length < 1) {
         return (
@@ -536,7 +630,7 @@ render() {
         );
     }
 
-    // markua-start-insert
+    // Insert the line(s) between here...
     const filteredSalaries = techSalaries,
           filteredSalariesMap = _.groupBy(filteredSalaries, 'countyID'),
           countyValues = countyNames.map(
@@ -544,14 +638,14 @@ render() {
           ).filter(d => !_.isNull(d));
 
     let zoom = null;
-    // markua-end-insert
+    // ...and here.
 
     return (
       <div className="App container">
-        // markua-start-delete
+        // Delete the line(s) between here...
         <h1>Loaded {techSalaries.length} salaries</h1>
-        // markua-end-delete
-        // markua-start-insert
+        // ...and here.
+        // Insert the line(s) between here...
         <svg width="1100" height="500">
             <CountyMap usTopoJson={usTopoJson}
                        USstateNames={USstateNames}
@@ -562,13 +656,13 @@ render() {
                        height={500}
                        zoom={zoom} />
         </svg>
-        // markua-end-insert
+        // ...and here.
       </div>
     );
 }
 ```
 
-We call our dataset `filteredTechSalaries` because we're going to add filtering in the [subchapter about adding user controls](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6888938#user-controls). Using the proper name now means less code to change later. The magic of foresight 😄
+We call our dataset `filteredTechSalaries` because we're going to add filtering in the [subchapter about adding user controls](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6888938#user-controls). Using the proper name now means less code to change later. The magic of foresight :smile:
 
 We use `_.groupBy` to build a dictionary mapping each `countyID` to an array of salaries, and we use our `countyValue` method to build an array of counties for our map.
 
@@ -584,8 +678,12 @@ In the `return` statement, we remove our "data loaded" indicator, and add an `<s
 
 We make `index.js` for just reason: to make imports and debugging easier. I learned this lesson the hard way so you don't have to.
 
-{format: javascript, line-numbers: false, line-numbers: false}
-![CountyMap index.js](code_samples/es6v2/components/CountyMap/index.js)
+``` {.javascript caption="CountyMap index.js"}
+// src/components/CountyMap/index.js
+
+export { default } from './CountyMap';
+
+```
 
 Re-export the default import from `./CountyMap.js`. That's it.
 
@@ -605,8 +703,16 @@ We're using the [full-feature integration](https://swizec1.teachable.com/courses
 
 Start with the imports: React, D3, lodash, topojson, County component.
 
-{crop-start: 5, crop-end: 12, format: javascript, line-numbers: false}
-![Import CountyMap dependencies](code_samples/es6v2/components/CountyMap/CountyMap.js)
+``` {.javascript caption="Import CountyMap dependencies"}
+// src/components/CountyMap/CountyMap.js
+import React, { Component } from 'react';
+import * as d3 from 'd3';
+import * as topojson from 'topojson';
+import _ from 'lodash';
+
+import County from './County';
+
+```
 
 Out of these, we haven't built `County` yet, and you haven't seen `topojson` before.
 
@@ -620,8 +726,7 @@ Maybe it's a case of [competing standards](https://xkcd.com/927/).
 
 We stub out the `CountyMap` component then fill it in with logic.
 
-{format: javascript, line-numbers: false, caption: "CountyMap stub"}
-```
+``` {.javascript caption="CountyMap stub"}
 // src/components/CountyMap/CountyMap.js
 class CountyMap extends Component {
     constructor(props) {
@@ -655,8 +760,7 @@ We'll set up default D3 state in `constructor` and keep it up to date with `getD
 
 We need three D3 objects to build a choropleth map: a geographical projection, a path generator, and a quantize scale for colors.
 
-{format: javascript, line-numbers: false, caption: "D3 objects for a map"}
-```
+``` {.javascript caption="D3 objects for a map"}
 // src/components/CountyMap/CountyMap.js
 class CountyMap extends React.Component {
     constructor(props) {
@@ -684,10 +788,9 @@ Let's say our domain goes from 0 to 90. Calling the scale with any number betwee
 
 ### getDerivedStateFromProps
 
-Keeping our geo path and quantize scale up to date is simple, but we'll make it harder by adding a zoom feature. It won't work until we build the filtering, but hey, we'll already have it by then! :D
+Keeping our geo path and quantize scale up to date is simple, but we'll make it harder by adding a zoom feature. It won't work until we build the filtering, but hey, we'll already have it by then! :smile:
 
-{format: javascript, line-numbers: false, caption: "CountyMap getDerivedStateFromProps"}
-```
+``` {.javascript caption="CountyMap getDerivedStateFromProps"}
     // src/components/CountyMap/CountyMap.js
     static getDerivedStateFromProps(props, state) {
         let { projection, quantize, geoPath } = state;
@@ -751,8 +854,7 @@ Overall that makes your code easier to understand and closer to React principles
 
 After all that hard work, the `render` method is a breeze. We prep our data then loop through it and render a `County` element for each entry.
 
-{format: javascript, line-numbers: false, caption: "CountyMap render"}
-```
+``` {.javascript caption="CountyMap render"}
     render() {
         const { geoPath, quantize } = this.state,
             { usTopoJson, values, zoom } = this.props;
@@ -819,15 +921,60 @@ For US state borders, we render a single `<path>` element and use `geoPath` to g
 
 The `County` component is built from two parts: imports and color constants, and a component that returns a `<path>`. All the hard calculation happens in `CountyMap`.
 
-{crop-start: 5, crop-end: 22, format: javascript, line-numbers: false}
-![Imports and color constants](code_samples/es6v2/components/CountyMap/County.js)
+``` {.javascript caption="Imports and color constants"}
+// src/components/CountyMap/County.js
+import React, { Component } from 'react';
+import _ from 'lodash';
+
+const ChoroplethColors = _.reverse([
+    'rgb(247,251,255)',
+    'rgb(222,235,247)',
+    'rgb(198,219,239)',
+    'rgb(158,202,225)',
+    'rgb(107,174,214)',
+    'rgb(66,146,198)',
+    'rgb(33,113,181)',
+    'rgb(8,81,156)',
+    'rgb(8,48,107)'
+]);
+
+const BlankColor = 'rgb(240,240,240)'
+
+```
 
 We import React and Lodash, and define some color constants. I got the `ChoroplethColors` from some example online, and `BlankColor` is a pleasant gray.
 
 Now we need the `County` component.
 
-{crop-start: 27, crop-end: 53, format: javascript, line-numbers: false}
-![County component](code_samples/es6v2/components/CountyMap/County.js)
+``` {.javascript caption="County component"}
+// src/components/CountyMap/County.js
+class County extends Component {
+    shouldComponentUpdate(nextProps, nextState) {
+        const { zoom, value } = this.props;
+
+        return zoom !== nextProps.zoom
+            || value !== nextProps.value;
+    }
+
+    render() {
+        const { value, geoPath, feature, quantize } = this.props;
+
+        let color = BlankColor;
+
+        if (value) {
+            color = ChoroplethColors[quantize(value)];
+        }
+
+        return (
+            <path d={geoPath(feature)}
+                  style={{fill: color}}
+                  title={feature.id} />
+        );
+    }
+}
+
+export default County;
+```
 
 The `render` method uses a `quantize` scale to pick the right color and returns a `<path>` element. `geoPath` generates the `d` attribute, we set style to `fill` the color, and we give our path a `title`.
 
@@ -843,7 +990,7 @@ Using `shouldComponentUpdate` like this we can go from 3,220 DOM updates to a fe
 
 ---
 
-<!--- begin-lecture title="A map appears 🗺" -->
+<!--- begin-lecture title="A map appears :world_map:" -->
 
 Your browser should now show a map.
 
@@ -861,8 +1008,7 @@ If that didn't work, consult [this diff on Github](https://github.com/Swizec/rea
 
 <!--- begin-lecture title="Render a Histogram of salaries" -->
 
-{#histogram-of-salaries}
-# Render a Histogram of salaries
+# Render a Histogram of salaries {#histogram-of-salaries}
 
 Knowing median salaries is great and all, but it doesn't tell you much about what you can expect. You need to know the distribution to see if it's more likely you'll get 140k or 70k.
 
@@ -872,7 +1018,7 @@ That's what histograms are for. Give them a bunch of data, and they show its dis
 
 In the shortened dataset, 35% of tech salaries fall between $60k and $80k, 26% between $80k and $100k etc. Throwing a weighed dice with this [random distribution](https://en.wikipedia.org/wiki/Probability_distribution), you're far more likely to get 60k-80k than 120k-140k. It's a great way to gauge situations.
 
-It's where statistics like "More people die from vending machines than shark attacks" come from. Which are you afraid of, vending machines or sharks? Stats say your answer should be [heart disease](https://www.cdc.gov/nchs/fastats/deaths.htm). ;)
+It's where statistics like "More people die from vending machines than shark attacks" come from. Which are you afraid of, vending machines or sharks? Stats say your answer should be [heart disease](https://www.cdc.gov/nchs/fastats/deaths.htm). :wink:
 
 We'll start our histogram with some changes in `App.js`, make a `Histogram` component using the [full-feature approach](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6887740#full-feature-integration), add an `Axis` using the [blackbox HOC approach](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6887729#blackbox-hoc), and finally add some styling.
 
@@ -884,22 +1030,21 @@ We'll start our histogram with some changes in `App.js`, make a `Histogram` comp
 
 You know the drill, don't you? Import some stuff, add it to the `render()` method in the `App` component.
 
-{format: javascript, line-numbers: false, caption: "Histogram imports"}
-```
+``` {.javascript caption="Histogram imports"}
 // src/App.js
 import _ from 'lodash';
 
-// markua-start-insert
+// Insert the line(s) between here...
 import './style.css';
-// markua-end-insert
+// ...and here.
 
 import Preloader from './components/Preloader';
 import { loadAllData } from './DataHandling';
 
 import CountyMap from './components/CountyMap';
-// markua-start-insert
+// Insert the line(s) between here...
 import Histogram from './components/Histogram';
-// markua-end-insert
+// ...and here.
 ```
 
 We import `style.css` and the `Histogram` component. That's what I love about Webpack - you can import CSS in JavaScript. We got the setup with `create-react-app`.
@@ -910,10 +1055,41 @@ Personally I like to use CSS for general cross-component styling and styled-comp
 
 After the imports, we can render our `Histogram` in the `App` component.
 
-{crop-start: 205, crop-end: 235, format: javascript, line-numbers: false}
-![Render Histogram in App](code_samples/es6v2/App.js)
+``` {.javascript caption="Render Histogram in App"}
+// src/App.js
+// ...
+render() {
+    // ...
+    return (
+        <div className="App container">
+            <h1>Loaded {this.state.techSalaries.length} salaries</h1>
+            <svg width="1100" height="500">
+                <CountyMap usTopoJson={this.state.usTopoJson}
+                           USstateNames={this.state.USstateNames}
+                           values={countyValues}
+                           x={0}
+                           y={0}
+                           width={500}
+                           height={500}
+                           zoom={zoom} />
+                // Insert the line(s) between here...
+                <Histogram bins={10}
+                           width={500}
+                           height={500}
+                           x="500"
+                           y="10"
+                           data={filteredSalaries}
+                           axisMargin={83}
+                           bottomMargin={5}
+                           value={d => d.base_salary} />
+                // ...and here.
+            </svg>
+        </div>
+    );
+}
+```
 
-We render the `Histogram` component with a bunch of props. They specify the dimensions we want, positioning, and pass data to the component. We're using `filteredSalaries` even though we haven't set up any filtering yet. One less line of code to change later 👌
+We render the `Histogram` component with a bunch of props. They specify the dimensions we want, positioning, and pass data to the component. We're using `filteredSalaries` even though we haven't set up any filtering yet. One less line of code to change later :ok_hand:
 
 That's it. `App` is ready to render our `Histogram`.
 
@@ -923,8 +1099,7 @@ You should now see an error about missing files. That's normal.
 
 <!--- begin-lecture title="Step 2: CSS changes" -->
 
-{#histogram-css}
-## Step 2: CSS changes
+## Step 2: CSS changes {#histogram-css}
 
 As mentioned, opinions vary on the best approach to styling React apps. Some say stylesheets per component, some say styling inside JavaScript, others swear by global app styling.
 
@@ -932,8 +1107,7 @@ The truth is somewhere in between. Do what fits your project and your team. We'r
 
 Create a new file `src/style.css` and add these 29 lines:
 
-{format: css, line-numbers: false, caption: "style.css stylesheet"}
-```
+``` {.css caption="style.css stylesheet"}
 .histogram .bar rect {
     fill: steelblue;
     shape-rendering: crispEdges;
@@ -993,8 +1167,7 @@ We'll use two components:
 
 Let's start with the basics: a `Histogram` directory and an `index.js` file. Keeps our code organized and imports easy. I like to use directories for components made of multiple files.
 
-{caption: "Re-export Histogram", format: javascript, line-numbers: false}
-```
+``` {.javascript caption="Re-export Histogram"}
 export { default } from "./Histogram";
 ```
 
@@ -1004,8 +1177,7 @@ Great way to group files that belong together without exposing your directory's 
 
 Now we need the `Histogram.js` file. Start with some imports, a default export, and a stubbed out `Histogram` class.
 
-{format: javascript, line-numbers: false, caption: "Histogram component stub"}
-```
+``` {.javascript caption="Histogram component stub"}
 // src/components/Histogram/Histogram.js
 import React from "react";
 import * as d3 from "d3";
@@ -1048,8 +1220,7 @@ Default `state` for our D3 objects: histogram, widthScale, and yScale. An empty
 
 ### getDerivedStateFromProps
 
-{format: javascript, line-numbers: false, caption: "getDerivedStateFromProps in Histogram"}
-```
+``` {.javascript caption="getDerivedStateFromProps in Histogram"}
 // src/components/Histogram/Histogram.js
     static getDerivedStateFromProps(props, state) {
         let { histogram, widthScale, yScale } = state;
@@ -1096,8 +1267,7 @@ Now let's render this puppy.
 
 ### render
 
-{format: javascript, line-numbers: false, caption: "Histogram.render"}
-```
+``` {.javascript caption="Histogram.render"}
 // src/components/Histogram/Histogram.js
 class Histogram extends React.Component {
     // ...
@@ -1128,8 +1298,7 @@ This is a great example of React's declarativeness. We have a bunch of stuff, an
 
 `makeBar` is a function that takes a histogram bar's metadata and returns a `HistogramBar` component. We use it to make our declarative loop more readable.
 
-{format: javascript, line-numbers: false, caption: "Histogram.makeBar"}
-```
+``` {.javascript caption="Histogram.makeBar"}
 // src/components/Histogram/Histogram.js
 class Histogram extends React.Component {
     // ...
@@ -1170,8 +1339,7 @@ You can write small components like this in the same file as their main componen
 
 But in the interest of readability, let's make a `HistogramBar` file.
 
-{caption: "HistogramBar component", line-numbers: false}
-```javascript
+``` {.javascript caption="HistogramBar component"}
 // src/components/Histogram/HistogramBar.js
 import React from "react";
 
@@ -1216,8 +1384,7 @@ When we have a label we like, we return a `<g>` grouping element with a rectangl
 
 Make sure to import `HistogramBar` in the main `Histogram` file.
 
-{caption: "HistogramBar import", line-numbers: false}
-```javascript
+``` {.javascript caption="HistogramBar import"}
 // src/components/Histogram/Histogram.js
 
 import HistogramBar from './HistogramBar'
@@ -1239,8 +1406,7 @@ Our histogram is pretty, but it needs an axis to be useful. You've already learn
 
 We start with the D3blackbox higher order component. Same as before, except we put it in `src/components`.
 
-{format: javascript, line-numbers: false, caption: "D3blackbox HOC"}
-```
+``` {.javascript caption="D3blackbox HOC"}
 import React from "react";
 
 export default function D3blackbox(D3render) {
@@ -1270,8 +1436,7 @@ Take a `D3render` function, call it on `componentDidMount` and `componentDidUpda
 
 With `D3blackbox`, we can reduce the `Axis` component to a wrapped function. We're implementing the `D3render` method.
 
-{format: javascript, line-numbers: false, caption: "Axis component using D3blackbox"}
-```
+``` {.javascript caption="Axis component using D3blackbox"}
 import * as d3 from "d3";
 import D3blackbox from "../D3blackbox";
 
@@ -1301,15 +1466,14 @@ To render our new `Axis`, we add it to the `Histogram` component. It's a two ste
 1. Import `Axis` component
 2. Render it
 
-{format: javascript, line-numbers: false, caption: "Import and render Axis"}
-```
+``` {.javascript caption="Import and render Axis"}
 // src/components/Histogram/Histogram.js
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 
-// markua-start-insert
+// Insert the line(s) between here...
 import Axis from './Axis';
-// markua-end-insert
+// ...and here.
 
 // ...
 class Histogram extends Component {
@@ -1325,12 +1489,12 @@ class Histogram extends Component {
                 <g className="bars">
                     {bars.map(this.makeBar)}
                 </g>
-                // markua-start-insert
+                // Insert the line(s) between here...
                 <Axis x={axisMargin-3}
                       y={0}
                       data={bars}
                       scale={yScale} />
-                // markua-end-insert
+                // ...and here.
             </g>
         );
     }
@@ -1374,29 +1538,28 @@ At the end of this section, you'll have a full visualization of the shortened da
 
 We begin with the title because it shows up first.
 
-We start with an import in `App.js` and add it to the render method. You know the drill 😄
+We start with an import in `App.js` and add it to the render method. You know the drill :smile:
 
-{format: javascript, caption: "Adding Title to main App component"}
-```
+``` {.javascript caption="Adding Title to main App component"}
 // src/App.js
 import CountyMap from './components/CountyMap';
 import Histogram from './components/Histogram';
-// markua-start-insert
+// Insert the line(s) between here...
 import { Title } from './components/Meta';
-// markua-end-insert
+// ...and here.
 
 class App extends Component {
     state = {
         techSalaries: [],
         countyNames: [],
         medianIncomes: [],
-        // markua-start-insert
+        // Insert the line(s) between here...
         filteredBy: {
             USstate: '*',
             year: '*',
             jobTitle: '*'
         }
-        // markua-end-insert
+        // ...and here.
     }
 
     // ...
@@ -1406,10 +1569,10 @@ class App extends Component {
         // ..
         return (
             <div className="App container">
-                // markua-start-insert
+                // Insert the line(s) between here...
                 <Title data={filteredSalaries}
                        filteredBy={filteredBy} />
-                // markua-end-insert
+                // ...and here.
                 // ...
             </div>
         )
@@ -1431,8 +1594,7 @@ Before we begin the `Title` component, there are a few things to take care of. O
 
 We make a `components/Meta` directory and add an `index.js`. It makes importing easier.
 
-{format: javascript, line-numbers: false, caption: "Meta index.js"}
-```
+``` {.javascript caption="Meta index.js"}
 // src/components/Meta/index.js
 export { default as Title } from './Title'
 export { default as Description } from './Description';
@@ -1456,8 +1618,33 @@ I know, it's confusing. They look like the same sentence turned around. Notice t
 
 We start with imports, a stub, and a default export.
 
-{crop-start: 5, crop-end: 29, format: javascript, line-numbers: false}
-![Title component stub](code_samples/es6v2/components/Meta/Title.js)
+``` {.javascript caption="Title component stub"}
+// src/components/Meta/Title.js
+import React, { Component } from 'react';
+import { scaleLinear } from 'd3-scale';
+import { mean as d3mean, extent as d3extent } from 'd3-array';
+
+import USStatesMap from './USStatesMap';
+
+class Title extends Component {
+    get yearsFragment() {
+    }
+
+    get USstateFragment() {
+    }
+
+    get jobTitleFragment() {
+    }
+
+    get format() {
+    }
+
+    render() {
+    }
+}
+
+export default Title;
+```
 
 We import only what we need from D3's `d3-scale` and `d3-array` packages. I consider this best practice until you're importing so much that it gets messy to look at.
 
@@ -1472,19 +1659,39 @@ In the `Title` component, we have 4 getters and a render. Getters are ES6 functi
 
 We can implement `yearsFragment`, `USstateFragment`, and `format` in one code sample. They're short.
 
-{crop-start: 35, crop-end: 55, format: javascript, line-numbers: false}
-![3 short getters in Title](code_samples/es6v2/components/Meta/Title.js)
+``` {.javascript caption="3 short getters in Title"}
+// src/components/Meta/Title.js
+class Title extends Component {
+    get yearsFragment() {
+        const year = this.props.filteredBy.year;
+
+        return year === '*' ? "" : `in ${year}`;
+    }
+
+    getteFragment() {
+        const USstate = this.props.filteredBy.USstate;
+
+        return USstate === '*' ? "" : USStatesMap[USstate.toUpperCase()];
+    }
+
+    // ...
+
+    get format() {
+        return scaleLinear()
+                 .domain(d3extent(this.props.data, d => d.base_salary))
+                 .tickFormat();
+    }
+```
 
 In both `yearsFragment` and `USstateFragment`, we get the appropriate value from Title's `filteredBy` prop, then return a string with the value or an empty string.
 
 We rely on D3's built-in number formatters to build `format`. Linear scales have the one that turns `10000` into `10,000`. Tick formatters don't work well without a `domain`, so we define it. We don't need a range because we never use the scale itself.
 
-`format` returns a function, which makes it a [higher order function](https://en.wikipedia.org/wiki/Higher-order_function). Being a getter makes it really nice to use: `this.format()`. Looks just like a normal function call :D
+`format` returns a function, which makes it a [higher order function](https://en.wikipedia.org/wiki/Higher-order_function). Being a getter makes it really nice to use: `this.format()`. Looks just like a normal function call :smile:
 
 The `jobTitleFragment` getter is conceptually no harder than `yearsFragment` and `USstateFragment`, but it comes with a few more conditionals.
 
-{caption: "Title.jobTitleFragment", line-numbers: false}
-```javascript
+``` {.javascript caption="Title.jobTitleFragment"}
 // src/components/Meta/Title.js
 
 class Title extends Component {
@@ -1520,8 +1727,36 @@ We're dealing with the `(jobTitle, year)` combination. Each influences the other
 
 We put all this together in the `render` method. A conditional decides which of the two situations we're in, and we return an `<h2>` tag with the right text.
 
-{crop-start: 96, crop-end: 123, format: javascript, line-numbers: false}
-![Title.render](code_samples/es6v2/components/Meta/Title.js)
+``` {.javascript caption="Title.render"}
+// src/components/Meta/Title.js
+class Title extends Component {
+    // ...
+    render() {
+        const mean = this.format(d3mean(this.props.data, d => d.base_salary));
+
+        let title;
+
+        if (this.yearsFragment && this.USstateFragment) {
+            title = (
+                <h2>
+                    In {this.USstateFragment}, {this.jobTitleFragment}
+                    ${mean}/year {this.yearsFragment}
+                </h2>
+            );
+        }else{
+            title = (
+                <h2>
+                    {this.jobTitleFragment} ${mean}/year
+                    {this.USstateFragment ? `in ${this.stateFragment}` : ''}
+                    {this.yearsFragment}
+                </h2>
+            );
+        }
+
+        return title;
+    }
+}
+```
 
 Calculate the mean value using `d3.mean` with a value accessor, turn it into a pretty number with `this.format`, then use one of two string patterns to make a `title`.
 
@@ -1554,8 +1789,7 @@ We use the same approach as before:
 
 All the interesting complexity goes into finding the richest city and county. That part looks like this:
 
-{caption: "Richest county calculation", line-numbers: false}
-```javascript
+``` {.javascript caption="Richest county calculation"}
 // src/components/Meta/Description.js
 get countyFragment() {
   const byCounty = _.groupBy(this.props.data, 'countyID'),
@@ -1587,8 +1821,7 @@ I recommend copying the [`Description` component from GitHub](https://github.com
 
 You then render the Description like this:
 
-{caption: "Render Description component", line-numbers: false}
-```javascript
+``` {.javascript caption="Render Description component"}
 // src/components/App.js
 
 import { Title, Description } from "./components/Meta";
@@ -1625,14 +1858,50 @@ We're using a quick approach where everything fits into a functional React compo
 
 Inside `src/App.js`, we first have to add an import, then extract the median household value from state, and in the end, add `MedianLine` to the render method.
 
-Let's see if we can do it in a single code block 😄
+Let's see if we can do it in a single code block :smile:
 
-{crop-start: 282, crop-end: 317, format: javascript, line-numbers: false}
-![Adding MedianLine to App.js](code_samples/es6v2/App.js)
+``` {.javascript caption="Adding MedianLine to App.js"}
+// src/App.js
+import Histogram from './components/Histogram';
+import { Title, Description, GraphDescription } from './components/Meta';
+// Insert the line(s) between here...
+import MedianLine from './components/MedianLine';
+// ...and here.
+
+class App extends Component {
+    // ...
+    render() {
+        // ...
+        let zoom = null,
+            // Insert the line(s) between here...
+            medianHousehold = this.state.medianIncomesByUSState['US'][0]
+                                  .medianIncome;
+            // ...and here.
+
+        return (
+            // ...
+            <svg width="1100" height="500">
+                <CountyMap // ... />
+                <Histogram // ... />
+                // Insert the line(s) between here...
+                <MedianLine data={filteredSalaries}
+                            x={500}
+                            y={10}
+                            width={600}
+                            height={500}
+                            bottomMargin={5}
+                            median={medianHousehold}
+                            value={d => d.base_salary} />
+                // ...and here.
+            </svg>
+        )
+    }
+}
+```
 
 You probably don't remember `medianIncomesByUSState` anymore. We set it up way back when [tying datasets together](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6888897#tie-datasets-together). It groups our salary data by US state.
 
-See, using good names helps 😄
+See, using good names helps :smile:
 
 When rendering `MedianLine`, we give it sizing and positioning props, the dataset, a `value` accessor, and the median value to show. We could make it smart enough to calculate the median, but the added flexibility of a prop felt right.
 
@@ -1640,8 +1909,7 @@ When rendering `MedianLine`, we give it sizing and positioning props, the datase
 
 The `MedianLine` component looks similar to what you've seen so far. Some imports, a `constructor` that sets up D3 objects, an `updateD3` method that keeps them in sync, and a `render` method that outputs SVG.
 
-{ format: javascript, line-numbers: false, caption: "MedianLine component stub"}
-```
+``` {.javascript caption="MedianLine component stub"}
 // src/components/MedianLine.js
 
 import React from "react";
@@ -1667,8 +1935,7 @@ We have some imports, a functional `MedianLine` component that takes our props, 
 
 Everything we need to render the line, fits into this function.
 
-{format: javascript, line-numbers: false, caption: "MedianLine render"}
-```
+``` {.javascript caption="MedianLine render"}
 // src/components/MedianLine.js
 
 const MedianLine = ({
@@ -1708,8 +1975,7 @@ A `translate` SVG transform helps us position our line and label. We use it all 
 
 Building the `d` attribute for the path, that's interesting. We use a `line` generator from D3.
 
-{caption: "Line generator", line-numbers: false}
-```javascript
+``` {.javascript caption="Line generator"}
 line = d3.line()([[0, 5], [width, 5]]);
 ```
 
@@ -1719,8 +1985,7 @@ That makes it span the entire width and leaves 5px for the label. We're using a 
 
 Remember, we already styled `medianLine` when we built [histogram styles](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6888921#histogram-css) earlier.
 
-{caption: "Histogram css", line-numbers: false}
-```css
+``` {.css caption="Histogram css"}
 .mean text {
     font: 11px sans-serif;
     fill: grey;
@@ -1751,8 +2016,7 @@ If that didn't work, consult the [diff on Github](https://github.com/Swizec/reac
 
 <!--- begin-lecture title="Add user controls for data slicing and dicing" -->
 
-{#user-controls}
-# Add user controls for data slicing and dicing
+# Add user controls for data slicing and dicing {#user-controls}
 
 Now comes the fun part. All that extra effort we put into making our components aware of filtering, and it all comes down to this: User controls.
 
@@ -1789,40 +2053,73 @@ All right, you know the drill. Add imports, tweak some things, add to render. We
 
 The white rectangle makes it so the zoomed-in map doesn't cover up the histogram. I'll explain when we get there.
 
-{crop-start: 323, crop-end: 356, format: javascript, line-numbers: false}
-![Imports and filter updates in App.js](code_samples/es6v2/App.js)
+``` {.javascript caption="Imports and filter updates in App.js"}
+// src/App.js
+import MedianLine from './components/MedianLine';
+
+// Insert the line(s) between here...
+import Controls from './components/Controls';
+// ...and here.
+
+class App extends React.Component {
+    state = {
+        // ...
+        medianIncomes: [],
+        // Insert the line(s) between here...
+        salariesFilter: () => true,
+        // ...and here.
+        filteredBy: {
+            // ...
+        }
+    }
+
+    // ...
+
+    // Insert the line(s) between here...
+    updateDataFilter = (filter, filteredBy) => {
+        this.setState({
+            salariesFilter: filter,
+            filteredBy: filteredBy
+        });
+    }
+    // ...and here.
+
+    render() {
+        // ...
+    }
+}
+```
 
 We import the `Controls` component and add a default `salariesFilter` function to `this.state`. The `updateDataFilter` method passes the filter function and `filteredBy` dictionary from arguments to App state. We'll use it as a callback in `Controls`.
 
 The rest of filtering setup happens in the render method.
 
-{format: javascript, line-numbers: false, caption: "Filtering data and updating map zoom in App render"}
-```
+``` {.javascript caption="Filtering data and updating map zoom in App render"}
 // src/App.js
 class App extends React.Component {
     // ...
 
     render() {
         // ...
-        // markua-start-delete
+        // Delete the line(s) between here...
         const filteredSalaries = techSalaries
-        // markua-end-delete
-        // markua-start-insert
+        // ...and here.
+        // Insert the line(s) between here...
         const filteredSalaries = techSalaries
                                      .filter(this.state.salariesFilter)
-        // markua-end-insert
+        // ...and here.
 
         // ...
 
         let zoom = null,
             medianHousehold = // ...
-        // markua-start-insert
+        // Insert the line(s) between here...
         if (filteredBy.USstate !== '*') {
             zoom = this.state.filteredBy.USstate;
             medianHousehold = d3.mean(medianIncomesByUSState[zoom],
                                       d => d.medianIncome);
         }
-        // markua-end-insert
+        // ...and here.
 
         // ...
     }
@@ -1841,14 +2138,45 @@ And here's the downside of this approach. SVG doesn't know about element boundar
 
 See, it goes under the histogram. Let's fix that and add the `Controls` render while we're at it.
 
-{caption: "Add opaque background to histogram", crop-start: 396, crop-end: 426, format: javascript, line-numbers: false}
-![](code_samples/es6v2/App.js)
+``` {.javascript caption="Add opaque background to histogram"}
+// src/App.js
+class App extends React.Component {
+    // ...
+
+    render() {
+        // ...
+
+        return (
+            <div //...>
+                <svg //...>
+                    <CountyMap //... />
+
+                    // Insert the line(s) between here...
+                    <rect x="500" y="0"
+                          width="600"
+                          height="500"
+                          style={{fill: 'white'}} />
+                    // ...and here.
+
+                    <Histogram //... />
+                    <MedianLine //.. />
+                </svg>
+
+                // Insert the line(s) between here...
+                <Controls data={techSalaries}
+                          updateDataFilter={this.updateDataFilter} />
+                // ...and here.
+            </div>
+        )
+    }
+}
+```
 
 Rectangle, `500` to the right, `0` from top, `600` wide and `500` tall, with a white background. Gives the histogram an opaque background, so it doesn't matter what the map is doing.
 
 We render the `Controls` component just after `</svg>` because it's not an SVG component – it uses normal HTML. Unlike other components, it needs our entire dataset as `data`. We use the `updateDataFilter` prop to say which callback function it should call when a new filter is ready.
 
-If this seems roundabout ... I've seen worse. The callbacks approach makes our app easier to componentize and keeps the code relatively unmessy. Imagine putting everything we've done so far in `App`! 😆
+If this seems roundabout ... I've seen worse. The callbacks approach makes our app easier to componentize and keeps the code relatively unmessy. Imagine putting everything we've done so far in `App`! :satisfied:
 
 <!--- end-lecture -->
 
@@ -1866,8 +2194,7 @@ Make a `Controls` directory in `src/components/` and let's begin. The main `Cont
 
 ### Stub Controls
 
-{format: javascript, line-numbers: false, caption: "Controls stubbed for year filter"}
-```
+``` {.javascript caption="Controls stubbed for year filter"}
 // src/components/Controls/index.js
 import React from "react";
 
@@ -1914,8 +2241,7 @@ We also need an `updateYearFilter` function, which we'll use to update the filte
 
 ### Filter logic
 
-{format: javascript, line-numbers: false, caption: "year filtering logic in Controls"}
-```
+``` {.javascript caption="year filtering logic in Controls"}
 // src/components/Controls/index.js
 class Controls extends React.Component {
     // ...
@@ -1946,12 +2272,11 @@ Comparing `submit_date.getFullYear()` with `year` achieves that.
 
 The `reset` argument lets us reset filters back to defaults. Enables users to unselect options.
 
-When we have the `year` and `filter`, we update component state with `this.setState`. This triggers a re-render and calls `reportUpdateUpTheChain` afterwards. Great use-case for the little known setState callback :)
+When we have the `year` and `filter`, we update component state with `this.setState`. This triggers a re-render and calls `reportUpdateUpTheChain` afterwards. Great use-case for the little known setState callback :smiley:
 
 `reportUpdateUpTheChain` then calls `this.props.updateDataFilter`, which is a callback method on `App`. We defined it earlier – it needs a new filter method and a `filteredBy` dictionary.
 
-{language: javascript, line-numbers: false, caption: "reportUpdateUpTheChain method"}
-```
+``` {caption="reportUpdateUpTheChain method"}
 // src/components/Controls/index.js
 class Controls extends React.Component {
     // ...
@@ -1981,8 +2306,7 @@ It looks silly when there's just one filter, but I promise it makes sense.
 
 Great, we have the filter logic. Let's render those rows of controls we've been talking about.
 
-{format: javascript, line-numbers: false, caption: "Render the year ControlRow"}
-```
+``` {.javascript caption="Render the year ControlRow"}
 // src/components/Controls/index.js
 class Controls extends React.Component {
     // ...
@@ -2021,8 +2345,7 @@ Let's build the `ControlRow` component. It renders a row of controls and ensures
 
 We'll start with a stub and go from there.
 
-{format: javascript, line-numbers: false, caption: "ControlRow stub"}
-```
+``` {.javascript caption="ControlRow stub"}
 // src/components/Controls/ControlRow.js
 import React from "react";
 
@@ -2050,8 +2373,7 @@ We start with imports, big surprise, then make a stub with 3 methods. Can you gu
 - `_addToggle` is a rendering helper method
 - `render` renders a row of buttons
 
-{format: javascript, line-numbers: false, caption: "makePick implementation"}
-```
+``` {.javascript caption="makePick implementation"}
 // src/components/Controls/ControlRow.js
 
 class ControlRow extends React.Component {
@@ -2063,8 +2385,7 @@ class ControlRow extends React.Component {
 
 `makePick` calls the data filter update and passes in the new value and whether we want to unselect. Pretty simple right?
 
-{format: javascript, line-numbers: false, caption: "Render a row of controls"}
-```
+``` {.javascript caption="Render a row of controls"}
 // src/components/Controls/ControlRow.js
 class ControlRow extends React.Component {
     // ...
@@ -2124,8 +2445,7 @@ Let's build it.
 
 Last piece of the puzzle – the Toggle component. A button that turns on and off.
 
-{format: javascript, line-numbers: false, caption: "Toggle component"}
-```
+``` {.javascript caption="Toggle component"}
 // src/components/Controls/Toggle.js
 import React from "react";
 
@@ -2169,8 +2489,44 @@ With all that done, we can add two more filters: US states and job titles. Our `
 
 We'll start with the `render` method, then handle the parts I said earlier would look repetitive.
 
-{crop-start: 102, crop-end: 137, format: javascript, line-numbers: false}
-![Adding two more rows to Controls](code_samples/es6v2/components/Controls/index.js)
+``` {.javascript caption="Adding two more rows to Controls"}
+// src/components/Controls/index.js
+class Controls extends Component {
+    // ...
+    render() {
+        const { data } = this.props;
+
+        const years = new Set(data.map(d => d.submit_date.getFullYear())),
+              // Insert the line(s) between here...
+              jobTitles = new Set(data.map(d => d.clean_job_title)),
+              USstates = new Set(data.map(d => d.USstate));
+              // ...and here.
+
+        return (
+            <div>
+                <ControlRow data={data}
+                            toggleNames={Array.from(years.values())}
+                            picked={this.state.year}
+                            updateDataFilter={this.updateYearFilter}
+                            />
+
+            // Insert the line(s) between here...
+                <ControlRow data={data}
+                            toggleNames={Array.from(jobTitles.values())}
+                            picked={this.state.jobTitle}
+                            updateDataFilter={this.updateJobTitleFilter} />
+
+                <ControlRow data={data}
+                            toggleNames={Array.from(USstates.values())}
+                            picked={this.state.USstate}
+                            updateDataFilter={this.updateUSstateFilter}
+                            capitalize="true" />
+                // ...and here.
+            </div>
+        )
+    }
+}
+```
 
 Ok, this part is plenty repetitive, too.
 
@@ -2178,8 +2534,7 @@ We created new sets for `jobTitles` and `USstates`, then rendered two more `Cont
 
 The implementations of those `updateDataFilter` callbacks follow the same pattern as `updateYearFilter`.
 
-{format: javascript, line-numbers: false, caption: "new updateDataFilter callbacks"}
-```
+``` {.javascript caption="new updateDataFilter callbacks"}
 // src/components/Controls/index.js
 
 class Controls extends React.Component {
@@ -2238,8 +2593,7 @@ Why separate functions then? No need to get fancy. It would've made the code har
 
 Our last step is to add these new keys to the `reportUpdateUpTheChain` function.
 
-{format: javascript, line-numbers: false, caption: "Add new filters to main state update"}
-```
+``` {.javascript caption="Add new filters to main state update"}
 // src/components/Controls/index.js
 
 class Controls extends React.Component {
@@ -2266,7 +2620,7 @@ Two more rows of filters show up.
 
 ![All the filters](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/all-filters.png)
 
-👏
+:clap:
 
 Again, if it didn't work, consult [the diff on GitHub](https://github.com/Swizec/react-d3js-step-by-step/commit/a45c33e172297ca1bbcfdc76733eae75779ebd7f).
 
@@ -2296,8 +2650,7 @@ There are many ways to achieve this. [ReactRouter](https://github.com/ReactTrain
 
 The easiest place to put this logic is next to the existing filter logic inside the `Controls` component. Better places exist from a "low-down components shouldn't play with global state" perspective, but that's okay.
 
-{crop-start: 215, crop-end: 243, format: javascript, line-numbers: false, caption: "Add rudimentary routing"}
-```
+``` {.javascript caption="Add rudimentary routing"}
 // src/components/Controls/index.js
 
 class Controls extends React.Component {
@@ -2376,8 +2729,7 @@ For everyone else, head over to Github, click the green `New Repository` button 
 
 It should be something like this:
 
-{caption: "Put code on github", line-numbers: false}
-```
+``` {caption="Put code on github"}
 $ git init
 $ git commit -m "My entire dataviz"
 $ git remote add origin git://github ...
@@ -2390,24 +2742,22 @@ Every Github repository comes with an optional Github Pages setup. The easiest w
 
 Install it with this command:
 
-{caption: "Install gh-pages helper", line-numbers: false}
-```
+``` {caption="Install gh-pages helper"}
 $ npm install --save-dev gh-pages
 ```
 
 Add two lines to package.json:
 
-{caption: "Update package.json", line-numbers: false}
-```json
+``` {.json caption="Update package.json"}
 // package.json
-// markua-start-insert
+// Insert the line(s) between here...
 "homepage": "https://<your username>.github.io/<your repo name>"
-// markua-end-insert
+// ...and here.
 "scripts": {
   "eject": "react-scripts eject",
-  // markua-start-insert
+  // Insert the line(s) between here...
   "deploy": "npm run build && gh-pages -d build"
-  // markua-end-insert
+  // ...and here.
 }
 ```
 
@@ -2443,8 +2793,36 @@ And they're easy to set up. No excuse.
 
 We're going to poke around `public/index.html` for the first time. Add titles, Twitter cards, Facebook Open Graph things, and so on.
 
-{crop-start: 3, crop-end: 30, format: html, line-numbers: false}
-![Basic SEO](code_samples/es6v2/index.html)
+``` {.html caption="Basic SEO"}
+<!-- public/index.html -->
+<head>
+    <!-- //... -->
+    // Insert the line(s) between here...
+    <title>How much does an H1B in tech pay?</title>
+
+    <link rel="canonical"
+          href="https://swizec.github.io/react-d3js-step-by-step/" />
+    // ...and here.
+</head>
+<body>
+    <!-- //... -->
+    <div id="root">
+        // Insert the line(s) between here...
+         <h2>The average H1B in tech pays $86,164/year</h2>
+
+   <p class="lead">
+             Since 2012 the US tech industry has sponsored 176,075
+             H1B work visas. Most of them paid <b>$60,660 to $111,668</b>
+             per year (1 standard deviation). <span>The best city for
+             an H1B is <b>Kirkland, WA</b> with an average individual
+             salary <b>$39,465 above local household median</b>.
+             Median household salary is a good proxy for cost of
+             living in an area.</span>
+         </p>
+        // ...and here.
+    </div>
+</body>
+```
 
 We add a `<title>` and a `canonical` URL. Titles configure what shows up in browser tabs, and the canonical URL is there to tell search engines that this is the main and most important URL for this piece of content. This is especially important for when people copy-paste your stuff and put it on other websites.
 
@@ -2454,8 +2832,39 @@ As soon as React loads, these get overwritten with our preloader, but it's good 
 
 To make social media embeds look great, we'll use [Twitter card](https://dev.twitter.com/cards/types/summary-large-image) and [Facebook OpenGraph](https://developers.facebook.com/docs/sharing/webmasters) meta tags. I think most other websites just rely on these since most people use them. They go in the `<head>` of our HTML.
 
-{crop-start: 34, crop-end: 64, format: javascript, line-numbers: false}
-![Add FB and Twitter cards](code_samples/es6v2/index.html)
+``` {.javascript caption="Add FB and Twitter cards"}
+<!-- public/index.html -->
+<head>
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title"
+          content="The average H1B in tech pays $86,164/year" />
+    <meta property="og:description"
+          content="Since 2012 the US tech industry has sponsored
+176,075 H1B work visas. With an average individual salary
+up to $39,465 above median household income." />
+    <meta property="og:url"
+          content="https://swizec.github.io/react-d3js-step-by-step" />
+    <meta property="og:site_name" content="A geek with a hat" />
+    <meta property="article:publisher"
+          content="https://facebook.com/swizecpage" />
+    <meta property="fb:admins" content="624156314" />
+    <meta property="og:image"
+          content="https://swizec.github.io/react-d3js-step-by-step/thumbnail.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:description"
+          content="Since 2012 the US tech industry has sponsored
+176,075 H1B work visas. With an average individual salary
+up to $39,465 above median household income." />
+    <meta name="twitter:title"
+          content="The average H1B in tech pays $86,164/year" />
+    <meta name="twitter:site" content="@swizec" />
+    <meta name="twitter:image"
+          content="https://swizec.github.io/react-d3js-step-by-step/thumbnail.png" />
+    <meta name="twitter:creator" content="@swizec" />
+</head>
+```
 
 Much of this code is repetitive. Both Twitter and Facebook want the same info, but they're stubborn and won't read each other's formats. You can copy all of this, but make sure to change `og:url`, `og:site_name`, `article:publisher`, `fb:admins`, `og:image`, `twitter:site`, `twitter:image`, and `twitter:creator`. They're specific to you.
 
@@ -2479,14 +2888,26 @@ One more step left. Use the whole dataset!
 
 Go into `src/DataHandling.js` and change one line:
 
-{crop-start: 95, crop-end: 106, format: javascript, line-numbers: false}
-![Switch to full dataset](code_samples/es6v2/DataHandling.js)
+``` {.javascript caption="Switch to full dataset"}
+// Example 4
+//
+// src/DataHandling.js
+export const loadAllData = (callback = _.noop) => {
+    d3.queue()
+        // ..
+        // Delete the line(s) between here...
+        .defer(d3.csv, 'data/h1bs-2012-2016-shortened.csv', cleanSalary)
+        // ...and here.
+        // Insert the line(s) between here...
+        .defer(d3.csv, 'data/h1bs-2012-2016.csv', cleanSalary)
+        // ...and here.
+```
 
 We change the file name, and that's that. Full dataset locked and loaded. Dataviz ready to go.
 
 <!--- end-lecture -->
 
-<!--- begin-lecture title="Launch! 🚀" -->
+<!--- begin-lecture title="Launch! :rocket:" -->
 
 # Launch!
 

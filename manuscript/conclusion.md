@@ -1,4 +1,4 @@
-<!--- begin-section title="You finished! 🚀" -->
+<!--- begin-section title="You finished! :rocket:" -->
 
 <!--- begin-lecture title="You're the best" -->
 
@@ -20,7 +20,7 @@ Even if you didn't build the projects, you still learned the theory. When the ri
 
 At the very least, you know where to look to find a solution. This book is yours forever.
 
-I hope you have enjoyed this book. Tweet [\@Swizec](https://twitter.com/Swizec) and tell me what you're building. 😄
+I hope you have enjoyed this book. Tweet [\@Swizec](https://twitter.com/Swizec) and tell me what you're building. :smile:
 
 Questions? Poke me on twitter. I’m [\@Swizec](https://twitter.com/Swizec). Or send me an email to [hi@swizec.com](mailto:hi@swizec.com). I read every email and reply on a best effort basis.
 

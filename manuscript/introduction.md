@@ -1,12 +1,11 @@
-{frontmatter}
 
 <!--- begin-section title="Introduction" -->
 
-<!--- begin-lecture title="Hello new friend 👋" -->
+<!--- begin-lecture title="Hello new friend :wave:" -->
 
 # Introduction #
 
-Hello new friend! 👋
+Hello new friend! :wave:
 
 ![This is me, Swizec](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/6300d21408f5e9f0c8f5698d266fb258.jpg)
 
@@ -18,7 +17,7 @@ It's going to be fun!
 
 I believe learning new tech should be exciting, so I did my best to inject joy whenever I could.
 
-250+ pages as a book, 8 example apps, near 8 hours of video, a bunch of skill building blocks. 👌
+250+ pages as a book, 8 example apps, near 8 hours of video, a bunch of skill building blocks. :ok_hand:
 
 Going through this course you will:
 
@@ -70,7 +69,7 @@ It feels like the web development world is a different place in late 2018 than i
 
 Almost 200 people bought this version of React+D3 in preorders alone. It started as a book update and grew into a proper online course.
 
-If you're one of those early supporters, thank you! You are the best. Without you this never would have happened. 🙏🏻
+If you're one of those early supporters, thank you! You are the best. Without you this never would have happened. :pray:
 
 ---
 
@@ -93,13 +92,13 @@ Because I think it's interesting, here's what I had to say about that first vers
 
 A lot of that still rings true. People are distracted, busy, the internet is shiny. It's hard to sit down and learn stuff.
 
-The most common feedback I get from students goes something like this 👇
+The most common feedback I get from students goes something like this :point_down:
 
 > Loving your book! It's amazing. So clear and concise and relatable. But I read 20 pages, then my wife had a kid, my boss pulled the project, and I'm doing backend now. But truly amazing. I'm gonna get back to it as soon as I can!
 
 Sometimes they do.
 
-That's okay. Life happens. I understand. Hell, I procrastinated for months before sitting down to update this stuff :)
+That's okay. Life happens. I understand. Hell, I procrastinated for months before sitting down to update this stuff :smiley:
 
 I recommend you go through the basic chapters at least. The little building blocks. You can do that in an afternoon or two. It's worth it, I promise.
 
@@ -136,25 +135,23 @@ From there, I think you should see how much time you've got. The course is desig
 
 If the best way is a daily practice, 20 minutes after work, 5 minutes on the pooper, do that. If you're more of a sit down and cram it out kind of person, a nice Sunday afternoon with some coffee will do just fine.
 
-But don't make it a chore. We're here to have fun :)
+But don't make it a chore. We're here to have fun :smiley:
 
-Two suggestions ✌️: 
+Two suggestions :v:: 
 
 1. *Try* the example code. Don’t just copy-paste; type it and execute it. Execute frequently. If something doesn’t fit together, look at the linked Github repositories or solved CodeSandboxes. Each project has one.
-2. If you know something, skip that section. You’re awesome. ❤️
+2. If you know something, skip that section. You’re awesome. :heart:
 
 React + D3 is based on code samples. They look like this:
 
-{caption: "Some code"}
-```javascript
+``` {.javascript caption="Some code"}
 let foo = 'bar';
 foo += 'more stuff';
 ```
 
 Each code sample starts with a commented out file path. That's the file you're editing. Like this:
 
-{caption: "Code samples have file paths"}
-```javascript
+``` {.javascript caption="Code samples have file paths"}
 // ./src/App.js
 
 class App ...
@@ -162,8 +159,7 @@ class App ...
 
 Commands that you should run in the terminal start with an `$` symbol, like this:
 
-{line-numbers: false}
-```
+``` 
 $ npm start
 ```
 
@@ -179,7 +175,7 @@ The catch is that many frameworks have attempted this: everything from Angular t
 
 I've found React a joy to use. Using React was the first time in my life that I could move a piece of HTML in a modern app without rewriting half my JavaScript. It's like a super power.
 
-React being the most popular JavaScript framework out there, the world seems to agree. React is great. ⚛️
+React being the most popular JavaScript framework out there, the world seems to agree. React is great. :atom_symbol:
 
 D3 is Mike Bostock’s infamous data visualization library. It's used by The New York Times along with many other sites. It is the workhorse of data visualization on the web, and many charting libraries out there are based on it.
 
@@ -222,7 +218,7 @@ We're going to use some buzzwords in this book. Hell, we've used some already. M
 - **ES5**, any JavaScript features that existed before June 2015
 - **ES6** or **ES6+**, a common name for JavaScript as it exists past June 2015
 - **fat arrows**, a new way to define functions in ES6 (`=>`)
-- **Git**, a version control system. It's pretty popular, you probably know it :)
+- **Git**, a version control system. It's pretty popular, you probably know it :smiley:
 - **H1B**, a popular type of work visa in the United States
 - **JSX**, a language/syntax that lets you use `<a href="/example">` as a native part of JavaScript
 - **Mustache**, a popular way to write HTML templates for JavaScript code. Uses `{{ ... }}` syntax.
@@ -244,8 +240,7 @@ The gist of JSX is that we can use any XML-like string just like it was part of 
 
 For instance, code that renders one of our first examples – a color swatch – looks like this:
 
-{caption: "Render a color swatch"}
-```javascript
+``` {.javascript caption="Render a color swatch"}
 ReactDOM.render(
   <Colors width="400" />,
   document.getElementById('svg')
@@ -254,8 +249,7 @@ ReactDOM.render(
 
 Which compiles to:
 
-{caption: "JSX compiled result"}
-```javascript
+``` {.javascript caption="JSX compiled result"}
 ReactDOM.render(
   React.createElement(Colors, {width: "400"}),
   document.querySelectorAll('svg')[0]
