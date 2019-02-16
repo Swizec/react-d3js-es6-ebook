@@ -10,7 +10,7 @@ function pandocifyMarkuaCodeBlocks(sourceFileBody) {
   function replacer(match, attributes, language, code) {
     // log("match")(json({ attributes, language, code }), null, 2);
 
-    const idMatch = attributes.match(/(.*)#(\w+)(.*)/);
+    const idMatch = attributes.match(/(.*)#([\w-]+)(.*)/);
     // log("idMatch")(json(idMatch));
     let _discard, beforeIdAttr, idAttr, afterIdAttr;
     if (idMatch) {
@@ -78,8 +78,8 @@ function pandocifyLfmCodeBlocks(sourceFileBody) {
 
     log("match")(json({ match, g1, g2, attributes, code }), null, 2);
 
-    const idMatch = attributes.match(/(.*)#(\w+)(.*)/);
     log("idMatch")(json(idMatch));
+    const idMatch = attributes.match(/(.*)#([\w-]+)(.*)/);
     let _discard, beforeIdAttr, idAttr, afterIdAttr;
     if (idMatch) {
       [_discard, beforeIdAttr, idAttr, afterIdAttr] = idMatch;
@@ -183,8 +183,8 @@ function transcludeMarkuaCodeSamples(sourceFileBody) {
       2
     );
 
-    const idMatch = attributes.match(/(.*)#(\w+)(.*)/);
     log("idMatch")(json(idMatch));
+    const idMatch = attributes.match(/(.*)#([\w-]+)(.*)/);
     let _discard, beforeIdAttr, idAttr, afterIdAttr;
     if (idMatch) {
       [_discard, beforeIdAttr, idAttr, afterIdAttr] = idMatch;
@@ -293,8 +293,8 @@ function transcludeLfmCodeSamples(sourceFileBody) {
       2
     );
 
-    const idMatch = attributes.match(/(.*)#(\w+)(.*)/);
     log("idMatch")(json(idMatch));
+    const idMatch = attributes.match(/(.*)#([\w-]+)(.*)/);
     let _discard, beforeIdAttr, idAttr, afterIdAttr;
     if (idMatch) {
       [_discard, beforeIdAttr, idAttr, afterIdAttr] = idMatch;
