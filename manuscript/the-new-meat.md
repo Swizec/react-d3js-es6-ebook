@@ -191,7 +191,7 @@ class App extends React.Component {
 
     render() {
         const { techSalaries } = this.state;
-        
+
         if (techSalaries.length < 1) {
             return (
                 <Preloader />
@@ -257,7 +257,7 @@ This is also a good opportunity to see how `index.js` works to render our app �
 2. loads styles
 3. Uses `ReactDOM` to render `<App />` into the DOM
 
-That's it. 
+That's it.
 
 Your preloader screen should look better now.
 
@@ -279,7 +279,7 @@ Great! We have a preloader. Time to load some data.
 
 We'll use D3's built-in data loading methods and tie their promises into React's component lifecycle. You could talk to a REST API in the same way. Neither D3 nor React care what the datasource is.
 
-First, you need some data. 
+First, you need some data.
 
 Our dataset comes from a few sources. Tech salaries are from [h1bdata.info](http://h1bdata.info), median household incomes come from the US census data, and I got US geo map info from Mike Bostock's github repositories. Some elbow grease and python scripts tied them all together.
 
@@ -332,7 +332,7 @@ class App extends React.Component {
         techSalaries: [],
         // markua-start-insert
         medianIncomes: [],
-				countyNames: [],
+        countyNames: [],
     };
 
     componentDidMount() {
@@ -356,9 +356,9 @@ Let's change the `render` method to show a message when our data finishes loadin
 {format: javascript, line-numbers: false, caption: "Show when data loads"}
 ```
 // src/App.js
-	render() {
+  render() {
      const { techSalaries } = this.state;
-     	
+
      if (techSalaries.length < 1) {
          return (
              <Preloader />
@@ -529,7 +529,7 @@ render() {
     // markua-start-insert
     const { countyNames, usTopoJson, techSalaries, } = this.state;
     // markua-end-insert
-		
+
     if (techSalaries.length < 1) {
         return (
             <Preloader />
@@ -546,25 +546,25 @@ render() {
     let zoom = null;
     // markua-end-insert
 
-		return (
-		  <div className="App container">
-		    // markua-start-delete
-		    <h1>Loaded {techSalaries.length} salaries</h1>
-		    // markua-end-delete
-		    // markua-start-insert
-		    <svg width="1100" height="500">
-		        <CountyMap usTopoJson={usTopoJson}
-		                   USstateNames={USstateNames}
-		                   values={countyValues}
-		                   x={0}
-		                   y={0}
-		                   width={500}
-		                   height={500}
-		                   zoom={zoom} />
-		    </svg>
-		    // markua-end-insert
-		  </div>
-		);
+    return (
+      <div className="App container">
+        // markua-start-delete
+        <h1>Loaded {techSalaries.length} salaries</h1>
+        // markua-end-delete
+        // markua-start-insert
+        <svg width="1100" height="500">
+            <CountyMap usTopoJson={usTopoJson}
+                       USstateNames={USstateNames}
+                       values={countyValues}
+                       x={0}
+                       y={0}
+                       width={500}
+                       height={500}
+                       zoom={zoom} />
+        </svg>
+        // markua-end-insert
+      </div>
+    );
 }
 ```
 
@@ -608,7 +608,7 @@ Start with the imports: React, D3, lodash, topojson, County component.
 {crop-start: 5, crop-end: 12, format: javascript, line-numbers: false}
 ![Import CountyMap dependencies](code_samples/es6v2/components/CountyMap/CountyMap.js)
 
-Out of these, we haven't built `County` yet, and you haven't seen `topojson` before. 
+Out of these, we haven't built `County` yet, and you haven't seen `topojson` before.
 
 TopoJSON is a geographical data format based on JSON. We're using the `topojson` library to translate our geographical datasets into GeoJSON, which is another way of defining geo data with JSON.
 
@@ -637,7 +637,7 @@ class CountyMap extends Component {
 
     render() {
         const { usTopoJson } = this.props;
-        
+
         if (!usTopoJson) {
             return null;
         }else{
@@ -688,7 +688,7 @@ Keeping our geo path and quantize scale up to date is simple, but we'll make it 
 
 {format: javascript, line-numbers: false, caption: "CountyMap getDerivedStateFromProps"}
 ```
-		// src/components/CountyMap/CountyMap.js
+    // src/components/CountyMap/CountyMap.js
     static getDerivedStateFromProps(props, state) {
         let { projection, quantize, geoPath } = state;
 
@@ -970,7 +970,7 @@ We won't go into details about the CSS here. Many better books have been written
 In broad strokes:
 
 - we're making `.histogram` rectangles – the bars – blue
-- labels white `12px` font 
+- labels white `12px` font
 - `button`s and `.row`s have some spacing
 - the `.mean` line is a dotted grey with gray `11px` text.
 
@@ -1036,7 +1036,7 @@ class Histogram extends React.Component {
     render() {
         const { histogram, yScale } = this.state,
             { x, y, data, axisMargin } = this.props;
-            
+
         return null;
     }
 }
@@ -1237,7 +1237,7 @@ Our histogram is pretty, but it needs an axis to be useful. You've already learn
 
 ### D3blackbox
 
-We start with the D3blackbox higher order component. Same as before, except we put it in `src/components`. 
+We start with the D3blackbox higher order component. Same as before, except we put it in `src/components`.
 
 {format: javascript, line-numbers: false, caption: "D3blackbox HOC"}
 ```
@@ -1317,7 +1317,7 @@ class Histogram extends Component {
     render() {
         const { histogram, yScale } = this.state,
             { x, y, data, axisMargin } = this.props;
-            
+
         const bars = histogram(data);
 
         return (
@@ -1402,7 +1402,7 @@ class App extends Component {
     // ...
 
     render() {
-		    const { filteredBy } = this.state;
+        const { filteredBy } = this.state;
         // ..
         return (
             <div className="App container">
@@ -1442,7 +1442,7 @@ We have to name our `Title` and `Description` re-exports because you can't have 
 
 #### Get the USStatesMap file
 
-You need the `USStatesMap` file. 
+You need the `USStatesMap` file.
 
 It's a big dictionary that translates US state codes to full names. You can [get it from Github](https://github.com/Swizec/react-d3js-step-by-step/blob/4f94fcd1c3caeb0fc410636243ca99764e27c5e6/src/components/Meta/USStatesMap.js) and save it as `components/Meta/USStatesMap.js`.
 
@@ -1514,8 +1514,6 @@ class Title extends Component {
 }
 ```
 
-![Title.jobTitleFragment](code_samples/es6v2/components/Meta/Title.js)
-
 We're dealing with the `(jobTitle, year)` combination. Each influences the other when building the fragment for a total 4 different options.
 
 #### The render
@@ -1560,20 +1558,20 @@ All the interesting complexity goes into finding the richest city and county. Th
 ```javascript
 // src/components/Meta/Description.js
 get countyFragment() {
-	const byCounty = _.groupBy(this.props.data, 'countyID'),
-	      medians = this.props.medianIncomesByCounty;
+  const byCounty = _.groupBy(this.props.data, 'countyID'),
+        medians = this.props.medianIncomesByCounty;
 
-	let ordered = _.sortBy(
-	    _.keys(byCounty)
-	     .map(county => byCounty[county])
-	     .filter(d => d.length/this.props.data.length > 0.01),
-	    items => d3mean(items,
-	                    d => d.base_salary) - medians[items[0].countyID][0].medianIncome);
-	
-	let best = ordered[ordered.length-1],
-	    countyMedian = medians[best[0].countyID][0].medianIncome;
+  let ordered = _.sortBy(
+      _.keys(byCounty)
+       .map(county => byCounty[county])
+       .filter(d => d.length/this.props.data.length > 0.01),
+      items => d3mean(items,
+                      d => d.base_salary) - medians[items[0].countyID][0].medianIncome);
 
-	// ...
+  let best = ordered[ordered.length-1],
+      countyMedian = medians[best[0].countyID][0].medianIncome;
+
+  // ...
 }
 ```
 
@@ -1659,7 +1657,7 @@ const MedianLine = ({
     bottomMargin,
     median
 }) => {
-    
+
 };
 
 export default MedianLine;
@@ -1674,7 +1672,7 @@ Everything we need to render the line, fits into this function.
 // src/components/MedianLine.js
 
 const MedianLine = ({
-	// ...
+  // ...
 }) => {
     const yScale = d3
             .scaleLinear()
@@ -1901,7 +1899,7 @@ class Controls extends React.Component {
             () => this.reportUpdateUpTheChain()
         );
     };
-    
+
     render() {
         const { data } = this.props;
     }
@@ -2032,7 +2030,7 @@ import Toggle from "./Toggle";
 
 class ControlRow extends React.Component {
     makePick = (picked, newState) => {
- 
+
     };
 
     _addToggle(name) {
@@ -2152,7 +2150,7 @@ Import React to enable JSX and make a functional `Toggle` component. It's fully 
 
 We set up a Bootstrap classname: `btn` and `btn-default` make an element look like a button, the conditional `btn-primary` makes it blue. If you're not familiar with Bootstrap classes, you should check [their documentation](http://getbootstrap.com/).
 
-Then we render a `<button>` tag and, well, that's it. A row of year filters appears in the browser. `onClick` passes 
+Then we render a `<button>` tag and, well, that's it. A row of year filters appears in the browser. `onClick` passes
 
 ![A row of year filters](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/year-filter-row.png)
 
@@ -2227,7 +2225,7 @@ class Controls extends React.Component {
             () => this.reportUpdateUpTheChain()
         );
     };
-    
+
     // ..
 }
 
@@ -2320,7 +2318,7 @@ class Controls extends React.Component {
             this.updateJobTitleFilter(jobTitle);
         }
     }
-    
+
     // ..
     reportUpdateUpTheChain() {
         window.location.hash = [
@@ -2406,10 +2404,10 @@ Add two lines to package.json:
 "homepage": "https://<your username>.github.io/<your repo name>"
 // markua-end-insert
 "scripts": {
-	"eject": "react-scripts eject",
-	// markua-start-insert
-	"deploy": "npm run build && gh-pages -d build"
-	// markua-end-insert
+  "eject": "react-scripts eject",
+  // markua-start-insert
+  "deploy": "npm run build && gh-pages -d build"
+  // markua-end-insert
 }
 ```
 
@@ -2417,7 +2415,19 @@ We've been ignoring the `package.json` file so far, but it's a pretty important 
 
 We add a `deploy` script that runs `build` and a `gh-pages` deploy, and we specify a `homepage` URL. The URL tells our build script how to set up URLs for static files in `index.html`.
 
-Github Pages URLs follow a `https://<your username>.github.io/<your repo name>` schema. For instance, mine is `https://swizec.github.io/react-d3js-step-by-step`. Yours will be different.
+Github Pages URLs follow the schema:
+
+```
+https://<your username>.github.io/<your repo name>
+```
+
+For instance, mine is:
+
+```
+https://swizec.github.io/react-d3js-step-by-step
+```
+
+Yours will be different.
 
 You can deploy with `npm run deploy`. Make sure all changes are committed. We'll do it together when we're done setting up.
 

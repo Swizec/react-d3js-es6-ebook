@@ -45,7 +45,7 @@ You take every object in the game and render it. Then you throw it all away, mak
 
 This turns out to be both faster to run and easier to implement than diffing scenes and figuring out what moves and what doesn't. Of course as you get more objects on the screen it becomes silly to re-render the immovable background every time.
 
-But you don't have to worry about that. That's React's job. 
+But you don't have to worry about that. That's React's job.
 
 React can figure out a diff between hierarchical representations of your scene and re-render the appropriate objects.
 
@@ -71,7 +71,7 @@ When something speeds up, what does that mean for changes in its position?
 
 Let's get our feet wet with my favorite childhood example: a bouncing ball.
 
-I must have built dozens of them back in my [Turbo Pascal](https://en.wikipedia.org/wiki/Turbo_Pascal) days using [BGI](https://en.wikipedia.org/wiki/Borland_Graphics_Interface). Endless afternoons playing with different parameters in my bouncy ball examples. 
+I must have built dozens of them back in my [Turbo Pascal](https://en.wikipedia.org/wiki/Turbo_Pascal) days using [BGI](https://en.wikipedia.org/wiki/Borland_Graphics_Interface). Endless afternoons playing with different parameters in my bouncy ball examples.
 
 Yes, those Turbo Pascal and BGI are from the 80's. No, I'm not that old. I started young and with old equipment. Coding for DOS is easier when you're a kid than coding for Windows 95.
 
@@ -201,8 +201,8 @@ To render our Ball we have to tweak BouncingBall's `render` method. A small chan
 import Ball from "./Ball"
 
 class App extends Component {
-	// ...
-	render() {
+  // ...
+  render() {
     // render Ball at position y
     return <g><Ball x={10} y={this.state.y} /></g>
   }
@@ -232,16 +232,16 @@ The physics is tricky to think about. Few students at my workshops figure this o
 {caption: "Bouncy ball at 60fps", line-numbers: false}
 ```javascript
 // BouncingBall.js
-	componentDidMount() {
-	    // start game loop
-	    this.timer = d3.timer(this.gameLoop);
-	}
-	
-	componentWillUnmount() {
-	    this.timer.stop();
-	}
-	
-	gameLoop = () => {
+  componentDidMount() {
+      // start game loop
+      this.timer = d3.timer(this.gameLoop);
+  }
+
+  componentWillUnmount() {
+      this.timer.stop();
+  }
+
+  gameLoop = () => {
     let { y, vy } = this.state;
 
     if (y > this.props.max_h) {
@@ -257,7 +257,7 @@ The physics is tricky to think about. Few students at my workshops figure this o
 
 Our `gameLoop` method is called every 16 milliseconds give or take. Sometimes more, if the computer is busy, low on batter, or the tab is left inactive for too long
 
-Bounce physics go like this: 
+Bounce physics go like this:
 
 - add vertical speed, `vy`, to position, `y`
 - increased `vy` by amount of acceleration
@@ -265,7 +265,7 @@ Bounce physics go like this:
 - bounce means invert speed
 - bounce means energy loss, reduce speed by 13%
 
-High school physics my friend. You might not remember. 
+High school physics my friend. You might not remember.
 
 Speed tells you how much an object moves per unit of time. Our speed starts at 5 pixels per frame.
 
@@ -293,7 +293,7 @@ Experiment with multiple balls. Start them at different heights. Play with diffe
 
 ### Step 5: Correcting for time and frame drops
 
-If you run the CodeSandbox a few times, you'll notice two bugs. 
+If you run the CodeSandbox a few times, you'll notice two bugs.
 
 1) Sometimes our ball gets trapped at the bottom of the bounce. We won't fix this one; it's tricky.
 
@@ -659,7 +659,7 @@ class Alphabet extends React.Component {
 export default Alphabet;
 ```
 
-We import dependencies and define the `Alphabet` component. It keeps a list of available letters in a static `letters` property and an empty `alphabet` in component state. 
+We import dependencies and define the `Alphabet` component. It keeps a list of available letters in a static `letters` property and an empty `alphabet` in component state.
 
 We'll start a `d3.interval` on `componentDidMount` and use `shuffleAlphabet` to generate alphabet subsets.
 
@@ -724,7 +724,7 @@ An SVG transformation moves our alphabet into the specified `(x, y)` position. W
 
 The key property is how React identifies components. Pick wrong, and you're gonna have a bad time. I spent many hours debugging and writing workarounds before I realized that basing my key on the index was a Bad Move™. *Obviously*, you want the letter to stay constant in each component and the index to change.
 
-That's how x-axis transitions work. 
+That's how x-axis transitions work.
 
 You move the letter into a specific place in the alphabet. You'll see what I mean when we look at the `Letter` component.
 
@@ -754,7 +754,7 @@ As an added bonus, we can use TransitionGroup to set a bunch of default paramete
 
 ### The Letter component
 
-We're ready for the component that can transition itself into and out of a visualization. Without consumers having to worry about what's going on behind the scenes 👌 
+We're ready for the component that can transition itself into and out of a visualization. Without consumers having to worry about what's going on behind the scenes 👌
 
 The skeleton for our `Letter` component looks like this:
 
@@ -819,7 +819,7 @@ You can make this component more flexible by moving the various magic numbers we
 
 #### onEnter
 
-We start with the enter transition in the `onEnter` callback. 
+We start with the enter transition in the `onEnter` callback.
 
 {caption: "Enter transition", line-numbers: false}
 ```javascript
@@ -933,7 +933,7 @@ A quick `setState` makes sure our letter is in the right place and `onEnter` tak
 Otherwise we check if index changed and if it has, we run a transition in much the same way as we have so far:
 
 - calculate new `targetX`
-- update letter color 
+- update letter color
 - start a transition with the usual parameters
 - update `x` coordinate
 - update state when transition ends

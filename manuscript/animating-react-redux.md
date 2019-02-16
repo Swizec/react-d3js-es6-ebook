@@ -83,7 +83,7 @@ The `Particle` component is a circle. It looks like this:
 import React from 'react';
 
 const Particle = ({ x, y }) => (
-	<circle cx={x} cy={y} r="1.8" />
+  <circle cx={x} cy={y} r="1.8" />
 );
 
 export default Particle;
@@ -103,10 +103,10 @@ import React from 'react';
 import Particle from './Particle';
 
 const Particles = ({ particles }) => (
-	<g>{particles.map(particle =>
-		<Particle key={particle.id} {...particle} />
-		)}
-	</g>
+  <g>{particles.map(particle =>
+    <Particle key={particle.id} {...particle} />
+    )}
+  </g>
 );
 
 export default Particles;
@@ -135,20 +135,20 @@ import Header from './Header';
 
 class App extends Component {
   // ..
-	render() {
-		return (
-			<div onMouseDown={e => this.props.startTicker()} style={{overflow: 'hidden'}}>
-			     <Header />
-			     <svg width={this.props.svgWidth}
-			          height={this.props.svgHeight}
-			          ref="svg"
-			          style={{background: 'rgba(124, 224, 249, .3)'}}>
-			         <Particles particles={this.props.particles} />
-			     </svg>
-			     <Footer N={this.props.particles.length} />
-			 </div>
-		);
-	}
+  render() {
+    return (
+      <div onMouseDown={e => this.props.startTicker()} style={{overflow: 'hidden'}}>
+           <Header />
+           <svg width={this.props.svgWidth}
+                height={this.props.svgHeight}
+                ref="svg"
+                style={{background: 'rgba(124, 224, 249, .3)'}}>
+               <Particles particles={this.props.particles} />
+           </svg>
+           <Footer N={this.props.particles.length} />
+       </div>
+    );
+  }
 }
 
 export default App;

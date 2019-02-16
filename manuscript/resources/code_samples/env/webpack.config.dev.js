@@ -2,17 +2,18 @@
 // Example 1
 //
 module: {
-    loaders: [{
+    loaders: [
+      {
         test: /\.js$/,
         loaders: ['babel'],
         include: path.join(__dirname, 'src')
-    },
-    // leanpub-start-insert
-    {
-        test: /\.less$/,
-        loader: "style!css!less"
-    }
-    // leanpub-end-insert
+      },
+      // leanpub-start-insert
+      {
+          test: /\.less$/,
+          loader: "style!css!less"
+      }
+      // leanpub-end-insert
     ]
 }
 

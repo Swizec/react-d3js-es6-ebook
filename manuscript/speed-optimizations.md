@@ -923,7 +923,7 @@ Let's walk through.
 ```javascript
 // src/logic/Physics.js
 class Physics {
-		// ..
+    // ..
     @computed get initialPositions() {
         const { width, height, MarbleR } = this,
               center = width/2;
@@ -1040,7 +1040,8 @@ There's also a video explaining how this works 👉 [Watch it on YouTube](https:
         if (candidate) {
 
             // borrowing @air_hadoken's implementation from here:
-            // https://github.com/airhadoken/game_of_circles/blob/master/circles.js#L64
+            // github.com/airhadoken/game_of_circles/
+            //   blob/master/circles.js#L64
             const cx = candidate.x,
                   cy = candidate.y,
                   normx = cx - x,
@@ -1148,7 +1149,8 @@ Code looks like this:
 if (candidate) {
 
     // borrowing @air_hadoken's implementation from here:
-    // https://github.com/airhadoken/game_of_circles/blob/master/circles.js#L64
+    // github.com/airhadoken/game_of_circles/
+    //   blob/master/circles.js#L64
     const cx = candidate.x,
           cy = candidate.y,
           normx = cx - x,
@@ -1356,38 +1358,38 @@ state = {
     };
 
 componentDidMount() {
-	d3select(this.refs.svg)
-	   .on("mousemove", this.onMouseMove.bind(this));
+  d3select(this.refs.svg)
+     .on("mousemove", this.onMouseMove.bind(this));
 }
 
 onMouseMove(event) {
-	const [x, y] = d3mouse(this.refs.svg),
+  const [x, y] = d3mouse(this.refs.svg),
 
-	scaleFactor = scaleLinear().domain([this.svg.height, 0])
-														 .range([0, .8]),
+  scaleFactor = scaleLinear().domain([this.svg.height, 0])
+                             .range([0, .8]),
 
-	scaleLean = scaleLinear().domain([0, this.svg.width/2, this.svg.width])
-													 .range([.5, 0, -.5]);
+  scaleLean = scaleLinear().domain([0, this.svg.width/2, this.svg.width])
+                           .range([.5, 0, -.5]);
 
-	this.setState({
-		heightFactor: scaleFactor(y),
-		lean: scaleLean(x)
-	});
+  this.setState({
+    heightFactor: scaleFactor(y),
+    lean: scaleLean(x)
+  });
 }
 
 // ...
 
 render() {
-	// ...
-	<svg ref="svg"> //...
-	<Pythagoras w={this.state.baseW}
-						  h={this.state.baseW}
-						  heightFactor={this.state.heightFactor}
-					   lean={this.state.lean}
-					   x={this.svg.width/2-40}
-					   y={this.svg.height-this.state.baseW}
-					   lvl={0}
-					   maxlvl={this.state.currentMax}/>
+  // ...
+  <svg ref="svg"> //...
+  <Pythagoras w={this.state.baseW}
+              h={this.state.baseW}
+              heightFactor={this.state.heightFactor}
+             lean={this.state.lean}
+             x={this.svg.width/2-40}
+             y={this.svg.height-this.state.baseW}
+             lvl={0}
+             maxlvl={this.state.currentMax}/>
 }
 ```
 
@@ -1405,18 +1407,18 @@ That happens in `onMouseMove`:
 {caption: "Moving the fractal as user moves mouse", line-numbers: false, format: javascript}
 ```
 onMouseMove(event) {
-	const [x, y] = d3mouse(this.refs.svg),
+  const [x, y] = d3mouse(this.refs.svg),
 
-	scaleFactor = scaleLinear().domain([this.svg.height, 0])
-														 .range([0, .8]),
+  scaleFactor = scaleLinear().domain([this.svg.height, 0])
+                             .range([0, .8]),
 
-	scaleLean = scaleLinear().domain([0, this.svg.width/2, this.svg.width])
-													 .range([.5, 0, -.5]);
+  scaleLean = scaleLinear().domain([0, this.svg.width/2, this.svg.width])
+                           .range([.5, 0, -.5]);
 
-	this.setState({
-		heightFactor: scaleFactor(y),
-		lean: scaleLean(x)
-	});
+  this.setState({
+    heightFactor: scaleFactor(y),
+    lean: scaleLean(x)
+  });
 }
 ```
 
@@ -1462,9 +1464,9 @@ He changed the functional `Pythagoras` component into a stateful component to en
 ```
 // src/Pythagoras.js
 export default class {
-	render(props) {
-		return Pythagoras(props);
-	}
+  render(props) {
+    return Pythagoras(props);
+  }
 }
 ```
 
@@ -1504,15 +1506,15 @@ He also had to change a string-based ref into a callback ref. Inferno doesn't do
 // src/App.js
 
 class App extends Component {
-	// ...
-	svgElemeRef = (domNode) => {
-		this.svgElement = domNode;
-	}
-	// ...
-	render() {
-		// ..
-		<svg width={this.svg.width} height={this.svg.height} ref={this.svgElemeRef }>
-	}
+  // ...
+  svgElemeRef = (domNode) => {
+    this.svgElement = domNode;
+  }
+  // ...
+  render() {
+    // ..
+    <svg width={this.svg.width} height={this.svg.height} ref={this.svgElemeRef }>
+  }
 ```
 
 In the core `Pythagoras` component, he added two Inferno-specific props: `noNormalize` and `hasNonKeyedChildren`.

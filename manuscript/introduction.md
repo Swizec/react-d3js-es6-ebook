@@ -247,8 +247,8 @@ For instance, code that renders one of our first examples – a color swatch �
 {caption: "Render a color swatch"}
 ```javascript
 ReactDOM.render(
-	<Colors width="400" />, 
-	document.getElementById('svg')
+  <Colors width="400" />,
+  document.getElementById('svg')
 );
 ```
 
@@ -257,8 +257,8 @@ Which compiles to:
 {caption: "JSX compiled result"}
 ```javascript
 ReactDOM.render(
-	React.createElement(Colors, {width: "400"}),
-	document.querySelectorAll('svg')[0]
+  React.createElement(Colors, {width: "400"}),
+  document.querySelectorAll('svg')[0]
 );
 ```
 

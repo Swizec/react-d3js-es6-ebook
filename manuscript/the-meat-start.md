@@ -18,7 +18,7 @@ Welcome to the main part of React + D3 2018. We're going to talk a little theory
 - [Billiards simulation with MobX and canvas](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/6906696#build-a-declarative-billiards-simulation-with-mobx-canvas-and-konva)
 - [A dancing fractal tree](https://swizec1.teachable.com/courses/react-for-data-visualization/lectures/8456113#fractal-tree)
 
-Looks random, right? Bear with me. Examples build on each other. 
+Looks random, right? Bear with me. Examples build on each other.
 
 The first few examples teach you about static data visualizations and the basics of merging React and D3 using two different approaches.
 
@@ -77,7 +77,7 @@ Most examples are just one-off toys after all. It's art.
 
 A lot of dataviz that *isn't* art, is charts and graphs. You'll often find that using D3 to build those, is too complicated. D3 gives you more power than you need.
 
-If you want charts, I suggest using a charting library. 
+If you want charts, I suggest using a charting library.
 
 Where many charting libraries fall short is customization. The API is limited, you can't do everything you want, and it gets easier to just build it yourself.
 
@@ -134,7 +134,7 @@ Which brings us to 👉
 
 Somebody once asked me how to learn D3.js from scratch. I quipped that it took me writing a book to really learn it. It's one hell of a library.
 
-Most people don't go that far. They don't have to. 
+Most people don't go that far. They don't have to.
 
 You start with a problem, find similar examples, do some copy pasta, tweak until it works and end up with a working visualization you don't understand. You'd be surprised how few engineers actually understand how their D3 data visualization works.
 
@@ -146,10 +146,10 @@ Fear not! There are just 3 key concepts you have to grok. Then you can understan
 
 ### 1) Data manipulation vs. DOM manipulation
 
-All D3 examples are split into two parts: 
+All D3 examples are split into two parts:
 
 1. Data manipulation
-2. DOM manipulation 
+2. DOM manipulation
 
 First you prep your values, then you render.
 
@@ -238,7 +238,7 @@ d3.tsv("data.tsv", function(d) {
 });
 ```
 
-Bostock here first prepares his data: 
+Bostock here first prepares his data:
 
 - some sizing variables (`margin`, `width`, `height`)
 - two scales to help with data-to-coordinates conversion (`x, y`)
@@ -250,7 +250,7 @@ In the DOM manipulation part, he puts shapes and objects into an SVG. This is th
 ```javascript
 var svg = d3.select("svg"),
     // ..
-    
+
 // ..
 
 var g = svg.append("g")
@@ -318,8 +318,8 @@ Colored shapes in the domain map to colors in the range. No formula for this one
 
 ```javascript
 let shapes = d3.scaleOrdinal()
-	.domain(['red', 'orange', ...)
-	.range(['red', 'orange', ...)
+  .domain(['red', 'orange', ...)
+  .range(['red', 'orange', ...)
 ```
 
 [Play with scales on CodeSandbox](https://codesandbox.io/s/r0rw72z75o)
@@ -468,7 +468,7 @@ Would've been easier to just write the HTML, right? Yes, for static images, you'
 
 Dealing with the DOM is not D3's strong suit. There's a lot of typing, code that's hard to read, it's slow when you have thousands of elements, and it's often hard to keep track of which elements you're changing. D3's enter-update-exit cycle is great in theory, but most people struggle trying to wrap their head around it.
 
-If you don't understand what I just said, don't worry. We'll cover the enter-update-exit cycle in the animations example. 
+If you don't understand what I just said, don't worry. We'll cover the enter-update-exit cycle in the animations example.
 
 Don't worry about D3 either. **It's hard!** I've written two books about D3, and I still spend as much time reading the docs as writing the code. The library is huge and there's much to learn. I'll explain everything as we go along.
 
@@ -502,7 +502,7 @@ Where libraries become a problem is when you want to move beyond the library aut
 
 That's why I rarely use libraries myself. Often find it quicker to build something specific from scratch than figuring out how to hold a generalized API just right.
 
-But they're a great first step. Here's a few of the most popular React & D3 libraries 👇 
+But they're a great first step. Here's a few of the most popular React & D3 libraries 👇
 
 List borrowed from [a wonderful Smashing Magazine article](https://www.smashingmagazine.com/2018/02/react-d3-ecosystem/), because it's a good list.
 
@@ -759,8 +759,8 @@ D3's axis generator takes a scale and some configuration to render an axis for u
 {caption: "Vanilla D3 axis",line-numbers: false, format: javascript}
 ```
 const scale = d3.scaleLinear()
-		.domain([0, 10])
-		.range([0, 200]);
+    .domain([0, 10])
+    .range([0, 200]);
 const axis = d3.axisBottom(scale);
 
 d3.select('svg')
@@ -798,30 +798,30 @@ Now let's say we want to use that same axis code but as a React component. The s
 {caption: "React blackbox axis", line-numbers: false, format: javascript}
 ```
 class Axis extends Component {
-	gRef = React.createRef();
-		
-	componentDidMount() { this.d3render() }
-	componentDidUpdate() { this.d3render() }
+  gRef = React.createRef();
 
-	d3render() {
-		const scale = d3.scaleLinear()
-	                  .domain([0, 10])
-	                  .range([0, 200]);
-    	const axis = d3.axisBottom(scale);
+  componentDidMount() { this.d3render() }
+  componentDidUpdate() { this.d3render() }
 
-		d3.select(this.gRef)
-		  .call(axis);  
-	}
+  d3render() {
+    const scale = d3.scaleLinear()
+                    .domain([0, 10])
+                    .range([0, 200]);
+      const axis = d3.axisBottom(scale);
 
-	render() {
-    	return <g transform="translate(10, 30)" ref={this.gRef} />
-	}
+    d3.select(this.gRef)
+      .call(axis);
+  }
+
+  render() {
+      return <g transform="translate(10, 30)" ref={this.gRef} />
+  }
 }
 ```
 
 So much code! Worth it for the other benefits of using React in your dataviz. You'll see :)
 
-We created an `Axis` component that extends React's base `Component` class. We can't use functional components because we need lifecycle hooks. 
+We created an `Axis` component that extends React's base `Component` class. We can't use functional components because we need lifecycle hooks.
 
 Our component has a `render` method. It returns a grouping element (`g`) moved 10px to the right and 30px down using the `transform` attribute. Same as before.
 
@@ -831,7 +831,7 @@ The `d3render` method looks familiar. It's the same code we used in the vanilla 
 
 We use `componentDidUpdate` and `componentDidMount` to keep our render up to date. Ensures that our axis re-renders every time React's engine decides to render our component.
 
-That wasn't so bad, was it? 
+That wasn't so bad, was it?
 
 [Try it out on Codesandbox](https://codesandbox.io/s/3xy2jr1y5m).
 
@@ -872,21 +872,21 @@ A HOC for D3 blackbox integration, called `D3blackbox`, looks like like this:
 {caption: "React blackbox HOC", line-numbers: false, format: javascript}
 ```
 function D3blackbox(D3render) {
-	return class Blackbox extends React.Component {
-		anchor = React.createRef();
-		
-		componentDidMount() { D3render.call(this); }
-		componentDidUpdate() { D3render.call(this) }
+  return class Blackbox extends React.Component {
+    anchor = React.createRef();
 
-		render() {
-	    const { x, y } = this.props;
-	    return <g transform={`translate(${x}, ${y})`} ref={this.anchor} />;
-		}
-	}
+    componentDidMount() { D3render.call(this); }
+    componentDidUpdate() { D3render.call(this) }
+
+    render() {
+      const { x, y } = this.props;
+      return <g transform={`translate(${x}, ${y})`} ref={this.anchor} />;
+    }
+  }
 }
 ```
 
-You'll recognize most of that code from earlier. 
+You'll recognize most of that code from earlier.
 
 We have `componentDidMount` and`componentDidUpdate` lifecycle hooks that call `D3render` on component updates. `render` renders a grouping element as an anchor with a ref so D3 can use it to render stuff into.
 
@@ -902,12 +902,12 @@ Using our new `D3blackbox` HOC to make an axis looks like this:
 ```
 const Axis = D3blackbox(function () {
     const scale = d3.scaleLinear()
-	            .domain([0, 10])
-	            .range([0, 200]);
+              .domain([0, 10])
+              .range([0, 200]);
     const axis = d3.axisBottom(scale);
 
     d3.select(this.anchor)
-      .call(axis);    
+      .call(axis);
 });
 ```
 
@@ -956,50 +956,50 @@ Now right-click view code on that barchart and copy the code. Wrap it in a `D3bl
 {caption: "Wrap D3 code in D3blackbox", line-numbers: false}
 ```javascript
 const Barchart = D3blackbox(function () {
-	var svg = d3.select("svg"),
-	    margin = {top: 20, right: 20, bottom: 30, left: 40},
-	    width = +svg.attr("width") - margin.left - margin.right,
-	    height = +svg.attr("height") - margin.top - margin.bottom;
-	
-	var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
-	    y = d3.scaleLinear().rangeRound([height, 0]);
-	
-	var g = svg.append("g")
-	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-	
-	d3.tsv("data.tsv", function(d) {
-	  d.frequency = +d.frequency;
-	  return d;
-	}, function(error, data) {
-	  if (error) throw error;
-	
-	  x.domain(data.map(function(d) { return d.letter; }));
-	  y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
-	
-	  g.append("g")
-	      .attr("class", "axis axis--x")
-	      .attr("transform", "translate(0," + height + ")")
-	      .call(d3.axisBottom(x));
-	
-	  g.append("g")
-	      .attr("class", "axis axis--y")
-	      .call(d3.axisLeft(y).ticks(10, "%"))
-	    .append("text")
-	      .attr("transform", "rotate(-90)")
-	      .attr("y", 6)
-	      .attr("dy", "0.71em")
-	      .attr("text-anchor", "end")
-	      .text("Frequency");
-	
-	  g.selectAll(".bar")
-	    .data(data)
-	    .enter().append("rect")
-	      .attr("class", "bar")
-	      .attr("x", function(d) { return x(d.letter); })
-	      .attr("y", function(d) { return y(d.frequency); })
-	      .attr("width", x.bandwidth())
-	      .attr("height", function(d) { return height - y(d.frequency); });
-	});
+  var svg = d3.select("svg"),
+      margin = {top: 20, right: 20, bottom: 30, left: 40},
+      width = +svg.attr("width") - margin.left - margin.right,
+      height = +svg.attr("height") - margin.top - margin.bottom;
+
+  var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+      y = d3.scaleLinear().rangeRound([height, 0]);
+
+  var g = svg.append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  d3.tsv("data.tsv", function(d) {
+    d.frequency = +d.frequency;
+    return d;
+  }, function(error, data) {
+    if (error) throw error;
+
+    x.domain(data.map(function(d) { return d.letter; }));
+    y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
+
+    g.append("g")
+        .attr("class", "axis axis--x")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+    g.append("g")
+        .attr("class", "axis axis--y")
+        .call(d3.axisLeft(y).ticks(10, "%"))
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", "0.71em")
+        .attr("text-anchor", "end")
+        .text("Frequency");
+
+    g.selectAll(".bar")
+      .data(data)
+      .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d.letter); })
+        .attr("y", function(d) { return y(d.frequency); })
+        .attr("width", x.bandwidth())
+        .attr("height", function(d) { return height - y(d.frequency); });
+  });
 })
 
 export default Barchart;
@@ -1011,20 +1011,20 @@ That should throw some errors. We have to change the `d3.select` and get `width`
 ```javascript
 const Barchart = D3blackbox(function () {
   // markua-start-delete
-	var svg = d3.select("svg"),
+  var svg = d3.select("svg"),
   // markua-end-delete
   // markua-start-insert
   var svg = d3.select(this.anchor.current)
   // markua-end-insert
-	    margin = {top: 20, right: 20, bottom: 30, left: 40},
-	    // markua-start-delete
-	    width = +svg.attr("width") - margin.left - margin.right,
-	    height = +svg.attr("height") - margin.top - margin.bottom;
-	    // markua-end-delete
-	    // markua-start-insert
-	    width = +this.props.width - margin.left - margin.right,
-	    height = +this.props.height - margin.top - margin.bottom;
-	    // markua-end-insert
+      margin = {top: 20, right: 20, bottom: 30, left: 40},
+      // markua-start-delete
+      width = +svg.attr("width") - margin.left - margin.right,
+      height = +svg.attr("height") - margin.top - margin.bottom;
+      // markua-end-delete
+      // markua-start-insert
+      width = +this.props.width - margin.left - margin.right,
+      height = +this.props.height - margin.top - margin.bottom;
+      // markua-end-insert
 ```
 
 
@@ -1040,16 +1040,16 @@ Next step is to change where our barchart gets its data. Gotta use the public UR
 d3.tsv("data.tsv", function(d) {
 // markua-end-delete
 // markua-start-insert
-d3.tsv("https://cdn.rawgit.com/mbostock/3885304/raw/a91f37f5f4b43269df3dbabcda0090310c05285d/data.tsv", function(d) {
+d3.tsv("https://swizec.github.io/dl/barchart.tsv", function(d) {
 // markua-end-insert
-	  d.frequency = +d.frequency;
-	  return d;
+    d.frequency = +d.frequency;
+    return d;
 // markua-start-delete
-	}, function(error, data) {
-	  if (error) throw error;
+  }, function(error, data) {
+    if (error) throw error;
 // markua-end-delete
 // markua-start-insert
-	}).then(function(data) {
+  }).then(function(data) {
 // markua-end-insert
 ```
 
@@ -1065,9 +1065,9 @@ import Barchart from './Barchart';
 
 // ...
 return (
-	<svg width="800" height="600">
-		<Barchart x={10} y={10} width={400} height={300} />
-	</svg>
+  <svg width="800" height="600">
+    <Barchart x={10} y={10} width={400} height={300} />
+  </svg>
 )
 ```
 
@@ -1178,7 +1178,7 @@ We added this part:
 
 ```javascript
 <svg width="800" height="800">
-	<Scatterplot x={50} y={50} width={300} height={300} data={data} />
+  <Scatterplot x={50} y={50} width={300} height={300} data={data} />
 </svg>
 ```
 
@@ -1193,7 +1193,7 @@ We're using a line of code to generate data for our scatterplot. Put it in App.j
 {caption: "Generate random data", line-numbers: false}
 ```javascript
 const data = d3.range(100)
-							 .map(_ => [Math.random(), Math.random()]);
+               .map(_ => [Math.random(), Math.random()]);
 ```
 
 `d3.range` returns a counting array from 0 to 100. Think `[1,2,3,4 ...]`.
@@ -1217,7 +1217,7 @@ class Scatterplot extends React.Component {
 
     return (
       <g transform={`translate(${x}, ${y})`}>
- 
+
       </g>
     );
   }
@@ -1314,7 +1314,7 @@ The story is a little different when our props might update. Since we're using D
 
 No problem in React 15: Update in `componentWillUpdate`. But since React 16.3 we've been told never to use that again. Causes problems for modern async rendering.
 
-The official recommended solution is that anything that used to go in `componentWillUpdate`, can go in `componentDidUpdate`. But not so fast! 
+The official recommended solution is that anything that used to go in `componentWillUpdate`, can go in `componentDidUpdate`. But not so fast!
 
 Updating D3 objects in `componentDidUpdate` would mean our visualization always renders one update behind. Stale renders! 😱
 
@@ -1330,7 +1330,7 @@ Because React calls `getDerivedStateFromProps` on every component render, not ju
 
 ### An updateable scatterplot
 
-Let's update our scatterplot so it can deal with resizing and updating data. 
+Let's update our scatterplot so it can deal with resizing and updating data.
 
 3 steps 👇
 
@@ -1427,7 +1427,7 @@ Our render function should use these as well. Small change:
 {caption: "Render function uses state scales", line-numbers: false}
 ```javascript
 // Scatterplot.js
-	render() {
+  render() {
     const { x, y, data, height } = this.props,
       { yScale, xScale } = this.state;
 
@@ -1436,7 +1436,7 @@ Our render function should use these as well. Small change:
         {data.map(([x, y]) => <circle cx={xScale(x)} cy={yScale(y)} r="5" />)}
 ```
 
-We use destructuring to take our scales from state, then use them when mapping over our data. 
+We use destructuring to take our scales from state, then use them when mapping over our data.
 
 Clicking on the SVG produces the same result as before, but we're almost there. Just one more step.
 
@@ -1448,7 +1448,7 @@ Last step is to update our scales' ranges in `getDerivedStateFromProps`. This me
 ```javascript
 // Scatterplot.js
 class Scatterplot extends React.PureComponent {
-	// ..
+  // ..
   static getDerivedStateFromProps(props, state) {
     const { yScale, xScale } = state;
 
@@ -1493,9 +1493,9 @@ It looks a little like this 👇
 
 ```jsx
 <Scatterplot
-	x={10} y={10}
-	data={data}
-	datapoint={(props) => <Datapoint {...props} />}
+  x={10} y={10}
+  data={data}
+  datapoint={(props) => <Datapoint {...props} />}
 >
 ```
 
@@ -1557,10 +1557,10 @@ To use our new `datapoint` render prop, we have to change how we render the scat
 
     return (
       <g transform={`translate(${x}, ${y})`}>
-        {data.map(([x, y]) => datapoint({ 
-		        x: xScale(x), 
-		        y: yScale(y) 
-		    }))}
+        {data.map(([x, y]) => datapoint({
+            x: xScale(x),
+            y: yScale(y)
+        }))}
 ```
 
 We take the `datapoint` function from props and call it in `data.map` making sure to pass in `x` and `y` as an object. Calling functions with objects like this is a common JavaScript pattern to fake named arguments.
@@ -1616,15 +1616,15 @@ For an extra challenge, try rendering circle radius from state and changing data
 
 # You're awesome
 
-You know the basics! 
+You know the basics!
 
 You can take any D3 example from the internets and wrap it in a React component, *and* you know how to build React+D3 components from scratch. You're amazing. High five! 🖐
 
-The rest of this book is about using these concepts and pushing them to the limits of practicality. We're going to build an interactive visualization of tech salaries compared to median household income. 
+The rest of this book is about using these concepts and pushing them to the limits of practicality. We're going to build an interactive visualization of tech salaries compared to median household income.
 
 Why? Because it piqued my interest, and because it shows why you should call yourself an engineer, not a programmer or a developer. **You're an engineer**. Remember that.
 
-Throughout the example, you'll learn more details of D3, tidbits from React, and the animation chapter is going to blow your mind. 
+Throughout the example, you'll learn more details of D3, tidbits from React, and the animation chapter is going to blow your mind.
 
 Super fun!
 
@@ -1651,7 +1651,7 @@ Don't worry tho, happens to everyone!
 
 I shoot myself in the foot all the time. You can't predict how your app is going to evolve. You can't know how technology is going to improve. Can't know how your team will grow.
 
-Best approach is to optimize for change. 
+Best approach is to optimize for change.
 
 Otherwise you might have to do a rewrite. Rewrites are bad. One of the most infamous rewrite story is about [The Rewrite that Killed Netscape](http://www.joelonsoftware.com/articles/fog0000000069.html). You might not even have heard of Netscape ;)
 
@@ -1694,7 +1694,7 @@ With each hop, the nature of our callback changes. `Toggle`  tells `ControlRow` 
 
 All you have to remember right now is that callbacks evolve from passing low-level information to high-level business logic. Starts with *"I was clicked"* ends with *"Update visualization filter"*
 
-When the final callback is invoked, `App` updates its repository of truth – `this.state` – and communicates the change back down the chain via props. No additional wiring needed on your part. React's got you covered. 
+When the final callback is invoked, `App` updates its repository of truth – `this.state` – and communicates the change back down the chain via props. No additional wiring needed on your part. React's got you covered.
 
 ![Data flows down](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/architecture_dataflow.png)
 
@@ -1755,7 +1755,7 @@ You can see an approach to using Redux in dataviz in the [Animating with React, 
 
 Our app is built from components. You already know how components work. Where it gets tricky is deciding where one component ends and another beings.
 
-One of the hardest problems in software engineering I'd say. Defining the boundaries and interfaces between objects. Entire books have been written on the subject. 
+One of the hardest problems in software engineering I'd say. Defining the boundaries and interfaces between objects. Entire books have been written on the subject.
 
 You'll learn most of it with experience. Just through trying different approaches, seeing what works, and developing your taste. Like a chef gets better at improvisation the more things they try. Or a musician.
 

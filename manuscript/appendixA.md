@@ -48,12 +48,12 @@ Transpilers are the officially-encouraged stepping stone towards full ES6 suppor
 
 To give you a rough idea of what Babel does with your code, here's a fat arrow function with JSX. Don't worry if you don't understand this code yet; we'll go through that later.
 
-{linenos=no}
+{lang=js,linenos=no}
     () => (<div>Hello there</div>)
 
 After Babel transpiles that line into ES5, it looks like this:
 
-{linenos=no}
+{lang=js,linenos=no}
     (function () {
       return React.createElement(
         'div',
@@ -118,31 +118,31 @@ We now have a directory called `react-d3-example` that contains some config file
 
 To make the project our own, we have to change some information inside `package.json`: the name, version, and description.
 
-{linenos=off,lang=json}
+{linenos=off,lang=js}
     // ./package.json
-		{
-			// leanpub-start-delete
-		  "name": "react-transform-boilerplate",
-		  "version": "1.0.0",
-		  "description": "A new Webpack boilerplate with hot reloading React components, and error handling on module and component level.",
-			// leanpub-end-delete
-			// leanpub-start-insert
-		  "name": "react-d3-example",
-		  "version": "0.1.0",
-		  "description": "An example project to show off React and d3 working together",
-			// leanpub-end-insert
-		  "scripts": {
+    {
+      // leanpub-start-delete
+      "name": "react-transform-boilerplate",
+      "version": "1.0.0",
+      "description": "A new Webpack boilerplate with hot reloading React components, and error handling on module and component level.",
+      // leanpub-end-delete
+      // leanpub-start-insert
+      "name": "react-d3-example",
+      "version": "0.1.0",
+      "description": "An example project to show off React and d3 working together",
+      // leanpub-end-insert
+      "scripts": {
 
 It's also a good idea to update the `author` field:
 
-{linenos=off,lang=json}
+{linenos=off,lang=js}
     // ./src/package.json
-		// leanpub-start-delete
+    // leanpub-start-delete
     "author": "Dan Abramov <dan.abramov@me.com> (http://github.com/gaearon)",
-		// leanpub-end-delete
-		// leanpub-start-insert
-		"author": "Swizec <swizec@swizec.com> (http://swizec.com)
-		// leanpub-end-insert
+    // leanpub-end-delete
+    // leanpub-start-insert
+    "author": "Swizec <swizec@swizec.com> (http://swizec.com)
+    // leanpub-end-insert
 
 Use your own name, email, and URL. Not mine :)
 
@@ -189,7 +189,7 @@ Remember, `--save` adds `style-loader` and `less-loader` to package.json. The `s
 
 To add them to our build step, we have to go into `webpack.config.dev.js`, find the `loaders: [` definition, and add a new object. Like this:
 
-{crop-start-line=4,crop-end-line=18,linenos=on,starting-line-number=19}
+{lang=js,crop-start-line=4,crop-end-line=18,linenos=on,starting-line-number=19}
 <<[Add LESS loaders](code_samples/env/webpack.config.dev.js)
 
 Don't worry if you don't understand what the rest of this file does. We're going to look at that in the next section.
@@ -204,7 +204,7 @@ Our visualization is going to use Ajax to load data. That means the server we us
 
 We have to add a line to `devServer.js`:
 
-{crop-start-line=38,crop-end-line=45,linenos=off}
+{lang=js,crop-start-line=38,crop-end-line=45,linenos=off}
 <<[Enable static server on ./public](code_samples/env/devServer.js)
 
 This tells express.js, which is the framework our simple server uses, to route any URL starting with `/public` to local files by matching paths.
@@ -215,14 +215,14 @@ Whenever I'm working with React, I like to add two nice-to-haves to `webpack.con
 
 First, I add the `.jsx` extension to the list of files loaded with Babel. This lets me write React code in `.jsx` files. I know what you're thinking: writing files like that is no longer encouraged by the community, but hey, it makes my Emacs behave better.
 
-{crop-start-line=160,crop-end-line=171,linenos=off}
+{lang=js,crop-start-line=160,crop-end-line=171,linenos=off}
 <<[Add .jsx to Babel file extensions](code_samples/env/webpack.config.dev.js)
 
 We changed the `test` regex to add `.jsx`. You can read in more detail about how these configs work in later parts of this chapter.
 
 Second, I like to add a `resolve` config to Webpack. This lets me load files without writing their extension. It's a small detail, but it makes your code cleaner.
 
-{crop-start-line=182,crop-end-line=191,linenos=off}
+{lang=js,crop-start-line=182,crop-end-line=191,linenos=off}
 <<[Add resolve to webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
 
 It's a list of file extensions that Webpack tries to guess when a path you use doesn't match any files.
@@ -245,7 +245,7 @@ To enable `stage-0`, you have to first install `babel-preset-stage-0`. Like this
 
 Then enable it in `.babelrc`:
 
-{crop-start-line=4,crop-end-line=12,linenos=off,lang=json}
+{crop-start-line=4,crop-end-line=12,linenos=off,lang=js}
 <<[Add stage-0 preset to .babelrc](code_samples/env/babelrc)
 
 That's it. You can use fancy ES7 features in your code and Babel will transpile them into normal ES5 that all browsers support.
@@ -303,7 +303,7 @@ Both files look alike, so we're going to focus on the dev version.
 
 It comes in four parts:
 
-{crop-start-line=23,crop-end-line=38,linenos=off}
+{lang=js,crop-start-line=23,crop-end-line=38,linenos=off}
 <<[Webpack config structure](code_samples/env/webpack.config.dev.js)
 
  - **Entry**, which tells Webpack where to start building our project's dependency tree;
@@ -324,7 +324,7 @@ The entry section of Webpack's config specifies the entry points of our dependen
 
 In our case, it looks like this:
 
-{crop-start-line=46,crop-end-line=55,linenos=off}
+{lang=js,crop-start-line=46,crop-end-line=55,linenos=off}
 <<[Entry part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
 
 We specify that `./src/index` is the main file. In the next section, you'll see that this is the file that requires our app and renders it into the page.
@@ -337,7 +337,7 @@ The output section specifies which files get the output. Our config is going to 
 
 The config looks like this:
 
-{crop-start-line=76,crop-end-line=84,linenos=off}
+{lang=js,crop-start-line=76,crop-end-line=84,linenos=off}
 <<[Output part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
 
 We define a path, `./dist/`, where compiled files live, say the filename for JavaScript is `bundle.js`, and specify `/static/` as the public path. That means the `<script>` tag in our HTML should use `/static/bundle.js` to get our code, but we should use `./dist/bundle.js` to copy the compiled file.
@@ -346,7 +346,7 @@ We define a path, `./dist/`, where compiled files live, say the filename for Jav
 
 There's a plethora of Webpack plugins out there. We're only going to use two of them in our example.
 
-{crop-start-line=108,crop-end-line=115,linenos=off}
+{lang=js,crop-start-line=108,crop-end-line=115,linenos=off}
 <<[Plugins part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
 
 As you might have guessed, this config is just an array of plugin object instances. Both plugins we're using come with Webpack by default. Otherwise, we'd have to `require()` them at the top of the file.
@@ -363,7 +363,7 @@ If you can think of it, there's a loader for it. At my day job, we use a Webpack
 
 For the purposes of this book, we don't need anything that fancy. We just need a loader for JavaScript and styles.
 
-{crop-start-line=141,crop-end-line=154,linenos=off}
+{lang=js,crop-start-line=141,crop-end-line=154,linenos=off}
 <<[Loaders part of webpack.config.dev.js](code_samples/env/webpack.config.dev.js)
 
 Each of these definitions comes in three parts:
@@ -386,21 +386,21 @@ Many better and more in-depth books have been written about node.js and its fram
 
 For example, on line 9, you can see that we tell the server to use Webpack as a middleware. That means the server passes every request through Webpack and lets it change anything it needs.
 
-{crop-start-line=9,crop-end-line=15,linenos=on,starting-line-number=9}
+{lang=js,crop-start-line=9,crop-end-line=15,linenos=on,starting-line-number=9}
 <<[Lines that tell Express to use Webpack](code_samples/env/devServer.js)
 
 The `compiler` variable is an instance of Webpack, and `config` is the config we looked at earlier. `app` is an instance of the Express server.
 
 Another important bit of the `devServer.js` file specifies routes. In our case, we want to serve everything from `public` as a static file, and anything else to serve `index.html` and let JavaScript handle routing.
 
-{crop-start-line=19,crop-end-line=22,linenos=on,starting-line-number=16}
+{lang=js,crop-start-line=19,crop-end-line=22,linenos=on,starting-line-number=16}
 <<[Lines that tell Express how to route requests](code_samples/env/devServer.js)
 
 This tells Express to use a static file server for everything in `public` and to serve `index.html` for anything else.
 
 At the bottom, there is a line that starts the server:
 
-{crop-start-line=24,crop-end-line=25,linenos=on,starting-line-number=22}
+{lang=js,crop-start-line=24,crop-end-line=25,linenos=on,starting-line-number=22}
 <<[Line that starts the server](code_samples/env/devServer.js)
 
 I know I didn't explain much, but that's as deep as we can go at this point. You can read more about node.js servers, and Express in particular, in [Azat Mardan's books](http://azat.co/). They're great.
@@ -415,7 +415,7 @@ We don't need anything fancy for the purposes of our example project – just a 
 
 The best way to configure Babel is through the `.babelrc` file, which looks like this:
 
-{crop-start-line=22,crop-end-line=31,linenos=off}
+{lang=js,crop-start-line=22,crop-end-line=31,linenos=off}
 <<[.babelrc config](code_samples/env/babelrc)
 
 I imagine this file is something most people copy-paste from the internet, but here's what’s happening in our case:

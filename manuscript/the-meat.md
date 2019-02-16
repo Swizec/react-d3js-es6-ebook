@@ -44,33 +44,33 @@ Using `.row()`, we’ve given a callback to `d3.csv` that tells it how to change
 We're changing objects that look like this:
 
 {title="Raw CSV rows",linenos=off,lang=js}
-			{
-			    "employer": "american legalnet inc",
-			    "submit date": "7/10/2013",
-			    "start date": "8/1/2013",
-			    "case status": "certified",
-			    "job title": "software",
-			    "base salary": "80000",
-			    "salary to": "",
-			    "city": "encino",
-			    "state": "ca"
-			}
+      {
+          "employer": "american legalnet inc",
+          "submit date": "7/10/2013",
+          "start date": "8/1/2013",
+          "case status": "certified",
+          "job title": "software",
+          "base salary": "80000",
+          "salary to": "",
+          "city": "encino",
+          "state": "ca"
+      }
 
 Into objects that look like this:
 
 {title="Cleaned CSV rows",linenos=off,lang=js}
-			{
-			    "employer": "american legalnet inc",
-			    "submit_date": Date("2013-07-09T22:00:00.000Z"),
-			    "start_date": Date("2013-07-31T22:00:00.000Z"),
-			    "case_status": "certified",
-			    "job_title": "software",
-			    "clean_job_title": "other",
-			    "base_salary": 80000,
-			    "salary_to": null,
-			    "city": "encino",
-			    "state": "ca"
-			}
+      {
+          "employer": "american legalnet inc",
+          "submit_date": Date("2013-07-09T22:00:00.000Z"),
+          "start_date": Date("2013-07-31T22:00:00.000Z"),
+          "case_status": "certified",
+          "job_title": "software",
+          "clean_job_title": "other",
+          "base_salary": 80000,
+          "salary_to": null,
+          "city": "encino",
+          "state": "ca"
+      }
 
 We cleaned up the keys, parsed dates into `Date()` objects using d3's built-in date formatters, and made sure numbers are numbers. If a row didn’t have a `base_salary`, we filtered it out by returning `null`.
 
@@ -154,7 +154,7 @@ We’re making our `Histogram` component more reusable by passing in the value f
 Then, we call `this.histogram()` to ask d3's histogram layout to do its magic. If you print the result in `bars`, you'll see it's an array of arrays that have some properties.
 
 {title="Histogram printout",linenos=off}
-	 // console.log(bars) in update_d3()
+   // console.log(bars) in update_d3()
    [Array[26209], Array[48755], // ...]
     0: Array[26209]
        [0 … 9999]
@@ -860,11 +860,11 @@ Whoa, there’s so much going on. First, we get all the years in filtered data, 
 - if there's more than one, we stop
 - if it's the first year in our dataset, we stop
 - otherwise:
-	- we get all datapoints for last year
-	- get US states in filtered data
-	- filter `lastYear` by US state if user filtered by that as well
-	- if the factor between this and last year is big, return "X times more" fragment
-	- otherwise return "X% more/less" fragment
+  - we get all datapoints for last year
+  - get US states in filtered data
+  - filter `lastYear` by US state if user filtered by that as well
+  - if the factor between this and last year is big, return "X times more" fragment
+  - otherwise return "X% more/less" fragment
 
 That wasn't too bad, was it? I'm sure better ways exist to generate human-readable text based on parameters, but there's no need to be fancy.
 

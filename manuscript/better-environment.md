@@ -122,28 +122,28 @@ We now have a directory called `react-d3-example` that contains some config file
 To make the project our own, we have to change some information inside `package.json`: the name, version, and description.
 
 {linenos=off,lang=json}
-		{
-			// leanpub-start-delete
-		  "name": "react-transform-boilerplate",
-		  "version": "1.0.0",
-		  "description": "A new Webpack boilerplate with hot reloading React components, and error handling on module and component level.",
-			// leanpub-end-delete
-			// leanpub-start-insert
-		  "name": "react-d3-example",
-		  "version": "0.1.0",
-		  "description": "An example project to show off React and d3 working together",
-			// leanpub-end-insert
-		  "scripts": {
+    {
+      // leanpub-start-delete
+      "name": "react-transform-boilerplate",
+      "version": "1.0.0",
+      "description": "A new Webpack boilerplate with hot reloading React components, and error handling on module and component level.",
+      // leanpub-end-delete
+      // leanpub-start-insert
+      "name": "react-d3-example",
+      "version": "0.1.0",
+      "description": "An example project to show off React and d3 working together",
+      // leanpub-end-insert
+      "scripts": {
 
 It's also a good idea to update the `author` field:
 
 {linenos=off,lang=json}
-		// leanpub-start-delete
+    // leanpub-start-delete
     "author": "Dan Abramov <dan.abramov@me.com> (http://github.com/gaearon)",
-		// leanpub-end-delete
-		// leanpub-start-insert
-		"author": "Swizec <swizec@swizec.com> (http://swizec.com)
-		// leanpub-end-insert
+    // leanpub-end-delete
+    // leanpub-start-insert
+    "author": "Swizec <swizec@swizec.com> (http://swizec.com)
+    // leanpub-end-insert
 
 Use your own name, email, and URL. Not mine :)
 
