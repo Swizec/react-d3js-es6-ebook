@@ -632,8 +632,9 @@ pre-installed, and we enable it with that `.env` change.
 
 Before we begin, you should install some other dependencies as well:
 
-$ npm install --save konva react-konva mobx mobx-react d3-timer d3-scale d3-quadtree
 ```{caption="Install libraries"}
+$ npm install --save konva react-konva mobx mobx-react \
+    d3-timer d3-scale d3-quadtree
 ```
 
 This gives you Konva, MobX, and the parts of D3 that we need. You're now ready
