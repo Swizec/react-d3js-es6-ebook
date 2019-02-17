@@ -9,7 +9,7 @@ const stripSkinTone = require('strip-skin-tone');
 const retext = require('retext');
 const emoji = require('retext-emoji');
 
-const { pandocify } = require("./conversions");
+// const { pandocify } = require("./conversions");
 
 const rmqDirAbsPath = path.resolve('remarq-template/');
 const srcDirAbsPath = path.resolve('manuscript/');
@@ -55,14 +55,15 @@ function loadSrcFile(srcFileName) {
   });
 }
 
-const pandocifySrcFile = fp.curry(pandocify)(srcDirAbsPath);
+// const pandocifySrcFile = fp.curry(pandocify)(srcDirAbsPath);
 
-const dstFileBody = fp.pipe(
-  loadSrcFile,
-  stripSkinTone,
-  gemojify,
-  pandocifySrcFile
-);
+// const dstFileBody = fp.pipe(
+//   loadSrcFile,
+//   stripSkinTone,
+//   gemojify,
+//   pandocifySrcFile
+// );
+const dstFileBody = loadSrcFile;
 
 // ## effectful functions
 function rmrf(rmrfPath) {

@@ -4,8 +4,8 @@ const rimraf = require('rimraf');
 const fp = require('lodash/fp');
 const mkdirp = require('mkdirp');
 
-const { pandocify } = require("./conversions");
 const { runShellCommand } = require('./util');
+// const { pandocify } = require("./conversions");
 
 const srcDirAbsolutePath = path.resolve('manuscript');
 
@@ -32,7 +32,7 @@ const fullPandocMarkdownBody = srcFileNames
   .map(([mdFileName, sourceFileBody], i) => {
     const destFilePath = fp.padCharsStart('0')(2)(i) + '-' + mdFileName;
     console.log(destFilePath);
-    const destFileBody = pandocify(srcDirAbsolutePath, sourceFileBody);
+    const destFileBody = sourceFileBody; // pandocify(srcDirAbsolutePath, sourceFileBody);
     return [destFilePath, destFileBody];
   })
   .map(([_, destFileBody]) => destFileBody)
