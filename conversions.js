@@ -1,7 +1,7 @@
-const path = require("path");
-const fs = require("fs");
-const fp = require("lodash/fp");
-const { conditionalLog, json } = require("./util");
+const path = require('path');
+const fs = require('fs');
+const fp = require('lodash/fp');
+const { conditionalLog, json } = require('./util');
 
 function pandocifyMarkuaCodeBlocks(sourceFileBody) {
   const isLoggingEnabled = false;
@@ -31,18 +31,19 @@ function pandocifyMarkuaCodeBlocks(sourceFileBody) {
     if (idAttr) destAttrs.push(`#${idAttr}`);
 
     const langClass = language || srcAttrs.format;
-    log("markuaLanguage")(langClass);
+    log('markuaLanguage')(langClass);
     if (langClass) destAttrs.push(`.${langClass}`);
 
     if (srcAttrs.caption) destAttrs.push(`caption="${srcAttrs.caption}"`);
 
-    const destAttrsStr = destAttrs.length > 0 ? `{${destAttrs.join(" ")}}` : "";
+    const destAttrsStr =
+      destAttrs.length > 0 ? `{${destAttrs.join(' ')}}` : '';
 
     const destCode = code
-      .replace(/markua-start-delete/g, "Delete the line(s) between here...")
-      .replace(/markua-end-delete/g, "...and here.")
-      .replace(/markua-start-insert/g, "Insert the line(s) between here...")
-      .replace(/markua-end-insert/g, "...and here.");
+      .replace(/markua-start-delete/g, 'Delete the line(s) between here...')
+      .replace(/markua-end-delete/g, '...and here.')
+      .replace(/markua-start-insert/g, 'Insert the line(s) between here...')
+      .replace(/markua-end-insert/g, '...and here.');
 
     const replacement = `
 
@@ -51,7 +52,7 @@ ${destCode}
 \`\`\`
 
 `;
-    return log("replacement")(replacement);
+    return log('replacement')(replacement);
   }
 
   const result = sourceFileBody.replace(
@@ -67,19 +68,19 @@ function pandocifyLfmCodeBlocks(sourceFileBody) {
   function replacer(match, g1, g2) {
     let attributes = fp.pipe(
       fp.trim,
-      fp.trimChars(["{", "}"])
+      fp.trimChars(['{', '}'])
     )(g1);
 
     // Remove LFM's 4-space indentation from code blocks
     const code = g2
-      .split("\n")
+      .split('\n')
       .map(line => line.slice(4))
-      .join("\n");
+      .join('\n');
 
-    log("match")(json({ match, g1, g2, attributes, code }), null, 2);
+    log('match')(json({ match, g1, g2, attributes, code }), null, 2);
 
-    log("idMatch")(json(idMatch));
     const idMatch = attributes.match(/(.*)#([\w-]+)(.*)/);
+    log('idMatch')(json(idMatch));
     let _discard, beforeIdAttr, idAttr, afterIdAttr;
     if (idMatch) {
       [_discard, beforeIdAttr, idAttr, afterIdAttr] = idMatch;
@@ -88,7 +89,7 @@ function pandocifyLfmCodeBlocks(sourceFileBody) {
     const attrRegExp = /\s*(.+)=(.+)/;
     const srcAttrs = attributes.split(/\s*,\s*/).reduce((srcAttrs, chunk) => {
       const srcAttrMatches = chunk.match(attrRegExp);
-      log("srcAttrMatches")(json({ srcAttrs, srcAttrMatches }));
+      log('srcAttrMatches')(json({ srcAttrs, srcAttrMatches }));
       const [key, value] = srcAttrMatches
         ? [srcAttrMatches[1], srcAttrMatches[2]]
         : [null, null];
@@ -97,7 +98,7 @@ function pandocifyLfmCodeBlocks(sourceFileBody) {
       return result;
     }, {});
 
-    log("srcAttrs")(json(srcAttrs));
+    log('srcAttrs')(json(srcAttrs));
 
     let destAttrs = [];
 
@@ -107,23 +108,24 @@ function pandocifyLfmCodeBlocks(sourceFileBody) {
     const srcLang = srcAttrs.lang;
     // pandoc supports json, javascript, css
     const langClass = {
-      json: "json",
-      jsx: "javascript",
-      js: "javascript",
-      less: "css"
+      json: 'json',
+      jsx: 'javascript',
+      js: 'javascript',
+      less: 'css',
     }[srcLang];
     if (langClass) destAttrs.push(`.${langClass}`);
 
-    if (srcAttrs.caption) destAttrs.push(`caption="${srcAttrs.caption}"`);
+    const destCaption = fp.trimChars(' "')(srcAttrs.caption || srcAttrs.title);
+    if (destCaption) destAttrs.push(`caption="${destCaption}"`);
 
     const destAttrsStr =
-      destAttrs.length > 0 ? ` {${destAttrs.join(" ")}}` : "";
+      destAttrs.length > 0 ? ` {${destAttrs.join(' ')}}` : '';
 
     const destCode = code
-      .replace(/leanpub-start-delete/g, "Delete the line(s) between here...")
-      .replace(/leanpub-end-delete/g, "...and here.")
-      .replace(/leanpub-start-insert/g, "Insert the line(s) between here...")
-      .replace(/leanpub-end-insert/g, "...and here.");
+      .replace(/leanpub-start-delete/g, 'Delete the line(s) between here...')
+      .replace(/leanpub-end-delete/g, '...and here.')
+      .replace(/leanpub-start-insert/g, 'Insert the line(s) between here...')
+      .replace(/leanpub-end-insert/g, '...and here.');
 
     const replacement = `
 
@@ -132,7 +134,7 @@ ${destCode}
 \`\`\`
 
 `;
-    return log("replacement")(replacement);
+    return log('replacement')(replacement);
   }
 
   const result = sourceFileBody.replace(
@@ -155,21 +157,21 @@ function transcludeMarkuaCodeSamples(sourceFileBody) {
   function replacer(match, g1, g2, g3) {
     let attributes = fp.pipe(
       fp.trim,
-      fp.trimChars(["{", "}"])
+      fp.trimChars(['{', '}'])
     )(g1);
 
     const caption = g2;
     const relativePath = g3;
     const codeSampleAbsolutePath = path.join(
       srcDirAbsolutePath,
-      "resources",
+      'resources',
       relativePath
     );
     const codeSampleBody = fs.readFileSync(codeSampleAbsolutePath, {
-      encoding: "utf8"
+      encoding: 'utf8',
     });
 
-    log("match")(
+    log('match')(
       json({
         match,
         g1,
@@ -177,14 +179,14 @@ function transcludeMarkuaCodeSamples(sourceFileBody) {
         g3,
         caption,
         relativePath,
-        codeSampleBodyLength: codeSampleBody.length
+        codeSampleBodyLength: codeSampleBody.length,
       }),
       null,
       2
     );
 
-    log("idMatch")(json(idMatch));
     const idMatch = attributes.match(/(.*)#([\w-]+)(.*)/);
+    log('idMatch')(json(idMatch));
     let _discard, beforeIdAttr, idAttr, afterIdAttr;
     if (idMatch) {
       [_discard, beforeIdAttr, idAttr, afterIdAttr] = idMatch;
@@ -202,7 +204,7 @@ function transcludeMarkuaCodeSamples(sourceFileBody) {
       return result;
     }, {});
 
-    log("srcAttrs")(json(srcAttrs));
+    log('srcAttrs')(json(srcAttrs));
 
     let destAttrs = [];
 
@@ -218,20 +220,20 @@ function transcludeMarkuaCodeSamples(sourceFileBody) {
     }
     delete srcAttrs.caption;
 
-    const codeSampleLines = codeSampleBody.split("\n");
+    const codeSampleLines = codeSampleBody.split('\n');
     // It seems like crop-start/end-line are inclusive and 1-indexed
-    const cropStartLine = Number(srcAttrs["crop-start"]) - 1 || 0;
-    const cropEndLine = Number(srcAttrs["crop-end"]) || codeSampleLines.length;
-    delete srcAttrs["crop-start"];
-    delete srcAttrs["crop-end"];
-    const code = codeSampleLines.slice(cropStartLine, cropEndLine).join("\n");
+    const cropStartLine = Number(srcAttrs['crop-start']) - 1 || 0;
+    const cropEndLine = Number(srcAttrs['crop-end']) || codeSampleLines.length;
+    delete srcAttrs['crop-start'];
+    delete srcAttrs['crop-end'];
+    const code = codeSampleLines.slice(cropStartLine, cropEndLine).join('\n');
 
     Object.keys(srcAttrs)
       .map(key => `${key}:${srcAttrs[key]}`)
       .forEach(destAttr => destAttrs.push(destAttr));
 
     const destAttrsStr =
-      destAttrs.length > 0 ? `{${destAttrs.join(", ")}}\n` : "";
+      destAttrs.length > 0 ? `{${destAttrs.join(', ')}}\n` : '';
 
     const replacement = `
 
@@ -240,7 +242,7 @@ ${code}
 \`\`\`
 
 `;
-    return log("replacement")(replacement);
+    return log('replacement')(replacement);
   }
 
   const result = sourceFileBody.replace(
@@ -265,21 +267,21 @@ function transcludeLfmCodeSamples(sourceFileBody) {
   function replacer(match, g1, g2, g3) {
     let attributes = fp.pipe(
       fp.trim,
-      fp.trimChars(["{", "}"])
+      fp.trimChars(['{', '}'])
     )(g1);
 
     const title = g2;
     const relativePath = g3;
     const codeSampleAbsolutePath = path.join(
       srcDirAbsolutePath,
-      "resources",
+      'resources',
       relativePath
     );
     const codeSampleBody = fs.readFileSync(codeSampleAbsolutePath, {
-      encoding: "utf8"
+      encoding: 'utf8',
     });
 
-    log("match")(
+    log('match')(
       json({
         match,
         g1,
@@ -287,14 +289,14 @@ function transcludeLfmCodeSamples(sourceFileBody) {
         g3,
         title,
         relativePath,
-        codeSampleBodyLength: codeSampleBody.length
+        codeSampleBodyLength: codeSampleBody.length,
       }),
       null,
       2
     );
 
-    log("idMatch")(json(idMatch));
     const idMatch = attributes.match(/(.*)#([\w-]+)(.*)/);
+    log('idMatch')(json(idMatch));
     let _discard, beforeIdAttr, idAttr, afterIdAttr;
     if (idMatch) {
       [_discard, beforeIdAttr, idAttr, afterIdAttr] = idMatch;
@@ -312,7 +314,7 @@ function transcludeLfmCodeSamples(sourceFileBody) {
       return result;
     }, {});
 
-    log("srcAttrs")(json(srcAttrs));
+    log('srcAttrs')(json(srcAttrs));
 
     let destAttrs = [];
 
@@ -328,31 +330,31 @@ function transcludeLfmCodeSamples(sourceFileBody) {
     }
     delete srcAttrs.title;
 
-    const codeSampleLines = codeSampleBody.split("\n");
+    const codeSampleLines = codeSampleBody.split('\n');
     // It seems like crop-start/end-line are inclusive and 1-indexed
-    const cropStartLine = Number(srcAttrs["crop-start-line"]) - 1 || 0;
+    const cropStartLine = Number(srcAttrs['crop-start-line']) - 1 || 0;
     const cropEndLine =
-      Number(srcAttrs["crop-end-line"]) || codeSampleLines.length;
-    delete srcAttrs["crop-start-line"];
-    delete srcAttrs["crop-end-line"];
+      Number(srcAttrs['crop-end-line']) || codeSampleLines.length;
+    delete srcAttrs['crop-start-line'];
+    delete srcAttrs['crop-end-line'];
     const code = codeSampleLines
       .slice(cropStartLine, cropEndLine)
-      .map(line => " ".repeat(4) + line)
-      .join("\n");
+      .map(line => ' '.repeat(4) + line)
+      .join('\n');
 
     Object.keys(srcAttrs)
       .map(key => `${key}=${srcAttrs[key]}`)
       .forEach(destAttr => destAttrs.push(destAttr));
 
     const destAttrsStr =
-      destAttrs.length > 0 ? `{${destAttrs.join(", ")}}\n` : "";
+      destAttrs.length > 0 ? `{${destAttrs.join(', ')}}\n` : '';
 
     const replacement = `
 
 ${destAttrsStr}${code}
 
 `;
-    return log("replacement")(replacement);
+    return log('replacement')(replacement);
   }
 
   const result = sourceFileBody.replace(
@@ -370,7 +372,7 @@ function pandocifyMarkuaHeaders(sourceFileBody) {
   function replacer(match, newlinesBefore, attributes, header) {
     const replacement = `${newlinesBefore}${header.replace(
       /[ #]*$/,
-      ""
+      ''
     )} ${attributes}\n\n`;
 
     // log("replacement")(replacement);
@@ -409,9 +411,9 @@ function deleteLfmSpecialNames(sourceFileBody) {
   const log = (...attrs) => conditionalLog(isLoggingEnabled, ...attrs);
 
   function replacer(match) {
-    const replacement = "";
+    const replacement = '';
 
-    log("replacement")(json({ match, replacement }));
+    log('replacement')(json({ match, replacement }));
     return replacement;
   }
 
@@ -440,7 +442,7 @@ let srcDirAbsolutePath = null;
 
 function pandocify(manuscriptAbsolutePath, sourceFileBody) {
   srcDirAbsolutePath = manuscriptAbsolutePath;
-  const convert = sourceFileBody.includes("\n```\n")
+  const convert = sourceFileBody.includes('\n```\n')
     ? pandocifyMarkua
     : pandocifyLfm;
   return convert(sourceFileBody);

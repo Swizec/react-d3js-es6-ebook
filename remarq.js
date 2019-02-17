@@ -1,27 +1,27 @@
-const path = require("path");
-const os = require("os");
+const path = require('path');
+const os = require('os');
 
-const fse = require("fs-extra");
-const globSync = require("glob-gitignore").sync;
-const fp = require("lodash/fp");
+const fse = require('fs-extra');
+const globSync = require('glob-gitignore').sync;
+const fp = require('lodash/fp');
 
-const stripSkinTone = require("strip-skin-tone");
-const retext = require("retext");
-const emoji = require("retext-emoji");
+const stripSkinTone = require('strip-skin-tone');
+const retext = require('retext');
+const emoji = require('retext-emoji');
 
 const { pandocify } = require("./conversions");
 
-const rmqDirAbsPath = path.resolve("remarq-template/");
-const srcDirAbsPath = path.resolve("manuscript/");
+const rmqDirAbsPath = path.resolve('remarq-template/');
+const srcDirAbsPath = path.resolve('manuscript/');
 const dstDirAbsPath = path.resolve(
   os.homedir(),
-  "Dropbox/Apps/RemarqBooks/ReactDataviz/"
+  'Dropbox/Apps/RemarqBooks/ReactDataviz/'
 );
 
 // ## pure-ish functions
 
 const gemojify = fp.pipe(
-  retext().use(emoji, { convert: "decode" }).processSync,
+  retext().use(emoji, { convert: 'decode' }).processSync,
   String
 );
 
@@ -29,7 +29,7 @@ function prependIndex(srcFileNames) {
   const indices = [...Array(srcFileNames.length).keys()];
   // using `i + 1` because remarq relies on 01-indexed .md files
   return fp.zipWith(
-    (i, srcFileName) => fp.padCharsStart("0")(2)(i + 1) + "-" + srcFileName,
+    (i, srcFileName) => fp.padCharsStart('0')(2)(i + 1) + '-' + srcFileName,
     indices,
     srcFileNames
   );
@@ -37,11 +37,11 @@ function prependIndex(srcFileNames) {
 
 function getSrcFileNames() {
   const fileNames = fse
-    .readFileSync(path.resolve(srcDirAbsPath, "Book.txt"), {
-      encoding: "utf8"
+    .readFileSync(path.resolve(srcDirAbsPath, 'Book.txt'), {
+      encoding: 'utf8',
     })
     .trim()
-    .split("\n")
+    .split('\n')
     .map(fp.trim);
   const frontMatter = fileNames.slice(0, 1);
   const chapters = fileNames.slice(1, -2);
@@ -51,7 +51,7 @@ function getSrcFileNames() {
 
 function loadSrcFile(srcFileName) {
   return fse.readFileSync(path.resolve(srcDirAbsPath, srcFileName), {
-    encoding: "utf8"
+    encoding: 'utf8',
   });
 }
 
@@ -79,17 +79,17 @@ function resetDstDir() {
   rmrf(dstDirAbsPath);
   fse.ensureDirSync(dstDirAbsPath);
   fse.copySync(rmqDirAbsPath, dstDirAbsPath);
-  const mdAbsFilePaths = globSync("**/*.md", {
+  const mdAbsFilePaths = globSync('**/*.md', {
     cwd: dstDirAbsPath,
-    absolute: true
+    absolute: true,
   });
   fp.map(rmrf)(mdAbsFilePaths);
 }
 
 function deleteRemarqResults() {
-  const rmqResAbsFilePaths = globSync("ReactDataviz@(.*|-*)", {
+  const rmqResAbsFilePaths = globSync('ReactDataviz@(.*|-*)', {
     cwd: path.dirname(dstDirAbsPath),
-    absolute: true
+    absolute: true,
   });
   fp.map(rmrf)(rmqResAbsFilePaths);
 }
@@ -103,11 +103,11 @@ function convertAndWrite(dstDirPath, srcFileNames) {
 
   fp.zipWith(writeFile, dstFilePaths, dstFileBodies);
   fp.zipWith(
-    (..._args) => process.stdout.write("."),
+    (..._args) => process.stdout.write('.'),
     dstFilePaths,
     dstFileBodies
   );
-  process.stdout.write("\n");
+  process.stdout.write('\n');
 }
 
 function main() {
@@ -118,9 +118,9 @@ function main() {
   const [frontMatter, chapters, backMatter] = getSrcFileNames();
   console.log([frontMatter, chapters, backMatter]);
 
-  convertAndWrite("1_front_matter", frontMatter);
-  convertAndWrite("2_chapters", chapters);
-  convertAndWrite("3_back_matter", backMatter);
+  convertAndWrite('1_front_matter', frontMatter);
+  convertAndWrite('2_chapters', chapters);
+  convertAndWrite('3_back_matter', backMatter);
 }
 
 main();

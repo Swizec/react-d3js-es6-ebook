@@ -1,9 +1,9 @@
-const fs = require("fs");
-const fetch = require("node-fetch");
-const emojiPatterns = require("emoji-patterns");
-const sync = require("glob-gitignore").sync;
+const fs = require('fs');
+const fetch = require('node-fetch');
+const emojiPatterns = require('emoji-patterns');
+const sync = require('glob-gitignore').sync;
 
-const emojiAllRegexp = new RegExp(emojiPatterns["Emoji_All"], "gu");
+const emojiAllRegexp = new RegExp(emojiPatterns['Emoji_All'], 'gu');
 
 function emojiAliasDict(emojiData) {
   return emojiData.reduce(
@@ -25,24 +25,24 @@ function aliasEmojiDict(emojiData) {
 
 console.log(process.argv);
 
-fetch("https://www.gitcdn.xyz/repo/github/gemoji/master/db/emoji.json")
+fetch('https://www.gitcdn.xyz/repo/github/gemoji/master/db/emoji.json')
   .then(res => res.json())
   .then(json => {
-    const textFilePaths = sync(["manuscript/**/*.md", "manuscript/**/*.txt"], {
-      ignore: "node_modules/*"
+    const textFilePaths = sync(['manuscript/**/*.md', 'manuscript/**/*.txt'], {
+      ignore: 'node_modules/*',
     });
     console.log({ textFilePaths });
 
     const conversionDirection = process.argv[2];
 
-    if (conversionDirection === "--colonify") {
+    if (conversionDirection === '--colonify') {
       const dictionary = emojiAliasDict(json);
 
       textFilePaths.forEach(textFilePath => {
-        const originalFile = fs.createReadStream(textFilePath, "utf8");
-        let transformedContent = "";
+        const originalFile = fs.createReadStream(textFilePath, 'utf8');
+        let transformedContent = '';
 
-        originalFile.on("data", chunk => {
+        originalFile.on('data', chunk => {
           transformedContent += chunk
             .toString()
             .replace(emojiAllRegexp, emoji => {
@@ -54,7 +54,7 @@ fetch("https://www.gitcdn.xyz/repo/github/gemoji/master/db/emoji.json")
             });
         });
 
-        originalFile.on("end", () => {
+        originalFile.on('end', () => {
           fs.writeFile(textFilePath, transformedContent, err => {
             if (err) {
               return console.log(err);
@@ -62,17 +62,17 @@ fetch("https://www.gitcdn.xyz/repo/github/gemoji/master/db/emoji.json")
           });
         });
       });
-    } else if (conversionDirection === "--emojify") {
+    } else if (conversionDirection === '--emojify') {
       const dictionary = aliasEmojiDict(json);
-      const regexpString = "(" + Object.keys(dictionary).join("|") + ")";
+      const regexpString = '(' + Object.keys(dictionary).join('|') + ')';
 
-      const aliasAllRegexp = new RegExp(regexpString, "g");
+      const aliasAllRegexp = new RegExp(regexpString, 'g');
 
       textFilePaths.forEach(textFilePath => {
-        const originalFile = fs.createReadStream(textFilePath, "utf8");
-        let transformedContent = "";
+        const originalFile = fs.createReadStream(textFilePath, 'utf8');
+        let transformedContent = '';
 
-        originalFile.on("data", chunk => {
+        originalFile.on('data', chunk => {
           transformedContent += chunk
             .toString()
             .replace(aliasAllRegexp, alias => {
@@ -84,7 +84,7 @@ fetch("https://www.gitcdn.xyz/repo/github/gemoji/master/db/emoji.json")
             });
         });
 
-        originalFile.on("end", () => {
+        originalFile.on('end', () => {
           fs.writeFile(textFilePath, transformedContent, err => {
             if (err) {
               return console.log(err);

@@ -1,24 +1,24 @@
-const fs = require("fs");
-const path = require("path");
-const rimraf = require("rimraf");
-const fp = require("lodash/fp");
-const mkdirp = require("mkdirp");
+const fs = require('fs');
+const path = require('path');
+const rimraf = require('rimraf');
+const fp = require('lodash/fp');
+const mkdirp = require('mkdirp');
 
-const { runShellCommand } = require("./util");
 const { pandocify } = require("./conversions");
+const { runShellCommand } = require('./util');
 
-const srcDirAbsolutePath = path.resolve("manuscript");
+const srcDirAbsolutePath = path.resolve('manuscript');
 
-const buildDirAbsolutePath = path.resolve("build");
+const buildDirAbsolutePath = path.resolve('build');
 // rimraf.sync(buildDirAbsolutePath, null, e => console.log(e));
 mkdirp.sync(buildDirAbsolutePath);
 
 const srcFileNames = fs
-  .readFileSync(path.resolve(srcDirAbsolutePath, "Book.txt"), {
-    encoding: "utf8"
+  .readFileSync(path.resolve(srcDirAbsolutePath, 'Book.txt'), {
+    encoding: 'utf8',
   })
   .trim()
-  .split("\n")
+  .split('\n')
   .map(fp.trim);
 console.log({ srcFileNames });
 
@@ -26,32 +26,32 @@ const fullPandocMarkdownBody = srcFileNames
   .map(mdFileName => [
     mdFileName,
     fs.readFileSync(path.resolve(srcDirAbsolutePath, mdFileName), {
-      encoding: "utf8"
-    })
+      encoding: 'utf8',
+    }),
   ])
   .map(([mdFileName, sourceFileBody], i) => {
-    const destFilePath = fp.padCharsStart("0")(2)(i) + "-" + mdFileName;
+    const destFilePath = fp.padCharsStart('0')(2)(i) + '-' + mdFileName;
     console.log(destFilePath);
     const destFileBody = pandocify(srcDirAbsolutePath, sourceFileBody);
     return [destFilePath, destFileBody];
   })
   .map(([_, destFileBody]) => destFileBody)
-  .join("\n\n");
+  .join('\n\n');
 
 const fullPandocMarkdownAbsolutePath = path.resolve(
   buildDirAbsolutePath,
-  "full-pandoc-markdown.md"
+  'full-pandoc-markdown.md'
 );
 fs.writeFileSync(fullPandocMarkdownAbsolutePath, fullPandocMarkdownBody);
 
-const fullGfmAbsolutePath = path.resolve(buildDirAbsolutePath, "full-gfm.md");
+const fullGfmAbsolutePath = path.resolve(buildDirAbsolutePath, 'full-gfm.md');
 const pandocToGfmCommand = `pandoc -f markdown -t gfm -o ${fullGfmAbsolutePath} ${fullPandocMarkdownAbsolutePath}`;
 
 runShellCommand(pandocToGfmCommand);
 
 const fullHtmlAbsolutePath = path.resolve(
   buildDirAbsolutePath,
-  "full-html.html"
+  'full-html.html'
 );
 const pandocToHtmlCommand = `pandoc -f markdown -t html -o ${fullHtmlAbsolutePath} -s ${fullPandocMarkdownAbsolutePath} && npx juice ${fullHtmlAbsolutePath} ${fullHtmlAbsolutePath}`;
 
@@ -60,7 +60,7 @@ runShellCommand(pandocToHtmlCommand);
 function splitIntoSectionsAndLectures({
   fullBodyAbsolutePath,
   destRepoAbsolutePath,
-  destRepoContentPath
+  destRepoContentPath,
 }) {
   runShellCommand(
     `git clone git@github.com:hsribei/content.git ${destRepoAbsolutePath}`,
@@ -75,31 +75,31 @@ function splitIntoSectionsAndLectures({
   rimraf.sync(destContentAbsolutePath, null, e => console.log(e));
 
   const fullBody = fs.readFileSync(fullBodyAbsolutePath, {
-    encoding: "utf8"
+    encoding: 'utf8',
   });
 
   const extension = path.extname(fullBodyAbsolutePath);
 
-  let sectionDirectoryName = "";
-  let lectureFileName = "";
+  let sectionDirectoryName = '';
+  let lectureFileName = '';
   let sectionIndex = 0;
   let lectureIndex = 0;
   let srcLineIndex = 0;
   let destLines = [];
-  const srcLines = fullBody.split("\n");
+  const srcLines = fullBody.split('\n');
 
   while (srcLineIndex < srcLines.length) {
     const srcLine = srcLines[srcLineIndex];
     if (
       sectionDirectoryName &&
       lectureFileName &&
-      !srcLine.includes("end-lecture")
+      !srcLine.includes('end-lecture')
     ) {
       destLines.push(srcLine);
     } else if (
       sectionDirectoryName &&
       lectureFileName &&
-      srcLine.includes("end-lecture")
+      srcLine.includes('end-lecture')
     ) {
       fs.writeFileSync(
         path.resolve(
@@ -107,25 +107,25 @@ function splitIntoSectionsAndLectures({
           sectionDirectoryName,
           lectureFileName
         ),
-        destLines.join("\n")
+        destLines.join('\n')
       );
-      lectureFileName = "";
+      lectureFileName = '';
     } else if (
       sectionDirectoryName &&
       !lectureFileName &&
-      srcLine.includes("end-section")
+      srcLine.includes('end-section')
     ) {
-      sectionDirectoryName = "";
+      sectionDirectoryName = '';
       sectionIndex++;
     } else if (
       sectionDirectoryName &&
       !lectureFileName &&
-      srcLine.includes("begin-lecture")
+      srcLine.includes('begin-lecture')
     ) {
       const lectureTitle = srcLine.match(/title="(.*)"/)[1];
-      lectureFileName = `s${fp.padCharsStart("0")(2)(
+      lectureFileName = `s${fp.padCharsStart('0')(2)(
         sectionIndex
-      )}e${fp.padCharsStart("0")(2)(
+      )}e${fp.padCharsStart('0')(2)(
         lectureIndex
       )} - ${lectureTitle}${extension}`;
       lectureIndex++;
@@ -133,10 +133,10 @@ function splitIntoSectionsAndLectures({
     } else if (
       !sectionDirectoryName &&
       !lectureFileName &&
-      srcLine.includes("begin-section")
+      srcLine.includes('begin-section')
     ) {
       // const sectionTitle = srcLine.match(/title="(.*)"/)[1];
-      sectionDirectoryName = `s${fp.padCharsStart("0")(2)(sectionIndex)}`;
+      sectionDirectoryName = `s${fp.padCharsStart('0')(2)(sectionIndex)}`;
       mkdirp.sync(path.resolve(destContentAbsolutePath, sectionDirectoryName));
     } else {
       // process.stdout.write(".");
@@ -148,13 +148,13 @@ function splitIntoSectionsAndLectures({
 
 function deployGfmFiles() {
   const fullBodyAbsolutePath = fullGfmAbsolutePath;
-  const destRepoAbsolutePath = path.resolve(buildDirAbsolutePath, "content");
-  const destRepoContentPath = "teachable-gfm-markdown";
+  const destRepoAbsolutePath = path.resolve(buildDirAbsolutePath, 'content');
+  const destRepoContentPath = 'teachable-gfm-markdown';
 
   splitIntoSectionsAndLectures({
     fullBodyAbsolutePath,
     destRepoAbsolutePath,
-    destRepoContentPath
+    destRepoContentPath,
   });
 
   gitAddAllCommitAndPush(destRepoAbsolutePath);
@@ -162,13 +162,13 @@ function deployGfmFiles() {
 
 function deployHtmlFiles() {
   const fullBodyAbsolutePath = fullHtmlAbsolutePath;
-  const destRepoAbsolutePath = path.resolve(buildDirAbsolutePath, "content");
-  const destRepoContentPath = "teachable-html";
+  const destRepoAbsolutePath = path.resolve(buildDirAbsolutePath, 'content');
+  const destRepoContentPath = 'teachable-html';
 
   splitIntoSectionsAndLectures({
     fullBodyAbsolutePath,
     destRepoAbsolutePath,
-    destRepoContentPath
+    destRepoContentPath,
   });
 
   gitAddAllCommitAndPush(destRepoAbsolutePath);
