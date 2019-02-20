@@ -2,17 +2,18 @@
 // Example 1
 //
 module: {
-    loaders: [{
+    loaders: [
+      {
         test: /\.js$/,
         loaders: ['babel'],
         include: path.join(__dirname, 'src')
-    },
-    // leanpub-start-insert
-    {
-        test: /\.less$/,
-        loader: "style!css!less"
-    }
-    // leanpub-end-insert
+      },
+      // leanpub-start-insert
+      {
+          test: /\.less$/,
+          loader: "style!css!less"
+      }
+      // leanpub-end-insert
     ]
 }
 
@@ -153,20 +154,20 @@ module.exports = {
 //
 module: {
    loaders: [
-       // leanpub-start-delete
-       {test: /\.js$/,
-       // leanpub-end-delete
-       // leanpub-start-insert
-       {test: /\.js|\.jsx$/
-       // leanpub-end-insert
-        loaders: ['babel'],
-        include: path.join(__dirname, 'src')
-       },
-       {test: /\.less$/,
-        loader: "style!css!less"
-       }
-    ]
-  }
+     // leanpub-start-delete
+     {test: /\.js$/},
+     // leanpub-end-delete
+     // leanpub-start-insert
+     {test: /\.js|\.jsx$/
+      // leanpub-end-insert
+      loaders: ['babel'],
+      include: path.join(__dirname, 'src')
+     },
+     {test: /\.less$/,
+      loader: "style!css!less"
+     }
+   ]
+}
 
 
 //

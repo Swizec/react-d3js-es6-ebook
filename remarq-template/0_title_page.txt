@@ -1,0 +1,7 @@
+---
+title: "React for Data Visualization"
+author: "swizec@swizec.com"
+date: "February 25, 2019"
+language: en-US
+title_image: images/course-cover.png
+---

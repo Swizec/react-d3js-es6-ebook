@@ -6,17 +6,44 @@
   "scripts": {
     "colonify": "node emoji.js --colonify",
     "emojify": "node emoji.js --emojify",
-    "teachable": "nodemon --watch manuscript -e md --watch teachable.js ./teachable.js"
+    "teachable": "nodemon --watch manuscript -e md --watch util.js --watch conversions.js --watch teachable.js ./teachable.js",
+    "remarq": "nodemon --watch manuscript --watch util.js --watch conversions.js  --watch remarq.js ./remarq.js",
+    "test-manuscript-migrations": "nodemon --watch util.js --watch conversions.js  --watch migrations ./migrations/00-pandocify-manuscript.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "emoji-patterns": "^11.2.2",
+    "eslint": "^5.10.0",
+    "fs-extra": "^7.0.1",
+    "glob-gitignore": "^1.0.11",
+    "juice": "^5.0.1",
     "lodash": "^4.17.11",
     "mkdirp": "^0.5.1",
     "node-fetch": "^2.2.0",
-    "nodemon": "^1.18.5",
-    "rimraf": "^2.6.2"
+    "nodemon": "^1.18.9",
+    "prettier": "^1.16.4",
+    "retext": "^6.0.1",
+    "retext-emoji": "^5.0.1",
+    "rimraf": "^2.6.2",
+    "strip-skin-tone": "^1.0.2"
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true,
+      "es6": true
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+      "no-console": "off",
+      "no-unused-vars": [
+        "error",
+        {
+          "varsIgnorePattern": "^_",
+          "argsIgnorePattern": "^_"
+        }
+      ]
+    }
   }
 }
