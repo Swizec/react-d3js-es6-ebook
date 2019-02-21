@@ -1272,8 +1272,38 @@ return (
 )
 ```
 
-But like I said, don't use this in production. It's great for quick prototypes,
-trying stuff out, or seeing how an existing visualization might fit your app.
+But like I said, don't use this in production. It's great for quick prototypes, trying stuff out, or seeing how an existing visualization might fit your app.
+
+## A note about D3blackbox
+
+To make your life easier, I have open sourced my version of the D3blackbox HOC. You can read more about it at [d3blackbox.com](https://d3blackbox.com)
+
+Works the same as the HOC we just built together, adds the anchor ref, props, and state to function arguments so it's easier to use. No need to mess with `this` if you don't want to :)
+
+Install it from npm:
+
+```
+$ npm install d3blackbox
+```
+
+Then use it as you would your own HOC:
+
+```{.javascript caption="Open source D3blackbox HOC"}
+import React from "react";
+import D3blackbox from "d3blackbox";
+import * as d3 from "d3";
+
+const Barchart = D3blackbox(function(anchor, props, state) {
+    const svg = d3.select(anchor.current);
+    // the rest of your D3 code
+});
+
+export default Barchart;
+```
+
+The function you pass into `D3blackbox` is still your full D3 render. Except now you can access important values directly without using `this`.
+
+You can use my D3blackbox or build your own. What's important is that you now understand how higher order components work.
 
 <!--- end-lecture -->
 
