@@ -5,6 +5,7 @@ the-new-meat.md
 animation.md
 animating-react-redux.md
 speed-optimizations.md
+react-hooks.md
 conclusion.md
 appendixA.md
 appendixB.md
