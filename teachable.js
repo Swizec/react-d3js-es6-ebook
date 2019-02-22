@@ -45,7 +45,7 @@ const fullPandocMarkdownAbsolutePath = path.resolve(
 fs.writeFileSync(fullPandocMarkdownAbsolutePath, fullPandocMarkdownBody);
 
 const fullGfmAbsolutePath = path.resolve(buildDirAbsolutePath, 'full-gfm.md');
-const pandocToGfmCommand = `pandoc -f markdown -t gfm -o ${fullGfmAbsolutePath} ${fullPandocMarkdownAbsolutePath}`;
+const pandocToGfmCommand = `pandoc -f markdown+emoji -t gfm -o ${fullGfmAbsolutePath} ${fullPandocMarkdownAbsolutePath}`;
 
 runShellCommand(pandocToGfmCommand);
 
@@ -53,7 +53,7 @@ const fullHtmlAbsolutePath = path.resolve(
   buildDirAbsolutePath,
   'full-html.html'
 );
-const pandocToHtmlCommand = `pandoc -f markdown -t html -o ${fullHtmlAbsolutePath} -s ${fullPandocMarkdownAbsolutePath} && npx juice ${fullHtmlAbsolutePath} ${fullHtmlAbsolutePath}`;
+const pandocToHtmlCommand = `pandoc -f markdown+emoji -t html -o ${fullHtmlAbsolutePath} -s ${fullPandocMarkdownAbsolutePath} && npx juice ${fullHtmlAbsolutePath} ${fullHtmlAbsolutePath}`;
 
 runShellCommand(pandocToHtmlCommand);
 
@@ -175,12 +175,15 @@ function deployHtmlFiles() {
 }
 
 function gitAddAllCommitAndPush(destRepoAbsolutePath) {
-  const githubPushCommand = `cd ${destRepoAbsolutePath} && git add . && git commit -m "Automated commit" `; // uncomment to actually push, which deploys to prod `&& git push origin master && cd -`;
+  const githubPushCommand = `cd ${destRepoAbsolutePath} && git add . && git commit -m "Automated commit" && git push origin master && cd -`;
 
-  runShellCommand(
-    githubPushCommand,
-    "Probably because there weren't any changes."
-  );
+  console.log({ githubPushCommand });
+
+  // Uncomment to deploy
+  // runShellCommand(
+  //   githubPushCommand,
+  //   "Probably because there weren't any changes."
+  // );
 }
 
 deployGfmFiles();
