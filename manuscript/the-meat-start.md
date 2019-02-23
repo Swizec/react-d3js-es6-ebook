@@ -1272,13 +1272,17 @@ return (
 )
 ```
 
-But like I said, don't use this in production. It's great for quick prototypes, trying stuff out, or seeing how an existing visualization might fit your app.
+But like I said, don't use this in production. It's great for quick prototypes,
+trying stuff out, or seeing how an existing visualization might fit your app.
 
 ## A note about D3blackbox
 
-To make your life easier, I have open sourced my version of the D3blackbox HOC. You can read more about it at [d3blackbox.com](https://d3blackbox.com)
+To make your life easier, I have open sourced my version of the D3blackbox HOC.
+You can read more about it at [d3blackbox.com](https://d3blackbox.com)
 
-Works the same as the HOC we just built together, adds the anchor ref, props, and state to function arguments so it's easier to use. No need to mess with `this` if you don't want to :)
+Works the same as the HOC we just built together, adds the anchor ref, props,
+and state to function arguments so it's easier to use. No need to mess with
+`this` if you don't want to :)
 
 Install it from npm:
 
@@ -1301,9 +1305,11 @@ const Barchart = D3blackbox(function(anchor, props, state) {
 export default Barchart;
 ```
 
-The function you pass into `D3blackbox` is still your full D3 render. Except now you can access important values directly without using `this`.
+The function you pass into `D3blackbox` is still your full D3 render. Except
+now you can access important values directly without using `this`.
 
-You can use my D3blackbox or build your own. What's important is that you now understand how higher order components work.
+You can use my D3blackbox or build your own. What's important is that you now
+understand how higher order components work.
 
 <!--- end-lecture -->
 

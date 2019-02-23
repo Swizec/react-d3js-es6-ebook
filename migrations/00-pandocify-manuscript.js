@@ -65,7 +65,9 @@ const convertAndOverwrite = fp.pipe(
 );
 
 function revertMigration() {
-  runShellCommand('git checkout 164cc01ad17ed8de8c44ab1e33d7e40d625af710 -- manuscript/');
+  runShellCommand(
+    'git checkout 164cc01ad17ed8de8c44ab1e33d7e40d625af710 -- manuscript/'
+  );
 }
 
 function applyMigration() {
