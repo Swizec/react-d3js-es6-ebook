@@ -1,4 +1,5 @@
 const fs = require('fs');
+const fse = require('fs-extra');
 const path = require('path');
 const rimraf = require('rimraf');
 const fp = require('lodash/fp');
@@ -92,8 +93,34 @@ function splitIntoSectionsAndLectures({
 
   const extension = path.extname(fullBodyAbsolutePath);
 
-  let sectionDirectoryName = '';
-  let lectureFileName = '';
+  // generate a table of contents to be used by remarq.js to generate book
+  // files for each tier
+  // the schema is:
+  // sections = [
+  //   {
+  //     sectionTitle: '',
+  //     sectionDirectoryName: '',
+  //     lectures: [
+  //       {
+  //         lectureTitle: '',
+  //         lectureFileName: '',
+  //       },
+  //     ],
+  //   },
+  // ];
+  function newBook() {
+    return { sections: [] };
+  }
+  function newSection() {
+    return { sectionTitle: '', sectionDirectoryName: '', lectures: [] };
+  }
+  function newLecture() {
+    return { lectureTitle: '', lectureFileName: '' };
+  }
+  let sections = [];
+  let currentSection = newSection();
+  let currentLecture = newLecture();
+
   let sectionIndex = 0;
   let lectureIndex = 0;
   let srcLineIndex = 0;
@@ -103,59 +130,77 @@ function splitIntoSectionsAndLectures({
   while (srcLineIndex < srcLines.length) {
     const srcLine = srcLines[srcLineIndex];
     if (
-      sectionDirectoryName &&
-      lectureFileName &&
+      currentSection.sectionDirectoryName &&
+      currentLecture.lectureFileName &&
       !srcLine.includes('end-lecture')
     ) {
       destLines.push(srcLine);
     } else if (
-      sectionDirectoryName &&
-      lectureFileName &&
+      currentSection.sectionDirectoryName &&
+      currentLecture.lectureFileName &&
       srcLine.includes('end-lecture')
     ) {
       fs.writeFileSync(
         path.resolve(
           destContentAbsolutePath,
-          sectionDirectoryName,
-          lectureFileName
+          currentSection.sectionDirectoryName,
+          currentLecture.lectureFileName
         ),
         destLines.join('\n')
       );
-      lectureFileName = '';
+      currentSection.lectures.push(currentLecture);
+      currentLecture = newLecture();
+      lectureIndex++;
     } else if (
-      sectionDirectoryName &&
-      !lectureFileName &&
+      currentSection.sectionDirectoryName &&
+      !currentLecture.lectureFileName &&
       srcLine.includes('end-section')
     ) {
-      sectionDirectoryName = '';
+      sections.push(currentSection);
+      currentSection = newSection();
       sectionIndex++;
     } else if (
-      sectionDirectoryName &&
-      !lectureFileName &&
+      currentSection.sectionDirectoryName &&
+      !currentLecture.lectureFileName &&
       srcLine.includes('begin-lecture')
     ) {
-      const lectureTitle = srcLine.match(/title="(.*)"/)[1];
-      lectureFileName = `s${fp.padCharsStart('0')(2)(
+      currentLecture.lectureTitle = srcLine.match(/title="(.*)"/)[1];
+      currentLecture.lectureFileName = `s${fp.padCharsStart('0')(2)(
         sectionIndex
-      )}e${fp.padCharsStart('0')(2)(
-        lectureIndex
-      )} - ${lectureTitle}${extension}`;
-      lectureIndex++;
+      )}e${fp.padCharsStart('0')(2)(lectureIndex)} - ${
+        currentLecture.lectureTitle
+      }${extension}`;
       destLines = [];
     } else if (
-      !sectionDirectoryName &&
-      !lectureFileName &&
+      !currentSection.sectionDirectoryName &&
+      !currentLecture.lectureFileName &&
       srcLine.includes('begin-section')
     ) {
-      // const sectionTitle = srcLine.match(/title="(.*)"/)[1];
-      sectionDirectoryName = `s${fp.padCharsStart('0')(2)(sectionIndex)}`;
-      mkdirp.sync(path.resolve(destContentAbsolutePath, sectionDirectoryName));
+      currentSection.sectionTitle = srcLine.match(/title="(.*)"/)[1];
+      currentSection.sectionDirectoryName = `s${fp.padCharsStart('0')(2)(
+        sectionIndex
+      )}`;
+      mkdirp.sync(
+        path.resolve(
+          destContentAbsolutePath,
+          currentSection.sectionDirectoryName
+        )
+      );
     } else {
       // process.stdout.write(".");
     }
 
     srcLineIndex++;
   }
+  const bookMetadataAbsPath = path.resolve(
+    srcDirAbsolutePath,
+    'book-full.json'
+  );
+  const bookMetadata =
+    fse.readJsonSync(bookMetadataAbsPath, { throws: false }) || newBook();
+  bookMetadata.sections = sections;
+  fse.writeJsonSync(bookMetadataAbsPath, bookMetadata, { spaces: 2 });
+  console.log({ bookMetadataAbsPath });
 }
 
 function postProcessFullHtml(fullHtmlAbsPath) {
