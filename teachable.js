@@ -3,9 +3,26 @@ const path = require('path');
 const rimraf = require('rimraf');
 const fp = require('lodash/fp');
 const mkdirp = require('mkdirp');
+const retext = require('retext');
+const emoji = require('retext-emoji');
+const prettier = require('prettier');
 
 const { runShellCommand } = require('./util');
 // const { pandocify } = require("./conversions");
+
+const emojify = fp.pipe(
+  retext().use(emoji, { convert: 'encode' }).processSync,
+  String
+);
+
+const prettierConfig = prettier.resolveConfig.sync(process.cwd());
+
+function prettify(srcFileBody) {
+  return prettier.format(
+    srcFileBody,
+    Object.assign({}, { parser: 'html' }, prettierConfig)
+  );
+}
 
 const srcDirAbsolutePath = path.resolve('manuscript');
 
@@ -44,16 +61,11 @@ const fullPandocMarkdownAbsolutePath = path.resolve(
 );
 fs.writeFileSync(fullPandocMarkdownAbsolutePath, fullPandocMarkdownBody);
 
-const fullGfmAbsolutePath = path.resolve(buildDirAbsolutePath, 'full-gfm.md');
-const pandocToGfmCommand = `pandoc -f markdown+emoji -t gfm -o ${fullGfmAbsolutePath} ${fullPandocMarkdownAbsolutePath}`;
-
-runShellCommand(pandocToGfmCommand);
-
 const fullHtmlAbsolutePath = path.resolve(
   buildDirAbsolutePath,
   'full-html.html'
 );
-const pandocToHtmlCommand = `pandoc -f markdown+emoji -t html -o ${fullHtmlAbsolutePath} -s ${fullPandocMarkdownAbsolutePath} && npx juice ${fullHtmlAbsolutePath} ${fullHtmlAbsolutePath}`;
+const pandocToHtmlCommand = `pandoc -f markdown -t html -o ${fullHtmlAbsolutePath} -s ${fullPandocMarkdownAbsolutePath} && npx juice ${fullHtmlAbsolutePath} ${fullHtmlAbsolutePath}`;
 
 runShellCommand(pandocToHtmlCommand);
 
@@ -146,22 +158,25 @@ function splitIntoSectionsAndLectures({
   }
 }
 
-function deployGfmFiles() {
-  const fullBodyAbsolutePath = fullGfmAbsolutePath;
-  const destRepoAbsolutePath = path.resolve(buildDirAbsolutePath, 'content');
-  const destRepoContentPath = 'teachable-gfm-markdown';
-
-  splitIntoSectionsAndLectures({
-    fullBodyAbsolutePath,
-    destRepoAbsolutePath,
-    destRepoContentPath,
+function postProcessFullHtml(fullHtmlAbsPath) {
+  const fullHtmlBody = fs.readFileSync(fullHtmlAbsPath, {
+    encoding: 'utf8',
   });
 
-  gitAddAllCommitAndPush(destRepoAbsolutePath);
+  const pipeline = fp.pipe(
+    emojify,
+    prettify
+  );
+
+  const processedFullHtmlBody = pipeline(fullHtmlBody);
+  fs.writeFileSync(fullHtmlAbsPath, processedFullHtmlBody);
 }
 
 function deployHtmlFiles() {
+  postProcessFullHtml(fullHtmlAbsolutePath);
+
   const fullBodyAbsolutePath = fullHtmlAbsolutePath;
+
   const destRepoAbsolutePath = path.resolve(buildDirAbsolutePath, 'content');
   const destRepoContentPath = 'teachable-html';
 
@@ -175,7 +190,8 @@ function deployHtmlFiles() {
 }
 
 function gitAddAllCommitAndPush(destRepoAbsolutePath) {
-  const githubPushCommand = `cd ${destRepoAbsolutePath} && git add . && git commit -m "Automated commit" && git push origin master && cd -`;
+  // --ignore-removal is to be conservative and avoid missing content while cdn propagates.
+  const githubPushCommand = `cd ${destRepoAbsolutePath} && git add --ignore-removal . && git commit -m "Automated commit" && git push origin master && cd -`;
 
   console.log({ githubPushCommand });
 
@@ -186,5 +202,4 @@ function gitAddAllCommitAndPush(destRepoAbsolutePath) {
   // );
 }
 
-deployGfmFiles();
 deployHtmlFiles();
