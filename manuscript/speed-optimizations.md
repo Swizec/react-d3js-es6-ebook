@@ -229,7 +229,7 @@ desktop monitor, and averages about 17,000 on my iPhone 5SE.
 Friends with newer laptops got it up to 35,000.
 
 You can see it in action hosted on
-[Github pages](http://swizec.github.io/react-particles-experiment/).
+[Github pages](https://swizec.github.io/react-particles-experiment/).
 
 We're keeping most of our existing code. The real changes happen in
 `src/components/index.jsx`, where a Konva stage replaces the `<svg>` element,
@@ -330,7 +330,7 @@ class Particles extends Component {
         this.canvasContext = this.canvas.getContext('2d');
 
         this.sprite = new Image();
-        this.sprite.src = 'http://i.imgur.com/m5l6lhr.png';
+        this.sprite.src = 'https://i.imgur.com/m5l6lhr.png';
     }
 
     drawParticle(particle) {
@@ -374,7 +374,7 @@ componentDidMount() {
     this.canvasContext = this.canvas.getContext('2d');
 
     this.sprite = new Image();
-    this.sprite.src = 'http://i.imgur.com/m5l6lhr.png';
+    this.sprite.src = 'https://i.imgur.com/m5l6lhr.png';
 }
 ```
 
@@ -402,7 +402,7 @@ memory.
 
 It looks like this:
 
-![Our minion particle](http://i.imgur.com/m5l6lhr.png)
+![Our minion particle](https://i.imgur.com/m5l6lhr.png)
 
 You might think it's unsafe to copy references to rendered elements into
 component properties like that, but it's okay. Our render function always

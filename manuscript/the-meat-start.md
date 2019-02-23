@@ -622,7 +622,7 @@ because it's a good list.
 
 > React.js components for modular charting and data visualization
 
-[![Victory.js logo](https://raw.githubusercontent.com/hsribei/react-d3js-es6-ebook/teachable-only/manuscript/resources/images/2018/victoryjs.jpg)](http://formidable.com/open-source/victory/)
+[![Victory.js logo](https://raw.githubusercontent.com/hsribei/react-d3js-es6-ebook/teachable-only/manuscript/resources/images/2018/victoryjs.jpg)](https://formidable.com/open-source/victory/)
 
 Victory offers low level components for basic charting and reimplements a lot
 of D3's API. Great when you need to create basic charts without a lot of
@@ -665,7 +665,7 @@ you pass your own. Means you always know what to expect.
 
 > A composable charting library built on React components
 
-[![Recharts homepage](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/recharts.png)](http://recharts.org/)
+[![Recharts homepage](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/recharts.png)](https://recharts.org/)
 
 Recharts is like a more colorful Victory. A pile of charting components, some
 customization, loves animating everything by default.
@@ -1991,7 +1991,7 @@ Best approach is to optimize for change.
 
 Otherwise you might have to do a rewrite. Rewrites are bad. One of the most
 infamous rewrite story is about
-[The Rewrite that Killed Netscape](http://www.joelonsoftware.com/articles/fog0000000069.html).
+[The Rewrite that Killed Netscape](https://www.joelonsoftware.com/articles/fog0000000069.html).
 You might not even have heard of Netscape :wink:
 
 Let's save you from that.

@@ -125,7 +125,7 @@ client-side dependencies as well.
 We're going to use NPM to install both our toolbelt dependencies (like Webpack)
 and our client-side dependencies (like React and d3.js).
 
-You can get NPM by installing node.js from [nodejs.org](http://nodejs.org).
+You can get NPM by installing node.js from [nodejs.org](https://nodejs.org).
 Webpack and our dev server will run in node.
 
 Once you have NPM, you can install Webpack globally with:
@@ -198,10 +198,10 @@ It's also a good idea to update the `author` field:
 
 ```{.json}
 // Delete the line(s) between here...
-"author": "Dan Abramov <dan.abramov@me.com> (http://github.com/gaearon)",
+"author": "Dan Abramov <dan.abramov@me.com> (https://github.com/gaearon)",
 // ...and here.
 // Insert the line(s) between here...
-"author": "Swizec <swizec@swizec.com> (http://swizec.com)
+"author": "Swizec <swizec@swizec.com> (https://swizec.com)
 // ...and here.
 ```
 
@@ -643,10 +643,10 @@ There might be loaders out there with more options, but this is the most basic
 loader I've seen that covers our bases.
 
 That's it for our very basic Webpack config. You can read about all the other
-options in [Webpack's own documentation](http://webpack.github.io/docs/).
+options in [Webpack's own documentation](https://webpack.github.io/docs/).
 
 My friend Juho Vepsäläinen has also written a marvelous book that dives deeper
-into Webpack. You can find it at [survivejs.com](http://survivejs.com).
+into Webpack. You can find it at [survivejs.com](https://survivejs.com).
 
 ### Dev server
 
@@ -697,7 +697,7 @@ app.listen(3000, 'localhost', function(err) {
 
 I know I didn't explain much, but that's as deep as we can go at this point.
 You can read more about node.js servers, and Express in particular, in
-[Azat Mardan's books](http://azat.co/). They're great.
+[Azat Mardan's books](https://azat.co/). They're great.
 
 ### Babel config
 
@@ -706,7 +706,7 @@ just want to get started and don't care about optimizing the compilation
 process.
 
 But there are
-[a bunch of configuration options](http://babeljs.io/docs/usage/options/) if
+[a bunch of configuration options](https://babeljs.io/docs/usage/options/) if
 you want to play around. You can configure everything from enabling and
 disabling ES6 features to source maps and basic code compacting and more. More
 importantly, you can define custom transforms for your code.
