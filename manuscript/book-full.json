@@ -1,0 +1,724 @@
+{
+  "sections": [
+    {
+      "sectionTitle": "Introduction",
+      "sectionDirectoryName": "s00",
+      "lectures": [
+        {
+          "lectureTitle": "Hello new friend 👋",
+          "lectureFileName": "s00e00 - Hello new friend 👋.html"
+        },
+        {
+          "lectureTitle": "What you need to know",
+          "lectureFileName": "s00e01 - What you need to know.html"
+        },
+        {
+          "lectureTitle": "How to approach React for Dataviz",
+          "lectureFileName": "s00e02 - How to approach React for Dataviz.html"
+        },
+        {
+          "lectureTitle": "Why React and D3",
+          "lectureFileName": "s00e03 - Why React and D3.html"
+        },
+        {
+          "lectureTitle": "Buzzword soup explained",
+          "lectureFileName": "s00e04 - Buzzword soup explained.html"
+        },
+        {
+          "lectureTitle": "JSX",
+          "lectureFileName": "s00e05 - JSX.html"
+        },
+        {
+          "lectureTitle": "What you'll build",
+          "lectureFileName": "s00e06 - What you'll build.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "A quick intro to D3",
+      "sectionDirectoryName": "s01",
+      "lectures": [
+        {
+          "lectureTitle": "Why D3",
+          "lectureFileName": "s01e07 - Why D3.html"
+        },
+        {
+          "lectureTitle": "3 key insights to learn D3 from scratch",
+          "lectureFileName": "s01e08 - 3 key insights to learn D3 from scratch.html"
+        },
+        {
+          "lectureTitle": "Data vs. DOM manipulation",
+          "lectureFileName": "s01e09 - Data vs. DOM manipulation.html"
+        },
+        {
+          "lectureTitle": "Scales",
+          "lectureFileName": "s01e10 - Scales.html"
+        },
+        {
+          "lectureTitle": "D3 layouts",
+          "lectureFileName": "s01e11 - D3 layouts.html"
+        },
+        {
+          "lectureTitle": "Recap",
+          "lectureFileName": "s01e12 - Recap.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "How React makes D3 easier",
+      "sectionDirectoryName": "s02",
+      "lectures": [
+        {
+          "lectureTitle": "React + D3 = ❤️",
+          "lectureFileName": "s02e13 - React + D3 = ❤️.html"
+        },
+        {
+          "lectureTitle": "What about existing libraries?",
+          "lectureFileName": "s02e14 - What about existing libraries?.html"
+        },
+        {
+          "lectureTitle": "Victory.js",
+          "lectureFileName": "s02e15 - Victory.js.html"
+        },
+        {
+          "lectureTitle": "Recharts",
+          "lectureFileName": "s02e16 - Recharts.html"
+        },
+        {
+          "lectureTitle": "Nivo",
+          "lectureFileName": "s02e17 - Nivo.html"
+        },
+        {
+          "lectureTitle": "VX",
+          "lectureFileName": "s02e18 - VX.html"
+        },
+        {
+          "lectureTitle": "When you shouldn't use a library",
+          "lectureFileName": "s02e19 - When you shouldn't use a library.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Quickly integrate any D3 code in your React project with Blackbox Components",
+      "sectionDirectoryName": "s03",
+      "lectures": [
+        {
+          "lectureTitle": "The idea behind blackbox components",
+          "lectureFileName": "s03e20 - The idea behind blackbox components.html"
+        },
+        {
+          "lectureTitle": "A quick blackbox example - a D3 axis",
+          "lectureFileName": "s03e21 - A quick blackbox example - a D3 axis.html"
+        },
+        {
+          "lectureTitle": "A React + D3 axis",
+          "lectureFileName": "s03e22 - A React + D3 axis.html"
+        },
+        {
+          "lectureTitle": "A D3 blackbox higher order component - HOC",
+          "lectureFileName": "s03e23 - A D3 blackbox higher order component - HOC.html"
+        },
+        {
+          "lectureTitle": "D3blackbox magic trick - render anything in 30 seconds",
+          "lectureFileName": "s03e24 - D3blackbox magic trick - render anything in 30 seconds.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Build scalable dataviz components with full integration",
+      "sectionDirectoryName": "s04",
+      "lectures": [
+        {
+          "lectureTitle": "The approach",
+          "lectureFileName": "s04e25 - The approach.html"
+        },
+        {
+          "lectureTitle": "When props don't change - a scatterplot",
+          "lectureFileName": "s04e26 - When props don't change - a scatterplot.html"
+        },
+        {
+          "lectureTitle": "A scatterplot When props do change",
+          "lectureFileName": "s04e27 - A scatterplot When props do change.html"
+        },
+        {
+          "lectureTitle": "Making your components more flexible with render props",
+          "lectureFileName": "s04e28 - Making your components more flexible with render props.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "You're awesome",
+      "sectionDirectoryName": "s05",
+      "lectures": [
+        {
+          "lectureTitle": "💪",
+          "lectureFileName": "s05e29 - 💪.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "A note about state",
+      "sectionDirectoryName": "s06",
+      "lectures": [
+        {
+          "lectureTitle": "Handling state in your React app",
+          "lectureFileName": "s06e30 - Handling state in your React app.html"
+        },
+        {
+          "lectureTitle": "Basic architecture we'll use",
+          "lectureFileName": "s06e31 - Basic architecture we'll use.html"
+        },
+        {
+          "lectureTitle": "What about React Context? Redux? MobX?",
+          "lectureFileName": "s06e32 - What about React Context? Redux? MobX?.html"
+        },
+        {
+          "lectureTitle": "How to structure your app",
+          "lectureFileName": "s06e33 - How to structure your app.html"
+        },
+        {
+          "lectureTitle": "Congratz!",
+          "lectureFileName": "s06e34 - Congratz!.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Set up your local environment",
+      "sectionDirectoryName": "s07",
+      "lectures": [
+        {
+          "lectureTitle": "Local environment setup",
+          "lectureFileName": "s07e35 - Local environment setup.html"
+        },
+        {
+          "lectureTitle": "Start with create-react-app",
+          "lectureFileName": "s07e36 - Start with create-react-app.html"
+        },
+        {
+          "lectureTitle": "What you get",
+          "lectureFileName": "s07e37 - What you get.html"
+        },
+        {
+          "lectureTitle": "Install extra dependencies",
+          "lectureFileName": "s07e38 - Install extra dependencies.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "176,113 tech salaries visualized – a dataviz dashboard",
+      "sectionDirectoryName": "s08",
+      "lectures": [
+        {
+          "lectureTitle": "176,113 tech salaries visualized",
+          "lectureFileName": "s08e39 - 176,113 tech salaries visualized.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Show a Preloader",
+      "sectionDirectoryName": "s09",
+      "lectures": [
+        {
+          "lectureTitle": "Show a Preloader",
+          "lectureFileName": "s09e40 - Show a Preloader.html"
+        },
+        {
+          "lectureTitle": "Step1: get image",
+          "lectureFileName": "s09e41 - Step1: get image.html"
+        },
+        {
+          "lectureTitle": "Step 2: make component",
+          "lectureFileName": "s09e42 - Step 2: make component.html"
+        },
+        {
+          "lectureTitle": "Step 3: Update App",
+          "lectureFileName": "s09e43 - Step 3: Update App.html"
+        },
+        {
+          "lectureTitle": "Step 4: Load styles",
+          "lectureFileName": "s09e44 - Step 4: Load styles.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Load and parse your data",
+      "sectionDirectoryName": "s10",
+      "lectures": [
+        {
+          "lectureTitle": "Asynchronously load data",
+          "lectureFileName": "s10e45 - Asynchronously load data.html"
+        },
+        {
+          "lectureTitle": "Step 0: Get data",
+          "lectureFileName": "s10e46 - Step 0: Get data.html"
+        },
+        {
+          "lectureTitle": "Step 1: Prep App.js",
+          "lectureFileName": "s10e47 - Step 1: Prep App.js.html"
+        },
+        {
+          "lectureTitle": "Step 2: Prep data parsing functions",
+          "lectureFileName": "s10e48 - Step 2: Prep data parsing functions.html"
+        },
+        {
+          "lectureTitle": "Step 3: Load the datasets",
+          "lectureFileName": "s10e49 - Step 3: Load the datasets.html"
+        },
+        {
+          "lectureTitle": "Step 4: Tie datasets together",
+          "lectureFileName": "s10e50 - Step 4: Tie datasets together.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Render a choropleth map of the US",
+      "sectionDirectoryName": "s11",
+      "lectures": [
+        {
+          "lectureTitle": "Render a choropleth map of the US",
+          "lectureFileName": "s11e51 - Render a choropleth map of the US.html"
+        },
+        {
+          "lectureTitle": "Step 1: Prep App.js",
+          "lectureFileName": "s11e52 - Step 1: Prep App.js.html"
+        },
+        {
+          "lectureTitle": "Step 2: CountyMap index.js",
+          "lectureFileName": "s11e53 - Step 2: CountyMap index.js.html"
+        },
+        {
+          "lectureTitle": "Step 3: CountyMap CountyMap.js",
+          "lectureFileName": "s11e54 - Step 3: CountyMap CountyMap.js.html"
+        },
+        {
+          "lectureTitle": "Step 4: CountyMap County.js",
+          "lectureFileName": "s11e55 - Step 4: CountyMap County.js.html"
+        },
+        {
+          "lectureTitle": "A map appears 🗺",
+          "lectureFileName": "s11e56 - A map appears 🗺.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Render a Histogram of salaries",
+      "sectionDirectoryName": "s12",
+      "lectures": [
+        {
+          "lectureTitle": "Render a Histogram of salaries",
+          "lectureFileName": "s12e57 - Render a Histogram of salaries.html"
+        },
+        {
+          "lectureTitle": "Step 1: Prep App.js",
+          "lectureFileName": "s12e58 - Step 1: Prep App.js.html"
+        },
+        {
+          "lectureTitle": "Step 2: CSS changes",
+          "lectureFileName": "s12e59 - Step 2: CSS changes.html"
+        },
+        {
+          "lectureTitle": "Step 3: Histogram component",
+          "lectureFileName": "s12e60 - Step 3: Histogram component.html"
+        },
+        {
+          "lectureTitle": "Step 4: HistogramBar (sub)component",
+          "lectureFileName": "s12e61 - Step 4: HistogramBar (sub)component.html"
+        },
+        {
+          "lectureTitle": "Step 5: Add an axis",
+          "lectureFileName": "s12e62 - Step 5: Add an axis.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Make it understandable with meta info",
+      "sectionDirectoryName": "s13",
+      "lectures": [
+        {
+          "lectureTitle": "Add meta info",
+          "lectureFileName": "s13e63 - Add meta info.html"
+        },
+        {
+          "lectureTitle": "Dynamic title",
+          "lectureFileName": "s13e64 - Dynamic title.html"
+        },
+        {
+          "lectureTitle": "Dynamic description",
+          "lectureFileName": "s13e65 - Dynamic description.html"
+        },
+        {
+          "lectureTitle": "Overlay a median household line",
+          "lectureFileName": "s13e66 - Overlay a median household line.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Add user controls for exploration",
+      "sectionDirectoryName": "s14",
+      "lectures": [
+        {
+          "lectureTitle": "Add user controls for data slicing and dicing",
+          "lectureFileName": "s14e67 - Add user controls for data slicing and dicing.html"
+        },
+        {
+          "lectureTitle": "Step 1: Update App.js",
+          "lectureFileName": "s14e68 - Step 1: Update App.js.html"
+        },
+        {
+          "lectureTitle": "Step 2: Build Controls component",
+          "lectureFileName": "s14e69 - Step 2: Build Controls component.html"
+        },
+        {
+          "lectureTitle": "Step 3: Build ControlRow component",
+          "lectureFileName": "s14e70 - Step 3: Build ControlRow component.html"
+        },
+        {
+          "lectureTitle": "Step 4: Build Toggle component",
+          "lectureFileName": "s14e71 - Step 4: Build Toggle component.html"
+        },
+        {
+          "lectureTitle": "Step 5: Add US state and Job Title filters",
+          "lectureFileName": "s14e72 - Step 5: Add US state and Job Title filters.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Make it work in the real world",
+      "sectionDirectoryName": "s15",
+      "lectures": [
+        {
+          "lectureTitle": "Add rudimentary routing",
+          "lectureFileName": "s15e73 - Add rudimentary routing.html"
+        },
+        {
+          "lectureTitle": "Prep your app for launch",
+          "lectureFileName": "s15e74 - Prep your app for launch.html"
+        },
+        {
+          "lectureTitle": "Twitter and Facebook cards and SEO",
+          "lectureFileName": "s15e75 - Twitter and Facebook cards and SEO.html"
+        },
+        {
+          "lectureTitle": "Use full dataset",
+          "lectureFileName": "s15e76 - Use full dataset.html"
+        },
+        {
+          "lectureTitle": "Launch! 🚀",
+          "lectureFileName": "s15e77 - Launch! 🚀.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Animation",
+      "sectionDirectoryName": "s16",
+      "lectures": [
+        {
+          "lectureTitle": "Intro",
+          "lectureFileName": "s16e78 - Intro.html"
+        },
+        {
+          "lectureTitle": "Using a game loop for rich animation",
+          "lectureFileName": "s16e79 - Using a game loop for rich animation.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "A bouncy ball game loop example",
+      "sectionDirectoryName": "s17",
+      "lectures": [
+        {
+          "lectureTitle": "Begin bouncy ball",
+          "lectureFileName": "s17e80 - Begin bouncy ball.html"
+        },
+        {
+          "lectureTitle": "Step 1: stub out App and Ball",
+          "lectureFileName": "s17e81 - Step 1: stub out App and Ball.html"
+        },
+        {
+          "lectureTitle": "Stub out BouncingBall",
+          "lectureFileName": "s17e82 - Stub out BouncingBall.html"
+        },
+        {
+          "lectureTitle": "Step 3: Rendering",
+          "lectureFileName": "s17e83 - Step 3: Rendering.html"
+        },
+        {
+          "lectureTitle": "Step 4: The Game Loop",
+          "lectureFileName": "s17e84 - Step 4: The Game Loop.html"
+        },
+        {
+          "lectureTitle": "Step 5: Correcting for time and frame drops",
+          "lectureFileName": "s17e85 - Step 5: Correcting for time and frame drops.html"
+        },
+        {
+          "lectureTitle": "Game loop recap",
+          "lectureFileName": "s17e86 - Game loop recap.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Use transitions for simple animation",
+      "sectionDirectoryName": "s18",
+      "lectures": [
+        {
+          "lectureTitle": "Transition basics",
+          "lectureFileName": "s18e87 - Transition basics.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Build a simple transition component",
+      "sectionDirectoryName": "s19",
+      "lectures": [
+        {
+          "lectureTitle": "A swipe transition component",
+          "lectureFileName": "s19e88 - A swipe transition component.html"
+        },
+        {
+          "lectureTitle": "App.js",
+          "lectureFileName": "s19e89 - App.js.html"
+        },
+        {
+          "lectureTitle": "Ball.js",
+          "lectureFileName": "s19e90 - Ball.js.html"
+        },
+        {
+          "lectureTitle": "Ball.js state transition",
+          "lectureFileName": "s19e91 - Ball.js state transition.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Enter-update-exit animation",
+      "sectionDirectoryName": "s20",
+      "lectures": [
+        {
+          "lectureTitle": "Enter-update-exit animation intro",
+          "lectureFileName": "s20e92 - Enter-update-exit animation intro.html"
+        },
+        {
+          "lectureTitle": "Build a declarative animated alphabet",
+          "lectureFileName": "s20e93 - Build a declarative animated alphabet.html"
+        },
+        {
+          "lectureTitle": "Project setup",
+          "lectureFileName": "s20e94 - Project setup.html"
+        },
+        {
+          "lectureTitle": "The Alphabet component",
+          "lectureFileName": "s20e95 - The Alphabet component.html"
+        },
+        {
+          "lectureTitle": "Declarative render for enter-exit transitions",
+          "lectureFileName": "s20e96 - Declarative render for enter-exit transitions.html"
+        },
+        {
+          "lectureTitle": "TransitionGroup",
+          "lectureFileName": "s20e97 - TransitionGroup.html"
+        },
+        {
+          "lectureTitle": "The Letter component",
+          "lectureFileName": "s20e98 - The Letter component.html"
+        },
+        {
+          "lectureTitle": "onEnter",
+          "lectureFileName": "s20e99 - onEnter.html"
+        },
+        {
+          "lectureTitle": "onExit",
+          "lectureFileName": "s20e100 - onExit.html"
+        },
+        {
+          "lectureTitle": "componentDidUpdate",
+          "lectureFileName": "s20e101 - componentDidUpdate.html"
+        },
+        {
+          "lectureTitle": "render",
+          "lectureFileName": "s20e102 - render.html"
+        },
+        {
+          "lectureTitle": "That's it 👍",
+          "lectureFileName": "s20e103 - That's it 👍.html"
+        },
+        {
+          "lectureTitle": "Key transition takeaways",
+          "lectureFileName": "s20e104 - Key transition takeaways.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Animating with React, Redux, and D3",
+      "sectionDirectoryName": "s21",
+      "lectures": [
+        {
+          "lectureTitle": "Redux animation intro",
+          "lectureFileName": "s21e105 - Redux animation intro.html"
+        },
+        {
+          "lectureTitle": "Here's how it works",
+          "lectureFileName": "s21e106 - Here's how it works.html"
+        },
+        {
+          "lectureTitle": "Some basic terminology",
+          "lectureFileName": "s21e107 - Some basic terminology.html"
+        },
+        {
+          "lectureTitle": "3 presentation components",
+          "lectureFileName": "s21e108 - 3 presentation components.html"
+        },
+        {
+          "lectureTitle": "6 Redux Actions",
+          "lectureFileName": "s21e109 - 6 Redux Actions.html"
+        },
+        {
+          "lectureTitle": "1 Container component",
+          "lectureFileName": "s21e110 - 1 Container component.html"
+        },
+        {
+          "lectureTitle": "2 Redux Reducers",
+          "lectureFileName": "s21e111 - 2 Redux Reducers.html"
+        },
+        {
+          "lectureTitle": "What we learned",
+          "lectureFileName": "s21e112 - What we learned.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Speed optimizations",
+      "sectionDirectoryName": "s22",
+      "lectures": [
+        {
+          "lectureTitle": "Speed intro",
+          "lectureFileName": "s22e113 - Speed intro.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Using canvas",
+      "sectionDirectoryName": "s23",
+      "lectures": [
+        {
+          "lectureTitle": "Intro",
+          "lectureFileName": "s23e114 - Intro.html"
+        },
+        {
+          "lectureTitle": "Why canvas",
+          "lectureFileName": "s23e115 - Why canvas.html"
+        },
+        {
+          "lectureTitle": "Isn't canvas too hard?",
+          "lectureFileName": "s23e116 - Isn't canvas too hard?.html"
+        },
+        {
+          "lectureTitle": "The trouble with Canvas",
+          "lectureFileName": "s23e117 - The trouble with Canvas.html"
+        },
+        {
+          "lectureTitle": "Declarative Canvas with Konva and react-konva",
+          "lectureFileName": "s23e118 - Declarative Canvas with Konva and react-konva.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Smooth animation with 20,000+ elements",
+      "sectionDirectoryName": "s24",
+      "lectures": [
+        {
+          "lectureTitle": "A particle generator pushed to the max",
+          "lectureFileName": "s24e119 - A particle generator pushed to the max.html"
+        },
+        {
+          "lectureTitle": "Prepare canvas layer",
+          "lectureFileName": "s24e120 - Prepare canvas layer.html"
+        },
+        {
+          "lectureTitle": "Use sprites for max redraw speed",
+          "lectureFileName": "s24e121 - Use sprites for max redraw speed.html"
+        },
+        {
+          "lectureTitle": "But why so many elements?",
+          "lectureFileName": "s24e122 - But why so many elements?.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Build a small interactive canvas game",
+      "sectionDirectoryName": "s25",
+      "lectures": [
+        {
+          "lectureTitle": "Simulating billiards with MobX, Canvas, and Konva",
+          "lectureFileName": "s25e123 - Simulating billiards with MobX, Canvas, and Konva.html"
+        },
+        {
+          "lectureTitle": "Decorators",
+          "lectureFileName": "s25e124 - Decorators.html"
+        },
+        {
+          "lectureTitle": "Part 0: Some setup",
+          "lectureFileName": "s25e125 - Part 0: Some setup.html"
+        },
+        {
+          "lectureTitle": "A quick MobX primer",
+          "lectureFileName": "s25e126 - A quick MobX primer.html"
+        },
+        {
+          "lectureTitle": "Part 1: Rendering our marbles",
+          "lectureFileName": "s25e127 - Part 1: Rendering our marbles.html"
+        },
+        {
+          "lectureTitle": "Part 2: Building the physics",
+          "lectureFileName": "s25e128 - Part 2: Building the physics.html"
+        },
+        {
+          "lectureTitle": "Collision detection",
+          "lectureFileName": "s25e129 - Collision detection.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Speedy React alternatives",
+      "sectionDirectoryName": "s26",
+      "lectures": [
+        {
+          "lectureTitle": "Using a React alternative like Preact or Inferno",
+          "lectureFileName": "s26e130 - Using a React alternative like Preact or Inferno.html"
+        },
+        {
+          "lectureTitle": "Stress test your framework with a recursive fractal",
+          "lectureFileName": "s26e131 - Stress test your framework with a recursive fractal.html"
+        },
+        {
+          "lectureTitle": "Stress testing Preact and Inferno",
+          "lectureFileName": "s26e132 - Stress testing Preact and Inferno.html"
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Refactor your components with React Hooks",
+      "sectionDirectoryName": "s27",
+      "lectures": [
+        {
+          "lectureTitle": "An intro to hooks",
+          "lectureFileName": "s27e133 - An intro to hooks.html"
+        },
+        {
+          "lectureTitle": "useState, useEffect, and useContext",
+          "lectureFileName": "s27e134 - useState, useEffect, and useContext.html"
+        },
+        {
+          "lectureTitle": "useMemo is your new best friend",
+          "lectureFileName": "s27e135 - useMemo is your new best friend.html"
+        },
+        {
+          "lectureTitle": "my useD3 hook",
+          "lectureFileName": "s27e136 - my useD3 hook.html"
+        },
+        {
+          "lectureTitle": "Refactoring our big example to hooks",
+          "lectureFileName": "s27e137 - Refactoring our big example to hooks.html"
+        }
+      ]
+    }
+  ]
+}
