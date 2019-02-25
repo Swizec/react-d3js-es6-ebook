@@ -84,12 +84,6 @@ function convertAndWrite(dstDirPath, srcFileNames) {
   const dstFileBodies = fp.map(dstFileBody)(srcFileNames);
 
   fp.zipWith(writeFile, dstFilePaths, dstFileBodies);
-  fp.zipWith(
-    (..._args) => process.stdout.write('.'),
-    dstFilePaths,
-    dstFileBodies
-  );
-  process.stdout.write('\n');
 }
 
 function main() {
