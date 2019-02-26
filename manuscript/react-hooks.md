@@ -313,5 +313,6 @@ the videos :)
 
 As always, they're cut so you can enjoy bitesized pieces.
 
-<!--- end-section -->
+<!--- end-lecture-->
+
 <!--- end-section -->
