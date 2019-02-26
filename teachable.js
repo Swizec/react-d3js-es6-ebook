@@ -1,13 +1,16 @@
 const fs = require('fs');
-const fp = require('lodash/fp');
+const path = require('path');
 const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
+
+const fp = require('lodash/fp');
 
 const {
   buildDirAbsPath,
   fullHtmlAbsPath,
   pubRepoAbsPath,
   fullBookDataAbsPath,
+  teachableAssetsAbsPath,
 } = require('./config');
 
 const {
@@ -15,6 +18,8 @@ const {
   prettify,
   prettyJson,
   runShellCommand,
+  writeFullManuscript,
+  convertFullManuscriptToHtml,
   splitIntoSectionsAndLectures,
 } = require('./util');
 
@@ -33,16 +38,15 @@ function postProcessFullHtml(fullHtmlAbsPath) {
 }
 
 function splitFullHtmlIntoPubRepo() {
-  // runShellCommand(
-  //   `git clone git@github.com:hsribei/content.git ${pubRepoAbsPath}`,
-  //   "Couldn't clone repo. Probably because it's already cloned."
-  // );
+  if (!fs.existsSync(pubRepoAbsPath)) {
+    runShellCommand(
+      `git clone git@github.com:hsribei/content.git ${pubRepoAbsPath}`,
+      "Couldn't clone repo."
+    );
+  }
+  const extension = '.html';
 
-  // const destDirAbsPath = 'teachable-html';
-  const destExtname = '.html';
-
-  // rimraf.sync(destDirAbsPath, null, e => console.log(e));
-
+  // turn full html into structured json with sections and lectures
   const fullBody = fs.readFileSync(fullHtmlAbsPath, {
     encoding: 'utf8',
   });
@@ -51,6 +55,41 @@ function splitFullHtmlIntoPubRepo() {
 
   const fullBookData = splitIntoSectionsAndLectures(fullBody);
   fs.writeFileSync(fullBookDataAbsPath, prettyJson(fullBookData));
+
+  // create section directories and lecture files
+  rimraf.sync(teachableAssetsAbsPath, null, e => console.log(e));
+  mkdirp.sync(teachableAssetsAbsPath);
+
+  const sectionIndexes = fp.range(0, fullBookData.sections.length);
+  const sectionDirAbsPaths = fp.map(
+    fp.pipe(
+      sectionIndex => `s${fp.padCharsStart('0')(2)(sectionIndex)}`,
+      sectionDirAbsPath =>
+        path.resolve(teachableAssetsAbsPath, sectionDirAbsPath),
+      mkdirp.sync
+    )
+  )(sectionIndexes);
+
+  let lectureIndex = 0;
+  fullBookData.sections.map(({ lectures }, sectionIndex) => {
+    lectures.map(({ lectureTitle, lectureLines }) => {
+      const lectureFileName =
+        's' +
+        `${fp.padCharsStart('0')(2)(sectionIndex)}` +
+        'e' +
+        `${fp.padCharsStart('0')(2)(lectureIndex)}` +
+        ` - ${lectureTitle}${extension}`;
+      const lectureAbsPath = path.resolve(
+        teachableAssetsAbsPath,
+        sectionDirAbsPaths[sectionIndex],
+        lectureFileName
+      );
+
+      const lectureBody = lectureLines.join('\n');
+      fs.writeFileSync(lectureAbsPath, lectureBody);
+      lectureIndex++;
+    });
+  });
 }
 
 function gitAddAllCommitAndPush(destRepoAbsolutePath) {
@@ -58,27 +97,32 @@ function gitAddAllCommitAndPush(destRepoAbsolutePath) {
   // avoid missing content while cdn propagates.
   const githubPushCommand = `
     cd ${destRepoAbsolutePath} &&
-    git add --ignore-removal . &&
-    git commit -m "Automated commit" &&
-    git push origin master && cd -`;
+    git add --ignore-removal . `; // ` &&
+  // git commit -m "Automated commit" &&
+  // git push origin master && cd -`;
+  // ^^^^^^^^^^^^^^^^^^^^^^^^^
+  // Uncomment above to deploy
 
   console.log({ githubPushCommand });
 
-  // Uncomment to deploy
-  // runShellCommand(
-  //   githubPushCommand,
-  //   "Probably because there weren't any changes."
-  // );
+  runShellCommand(
+    githubPushCommand,
+    "Probably because there weren't any changes."
+  );
 }
 
 function main() {
-  // mkdirp.sync(buildDirAbsPath);
+  mkdirp.sync(buildDirAbsPath);
 
-  // postProcessFullHtml(fullHtmlAbsPath);
+  writeFullManuscript();
+
+  convertFullManuscriptToHtml();
+
+  postProcessFullHtml(fullHtmlAbsPath);
 
   splitFullHtmlIntoPubRepo();
 
-  // gitAddAllCommitAndPush(pubRepoAbsPath);
+  gitAddAllCommitAndPush(pubRepoAbsPath);
 }
 
 main();

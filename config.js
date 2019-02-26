@@ -18,6 +18,8 @@ const fullBookDataAbsPath = path.resolve(srcDirAbsPath, 'book-full.json');
 
 const pubRepoAbsPath = path.resolve(buildDirAbsPath, 'content');
 
+const teachableAssetsAbsPath = path.resolve(pubRepoAbsPath, 'teachable-html');
+
 module.exports = {
   prettierConfig,
   srcDirAbsPath,
@@ -26,4 +28,5 @@ module.exports = {
   fullHtmlAbsPath,
   fullBookDataAbsPath,
   pubRepoAbsPath,
+  teachableAssetsAbsPath,
 };

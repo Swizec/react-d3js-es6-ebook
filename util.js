@@ -55,7 +55,7 @@ function splitIntoSectionsAndLectures(fullBody) {
     return { sectionTitle: '', lectures: [] };
   }
   function newLecture() {
-    return { lectureTitle: '', lectureBody: '' };
+    return { lectureTitle: '', lectureLines: [] };
   }
   const bookData = newBook();
   let currentSection = newSection();
@@ -66,7 +66,7 @@ function splitIntoSectionsAndLectures(fullBody) {
   let dstLines = [];
 
   while (srcLineIndex < srcLines.length) {
-    const srcLine = srcLines[srcLineIndex];
+    const srcLine = srcLines[srcLineIndex].replace(/^ {4}/, '');
     if (
       currentSection.sectionTitle &&
       currentLecture.lectureTitle &&
@@ -80,7 +80,7 @@ function splitIntoSectionsAndLectures(fullBody) {
       srcLine.includes('end-lecture')
     ) {
       console.log(currentLecture);
-      currentLecture.lectureBody = dstLines.join(`\n`);
+      currentLecture.lectureLines = dstLines;
       currentSection.lectures.push(currentLecture);
       currentLecture = newLecture();
       dstLines = [];
@@ -118,13 +118,14 @@ function splitIntoSectionsAndLectures(fullBody) {
 
 function convertFullManuscriptToHtml() {
   const pandocToHtmlCommand = `
-    pandoc
-      -f markdown
-      -t html
-      -s ${fullManuscriptAbsPath}
-      -o ${fullHtmlAbsPath} &&
+    pandoc                         \
+      -f markdown                  \
+      -t html                      \
+      -s ${fullManuscriptAbsPath}  \
+      -o ${fullHtmlAbsPath} &&     \
     npx juice ${fullHtmlAbsPath} ${fullHtmlAbsPath}`;
 
+  console.log('Going to call pandoc now. This is going to take a while...');
   runShellCommand(pandocToHtmlCommand);
 }
 
@@ -148,7 +149,7 @@ function conditionalLog(isLoggingEnabled, label) {
 }
 
 function prettyJson(obj) {
-  return prettify('json')(JSON.stringify(obj, null, 2));
+  return prettify('json')(JSON.stringify(obj));
 }
 
 function runShellCommand(
@@ -175,7 +176,7 @@ function getSrcFileAbsPaths() {
     .trim()
     .split(`\n`)
     .map(fp.trim)
-    .map(fp.curry(path.resolve)(srcDirAbsPath));
+    .map(fileName => path.resolve(srcDirAbsPath, fileName));
 }
 
 function getJoinedFileBodies(srcFileAbsPaths) {
