@@ -671,7 +671,7 @@ and are green, updated letters move right or left, deleted letters are red and
 fall down.
 
 You can play with a more advanced version
-[here](http://swizec.github.io/react-d3-enter-exit-transitions/). Same
+[here](https://swizec.github.io/react-d3-enter-exit-transitions/). Same
 principle as the alphabet, but it animates what you type.
 
 ![Typing animation screenshot](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/typing-screenshot.png)
@@ -1180,7 +1180,7 @@ Boom. We're done.
 ![Alphabet transitions are hard to screenshot](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/alphabet-transitions.png)
 
 You can play with a more complex version of this example here:
-[http://swizec.github.io/react-d3-enter-exit-transitions/](http://swizec.github.io/react-d3-enter-exit-transitions/).
+[https://swizec.github.io/react-d3-enter-exit-transitions/](https://swizec.github.io/react-d3-enter-exit-transitions/).
 Try typing different strings and see how the visualization reacts.
 
 The typing example uses the same Letter components to declaratively render its

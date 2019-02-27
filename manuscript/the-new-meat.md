@@ -279,8 +279,8 @@ Hmm… that's not very pretty. Let's fix it.
 
 We're going to use Bootstrap styles to avoid reinventing the wheel. We're
 ignoring their JavaScript widgets and the amazing integration built by the
-[react-bootstrap](http://react-bootstrap.github.io/) team. Just the stylesheets
-please.
+[react-bootstrap](https://react-bootstrap.github.io/) team. Just the
+stylesheets please.
 
 They'll make our fonts look better, help with layouting, and make buttons look
 like buttons. We _could_ use styled components, but writing our own styles
@@ -342,7 +342,7 @@ Neither D3 nor React care what the datasource is.
 First, you need some data.
 
 Our dataset comes from a few sources. Tech salaries are from
-[h1bdata.info](http://h1bdata.info), median household incomes come from the US
+[h1bdata.info](https://h1bdata.info), median household incomes come from the US
 census data, and I got US geo map info from Mike Bostock's github repositories.
 Some elbow grease and python scripts tied them all together.
 
@@ -2940,7 +2940,7 @@ controlled and takes event handlers as callbacks in props. No need for a class.
 We set up a Bootstrap classname: `btn` and `btn-default` make an element look
 like a button, the conditional `btn-primary` makes it blue. If you're not
 familiar with Bootstrap classes, you should check
-[their documentation](http://getbootstrap.com/).
+[their documentation](https://getbootstrap.com/).
 
 Then we render a `<button>` tag and, well, that's it. A row of year filters
 appears in the browser. `onClick` passes

@@ -622,7 +622,7 @@ because it's a good list.
 
 > React.js components for modular charting and data visualization
 
-[![Victory.js logo](https://raw.githubusercontent.com/hsribei/react-d3js-es6-ebook/teachable-only/manuscript/resources/images/2018/victoryjs.jpg)](http://formidable.com/open-source/victory/)
+[![Victory.js logo](https://raw.githubusercontent.com/hsribei/react-d3js-es6-ebook/teachable-only/manuscript/resources/images/2018/victoryjs.jpg)](https://formidable.com/open-source/victory/)
 
 Victory offers low level components for basic charting and reimplements a lot
 of D3's API. Great when you need to create basic charts without a lot of
@@ -665,7 +665,7 @@ you pass your own. Means you always know what to expect.
 
 > A composable charting library built on React components
 
-[![Recharts homepage](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/recharts.png)](http://recharts.org/)
+[![Recharts homepage](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/recharts.png)](https://recharts.org/)
 
 Recharts is like a more colorful Victory. A pile of charting components, some
 customization, loves animating everything by default.
@@ -1272,13 +1272,17 @@ return (
 )
 ```
 
-But like I said, don't use this in production. It's great for quick prototypes, trying stuff out, or seeing how an existing visualization might fit your app.
+But like I said, don't use this in production. It's great for quick prototypes,
+trying stuff out, or seeing how an existing visualization might fit your app.
 
 ## A note about D3blackbox
 
-To make your life easier, I have open sourced my version of the D3blackbox HOC. You can read more about it at [d3blackbox.com](https://d3blackbox.com)
+To make your life easier, I have open sourced my version of the D3blackbox HOC.
+You can read more about it at [d3blackbox.com](https://d3blackbox.com)
 
-Works the same as the HOC we just built together, adds the anchor ref, props, and state to function arguments so it's easier to use. No need to mess with `this` if you don't want to :)
+Works the same as the HOC we just built together, adds the anchor ref, props,
+and state to function arguments so it's easier to use. No need to mess with
+`this` if you don't want to :)
 
 Install it from npm:
 
@@ -1301,9 +1305,11 @@ const Barchart = D3blackbox(function(anchor, props, state) {
 export default Barchart;
 ```
 
-The function you pass into `D3blackbox` is still your full D3 render. Except now you can access important values directly without using `this`.
+The function you pass into `D3blackbox` is still your full D3 render. Except
+now you can access important values directly without using `this`.
 
-You can use my D3blackbox or build your own. What's important is that you now understand how higher order components work.
+You can use my D3blackbox or build your own. What's important is that you now
+understand how higher order components work.
 
 <!--- end-lecture -->
 
@@ -1985,7 +1991,7 @@ Best approach is to optimize for change.
 
 Otherwise you might have to do a rewrite. Rewrites are bad. One of the most
 infamous rewrite story is about
-[The Rewrite that Killed Netscape](http://www.joelonsoftware.com/articles/fog0000000069.html).
+[The Rewrite that Killed Netscape](https://www.joelonsoftware.com/articles/fog0000000069.html).
 You might not even have heard of Netscape :wink:
 
 Let's save you from that.

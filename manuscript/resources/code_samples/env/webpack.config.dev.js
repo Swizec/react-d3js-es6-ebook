@@ -158,7 +158,7 @@ module: {
      {test: /\.js$/},
      // leanpub-end-delete
      // leanpub-start-insert
-     {test: /\.js|\.jsx$/
+     {test: /\.js|\.jsx$/,
       // leanpub-end-insert
       loaders: ['babel'],
       include: path.join(__dirname, 'src')

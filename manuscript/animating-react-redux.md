@@ -12,7 +12,7 @@ We're making tiny circles fly out of your mouse cursor. Works on mobile with
 your finger, too.
 
 To see the particle generator in action,
-[go here](http://swizec.github.io/react-particles-experiment/). Github won't
+[go here](https://swizec.github.io/react-particles-experiment/). Github won't
 let me host different branches, so you'll see the advanced 20,000 particle
 version from next chapter.
 
@@ -545,7 +545,7 @@ and `TIME_TICK` changes are the most interesting. The rest just flips various
 flags.
 
 All our logic and physics goes in the reducer.
-[Dan Abramov says](http://redux.js.org/docs/basics/Reducers.html) to think of
+[Dan Abramov says](https://redux.js.org/docs/basics/Reducers.html) to think of
 reducers as the function you'd put in `.reduce()`. Given a state and a set of
 changes, how do I create the new state?
 
@@ -825,7 +825,7 @@ discoveries:
    first and becomes okayish at around 1000 particles. This suggests that
    making shallow copies of big arrays and moving existing SVG nodes around is
    faster than adding new DOM nodes and array elements.
-   [Here's a gif](http://i.imgur.com/ug478Me.gif)
+   [Here's a gif](https://i.imgur.com/ug478Me.gif)
 
 ---
 
