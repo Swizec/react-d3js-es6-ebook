@@ -5,26 +5,16 @@ const globSync = require('glob-gitignore').sync;
 const fp = require('lodash/fp');
 
 const stripSkinTone = require('strip-skin-tone');
-const retext = require('retext');
-const emoji = require('retext-emoji');
-const prettier = require('prettier');
 
-const { runShellCommand } = require('../util');
+const { runShellCommand, gemojify, prettify } = require('../util');
 const { pandocify } = require('../conversions');
 
 const manuscriptDirAbsPath = path.resolve('./manuscript/');
-
-const prettierConfig = prettier.resolveConfig.sync(process.cwd());
 
 // Pure-ish functions
 function fwdFileName(fn) {
   return ([fileName, ...args]) => [fileName, fn(...args)];
 }
-
-const gemojify = fp.pipe(
-  retext().use(emoji, { convert: 'decode' }).processSync,
-  String
-);
 
 function loadFile(srcFileName) {
   return [
@@ -37,13 +27,6 @@ function loadFile(srcFileName) {
 
 function pandocifyBody(srcFileBody) {
   return pandocify(manuscriptDirAbsPath, srcFileBody);
-}
-
-function format(srcFileBody) {
-  return prettier.format(
-    srcFileBody,
-    Object.assign({}, { parser: 'markdown' }, prettierConfig)
-  );
 }
 
 // Effectful functions
@@ -60,12 +43,14 @@ const convertAndOverwrite = fp.pipe(
   fwdFileName(pandocifyBody),
   fwdFileName(stripSkinTone),
   fwdFileName(gemojify),
-  fwdFileName(format),
+  fwdFileName(prettify('markdown')),
   overWriteFile
 );
 
 function revertMigration() {
-  runShellCommand('git checkout 164cc01ad17ed8de8c44ab1e33d7e40d625af710 -- manuscript/');
+  runShellCommand(
+    'git checkout 164cc01ad17ed8de8c44ab1e33d7e40d625af710 -- manuscript/'
+  );
 }
 
 function applyMigration() {

@@ -988,7 +988,7 @@ extra code.
 
 To get a better idea of Flux's pros and cons, you can read this side-by-side
 comparison of React+Flux (130 lines) and pure jQuery (10 lines)
-[I wrote in October 2015](http://swizec.com/blog/reactflux-can-do-in-just-137-lines-what-jquery-can-do-in-10/swizec/6740).
+[I wrote in October 2015](https://swizec.com/blog/reactflux-can-do-in-just-137-lines-what-jquery-can-do-in-10/swizec/6740).
 It's based on a simple form example.
 
 ### Adding user controls
@@ -2083,7 +2083,7 @@ pass-through imports.
 I don't know if that's the best way to do it, but it's what I came to after
 hours of banging my head against a wall. You can read the background behind
 these four lines of code
-[on my blog](http://swizec.com/blog/theres-a-bug-in-es6-modules/swizec/6753).
+[on my blog](https://swizec.com/blog/theres-a-bug-in-es6-modules/swizec/6753).
 
 ### Add Title and Description to the main view
 

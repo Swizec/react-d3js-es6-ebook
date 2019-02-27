@@ -1,181 +1,109 @@
 const fs = require('fs');
 const path = require('path');
-const rimraf = require('rimraf');
-const fp = require('lodash/fp');
 const mkdirp = require('mkdirp');
+const rimraf = require('rimraf');
 
-const { runShellCommand } = require('./util');
-// const { pandocify } = require("./conversions");
+const fp = require('lodash/fp');
 
-const srcDirAbsolutePath = path.resolve('manuscript');
+const {
+  buildDirAbsPath,
+  fullHtmlAbsPath,
+  pubRepoAbsPath,
+  fullBookDataAbsPath,
+  teachableAssetsAbsPath,
+} = require('./config');
 
-const buildDirAbsolutePath = path.resolve('build');
-// rimraf.sync(buildDirAbsolutePath, null, e => console.log(e));
-mkdirp.sync(buildDirAbsolutePath);
+const {
+  emojify,
+  prettify,
+  prettyJson,
+  runShellCommand,
+  writeFullManuscript,
+  convertFullManuscriptToHtml,
+  splitIntoSectionsAndLectures,
+} = require('./util');
 
-const srcFileNames = fs
-  .readFileSync(path.resolve(srcDirAbsolutePath, 'Book.txt'), {
-    encoding: 'utf8',
-  })
-  .trim()
-  .split('\n')
-  .map(fp.trim);
-console.log({ srcFileNames });
-
-const fullPandocMarkdownBody = srcFileNames
-  .map(mdFileName => [
-    mdFileName,
-    fs.readFileSync(path.resolve(srcDirAbsolutePath, mdFileName), {
-      encoding: 'utf8',
-    }),
-  ])
-  .map(([mdFileName, sourceFileBody], i) => {
-    const destFilePath = fp.padCharsStart('0')(2)(i) + '-' + mdFileName;
-    console.log(destFilePath);
-    const destFileBody = sourceFileBody; // pandocify(srcDirAbsolutePath, sourceFileBody);
-    return [destFilePath, destFileBody];
-  })
-  .map(([_, destFileBody]) => destFileBody)
-  .join('\n\n');
-
-const fullPandocMarkdownAbsolutePath = path.resolve(
-  buildDirAbsolutePath,
-  'full-pandoc-markdown.md'
-);
-fs.writeFileSync(fullPandocMarkdownAbsolutePath, fullPandocMarkdownBody);
-
-const fullGfmAbsolutePath = path.resolve(buildDirAbsolutePath, 'full-gfm.md');
-const pandocToGfmCommand = `pandoc -f markdown -t gfm -o ${fullGfmAbsolutePath} ${fullPandocMarkdownAbsolutePath}`;
-
-runShellCommand(pandocToGfmCommand);
-
-const fullHtmlAbsolutePath = path.resolve(
-  buildDirAbsolutePath,
-  'full-html.html'
-);
-const pandocToHtmlCommand = `pandoc -f markdown -t html -o ${fullHtmlAbsolutePath} -s ${fullPandocMarkdownAbsolutePath} && npx juice ${fullHtmlAbsolutePath} ${fullHtmlAbsolutePath}`;
-
-runShellCommand(pandocToHtmlCommand);
-
-function splitIntoSectionsAndLectures({
-  fullBodyAbsolutePath,
-  destRepoAbsolutePath,
-  destRepoContentPath,
-}) {
-  runShellCommand(
-    `git clone git@github.com:hsribei/content.git ${destRepoAbsolutePath}`,
-    "Couldn't clone repo. Probably because it's already cloned."
-  );
-
-  const destContentAbsolutePath = path.join(
-    destRepoAbsolutePath,
-    destRepoContentPath
-  );
-
-  rimraf.sync(destContentAbsolutePath, null, e => console.log(e));
-
-  const fullBody = fs.readFileSync(fullBodyAbsolutePath, {
+function postProcessFullHtml(fullHtmlAbsPath) {
+  const fullHtmlBody = fs.readFileSync(fullHtmlAbsPath, {
     encoding: 'utf8',
   });
 
-  const extension = path.extname(fullBodyAbsolutePath);
+  const pipeline = fp.pipe(
+    emojify,
+    prettify('html')
+  );
 
-  let sectionDirectoryName = '';
-  let lectureFileName = '';
-  let sectionIndex = 0;
-  let lectureIndex = 0;
-  let srcLineIndex = 0;
-  let destLines = [];
-  const srcLines = fullBody.split('\n');
+  const processedFullHtmlBody = pipeline(fullHtmlBody);
+  fs.writeFileSync(fullHtmlAbsPath, processedFullHtmlBody);
+}
 
-  while (srcLineIndex < srcLines.length) {
-    const srcLine = srcLines[srcLineIndex];
-    if (
-      sectionDirectoryName &&
-      lectureFileName &&
-      !srcLine.includes('end-lecture')
-    ) {
-      destLines.push(srcLine);
-    } else if (
-      sectionDirectoryName &&
-      lectureFileName &&
-      srcLine.includes('end-lecture')
-    ) {
-      fs.writeFileSync(
-        path.resolve(
-          destContentAbsolutePath,
-          sectionDirectoryName,
-          lectureFileName
-        ),
-        destLines.join('\n')
-      );
-      lectureFileName = '';
-    } else if (
-      sectionDirectoryName &&
-      !lectureFileName &&
-      srcLine.includes('end-section')
-    ) {
-      sectionDirectoryName = '';
-      sectionIndex++;
-    } else if (
-      sectionDirectoryName &&
-      !lectureFileName &&
-      srcLine.includes('begin-lecture')
-    ) {
-      const lectureTitle = srcLine.match(/title="(.*)"/)[1];
-      lectureFileName = `s${fp.padCharsStart('0')(2)(
-        sectionIndex
-      )}e${fp.padCharsStart('0')(2)(
-        lectureIndex
-      )} - ${lectureTitle}${extension}`;
-      lectureIndex++;
-      destLines = [];
-    } else if (
-      !sectionDirectoryName &&
-      !lectureFileName &&
-      srcLine.includes('begin-section')
-    ) {
-      // const sectionTitle = srcLine.match(/title="(.*)"/)[1];
-      sectionDirectoryName = `s${fp.padCharsStart('0')(2)(sectionIndex)}`;
-      mkdirp.sync(path.resolve(destContentAbsolutePath, sectionDirectoryName));
-    } else {
-      // process.stdout.write(".");
-    }
-
-    srcLineIndex++;
+function splitFullHtmlIntoPubRepo() {
+  if (!fs.existsSync(pubRepoAbsPath)) {
+    runShellCommand(
+      `git clone git@github.com:hsribei/content.git ${pubRepoAbsPath}`,
+      "Couldn't clone repo."
+    );
   }
-}
+  const extension = '.html';
 
-function deployGfmFiles() {
-  const fullBodyAbsolutePath = fullGfmAbsolutePath;
-  const destRepoAbsolutePath = path.resolve(buildDirAbsolutePath, 'content');
-  const destRepoContentPath = 'teachable-gfm-markdown';
-
-  splitIntoSectionsAndLectures({
-    fullBodyAbsolutePath,
-    destRepoAbsolutePath,
-    destRepoContentPath,
+  // turn full html into structured json with sections and lectures
+  const fullBody = fs.readFileSync(fullHtmlAbsPath, {
+    encoding: 'utf8',
   });
 
-  gitAddAllCommitAndPush(destRepoAbsolutePath);
-}
+  rimraf.sync(fullBookDataAbsPath, null, e => console.log(e));
 
-function deployHtmlFiles() {
-  const fullBodyAbsolutePath = fullHtmlAbsolutePath;
-  const destRepoAbsolutePath = path.resolve(buildDirAbsolutePath, 'content');
-  const destRepoContentPath = 'teachable-html';
+  const fullBookData = splitIntoSectionsAndLectures(fullBody);
+  fs.writeFileSync(fullBookDataAbsPath, prettyJson(fullBookData));
 
-  splitIntoSectionsAndLectures({
-    fullBodyAbsolutePath,
-    destRepoAbsolutePath,
-    destRepoContentPath,
+  // create section directories and lecture files
+  rimraf.sync(teachableAssetsAbsPath, null, e => console.log(e));
+  mkdirp.sync(teachableAssetsAbsPath);
+
+  const sectionIndexes = fp.range(0, fullBookData.sections.length);
+  const sectionDirAbsPaths = fp.map(
+    fp.pipe(
+      sectionIndex => `s${fp.padCharsStart('0')(2)(sectionIndex)}`,
+      sectionDirAbsPath =>
+        path.resolve(teachableAssetsAbsPath, sectionDirAbsPath),
+      mkdirp.sync
+    )
+  )(sectionIndexes);
+
+  let lectureIndex = 0;
+  fullBookData.sections.map(({ lectures }, sectionIndex) => {
+    lectures.map(({ lectureTitle, lectureLines }) => {
+      const lectureFileName =
+        's' +
+        `${fp.padCharsStart('0')(2)(sectionIndex)}` +
+        'e' +
+        `${fp.padCharsStart('0')(2)(lectureIndex)}` +
+        ` - ${lectureTitle}${extension}`;
+      const lectureAbsPath = path.resolve(
+        teachableAssetsAbsPath,
+        sectionDirAbsPaths[sectionIndex],
+        lectureFileName
+      );
+
+      const lectureBody = lectureLines.join('\n');
+      fs.writeFileSync(lectureAbsPath, lectureBody);
+      lectureIndex++;
+    });
   });
-
-  gitAddAllCommitAndPush(destRepoAbsolutePath);
 }
 
 function gitAddAllCommitAndPush(destRepoAbsolutePath) {
-  const githubPushCommand = `cd ${destRepoAbsolutePath} && git add . && git commit -m "Automated commit" `; // uncomment to actually push, which deploys to prod `&& git push origin master && cd -`;
+  // --ignore-removal is to be conservative and
+  // avoid missing content while cdn propagates.
+  const githubPushCommand = `
+    cd ${destRepoAbsolutePath} &&
+    git add --ignore-removal . `; // ` &&
+  // git commit -m "Automated commit" &&
+  // git push origin master && cd -`;
+  // ^^^^^^^^^^^^^^^^^^^^^^^^^
+  // Uncomment above to deploy
+
+  console.log({ githubPushCommand });
 
   runShellCommand(
     githubPushCommand,
@@ -183,5 +111,18 @@ function gitAddAllCommitAndPush(destRepoAbsolutePath) {
   );
 }
 
-deployGfmFiles();
-deployHtmlFiles();
+function main() {
+  mkdirp.sync(buildDirAbsPath);
+
+  writeFullManuscript();
+
+  convertFullManuscriptToHtml();
+
+  postProcessFullHtml(fullHtmlAbsPath);
+
+  splitFullHtmlIntoPubRepo();
+
+  gitAddAllCommitAndPush(pubRepoAbsPath);
+}
+
+main();

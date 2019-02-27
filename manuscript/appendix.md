@@ -20,7 +20,7 @@ world as a way to manage the toolbelt.
 
 We’ll use NPM to install the other tools we need.
 
-You can get it by installing node.js from [nodejs.org](http://nodejs.org).
+You can get it by installing node.js from [nodejs.org](https://nodejs.org).
 Grunt, Bower, and our development server will run in node as well.
 
 Once you’ve got it, create a working directory, navigate to it, and run:
@@ -117,7 +117,7 @@ every file, the client only makes a single request.
 
 ### Install Grunt
 
-We’re going to power all of this with [Grunt](http://gruntjs.com), which lets
+We’re going to power all of this with [Grunt](https://gruntjs.com), which lets
 us write glorified bash scripts in JavaScript. Its main benefits are a large
 community that's created plugins for every imaginable thing, and simple
 JavaScript-based configuration.
@@ -134,11 +134,11 @@ $ npm install --save-dev jit-grunt
 $ npm install --save-dev reactify
 ```
 
-[Browserify](http://browserify.org) will allow us to write our code in modules
+[Browserify](https://browserify.org) will allow us to write our code in modules
 that we can use with `require(‘foo.js’)`, just like we would in node.js. It’s
 also going to concatenate the resulting module hierarchy into a single file.
 
-Some people have suggested using [Webpack](http://webpack.github.io/) instead,
+Some people have suggested using [Webpack](https://webpack.github.io/) instead,
 but I haven't tried it yet. Apparently it's the best thing since bacon because
 it can even `require()` images.
 

@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const fp = require('lodash/fp');
-const { conditionalLog, json } = require('./util');
+const { conditionalLog, prettyJson } = require('./util');
 
 function pandocifyMarkuaCodeBlocks(sourceFileBody) {
   const isLoggingEnabled = false;
@@ -11,7 +11,7 @@ function pandocifyMarkuaCodeBlocks(sourceFileBody) {
     // log("match")(json({ attributes, language, code }), null, 2);
 
     const idMatch = attributes.match(/(.*)#([\w-]+)(.*)/);
-    // log("idMatch")(json(idMatch));
+    // log("idMatch")(prettyJson(idMatch));
     let _discard, beforeIdAttr, idAttr, afterIdAttr;
     if (idMatch) {
       [_discard, beforeIdAttr, idAttr, afterIdAttr] = idMatch;
@@ -24,7 +24,7 @@ function pandocifyMarkuaCodeBlocks(sourceFileBody) {
       return result;
     }, {});
 
-    // log("srcAttrs")(json(srcAttrs));
+    // log("srcAttrs")(prettyJson(srcAttrs));
 
     let destAttrs = [];
 
@@ -77,10 +77,10 @@ function pandocifyLfmCodeBlocks(sourceFileBody) {
       .map(line => line.slice(4))
       .join('\n');
 
-    log('match')(json({ match, g1, g2, attributes, code }), null, 2);
+    log('match')(prettyJson({ match, g1, g2, attributes, code }), null, 2);
 
     const idMatch = attributes.match(/(.*)#([\w-]+)(.*)/);
-    log('idMatch')(json(idMatch));
+    log('idMatch')(prettyJson(idMatch));
     let _discard, beforeIdAttr, idAttr, afterIdAttr;
     if (idMatch) {
       [_discard, beforeIdAttr, idAttr, afterIdAttr] = idMatch;
@@ -89,7 +89,7 @@ function pandocifyLfmCodeBlocks(sourceFileBody) {
     const attrRegExp = /\s*(.+)=(.+)/;
     const srcAttrs = attributes.split(/\s*,\s*/).reduce((srcAttrs, chunk) => {
       const srcAttrMatches = chunk.match(attrRegExp);
-      log('srcAttrMatches')(json({ srcAttrs, srcAttrMatches }));
+      log('srcAttrMatches')(prettyJson({ srcAttrs, srcAttrMatches }));
       const [key, value] = srcAttrMatches
         ? [srcAttrMatches[1], srcAttrMatches[2]]
         : [null, null];
@@ -98,7 +98,7 @@ function pandocifyLfmCodeBlocks(sourceFileBody) {
       return result;
     }, {});
 
-    log('srcAttrs')(json(srcAttrs));
+    log('srcAttrs')(prettyJson(srcAttrs));
 
     let destAttrs = [];
 
@@ -172,7 +172,7 @@ function transcludeMarkuaCodeSamples(sourceFileBody) {
     });
 
     log('match')(
-      json({
+      prettyJson({
         match,
         g1,
         g2,
@@ -186,7 +186,7 @@ function transcludeMarkuaCodeSamples(sourceFileBody) {
     );
 
     const idMatch = attributes.match(/(.*)#([\w-]+)(.*)/);
-    log('idMatch')(json(idMatch));
+    log('idMatch')(prettyJson(idMatch));
     let _discard, beforeIdAttr, idAttr, afterIdAttr;
     if (idMatch) {
       [_discard, beforeIdAttr, idAttr, afterIdAttr] = idMatch;
@@ -195,7 +195,7 @@ function transcludeMarkuaCodeSamples(sourceFileBody) {
     const attrRegExp = /\s*(.+):(.+)/;
     const srcAttrs = attributes.split(/\s*,\s*/).reduce((srcAttrs, chunk) => {
       const srcAttrMatches = chunk.match(attrRegExp);
-      // log("srcAttrMatches")(json({ srcAttrs, srcAttrMatches }));
+      // log("srcAttrMatches")(prettyJson({ srcAttrs, srcAttrMatches }));
       const [key, value] = srcAttrMatches
         ? [srcAttrMatches[1], srcAttrMatches[2]]
         : [null, null];
@@ -204,7 +204,7 @@ function transcludeMarkuaCodeSamples(sourceFileBody) {
       return result;
     }, {});
 
-    log('srcAttrs')(json(srcAttrs));
+    log('srcAttrs')(prettyJson(srcAttrs));
 
     let destAttrs = [];
 
@@ -282,7 +282,7 @@ function transcludeLfmCodeSamples(sourceFileBody) {
     });
 
     log('match')(
-      json({
+      prettyJson({
         match,
         g1,
         g2,
@@ -296,7 +296,7 @@ function transcludeLfmCodeSamples(sourceFileBody) {
     );
 
     const idMatch = attributes.match(/(.*)#([\w-]+)(.*)/);
-    log('idMatch')(json(idMatch));
+    log('idMatch')(prettyJson(idMatch));
     let _discard, beforeIdAttr, idAttr, afterIdAttr;
     if (idMatch) {
       [_discard, beforeIdAttr, idAttr, afterIdAttr] = idMatch;
@@ -305,7 +305,7 @@ function transcludeLfmCodeSamples(sourceFileBody) {
     const attrRegExp = /\s*(.+)=(.+)/;
     const srcAttrs = attributes.split(/\s*,\s*/).reduce((srcAttrs, chunk) => {
       const srcAttrMatches = chunk.match(attrRegExp);
-      // log("srcAttrMatches")(json({ srcAttrs, srcAttrMatches }));
+      // log("srcAttrMatches")(prettyJson({ srcAttrs, srcAttrMatches }));
       const [key, value] = srcAttrMatches
         ? [srcAttrMatches[1], srcAttrMatches[2]]
         : [null, null];
@@ -314,7 +314,7 @@ function transcludeLfmCodeSamples(sourceFileBody) {
       return result;
     }, {});
 
-    log('srcAttrs')(json(srcAttrs));
+    log('srcAttrs')(prettyJson(srcAttrs));
 
     let destAttrs = [];
 
@@ -413,7 +413,7 @@ function deleteLfmSpecialNames(sourceFileBody) {
   function replacer(match) {
     const replacement = '';
 
-    log('replacement')(json({ match, replacement }));
+    log('replacement')(prettyJson({ match, replacement }));
     return replacement;
   }
 
