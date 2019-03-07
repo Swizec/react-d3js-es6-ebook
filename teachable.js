@@ -83,17 +83,14 @@ function splitFullHtmlIntoPubRepo() {
 }
 
 function gitAddAllCommitAndPush(destRepoAbsolutePath) {
-  // --ignore-removal is to be conservative and
-  // avoid missing content while cdn propagates.
   const githubPushCommand = `
     cd ${destRepoAbsolutePath} &&
-    git add --ignore-removal . `; // ` &&
-  // git commit -m "Automated commit" &&
-  // git push origin master && cd -`;
-  // ^^^^^^^^^^^^^^^^^^^^^^^^^
-  // Uncomment above to deploy
+    git add . &&
+    git commit -m "Automated commit" &&
+    git push origin master &&
+    cd -`;
 
-  console.log({ githubPushCommand });
+  console.log('To deploy, run `npm run deploy-teachable`');
 
   runShellCommand(
     githubPushCommand,
