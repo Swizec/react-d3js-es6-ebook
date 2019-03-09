@@ -13,7 +13,10 @@ const {
   prettierConfig,
   srcDirAbsPath,
   fullManuscriptAbsPath,
+  fullPandocMarkdownAbsPath,
+  fullRemarqJsonAbsPath,
   fullHtmlAbsPath,
+  fullTeachableJsonAbsPath,
 } = require('./config');
 
 // # pure-ish functions
@@ -79,7 +82,6 @@ function splitIntoSectionsAndLectures(fullBody) {
       currentLecture.lectureTitle &&
       srcLine.includes('end-lecture')
     ) {
-      console.log(currentLecture);
       currentLecture.lectureLines = dstLines;
       currentSection.lectures.push(currentLecture);
       currentLecture = newLecture();
@@ -115,6 +117,48 @@ function splitIntoSectionsAndLectures(fullBody) {
 }
 
 // # effectful functions
+function fpReadFile(fileAbsPath) {
+  let fileBody;
+
+  try {
+    fileBody = fs.readFileSync(fileAbsPath, {
+      encoding: 'utf8',
+    });
+  } catch (e) {
+    fileBody = null;
+  }
+
+  return fileBody;
+}
+
+const fpWriteFile = fp.curry((fileAbsPath, fileData) => {
+  fs.writeFileSync(fileAbsPath, fileData);
+  return fileData;
+});
+
+function updateFullRemarqJson() {
+  return readSplitWrite(fullPandocMarkdownAbsPath, fullRemarqJsonAbsPath);
+}
+
+function updateFullTeachableJson() {
+  return readSplitWrite(fullHtmlAbsPath, fullTeachableJsonAbsPath);
+}
+
+function readSplitWrite(srcAbsPath, dstAbsPath) {
+  const currentData = JSON.parse(fpReadFile(dstAbsPath) || '{}');
+
+  // turn annotated text file (md or html) into structured json
+  // with sections and lectures
+  return fp.pipe(
+    fpReadFile,
+    splitIntoSectionsAndLectures,
+    replacementSections => Object.assign({}, currentData, replacementSections),
+    prettyJson,
+    fpWriteFile(dstAbsPath),
+    conditionalLog(false, dstAbsPath),
+    JSON.parse
+  )(srcAbsPath);
+}
 
 function convertFullManuscriptToHtml() {
   const pandocToHtmlCommand = `
@@ -142,7 +186,9 @@ function conditionalLog(isLoggingEnabled, label) {
   return function(value) {
     if (isLoggingEnabled)
       console.log(
-        `\n\n\n\n${indentation}${label ? label + `:` : ''}\n\n${value}`
+        `\n\n\n\n${indentation}${label ? label + `:` : ''}\n\n${prettyJson(
+          value
+        )}`
       );
     return value;
   };
@@ -202,6 +248,8 @@ module.exports = {
   conditionalLog,
   runShellCommand,
   writeFullManuscript,
+  updateFullRemarqJson,
+  updateFullTeachableJson,
   convertFullManuscriptToHtml,
-  splitIntoSectionsAndLectures,
+  fpWriteFile,
 };
