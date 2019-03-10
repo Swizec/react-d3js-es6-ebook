@@ -9,18 +9,16 @@ const {
   buildDirAbsPath,
   fullHtmlAbsPath,
   pubRepoAbsPath,
-  fullBookDataAbsPath,
   teachableAssetsAbsPath,
 } = require('./config');
 
 const {
   emojify,
   prettify,
-  prettyJson,
   runShellCommand,
   writeFullManuscript,
   convertFullManuscriptToHtml,
-  splitIntoSectionsAndLectures,
+  updateFullTeachableJson,
 } = require('./util');
 
 function postProcessFullHtml(fullHtmlAbsPath) {
@@ -46,21 +44,13 @@ function splitFullHtmlIntoPubRepo() {
   }
   const extension = '.html';
 
-  // turn full html into structured json with sections and lectures
-  const fullBody = fs.readFileSync(fullHtmlAbsPath, {
-    encoding: 'utf8',
-  });
-
-  rimraf.sync(fullBookDataAbsPath, null, e => console.log(e));
-
-  const fullBookData = splitIntoSectionsAndLectures(fullBody);
-  fs.writeFileSync(fullBookDataAbsPath, prettyJson(fullBookData));
+  const fullTeachableData = updateFullTeachableJson();
 
   // create section directories and lecture files
   rimraf.sync(teachableAssetsAbsPath, null, e => console.log(e));
   mkdirp.sync(teachableAssetsAbsPath);
 
-  const sectionIndexes = fp.range(0, fullBookData.sections.length);
+  const sectionIndexes = fp.range(0, fullTeachableData.sections.length);
   const sectionDirAbsPaths = fp.map(
     fp.pipe(
       sectionIndex => `s${fp.padCharsStart('0')(2)(sectionIndex)}`,
@@ -71,7 +61,7 @@ function splitFullHtmlIntoPubRepo() {
   )(sectionIndexes);
 
   let lectureIndex = 0;
-  fullBookData.sections.map(({ lectures }, sectionIndex) => {
+  fullTeachableData.sections.map(({ lectures }, sectionIndex) => {
     lectures.map(({ lectureTitle, lectureLines }) => {
       const lectureFileName =
         's' +
