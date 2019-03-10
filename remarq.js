@@ -1,102 +1,196 @@
 const path = require('path');
-const os = require('os');
 
 const fse = require('fs-extra');
+const mkdirp = require('mkdirp');
 const globSync = require('glob-gitignore').sync;
+
+const chokidar = require('chokidar');
+const ora = require('ora');
+
+const _ = require('lodash');
 const fp = require('lodash/fp');
 
-const rmqDirAbsPath = path.resolve('remarq-template/');
-const srcDirAbsPath = path.resolve('manuscript/');
-const dstDirAbsPath = path.resolve(
-  os.homedir(),
-  'Dropbox/Apps/RemarqBooks/ReactDataviz/'
-);
+const {
+  writeFullManuscript,
+  fpWriteFile,
+  updateFullRemarqJson,
+  conditionalLog,
+} = require('./util');
+
+const {
+  buildDirAbsPath,
+  remarqTemplateDirAbsPath,
+  remarqInputDirAbsPath,
+  remarqInputChaptersFileAbsPath,
+  remarqOutputFileAbsPaths,
+  pubRepoAbsPath,
+} = require('./config');
 
 // ## pure-ish functions
+const fixSectionBody = ({ sectionTitle, lectures }) => {
+  const sectionBody = fp.pipe(
+    fp.map(fixLectureHeadings),
+    fp.join('\n'),
+    prependAsH1(sectionTitle)
+  )(lectures);
 
-function prependIndex(srcFileNames) {
-  const indices = [...Array(srcFileNames.length).keys()];
-  // using `i + 1` because remarq relies on 01-indexed .md files
-  return fp.zipWith(
-    (i, srcFileName) => fp.padCharsStart('0')(2)(i + 1) + '-' + srcFileName,
-    indices,
-    srcFileNames
-  );
-}
+  return sectionBody;
+};
 
-function getSrcFileNames() {
-  const fileNames = fse
-    .readFileSync(path.resolve(srcDirAbsPath, 'Book.txt'), {
-      encoding: 'utf8',
-    })
-    .trim()
-    .split('\n')
-    .map(fp.trim);
-  const frontMatter = fileNames.slice(0, 1);
-  const chapters = fileNames.slice(1, -2);
-  const backMatter = fileNames.slice(-2);
-  return [frontMatter, chapters, backMatter];
-}
+const fixLectureHeadings = fp.curry(({ lectureTitle, lectureLines }) => {
+  const lectureBody = fp.pipe(
+    fp.join('\n'),
+    // delete starting heading
+    fp.replace(/^\n+#+ .+?\n+/, ''),
+    // make all headings at least h3
+    normalizeHeadings(3),
+    prependAsH2(lectureTitle)
+  )(lectureLines);
+  return lectureBody;
+});
 
-function loadSrcFile(srcFileName) {
-  return fse.readFileSync(path.resolve(srcDirAbsPath, srcFileName), {
-    encoding: 'utf8',
-  });
-}
+const prependAsH1 = fp.curry((title, str) => `\n# ${title}\n\n${str}`);
+const prependAsH2 = fp.curry((title, str) => `\n## ${title}\n\n${str}`);
 
-const dstFileBody = loadSrcFile;
+const normalizeHeadings = fp.curry((baseHeading, markdownString) => {
+  if (markdownString.match(/\n#+ /g)) {
+    const minHeading = fp.pipe(
+      conditionalLog(false, 'headingMatch'),
+      fp.map(fp.strip),
+      fp.minBy(str => str.length),
+      _.size
+    )(markdownString.match(/\n#+ /g));
+
+    return markdownString.replace(
+      RegExp(`\n#{${minHeading}}`, 'g'),
+      '\n' + fp.repeat(baseHeading)('#')
+    );
+  } else {
+    return markdownString;
+  }
+});
 
 // ## effectful functions
+function writeOutSectionsAsRemarqChaptersFile(sections) {
+  const fullRemarqBody = fp.pipe(
+    fp.map(fixSectionBody),
+    fp.join('\n\n'),
+    fpWriteFile(remarqInputChaptersFileAbsPath)
+  )(sections);
+
+  return fullRemarqBody;
+}
+
 function rmrf(rmrfPath) {
-  console.log({ rmrfPath });
   fse.removeSync(rmrfPath, null, e => console.log(e));
 }
 
-function writeFile(dstFilePath, dstFileBody) {
-  const dstFileAbsPath = path.resolve(dstDirAbsPath, dstFilePath);
-  fse.writeFileSync(dstFileAbsPath, dstFileBody);
-}
+const move = (source, destination) => {
+  fse.moveSync(source, destination, { overwrite: true });
+};
 
-function resetDstDir() {
-  rmrf(dstDirAbsPath);
-  fse.ensureDirSync(dstDirAbsPath);
-  fse.copySync(rmqDirAbsPath, dstDirAbsPath);
+function resetRemarqDropboxDir() {
+  rmrf(remarqInputDirAbsPath);
+  fp.map(rmrf)(remarqOutputFileAbsPaths);
+  fse.ensureDirSync(remarqInputDirAbsPath);
+  fse.copySync(remarqTemplateDirAbsPath, remarqInputDirAbsPath);
   const mdAbsFilePaths = globSync('**/*.md', {
-    cwd: dstDirAbsPath,
+    cwd: remarqInputDirAbsPath,
     absolute: true,
   });
   fp.map(rmrf)(mdAbsFilePaths);
 }
 
-function deleteRemarqResults() {
-  const rmqResAbsFilePaths = globSync('ReactDataviz@(.*|-*)', {
-    cwd: path.dirname(dstDirAbsPath),
-    absolute: true,
-  });
-  fp.map(rmrf)(rmqResAbsFilePaths);
+function saveRemarqOutput(buildName) {
+  const destDir = path.resolve(pubRepoAbsPath, `ebook-${buildName}`);
+  mkdirp.sync(destDir);
+  const remarqPubFileAbsPaths = fp.map(
+    outPath => `${destDir}/${path.basename(outPath)}`
+  )(remarqOutputFileAbsPaths);
+
+  fp.zipWith(move, remarqOutputFileAbsPaths, remarqPubFileAbsPaths);
 }
 
-function convertAndWrite(dstDirPath, srcFileNames) {
-  const dstFilePaths = fp.map(dstFileName =>
-    path.join(dstDirPath, dstFileName)
-  )(prependIndex(srcFileNames));
+function makeAll(fullRemarqData) {
+  function processBuilds([currentBuild, ...remainingBuilds]) {
+    if (!currentBuild) {
+      console.log('Aaaand... done.');
+    } else {
+      const { name, allSections, sectionRangesInclusive } = currentBuild;
+      let spinner = ora();
+      spinner.start();
 
-  const dstFileBodies = fp.map(dstFileBody)(srcFileNames);
+      resetRemarqDropboxDir();
 
-  fp.zipWith(writeFile, dstFilePaths, dstFileBodies);
+      spinner.info(fp.repeat(50, '-'));
+      spinner.info(`Building '${name}' ebooks now...`);
+
+      if (allSections) {
+        writeOutSectionsAsRemarqChaptersFile(fullRemarqData.sections);
+      } else {
+        const tieredSections = fp.flatMap(
+          ({ first, last }) => fullRemarqData.sections.slice(first, last + 1),
+          sectionRangesInclusive
+        );
+        writeOutSectionsAsRemarqChaptersFile(tieredSections);
+      }
+
+      spinner.succeed(
+        `Building '${name}': Finished sending manuscript to Remarq.io`
+      );
+      const finishedOutputFileNames = [];
+
+      const remainingFormats = () =>
+        fp.pipe(
+          fp.map(path.basename),
+          fp.filter(fileName => !finishedOutputFileNames.includes(fileName)),
+          fp.map(path.extname),
+          fp.join(', ')
+        )(remarqOutputFileAbsPaths);
+
+      spinner.start(
+        `Building '${name}': Waiting for ${remainingFormats()}...`
+      );
+
+      const watcher = chokidar.watch(remarqOutputFileAbsPaths, {
+        awaitWriteFinish: true,
+      });
+      watcher.on('add', addedPath => {
+        finishedOutputFileNames.push(path.basename(addedPath));
+        spinner = spinner.succeed(
+          `Building '${name}': Remarq.io finished generating ${path.basename(
+            addedPath
+          )}`
+        );
+
+        if (finishedOutputFileNames.length === 3) {
+          watcher.close();
+
+          spinner.start(`Building '${name}': Saving files`);
+          saveRemarqOutput(name);
+          spinner = spinner.succeed(
+            `Building '${name}': Finished saving files into build directory.`
+          );
+          processBuilds(remainingBuilds);
+        } else {
+          spinner.start(
+            `Building '${name}': Waiting for ${remainingFormats()}...`
+          );
+        }
+      });
+    }
+  }
+
+  processBuilds(fullRemarqData.builds);
 }
 
 function main() {
-  resetDstDir();
-  deleteRemarqResults();
-  console.log(`Saving files for Remarq at:\n${dstDirAbsPath}`);
+  mkdirp.sync(buildDirAbsPath);
 
-  const [frontMatter, chapters, backMatter] = getSrcFileNames();
-  console.log([frontMatter, chapters, backMatter]);
+  writeFullManuscript();
+  const fullRemarqData = updateFullRemarqJson();
 
-  convertAndWrite('1_front_matter', frontMatter);
-  convertAndWrite('2_chapters', chapters);
-  convertAndWrite('3_back_matter', backMatter);
+  makeAll(fullRemarqData);
 }
 
 main();
