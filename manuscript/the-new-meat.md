@@ -27,11 +27,11 @@ I suggest you follow along, keep `npm start` running, and watch your
 visualization change in real time as you code. It's rewarding as hell.
 
 If you get stuck, you can use my
-[react-d3js-step-by-step Github repo](https://github.com/Swizec/react-d3js-step-by-step)
+[react-d3-walkthrough-livecode](https://github.com/Swizec/react-d3-walkthrough-livecode)
 to jump between steps. The
-[9 tags](https://github.com/Swizec/react-d3js-step-by-step/releases) correspond
-to the code at the end of each step. Download the first tag and run
-`npm install` to skip the initial setup.
+[commits](https://github.com/Swizec/react-d3-walkthrough-livecode/commits/master)
+correspond to the code at the end of each step. Check out the first commit and
+run `npm install` to skip the initial setup.
 
 If you want to see how this project evolved over 22 months, check
 [the original repo](https://github.com/Swizec/h1b-software-salaries). The
@@ -83,7 +83,7 @@ We're building our preloader in 4 steps:
 ## Step 1: Get the image
 
 Download
-[my screenshot from Github](https://raw.githubusercontent.com/Swizec/react-d3js-step-by-step/798ec9eca54333da63b91c66b93339565d6d582a/src/assets/preloading.png)
+[my screenshot from Github](https://github.com/Swizec/react-d3-walkthrough-livecode/raw/master/src/assets/preloading.png)
 and save it in `src/assets/preloading.png`. It goes in the `src/assets/`
 directory because we're going to `import` it in JavaScript (which makes it part
 of our source code), and I like to put non-JavaScript files in `assets`. Keeps
@@ -321,7 +321,7 @@ Your preloader screen should look better now.
 ![Preloader screenshot](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/preloader-screenshot.png)
 
 If you don't, try comparing your changes to this
-[diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/798ec9eca54333da63b91c66b93339565d6d582a).
+[diff on Github](https://github.com/Swizec/react-d3-walkthrough-livecode/commit/f068b950b7a1a75e9417e126ee53fb7925c27569).
 
 <!--- end-lecture -->
 
@@ -358,12 +358,9 @@ But it's not the subject of this book.
 
 ## Step 0: Get the data
 
-Download the 6 data files from
-[my step-by-step repository on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/8819d9c38b4aef0a0c569e493f088ff9c3bfdf33).
+Download the data files from
+[my walkthrough repository on Github](https://github.com/Swizec/react-d3-walkthrough-livecode/tree/fa0aa60f3f7ffeb12926553aaeb916a7fa1c4d4f/public/data).
 Put them in your `public/data` directory.
-
-The quickest way to download each file is to click `View`, then right-click
-`Raw` and `Save Link As`.
 
 <!--- end-lecture -->
 
@@ -662,7 +659,7 @@ You should now see how many salary entries the shortened dataset contains.
 ![Data loaded screenshot](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/data-loaded-screenshot.png)
 
 If that didn't work, try comparing your changes to this
-[diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/9f113cdd3bc18535680cb5a4e87a3fd45743c9ae).
+[diff on Github](https://github.com/Swizec/react-d3-walkthrough-livecode/commit/a170bc8e4001da95306063f55884d7575b9b7b60).
 
 <!--- end-lecture -->
 
@@ -1221,7 +1218,7 @@ Tech work visas just aren't that evenly distributed. Even with the full dataset
 most counties are gray.
 
 If that didn't work, consult
-[this diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/f4c1535e9c9ca4982c8f3c74cff9f739eb08c0f7).
+[this diff on Github](https://github.com/Swizec/react-d3-walkthrough-livecode/commit/4c9ba22e4d4de2fa71d032a0b8038231c72b9b8e).
 
 <!--- end-lecture -->
 
@@ -1242,8 +1239,8 @@ distribution. We're going to build one like this:
 
 ![Basic histogram](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/basic-histogram.png)
 
-In the shortened dataset, 35% of tech salaries fall between $60k and $80k, 26%
-between $80k and $100k etc. Throwing a weighed dice with this
+In the shortened dataset, 35% of tech salaries fall between \$60k and \$80k,
+26% between \$80k and \$100k etc. Throwing a weighed dice with this
 [random distribution](https://en.wikipedia.org/wiki/Probability_distribution),
 you're far more likely to get 60k-80k than 120k-140k. It's a great way to gauge
 situations.
@@ -1815,7 +1812,7 @@ An axis appears.
 ![Basic histogram with axis](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/basic-histogram.png)
 
 If that didn't work, try comparing your changes to this
-[diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/02a40899e348587a909e97e8f18ecf468e2fe218).
+[diff on Github](https://github.com/Swizec/react-d3-walkthrough-livecode/commit/477b88a584794c3e0ea8955bf8109a40b2a3b771).
 
 <!--- end-lecture -->
 
@@ -1931,7 +1928,7 @@ two default exports.
 You need the `USStatesMap` file.
 
 It's a big dictionary that translates US state codes to full names. You can
-[get it from Github](https://github.com/Swizec/react-d3js-step-by-step/blob/4f94fcd1c3caeb0fc410636243ca99764e27c5e6/src/components/Meta/USStatesMap.js)
+[get it from Github](https://github.com/Swizec/react-d3-walkthrough-livecode/raw/3b1052fe3f70ab12142e5aac684b95ed430b12b2/src/components/Meta/USStatesMap.js)
 and save it as `components/Meta/USStatesMap.js`.
 
 We'll use it when creating titles and descriptions.
@@ -2113,7 +2110,7 @@ And a title appears.
 ![Dataviz with title](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/dataviz-with-title.png)
 
 If it doesn't, consult
-[this diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/4f94fcd1c3caeb0fc410636243ca99764e27c5e6).
+[this diff on Github](https://github.com/Swizec/react-d3-walkthrough-livecode/commit/781beba67e7b76935896fa7a3dfd4802a4d81993).
 
 <!--- end-lecture -->
 
@@ -2126,7 +2123,7 @@ title. It's just longer and more complex and uses more code. It's interesting,
 but not super relevant to the topic of this book.
 
 So rather than explain it all here, I'm going to give you a link to the
-[diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/032fe6e988b903b6d86a60d2f0404456785e180f)
+[diff on Github](https://github.com/Swizec/react-d3-walkthrough-livecode/commit/3b1052fe3f70ab12142e5aac684b95ed430b12b2)
 
 We use the same approach as before:
 
@@ -2172,10 +2169,10 @@ by just looking for the max value, for example.
 
 Similar code handles finding the best city.
 
-### render the description
+### Render the description
 
 I recommend copying the
-[`Description` component from GitHub](https://github.com/Swizec/react-d3js-step-by-step/commit/032fe6e988b903b6d86a60d2f0404456785e180f).
+[`Description` component from GitHub](https://github.com/Swizec/react-d3-walkthrough-livecode/commit/3b1052fe3f70ab12142e5aac684b95ed430b12b2).
 Most of it has little to do with React and data visualization. It's all about
 combining sentence fragments based on props.
 
@@ -2197,16 +2194,6 @@ import { Title, Description } from "./components/Meta";
 ```
 
 ![Dataviz with Title and Description](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/dataviz-with-description.png)
-
-Another similar component is the `GraphDescription`. It shows a small
-description on top of each chart that explains how to read the picture. Less
-"Here's a key takeaway", more "color means X".
-
-You can follow this
-[diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/37b5222546c3f8f58f3147ce0bef6a3c1afe1b47)
-to implement it. Same approach as `Title` and `Description`.
-
-![Dataviz with all descriptions](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/dataviz-with-all-descriptions.png)
 
 <!--- end-lecture -->
 
@@ -2401,7 +2388,7 @@ Almost everyone in tech makes more than an entire median household. Crazy, huh?
 I think it is.
 
 If that didn't work, consult the
-[diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/1fd055e461184fb8dc8dd509edb3a6a683c995fe).
+[diff on Github](https://github.com/Swizec/react-d3-walkthrough-livecode/commit/52b684b6441b491557a2623471cdf946c54c8959).
 
 <!--- end-lecture -->
 
@@ -2953,7 +2940,7 @@ calls `reportUpdateUpTheChain`, which in turn updates state in `App` and
 re-renders our button with the new value toggling its color on or off.
 
 If that didn't work, consult this
-[diff on GitHub](https://github.com/Swizec/react-d3js-step-by-step/commit/a45c33e172297ca1bbcfdc76733eae75779ebd7f).
+[diff on GitHub](https://github.com/Swizec/react-d3-walkthrough-livecode/commit/b58981f2fd69ee34dbde52efd4917dc731fd22a4).
 
 <!--- end-lecture -->
 
@@ -3110,7 +3097,7 @@ Two more rows of filters show up.
 :clap:
 
 Again, if it didn't work, consult
-[the diff on GitHub](https://github.com/Swizec/react-d3js-step-by-step/commit/a45c33e172297ca1bbcfdc76733eae75779ebd7f).
+[the diff on GitHub](https://github.com/Swizec/react-d3-walkthrough-livecode/commit/813cdd496d06a38bb2816a8f973ab6c816119dca).
 
 <!--- end-lecture -->
 
@@ -3204,7 +3191,7 @@ There's a bug with some combinations in 2013 that don't have enough data. It
 will go away when we use the full dataset.
 
 If it doesn't work at all, consult the
-[diff on Github](https://github.com/Swizec/react-d3js-step-by-step/commit/2e8fb070cbee5f1e942be8ea42fa87c6c0379a9b).
+[diff on Github](https://github.com/Swizec/react-d3-walkthrough-livecode/commit/1132e58063d5029878c616a65fffa22d59cb080f).
 
 <!--- end-lecture -->
 
@@ -3297,7 +3284,7 @@ https://<your username>.github.io/<your repo name>
 For instance, mine is:
 
 ```
-https://swizec.github.io/react-d3js-step-by-step
+https://swizec.github.io/react-d3-walkthrough-livecode
 ```
 
 Yours will be different.
@@ -3328,7 +3315,7 @@ Twitter cards, Facebook Open Graph things, and so on.
     <title>How much does an H1B in tech pay?</title>
 
     <link rel="canonical"
-          href="https://swizec.github.io/react-d3js-step-by-step/" />
+          href="https://swizec.github.io/react-d3-walkthrough-livecode/" />
     // ...and here.
 </head>
 <body>
@@ -3383,7 +3370,7 @@ them. They go in the `<head>` of our HTML.
 176,075 H1B work visas. With an average individual salary
 up to $39,465 above median household income." />
     <meta property="og:url"
-          content="https://swizec.github.io/react-d3js-step-by-step" />
+          content="https://swizec.github.io/react-d3-walkthrough-livecode" />
     <meta property="og:site_name" content="A geek with a hat" />
     <meta property="article:publisher"
           content="https://facebook.com/swizecpage" />
@@ -3474,8 +3461,8 @@ You'll see a bunch of output:
 ![Deploy output](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/npm-run-deploy.png)
 
 And you're ready to go. Your visualization is online. My URL is
-`https://swizec.github.io/react-d3js-step-by-step/`, yours is different. Visit
-it and you'll see what you've built. Share it and others will see it too.
+`https://swizec.github.io/react-d3-walkthrough-livecode/`, yours is different.
+Visit it and you'll see what you've built. Share it and others will see it too.
 
 ![Deployed dataviz](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/es6v2/deployed-dataviz.png)
 
