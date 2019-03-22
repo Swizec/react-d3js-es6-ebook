@@ -6,9 +6,11 @@
   "scripts": {
     "colonify": "node emoji.js --colonify",
     "emojify": "node emoji.js --emojify",
-    "teachable": "nodemon --watch manuscript -e md --watch util.js --watch conversions.js --watch teachable.js ./teachable.js",
     "watch-remarq": "nodemon --watch manuscript --watch util.js --watch conversions.js  --watch remarq.js ./remarq.js",
     "build-remarq": "node ./remarq.js",
+    "watch-teachable": "nodemon --watch manuscript -e md --watch util.js --watch conversions.js --watch teachable.js ./teachable.js",
+    "build-teachable": "node ./teachable.js",
+    "deploy-teachable": "npx now switch swizec-react-dataviz && npx now build/content/ | xargs -J % npx now alias % swizec-react-dataviz-content.now.sh",
     "test-manuscript-migrations": "nodemon --watch util.js --watch conversions.js  --watch migrations ./migrations/00-pandocify-manuscript.js"
   },
   "keywords": [],
@@ -27,6 +29,7 @@
     "node-fetch": "^2.2.0",
     "nodemon": "^1.18.9",
     "ora": "^3.2.0",
+    "now": "^14.0.3",
     "prettier": "^1.16.4",
     "pretty-quick": "^1.10.0",
     "retext": "^6.0.1",

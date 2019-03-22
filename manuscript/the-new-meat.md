@@ -3266,7 +3266,7 @@ $ npm install --save-dev gh-pages
 
 Add two lines to package.json:
 
-```{.json caption="Update package.json"}
+```{.javascript caption="Update package.json"}
 // package.json
 // Insert the line(s) between here...
 "homepage": "https://<your username>.github.io/<your repo name>"
