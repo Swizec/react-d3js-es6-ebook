@@ -70,11 +70,20 @@ const normalizeHeadings = fp.curry((baseHeading, markdownString) => {
   }
 });
 
+// Add a LaTeX non-breaking space after the image so that it gets
+// rendered where it appears in the manuscript instead of some odd
+// position decided by LaTeX
+const fixLatexImagePosition = fp.replace(
+  /!\[.*?]\(.*?\.(?:png|jpg|gif)\)/g,
+  '$&\\ '
+);
+
 // ## effectful functions
 function writeOutSectionsAsRemarqChaptersFile(sections) {
   const fullRemarqBody = fp.pipe(
     fp.map(fixSectionBody),
     fp.join('\n\n'),
+    fixLatexImagePosition,
     fpWriteFile(remarqInputChaptersFileAbsPath)
   )(sections);
 
