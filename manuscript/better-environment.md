@@ -179,7 +179,7 @@ we can make it all ours.
 To make the project our own, we have to change some information inside
 `package.json`: the name, version, and description.
 
-```{.json}
+```{.javascript}
 {
   // Delete the line(s) between here...
   "name": "react-transform-boilerplate",
@@ -196,7 +196,7 @@ To make the project our own, we have to change some information inside
 
 It's also a good idea to update the `author` field:
 
-```{.json}
+```{.javascript}
 // Delete the line(s) between here...
 "author": "Dan Abramov <dan.abramov@me.com> (https://github.com/gaearon)",
 // ...and here.
@@ -403,7 +403,7 @@ $ npm install --save-dev babel-preset-stage-0
 
 Then enable it in `.babelrc`:
 
-```{.json caption="Add stage-0 preset to .babelrc"}
+```{.javascript caption="Add stage-0 preset to .babelrc"}
 {
   // Delete the line(s) between here...
   "presets": ["react", "es2015"],
