@@ -65,7 +65,7 @@ fast. 👌
 
 ### Render the emoji barchart
 
-![Switchable emoji christmas tree barchart](./christmastrees.gif)
+![Switchable emoji christmas tree barchart](https://github.com/Swizec/datavizAdvent/raw/master/src/content/christmas-trees/christmastrees.gif)
 
 We created a `<Barchart>` component that takes:
 
@@ -206,7 +206,7 @@ component.
 
 Rendering a basic linechart was pretty quick: D3's got a line generator 🤙
 
-![Just the line](./justline.png)
+![Just the line](https://github.com/Swizec/datavizAdvent/raw/master/src/content/money-spent/justline.png)
 
 That's an SVG `<path>` using `d3.line` to create the `d` shape attribute.
 Wrapped into a React component it looks like this:
@@ -276,7 +276,7 @@ colors 🎨
 
 ## The axes
 
-![Line with axes](./withaxes.png)
+![Line with axes](https://github.com/Swizec/datavizAdvent/raw/master/src/content/money-spent/withaxes.png)
 
 Because axes are a tricky best to build, we used a trick from
 [React for Data Visualization](https://swizec1.teachable.com/p/react-for-data-visualization/) -
@@ -320,7 +320,7 @@ Quickest way to slap some D3 into some React 👌
 
 How do you make a linechart more fun? You add money-flying-away emojis.
 
-![Line with emojis](./moneymoji.png)
+![Line with emojis](https://github.com/Swizec/datavizAdvent/raw/master/src/content/money-spent/moneymoji.png)
 
 Interactive points on each edge of a linechart are pretty common after all.
 Makes it easier to spot where the line breaks and shows actual data and where
@@ -362,7 +362,7 @@ Hover over an emoji for a few seconds and it shows some extra info.
 
 ## A highlight for easy reading
 
-![A highlight to make life easier](./highlight.png)
+![A highlight to make life easier](https://github.com/Swizec/datavizAdvent/raw/master/src/content/money-spent/highlight.png)
 
 Linecharts can be hard to read. With datapoints so far from the axes it can be
 hard to see how everything lines up.
@@ -874,7 +874,7 @@ look good.
 
 A beautiful chart pops out.
 
-![Beautiful chart](./what-americas-want.png)
+![Beautiful chart](https://github.com/Swizec/datavizAdvent/raw/master/src/content/christmas-gifts/what-americas-want.png)
 
 ## Today you learned 🧐
 
@@ -1499,7 +1499,7 @@ const TooltipP = styled.p`
 
 Nice green background, rounded corners, and a bit of padding.
 
-![I am no designer](./tooltip-closeup.png)
+![I am no designer](https://github.com/Swizec/datavizAdvent/raw/master/src/content/gift-stockings/tooltip-closeup.png)
 
 I am no designer 😅
 
@@ -1664,7 +1664,7 @@ something.
 You need a global way to store info about the tooltip and some way to trigger
 it from sibling components.
 
-![](./christmas-stockings.png)
+![](https://github.com/Swizec/datavizAdvent/raw/master/src/content/gift-stockings/christmas-stockings.png)
 
 ## PS: A neat way to useData
 
@@ -1770,7 +1770,7 @@ long to accumulate its result as the rest of the time periods combined.
 We start exploring with a line chart. Borrowing a lot of code from the
 [Money spent on Christmas](https://reactviz.holiday/money-spent/) challenge.
 
-![](./plainchart.png)
+![](https://github.com/Swizec/datavizAdvent/raw/master/src/content/when-to-buy-gifts/plainchart.png)
 
 That's our data plotted as a curved line. Circles represent the actual
 datapoints we've got. Curves are a a good first approach to show that our data
@@ -1881,7 +1881,7 @@ focuses more on the line chart part.
 So how realistic does this chart look to you? Does it represent the true
 experience?
 
-![](./plainchart.png)
+![](https://github.com/Swizec/datavizAdvent/raw/master/src/content/when-to-buy-gifts/plainchart.png)
 
 Yes according to the data _most_ people start shopping before the end of
 October. And it's true, very many start some time in November, with a moderate
@@ -1903,7 +1903,7 @@ the rest of November combined. Even though it's just 1 week versus 3 weeks.
 
 We can tease out these truths 👉 normalize our data by week.
 
-![](./approximation.png)
+![](https://github.com/Swizec/datavizAdvent/raw/master/src/content/when-to-buy-gifts/approximation.png)
 
 Assume each datapoint spreads uniformly over its entire period, and a different
 picture comes out.
@@ -2021,7 +2021,7 @@ descriptive scale, and the `<LeftAxis>` stays the same.
 End result is a chart that tells a more accurate story overlayed with the
 original data.
 
-![](./approximation.png)
+![](https://github.com/Swizec/datavizAdvent/raw/master/src/content/when-to-buy-gifts/approximation.png)
 
 ## Attempting a more sophisticated solution
 
@@ -2870,7 +2870,7 @@ The rest is just colors and opacities to make it look prettier.
 
 A sankey diagram comes out 👇
 
-![](./sankey.png)
+![](https://github.com/Swizec/datavizAdvent/raw/master/src/content/sankey/sankey.png)
 
 You can make it betterer with some interaction on the nodes or even links.
 They're components so the world is your oyster. Anything you can do with
@@ -3181,7 +3181,7 @@ our icon is weird, and then by the direction of the airplane from our data.
 `true_track` is the airplane's bearing in radians so we transform it to degrees
 with some math.
 
-![](./airplane-icon.png)
+![](https://github.com/Swizec/datavizAdvent/blob/master/src/content/webgl-airplanes/airplane-icon.jpg)
 
 ## Predict airplanes' next position
 
@@ -3289,7 +3289,7 @@ Kiran has a problem. He's working on a project and doesn't know how. Let's help
 [Kiran](https://twitter.com/kiran_gaurang) wants to build a "circle with arcs"
 chart, but he's having trouble. He asked for help so here we are :)
 
-![](./ask-for-help.png)
+![](https://github.com/Swizec/datavizAdvent/raw/master/src/content/kiran-challenge/ask-for-help.png)
 
 I livecoded this one from the Paris airport so there's no sound in the video. I
 was too shy to narrate my actions in the middle of a busy Starbucks. Maybe next
