@@ -6,6 +6,8 @@ animation.md
 animating-react-redux.md
 speed-optimizations.md
 react-hooks.md
+hybrid-animation.md
 conclusion.md
+cookbook.md
 appendixA.md
 appendixB.md
