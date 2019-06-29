@@ -109,7 +109,7 @@ function main() {
 
   splitFullHtmlIntoPubRepo();
 
-  gitAddAllCommitAndPush(pubRepoAbsPath);
+  // gitAddAllCommitAndPush(pubRepoAbsPath);
 }
 
 main();
