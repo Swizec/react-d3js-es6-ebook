@@ -27,8 +27,8 @@ function postProcessFullHtml(fullHtmlAbsPath) {
   });
 
   const pipeline = fp.pipe(
-    emojify,
-    prettify('html')
+    emojify
+    // prettify('html')
   );
 
   const processedFullHtmlBody = pipeline(fullHtmlBody);
