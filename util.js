@@ -195,8 +195,7 @@ function conditionalLog(isLoggingEnabled, label) {
 }
 
 function prettyJson(obj) {
-  // return prettify('json')(JSON.stringify(obj));
-  return JSON.stringify(obj);
+  return prettify('json')(JSON.stringify(obj));
 }
 
 function runShellCommand(
