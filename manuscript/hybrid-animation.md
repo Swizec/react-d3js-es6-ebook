@@ -98,7 +98,7 @@ React is magic.
 
 <!--- begin-lecture title="Understanding custom tweens" -->
 
-![A smoothly transitioning piechart](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/transition-pie.gif)
+![A smoothly transitioning piechart](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/transition-pie.gif)
 
 Transitions like we used above work using interpolators. For numbers, an
 interpolator is easy: A function that parametrizes changes to a single
@@ -130,7 +130,7 @@ If that doesn't make sense, don't worry. I can't read it either.
 When you transition a shape like that, funny things can happen. Sometimes arcs
 fly around the screen, sometimes you get an error.
 
-![Naively implemented transition. Notice the arcs change shape sometimes](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/naive-transition-d3-pie.gif)
+![Naively implemented transition. Notice the arcs change shape sometimes](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/naive-transition-d3-pie.gif)
 
 Notice the arc wobble.
 
@@ -148,7 +148,7 @@ Tweening functions lie behind all transitions. They take an argument, `t`, and
 return the value of your prop at a specific "time" of your transition. All
 transitions you've used so far are built with tweens in the background.
 
-![](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/transition-sketch.png)
+![](https://raw.githubusercontent.com/Swizec/react-d3js-es6-ebook/2018-version/manuscript/resources/images/2018/transition-sketch.png)
 
 Our tween generator is going to need:
 
@@ -215,6 +215,10 @@ Select an element, a `<path>`, start a transition, make it last `80`
 milliseconds, `attrTween` the path definition, `d`, attribute using the tween
 returned from `arcTween`.
 
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Custom tweens in practice" -->
+
 ## A practical example
 
 Here's an example of how you might use that in an animated piechart. Same idea
@@ -224,7 +228,9 @@ https://codesandbox.io/s/px7x26020/
 
 <!--- end-lecture -->
 
-<!--- begin-lecture title="Use tweens to drive state" -->
+<!--- begin-lecture title="Use tweens to drive state – hybrid animation" -->
+
+# Use tweens to drive state – hybrid animation
 
 You now have all the ingredients for hybrid animation:
 
