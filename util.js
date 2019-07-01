@@ -165,6 +165,7 @@ function convertFullManuscriptToHtml() {
     pandoc                         \
       -f markdown                  \
       -t html                      \
+      --metadata pagetitle='title' \
       -s ${fullManuscriptAbsPath}  \
       -o ${fullHtmlAbsPath} &&     \
     npx juice ${fullHtmlAbsPath} ${fullHtmlAbsPath}`;
