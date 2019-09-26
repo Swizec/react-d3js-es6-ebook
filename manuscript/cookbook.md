@@ -3434,21 +3434,19 @@ hearts and emojis and transitions and stuff!
 
 So I fired up the monthly dataviz stream and built one 😛
 
-https://twitter.com/Swizec/status/1156226523403128833
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">An entire dataviz from scratch. Data collection and all. Doing one of these epic streams every last Sunday of the month.<br><br>Article coming soon <a href="https://t.co/nZdWJPdyQt">pic.twitter.com/nZdWJPdyQt</a></p>&mdash; Swizec Teller (@Swizec) <a href="https://twitter.com/Swizec/status/1156226523403128833?ref_src=twsrc%5Etfw">July 30, 2019</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 Watch the stream here 👇
 
-https://www.youtube.com/watch?v=_Ja-mdt5tnQ
+<iframe width="560" height="315" src="https://www.youtube.com/embed/_Ja-mdt5tnQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-https://www.youtube.com/watch?v=9Ue_6kEOblU
+<iframe width="560" height="315" src="https://www.youtube.com/embed/9Ue_6kEOblU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 It's a little long. Just over 5 hours. You might want to fast-forward a few
 times, read this article instead. Think of it as a recap and full featured
 tutorial.
 
 Next lastish-Sunday-of-the-month you can join live. It's great fun :)
-
-[convertkit]
 
 Here's how we approached this data visualization on the stream:
 
@@ -4179,7 +4177,7 @@ enough dataset for proper sentiment analysis.
 
 Maybe 🤔
 
-Thanks for reading, ~Swizec
+Thanks for reading, <br>~Swizec
 
 <!--- end-lecture -->
 
