@@ -4181,4 +4181,842 @@ Thanks for reading, <br>~Swizec
 
 <!--- end-lecture -->
 
+<!--- begin-lecture title="A barchart race visualizing Moore's Law" -->
+
+[Moore's Law](https://en.wikipedia.org/wiki/Moore%27s_law) states that the
+number of transistors on a chip roughly doubles every two years. But how does
+that stack up against reality?
+
+I was inspired by this
+[data visualization of Moore's law](https://www.youtube.com/watch?v=7uvUiq_jTLM)
+from @datagrapha going viral on Twitter and decided to replicate it in React
+and D3.
+
+[![](https://i.imgur.com/W3OVpFL.gif)](https://reactfordataviz.com/articles/moores-law/)
+
+Some data bugs break it down in the end and there's something funky with Voodoo
+Rush, but those transitions came out wonderful 👌
+
+You can watch me build it from scratch, here 👇
+
+https://www.youtube.com/watch?v=m34_D8Va-F4
+
+First 30min eaten by a technical glitch 🤷‍♀️
+
+Try it live in your browser, here 👉
+[https://moores-law-swizec.swizec-react-dataviz.now.sh](https://moores-law-swizec.swizec-react-dataviz.now.sh)
+
+And here's the
+[full source code on GitHub](https://github.com/Swizec/moores-law).
+
+_you can [Read this online](https://reactfordataviz.com/articles/moores-law/)_
+
+# How it works
+
+At its core Moore's Law in React & D3 is a bar chart flipped on its side.
+
+We started with fake data and a React component that renders a bar chart. Then
+we made the data go through time and looped through. The bar chart jumped
+around.
+
+So our next step was to add transitions. Made the bar chart look smooth.
+
+Then we made our data gain an entry each year and created an enter transition
+to each bar. Makes it smoother to see how new entries fly in.
+
+At this point we had the building blocks and it was time to use real data. We
+used [wikitable2csv](https://wikitable2csv.ggor.de/) to download data from
+Wikipedia's [Transistor Count](https://en.wikipedia.org/wiki/Transistor_count)
+page and fed it into our dataviz.
+
+Pretty much everything worked right away 💪
+
+## Start with fake data
+
+Data visualization projects are best started with fake date. This approach lets
+you focus on the visualization itself. Build the components, the transitions,
+make it all fit together ... all without worrying about the exact shape of your
+data.
+
+Of course it's best if your fake data looks like your final dataset will.
+Array, object, grouped by year, that sort of thing.
+
+Plus you save time when you aren't waiting for large datasets to parse :)
+
+Here's the fake data generator we used:
+
+```javascript
+// src/App.js
+
+const useData = () => {
+  const [data, setData] = useState(null);
+
+  // Replace this with actual data loading
+  useEffect(() => {
+    // Create 5 imaginary processors
+    const processors = d3.range(10).map(i => `CPU ${i}`),
+      random = d3.randomUniform(1000, 50000);
+
+    let N = 1;
+
+    // create random transistor counts for each year
+    const data = d3.range(1970, 2026).map(year => {
+      if (year % 5 === 0 && N < 10) {
+        N += 1;
+      }
+
+      return d3.range(N).map(i => ({
+        year: year,
+        name: processors[i],
+        transistors: Math.round(random()),
+      }));
+    });
+
+    setData(data);
+  }, []);
+
+  return data;
+};
+```
+
+Create 5 imaginary processors, iterate over the years, and give them random
+transistor counts. Every 5 years we increase the total `N` of processors in our
+visualization.
+
+We create data inside a `useEffect` to simulate that data loads asynchronously.
+
+## Driving animation through the years
+
+A large part of visualizing Moore's Law is showing its progression over the
+years. Transistor counts increased as new CPUs and GPUs entered the market.
+
+Best way to drive that progress animation is with a `useEffect` and a D3 timer.
+We do that in our `App` component.
+
+```javascript
+// src/App.js
+
+function App() {
+    const data = useData();
+    const [currentYear, setCurrentYear] = useState(1970);
+
+    const yearIndex = d3
+        .scaleOrdinal()
+        .domain(d3.range(1970, 2025))
+        .range(d3.range(0, 2025 - 1970));
+
+    // Drives the main animation progressing through the years
+    // It's actually a simple counter :P
+    useEffect(() => {
+        const interval = d3.interval(() => {
+            setCurrentYear(year => {
+                if (year + 1 > 2025) {
+                    interval.stop();
+                }
+
+                return year + 1;
+            });
+        }, 2000);
+
+        return () => interval.stop();
+    }, []);
+```
+
+`useData()` runs our data generation custom hook. We `useState` for the current
+year. A linear scale helps us translate from meaningful `1970` to `2026`
+numbers to indexes in our data array.
+
+The `useEffect` starts a `d3.interval`, which is like a `setInterval` but more
+reliable. We update current year state in the interval callback.
+
+Remember that state setters accept a function that gets current state as an
+argument. Useful trick in this case where we don't want to restart the effect
+on every year change.
+
+We return `interval.stop()` as our cleanup function so React stops the loop
+when our component unmounts.
+
+## The basic render
+
+Our main component renders a `<Barchart>` inside an `<Svg>`. Using styled
+components for size and some layout.
+
+```javascript
+// src/App.js
+
+return (
+    <Svg>
+        <Title x={"50%"} y={30}>
+            Moore's law vs. actual transistor count in React & D3
+        </Title>
+        {data ? (
+            <Barchart
+                data={data[yearIndex(currentYear)]}
+                x={100}
+                y={50}
+                barThickness={20}
+                width={500}
+            />
+        ) : null}
+        <Year x={"95%"} y={"95%"}>
+            {currentYear}
+        </Year>
+    </Svg>
+```
+
+Our `Svg` is styled to take up the entire viewport and the `Year` component is
+a big text.
+
+The `<Barchart>` is where our dataviz work happens. From the outside it's a
+component that takes "current data" and handles the rest. Positioning and
+sizing props make it more reusable.
+
+## A smoothly transitioning Barchart
+
+[![](https://i.imgur.com/W3OVpFL.gif)](https://reactfordataviz.com/articles/moores-law/)
+
+Our goal with the Barchart component was to:
+
+- always render current state
+- have smooth transitions on changes
+- follow React-y principles
+- easy to use from the outside
+
+You can [watch the video](https://www.youtube.com/watch?v=m34_D8Va-F4) to see
+how it evolved. Here I explain the final state 😇
+
+### The <Barchart> component
+
+The Barchart component takes in data, sets up vertical and horizontal D3
+scales, and loops through data to render individual bars.
+
+```javascript
+// src/Barchart.js
+
+// Draws the barchart for a single year
+const Barchart = ({ data, x, y, barThickness, width }) => {
+    const yScale = useMemo(
+        () =>
+            d3
+                .scaleBand()
+                .domain(d3.range(0, data.length))
+                .paddingInner(0.2)
+                .range([data.length * barThickness, 0]),
+        [data.length, barThickness]
+    );
+
+    // not worth memoizing because data changes every time
+    const xScale = d3
+        .scaleLinear()
+        .domain([0, d3.max(data, d => d.transistors)])
+        .range([0, width]);
+
+    const formatter = xScale.tickFormat();
+```
+
+D3 scales help us translate between datapoints and pixels on a screen. I like
+to memoize them when it makes sense.
+
+Memoizing is particularly important with large datasets. You don't want to
+waste time looking for the max in 100,000 elements on every render.
+
+We were able to memoize `yScale` because `data.length` and `barThickness` don't
+change _every_ time.
+
+`xScale` on the other hand made no sense to memoize since we know `<Barchart>`
+gets a new data object for every render. At least in theory.
+
+We borrow xScale's tick formatter to help us render `10000` as `10,000`. Built
+into D3 ✌️
+
+**Rendering** our Barchart component looks like this:
+
+```javascript
+// src/Barchart.js
+
+return (
+  <g transform={`translate(${x}, ${y})`}>
+    {data
+      .sort((a, b) => a.transistors - b.transistors)
+      .map((d, index) => (
+        <Bar
+          data={d}
+          key={d.name}
+          y={yScale(index)}
+          width={xScale(d.transistors)}
+          endLabel={formatter(d.transistors)}
+          thickness={yScale.bandwidth()}
+        />
+      ))}
+  </g>
+);
+```
+
+A grouping element holds our bars together and moves them into place. Using a
+group element changes the internal coordinate system so individual bars don't
+have to know about overall positioning.
+
+Just like in HTML when you position a div and its children don't need to know
+:)
+
+We sort data by transistor count and render a `<Bar>` element for each.
+Individual bars get all needed info via props.
+
+### The <Bar> component
+
+Individual `<Bar>` components render a rectangle flanked on each side by a
+label.
+
+```javascript
+return (
+  <g transform={`translate(${renderX}, ${renderY})`}>
+    <rect x={10} y={0} width={renderWidth} height={thickness} fill={color} />
+    <Label y={thickness / 2}>{data.name}</Label>
+    <EndLabel y={thickness / 2} x={renderWidth + 15}>
+      {data.designer === 'Moore'
+        ? formatter(Math.round(transistors))
+        : formatter(data.transistors)}
+    </EndLabel>
+  </g>
+);
+```
+
+A grouping element groups the 3 elements, styled components style the labels,
+and a `rect` SVG element creates the rectangle. Simple React markup stuff ✌️
+
+Where the `<Bar>` component gets interesting is the positioning. We use
+`renderX` and `renderY` even though the vertical position comes from props as
+`y` and `x` is static.
+
+That's got to do with transitions.
+
+### Transitions
+
+The `<Bar>` component uses the hybrid animation approach from my
+[React For DataViz](https://reactfordataviz.com) course.
+
+A key insight is that we use _independent_ transitions on each axis to create a
+_coordinated_ transition. Both for entering into the chart and for moving
+around later.
+
+Special case for the `Moore's Law` bar itself where we also transition the
+label so it looks like it's counting.
+
+We created a `useTransition` custom hook to make our code easier to understand
+and cleaner to read.
+
+#### useTransition
+
+The `useTransition` custom hook helps us move values from props to state. State
+becomes the staging area and props are the target we want to reach.
+
+To run a transition we create an effect and set up a D3 transition. On each
+tick of the animation we update state proportionately to time spent animating.
+
+```javascript
+const useTransition = ({ targetValue, name, startValue, easing }) => {
+  const [renderValue, setRenderValue] = useState(startValue || targetValue);
+
+  useEffect(() => {
+    d3.selection()
+      .transition(name)
+      .duration(2000)
+      .ease(easing || d3.easeLinear)
+      .tween(name, () => {
+        const interpolate = d3.interpolate(renderValue, targetValue);
+        return t => setRenderValue(interpolate(t));
+      });
+  }, [targetValue]);
+
+  return renderValue;
+};
+```
+
+State update happens inside that custom `.tween` method. We interpolate between
+the current value and the target value.
+
+D3 handles the rest.
+
+#### Using useTransition
+
+We can reuse that same transition approach for each independent axis we want to
+animate. D3 makes sure all transitions start at the same time and run at the
+same pace. Any dropped frames or browser slow downs are handled for us.
+
+```javascript
+// src/Bar.js
+const Bar = ({ data, y, width, thickness, formatter, color }) => {
+    const renderWidth = useTransition({
+        targetValue: width,
+        name: `width-${data.name}`,
+        easing: data.designer === "Moore" ? d3.easeLinear : d3.easeCubicInOut
+    });
+    const renderY = useTransition({
+        targetValue: y,
+        name: `y-${data.name}`,
+        startValue: -500 + Math.random() * 200,
+        easing: d3.easeCubicInOut
+    });
+    const renderX = useTransition({
+        targetValue: 0,
+        name: `x-${data.name}`,
+        startValue: 1000 + Math.random() * 200,
+        easing: d3.easeCubicInOut
+    });
+    const transistors = useTransition({
+        targetValue: data.transistors,
+        name: `trans-${data.name}`,
+        easing: d3.easeLinear
+    });
+```
+
+Each transition returns the current value for the transitioned axis.
+`renderWidth`, `renderX`, `renderY`, and even `transistors`.
+
+When a transition updates, its internal `useState` setter runs. That triggers a
+re-render and updates the value in our `<Bar>` component, which then
+re-renders.
+
+Because D3 transitions run at 60fps, we get a smooth animation ✌️
+
+Yes that's a lot of state updates for each frame of animation. At least 4 per
+frame per datapoint. About 4\*60\*298 = 71,520 per second at max.
+
+And React can handle it all. At least on my machine, I haven't tested elsewhere
+yet :)
+
+## Conclusion
+
+And that's how you can combine React & D3 to get a smoothly transitioning
+barchart visualizing Moore's Law through the years.
+
+[![](https://i.imgur.com/W3OVpFL.gif)](https://moores-law-swizec.swizec-react-dataviz.now.sh/)
+
+Key takeaways:
+
+- React for rendering
+- D3 for data loading
+- D3 runs and coordinates transitions
+- state updates drive re-rendering animation
+- build custom hooks for common setup
+
+Cheers,<br> ~Swizec
+
+<!--- end-lecture -->
+
+<!--- begin-lecture title="Building a Piet Mondrian art generator with treemaps" -->
+
+> "lol you can become a famous artist by just painting colorful squares"
+
+Yeah turns out generative art is really hard. And Mondrian did it manually.
+
+[![](https://i.imgur.com/9czz3FL.gif)](https://mondrian-generator.swizec-react-dataviz.now.sh/)
+
+[Piet Mondrian](https://en.wikipedia.org/wiki/Piet_Mondrian) was a Dutch
+painter famous for his style of grids with basic squares and black lines. So
+famous in fact, Google finds him as
+["squares art guy"](https://www.google.com/search?q=squares+art+guy&oq=squares+art+guy&aqs=chrome..69i57.3689j0j1&sourceid=chrome&ie=UTF-8).
+
+The signature style grew out of his earlier cubist works seeking a universal
+beauty understood by a all humans.
+
+> I believe it is possible that, through horizontal and vertical lines
+> constructed with awareness, but not with calculation, led by high intuition,
+> and brought to harmony and rhythm, these basic forms of beauty, supplemented
+> if necessary by other direct lines or curves, can become a work of art, as
+> strong as it is true.
+
+![An early cubist work by Piet Mondrian](https://upload.wikimedia.org/wikipedia/commons/8/80/Piet_Mondrian%2C_1911%2C_Gray_Tree_%28De_grijze_boom%29%2C_oil_on_canvas%2C_79.7_x_109.1_cm%2C_Gemeentemuseum_Den_Haag%2C_Netherlands.jpg)
+
+So I figured what better way to experiment with
+[D3 treemaps](https://observablehq.com/@d3/treemap) than to pay an homage to
+this great artist.
+
+You can watch the full live stream here:
+
+https://www.youtube.com/watch?v=6Ad0I8RZhY8
+
+GitHub link here 👉
+[Swizec/mondrian-generator](https://github.com/Swizec/mondrian-generator)
+
+And try it out
+[in your browser](https://mondrian-generator.swizec-react-dataviz.now.sh/)
+
+It's not as good as Mondrian originals, but we learned a lot 👩‍🎨
+
+You can read this article online at
+[reactfordataviz.com/articles/mondrian-art-generator/](https://reactfordataviz.com/articles/mondrian-art-generator/)
+
+## What is a treemap anyway?
+
+[![A treemap built with D3](https://raw.githubusercontent.com/d3/d3-hierarchy/master/img/treemap.png)](https://www.npmjs.com/package/d3-hierarchy)
+
+> Introduced by Ben Shneiderman in 1991, a treemap recursively subdivides area
+> into rectangles according to each node’s associated value.
+
+In other words, a treemap takes a rectangle and packs it with smaller
+rectangles based on a tiling algorithm. Each rectangle's area is proportional
+to the value it represents.
+
+Treemaps are most often used for presenting budgets and other relative sizes.
+Like in this interactive
+[example of a government budget from 2016](https://obamawhitehouse.archives.gov/interactive-budget).
+
+![](https://i.imgur.com/YzOsWfp.png)
+
+You can see at a glance most of the money goes to social security, then health
+care, which is split between medicaid, children's health, etc.
+
+Treemaps are great for recursive data like that.
+
+## Using a D3 treemap to generate art with React
+
+We wanted to play with treemaps per a reader's request, but couldn't find an
+interesting dataset to visualize. _Generating_ data was the solution.
+Parametrizing it with sliders, pure icing on the cake.
+
+Also I was curious how close we can get :)
+
+3 pieces have to work together to produce an interactive piece of art:
+
+1. A recursive rendering component
+2. A function that generates treemappable data
+3. Sliders that control inputs to the function
+
+### A recursive rendering component
+
+Treemaps are recursive square subdivisions. They come with a bunch of tiling
+algorithms, the most visually stunning of which is the
+[squarified treemaps](https://www.win.tue.nl/~vanwijk/stm.pdf) algorithm
+described in 2000 by Dutch researchers.
+
+What is it with Dutch people and neat squares 🤔
+
+While beautiful, the squarified treemaps algorithm did not look like a
+Mondrian.
+
+![Squarified treemap of our Mondrian function](https://i.imgur.com/sw6pO2r.png)
+
+Subtle difference, I know, but squarified treemaps are based on the
+[golden ratio](https://en.wikipedia.org/wiki/Golden_ratio) and Piet Mondrian's
+art does not look like that. We used the `d3.treemapBinary` algorithm instead.
+It aims to create a balanced binary tree.
+
+#### main `<Mondrian>` component
+
+```javascript
+// src/Mondrian.js
+
+const Mondrian = ({ x, y, width, height, data }) => {
+  const treemap = d3
+    .treemap()
+    .size([width, height])
+    .padding(5)
+    .tile(d3.treemapBinary);
+
+  const root = treemap(
+    hierarchy(data)
+      .sum(d => d.value)
+      .sort((a, b) => 0.5 - Math.random())
+  );
+
+  return (
+    <g transform={`translate(${x}, ${y})`}>
+      <MondrianRectangle node={root} />
+    </g>
+  );
+};
+```
+
+The `<Mondrian>` component takes some props and instantiates a new treemap
+generator. We could've wrapped this in a `useMemo` call for better performance,
+but it seemed fast enough.
+
+We set the treemap's `size()` from width and height props, a guessed
+`padding()` of 5 pixels, and a tiling algorithm.
+
+This creates a `treemap()` generator – a method that takes data and returns
+that same data transformed with values used for rendering.
+
+The generator takes a [d3-hierarchy](https://github.com/d3/d3-hierarchy), which
+is a particular data format shared by all hierarchical rendering generators in
+the D3 suite. Rather than build it ourselves, we feed our source data into the
+`hierarchy()` method. That cleans it up for us ✌️
+
+We need the `sum()` method to tell the hierarchy how to sum up the values of
+our squares, and we use random sorting because that produced nicer results.
+
+#### a `<MondrianRectangle>` component for each square
+
+We render each level of the resulting treemap with a `<MondrianRectangle>`
+component.
+
+```javascript
+// src/Mondrian.js
+
+const MondrianRectangle = ({ node }) => {
+  const { x0, y0, x1, y1, children } = node,
+    width = x1 - x0,
+    height = y1 - y0;
+
+  return (
+    <>
+      <rect
+        x={x0}
+        y={y0}
+        width={width}
+        height={height}
+        style={
+          fill: node.data.color,
+          stroke: "black",
+          strokeWidth: 5
+        }
+        onClick={() => alert(`This node is ${node.data.color}`)}
+      />
+      {children &&
+        children.map((node, i) => <MondrianRectangle node={node} key={i} />)}
+    </>
+  );
+};
+```
+
+Each rectangle gets a `node` prop with a bunch of useful properties.
+
+- `x0, y0` defines the top left corner
+- `x1, y1` is the bottom right corner
+- `children` are the child nodes from our hierarchy
+
+We render an SVG `<rect>` component as the square representing _this_ node. Its
+children we render by looping through the `children` array and recursively
+rendering a `<MondrianRectangle>` component for each.
+
+The `onClick` is there just to show how you might make these interactive :)
+
+> You can use this same principle to render any data with a treemap.
+
+### A Mondrian data generator method
+
+We moved the generative art piece into a custom `useMondrianGenerator` hook.
+Keeps our code cleaner 😌
+
+```javascript
+// src/App.js
+
+let mondrian = useMondrianGenerator({
+  redRatio,
+  yellowRatio,
+  blueRatio,
+  blackRatio,
+  subdivisions,
+  maxDepth,
+});
+```
+
+The method takes a bunch of arguments that act as weights on randomly generated
+parameters. Ideally we'd create a stable method that always produces the same
+result for the same inputs, but that proved difficult.
+
+As mentioned earlier, generative art is _hard_ so this method is gnarly. 😇
+
+#### Weighed random color generator
+
+We start with a weighed random generator.
+
+```javascript
+// src/useMondrianGenerator.js
+
+// Create weighted probability distribution to pick a random color for a square
+const createColor = ({ redRatio, blueRatio, yellowRatio, blackRatio }) => {
+  const probabilitySpace = [
+    ...new Array(redRatio * 10).fill('red'),
+    ...new Array(blueRatio * 10).fill('blue'),
+    ...new Array(yellowRatio * 10).fill('yellow'),
+    ...new Array(blackRatio * 10).fill('black'),
+    ...new Array(
+      redRatio * 10 + blueRatio * 10 + yellowRatio * 10 + blackRatio * 10
+    ).fill('#fffaf1'),
+  ];
+
+  return d3.shuffle(probabilitySpace)[0];
+};
+```
+
+`createColor` picks a color to use for each square. It takes desired ratios of
+different colors and uses a trick I discovered in college. There are probably
+better ways to create a [weighed random method, but this works well and is
+something I can understand.
+
+You create an array with the amount of values proportional to the probabilities
+you want. If you want `red` to be twice as likely as `blue`, you'd use an array
+like `[red, red, blue]`.
+
+Pick a random element from that array and you get values based on
+probabilities.
+
+The result is a `createColor` method that returns colors in the correct ratio
+without knowing context of what's already been picked and what hasn't. ✌️
+
+#### generating mondrians
+
+The `useMondrianGenerator` hook itself is pretty long. I'll explain in code
+comments so it's easier to follow along :)
+
+```javascript
+// src/useMondrianGenerator.js
+
+// Takes inputs and spits out mondrians
+function useMondrianGenerator({
+  redRatio,
+  yellowRatio,
+  blueRatio,
+  blackRatio,
+  subdivisions,
+  maxDepth,
+}) {
+  // useMemo helps us avoid recalculating this all the time
+  // saves computing resources and makes the art look more stable
+  let mondrian = useMemo(() => {
+    // calculation is wrapped in a method so we can use recursion
+    // each level gets the current "value" that is evenly split amongst children
+    // we use depth to decide when to stop
+    const generateMondrian = ({ value, depth = 0 }) => {
+      // each level gets a random number of children based on the subdivisions argument
+      const N = Math.round(1 + Math.random() * (subdivisions * 10 - depth));
+
+      // each node contains:
+      // its value, used by treemaps for layouting
+      // its color, used by <MondrianRectangle> for the color
+      // its children, recursively generated based on the number of children
+      return {
+        value,
+        color: createColor({
+          redRatio,
+          yellowRatio,
+          blueRatio,
+          blackRatio,
+        }),
+        children:
+          // this check helps us stop when we need to
+          // d3.range generates an empty array of length N that we map over to create children
+          depth < maxDepth * 5
+            ? d3.range(N).map(_ =>
+                generateMondrian({
+                  value: value / N,
+                  depth: depth + 1,
+                })
+              )
+            : null,
+      };
+    };
+
+    // kick off the recursive process with a value of 100
+    return generateMondrian({
+      value: 100,
+    });
+    // regenerate the base data when max depth or rate of subdivisions change
+  }, [maxDepth, subdivisions]);
+
+  // Iterate through all children and update colors when called
+  const updateColors = node => ({
+    ...node,
+    color: createColor({
+      redRatio,
+      yellowRatio,
+      blueRatio,
+      blackRatio,
+    }),
+    children: node.children ? node.children.map(updateColors) : null,
+  });
+
+  // useMemo again helps with stability
+  // We update colors in our dataset whenever those ratios change
+  // depending on subdivisions and maxDepth allows the data update from that earlier useMemo to propagate
+  mondrian = useMemo(() => updateColors(mondrian), [
+    redRatio,
+    yellowRatio,
+    blueRatio,
+    blackRatio,
+    subdivisions,
+    maxDepth,
+  ]);
+
+  return mondrian;
+}
+```
+
+And that creates mondrian datasets based on inputs. Now we just need the
+inputs.
+
+### Sliders for function inputs
+
+Thanks to React Hooks, our sliders were pretty easy to implement. Each controls
+a ratio for a certain value fed into a random data generation method.
+
+Take the slider that controls the ratio of red squares for example.
+
+It starts life as a piece of state in the `<App>` component.
+
+```javascript
+// src/App.js
+
+const [redRatio, setRedRatio] = useState(0.2);
+```
+
+`redRatio` is the value, `setRedRatio` is the value setter, `0.2` is the
+initial value.
+
+Render the slider as a `<Range>` component.
+
+```javascript
+// src/App.js
+
+<Range name="red" value={redRatio} onChange={setRedRatio} />
+```
+
+Value comes from our state, update state on change.
+
+The `<Range>` component itself looks like this:
+
+```javascript
+// src/App.js
+
+const Range = ({ name, value, onChange }) => {
+  return (
+    <div style={ display: "inline-block" }>
+      {name}
+      <br />
+      <input
+        type="range"
+        name={name}
+        min={0}
+        max={1}
+        step={0.1}
+        value={value}
+        onChange={event => onChange(Number(event.target.value))}
+      />
+    </div>
+  );
+};
+```
+
+HTML has built-in sliders so we don't have to reinvent the wheel. Render an
+input, give it a `type="range"`, set value from our prop, and parse the event
+value in `onChange` before feeding it back to `setRedRange` with our callback.
+
+Now each time you move that slider, it triggers a re-render, which generates a
+new Mondrian from the data.
+
+[![](https://i.imgur.com/9czz3FL.gif)](https://mondrian-generator.swizec-react-dataviz.now.sh/)
+
+## Conclusion
+
+In conclusion: generative art is hard, Piet Mondrian was brillianter than he
+seems, and D3 treemaps are great fun.
+
+Hope you enjoyed this as much as I did :)
+
+Cheers,<br> ~Swizec
+
+<!--- end-lecture -->
+
 <!--- end-section -->
